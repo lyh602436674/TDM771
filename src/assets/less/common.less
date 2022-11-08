@@ -1,0 +1,198 @@
+/* 全局样式约束 */
+div,
+p,
+span,
+a,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  box-sizing: border-box;
+}
+
+/*修改默认card的body属性*/
+.ant-card-body {
+  padding: 5px 3px;
+}
+
+/*.ant-card-body .table-operator {
+  margin-top: 5px;
+}*/
+
+/**
+ * @Date: 2021-07-17 16:53:37
+ * @Author: 陈乾龙
+ * @description: 修改全局drawer的样式
+ */
+.ant-drawer-content-wrapper,
+.ant-drawer-content,
+.ant-drawer-wrapper-body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.ant-drawer-wrapper-body {
+
+  .ant-drawer-header,
+  .ant-drawer-body {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .ant-drawer-body {
+    margin-top: 55px;
+    height: calc(100% - 55px);
+    overflow: hidden;
+    padding: 0;
+    padding-bottom: 65px;
+
+    .h-drawer-body-wrapper {
+      height: 100%;
+      overflow: auto;
+      padding: 24px;
+
+    }
+
+    .drawer-bootom-button {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 99;
+      border-top: 1px solid #e8e8e8;
+      padding: 16px 16px;
+      text-align: right;
+      background: #fff;
+      border-radius: 0 0 2px 2px;
+    }
+  }
+}
+
+/** Button按钮间距 */
+.table-operator .ant-btn {
+  margin: 0 5px 5px 0;
+}
+
+.table-operator .ant-btn-group .ant-btn {
+  margin: 0;
+}
+
+.table-operator .ant-btn-group .ant-btn:last-child {
+  margin: 0 5px 5px 0;
+}
+
+/*form 表单样式全局调整*/
+.ant-form-explain {
+  text-align: right;
+}
+
+/*列表td的padding设置 可以控制列表大小*/
+.ant-table-tbody .ant-table-row td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/*列表页面弹出modal*/
+.ant-modal-cust-warp {
+  height: 100%
+}
+
+/*弹出modal Y轴滚动条*/
+.ant-modal-cust-warp .ant-modal-body {
+  height: calc(100% - 110px) !important;
+  overflow-y: auto
+}
+
+/*弹出modal 先有content后有body 故滚动条控制在body上*/
+.ant-modal-cust-warp .ant-modal-content {
+  height: 90% !important;
+  overflow-y: hidden
+}
+
+/*列表中有图片的加这个样式 参考用户管理*/
+.anty-img-wrap {
+  height: 15px;
+  position: relative;
+}
+
+.anty-img-wrap>img {
+  max-height: 100%;
+}
+
+/*列表中范围查询样式*/
+.query-group-cust {
+  width: calc(50% - 10px)
+}
+
+.query-group-split-cust:before {
+  content: "~";
+  width: 20px;
+  display: inline-block;
+  text-align: center
+}
+
+
+/*erp风格子表外框padding设置*/
+.ant-card-wider-padding.cust-erp-sub-tab>.ant-card-body {
+  padding: 5px 12px
+}
+
+/* 内嵌子表背景颜色 */
+.j-inner-table-wrapper /deep/ .ant-table-expanded-row .ant-table-wrapper .ant-table-tbody .ant-table-row {
+  background-color: #FFFFFF;
+}
+
+/**隐藏样式-modal确定按钮 */
+.jee-hidden {
+  display: none
+}
+
+/** ant-tree 通用样式修改*/
+.ant-tree {
+  .ant-tree-treenode-selected {
+    .ant-tree-node-content-wrapper.ant-tree-node-selected {
+      background: @primary-color;
+      color: #fff;
+    }
+  }
+
+}
+
+/**
+ * @Date: 2021-10-08 18:08:18
+ * @Author: 陈乾龙
+ * @description: 修改vxe-table 组件通用样式
+ */
+.h-table-operator {
+  .vxe-toolbar {
+    height: auto;
+
+    .is--circle {
+      min-width: 14px;
+      height: 24px;
+      width: 24px;
+      padding: 0;
+
+    }
+
+    .is--active {
+      border-color: @primary-color;
+      color: @primary-color;
+
+      .vxe-button--icon {
+        color: @primary-color;
+
+      }
+    }
+
+    .vxe-custom--footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}

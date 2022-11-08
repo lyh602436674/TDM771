@@ -1,0 +1,48 @@
+.h-form {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  align-content: flex-start;
+
+  &-item {
+    &-required {
+      .h-form-label {
+        &::before {
+          content: "*";
+          color: red;
+          margin-right: 5px;
+        }
+      }
+    }
+
+    .h-form-label {
+      align-self: stretch;
+      line-height: 34px;
+
+      &::after {
+        content: ":";
+      }
+    }
+  }
+
+  &-label {
+    text-align: right;
+    padding: 0 10px 0 0;
+    vertical-align: middle;
+    overflow: hidden;
+  }
+
+  &-wrapper {
+    flex: 1;
+    padding: 1px 0;
+    overflow: hidden;
+  }
+
+  .ant-form-item-children {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    line-height: 1;
+  }
+}

@@ -1,0 +1,142 @@
+.h-upload-wrapper {
+  background-color: @background-color;
+  border: solid 1px @border-color-base;
+  border-radius: @border-radius-base;
+  padding: 10px;
+  box-sizing: border-box;
+
+  &.no-padding {
+    padding: 0;
+  }
+
+  .h-upload-input {
+    height: 0;
+    width: 0;
+    overflow: hidden;
+  }
+}
+
+
+
+.h-upload-img-list {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
+.h-upload-img {
+  border-radius: @border-radius-base;
+  border: dotted 1px @border-color-base;
+  padding: 5px;
+  overflow: hidden;
+}
+
+.h-upload-img-wrapper {
+  width: 180px;
+  height: 200px;
+  border: solid 1px @border-color-base;
+  padding: 3px;
+  overflow: hidden;
+  position: relative;
+  margin-right: 10px;
+
+
+
+  img {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+  }
+
+  .h-upload-img-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(#000, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .h-upload-img-progress {
+    width: 100%;
+
+    .ant-progress-text {
+      color: #fff;
+    }
+
+    &-format {
+      >div:first-child {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  .h-upload-img-action {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    transition: height 0.3s ease;
+    overflow: hidden;
+    background: rgba(#000, 0.8);
+    color: @primary-color;
+    font-size: 16px;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  &:hover {
+    .h-upload-img-action {
+      height: 30px;
+    }
+  }
+}
+
+.h-upload-com {
+  width: 180px;
+  height: 200px;
+  border: solid 1px @border-color-base;
+  padding: 3px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.h-upload-file {
+  .file-name {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px 10px;
+
+    span {
+      flex: 1;
+      display: inline-block;
+      margin-left: 10px;
+      overflow: hidden;
+      .text-overflow(1);
+    }
+  }
+}
+
+.h-upload-file-actions {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: solid 1px @border-color-base;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+}

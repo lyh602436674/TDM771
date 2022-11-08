@@ -1,0 +1,49 @@
+.h-card.ant-card {
+  .ant-card-head::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: -1px;
+    width:3px;
+    background-color:@primary-color;
+    border-radius: 3px;
+  }
+
+  .ant-card-head{
+    min-height:33px;
+  }
+  .ant-card-head,
+  .ant-card-head-title {
+    line-height: 1;
+    padding:3px 5px;
+    position: relative;
+
+  }
+
+  .ant-card-body {
+    padding: 10px 5px;
+  }
+
+  .ant-card-extra {
+    padding: 5px 0;
+  }
+
+  .ant-card-meta-detail>div:not(:last-child) {
+    margin-bottom: 0;
+  }
+
+  .ant-card-actions {
+    li {
+      margin: 5px 0;
+    }
+  }
+
+  .ant-card-grid {
+    padding: 1px;
+  }
+
+  .ant-card-extra {
+    padding: 5px 0;
+  }
+}

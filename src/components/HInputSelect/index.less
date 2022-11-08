@@ -1,0 +1,29 @@
+.h-input-select-wrapper {
+
+  .h-input-select {
+  }
+
+  .h-input-select-option {
+    width: calc(100% - 5px);
+    z-index: 999;
+    display: none;
+    margin: 3px;
+    padding: 10px 0;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgb(207 204 204);
+    border-radius: 4px;
+
+    &-item {
+      padding: 5px 12px;
+      line-height: 22px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: background .3s ease;
+
+      &:hover {
+        background-color: #e6f7ff;
+      }
+    }
+  }
+}

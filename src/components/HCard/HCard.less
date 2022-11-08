@@ -1,0 +1,167 @@
+.h-table-operator {
+  margin-bottom: 5px;
+  width: 100%;
+
+  button {
+    margin-right: 5px;
+    // margin-bottom:0;
+  }
+}
+.h-table-operator-left{
+  text-align: left;
+}
+.h-table-operator-right{
+  text-align: right;
+  .vxe-button--wrapper{
+    text-align: right !important;
+  }
+}
+
+// h-card 的最外层包装
+.h-card-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 2px 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+
+  .search-form {
+    width: 100%;
+  }
+  .card-footer {
+    width: 100%;
+  }
+
+  .h-card-fixed {
+    flex: 1;
+  }
+}
+
+// h-card 主内容区域
+.h-card {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+  overflow: hidden;
+
+  .h-card-content {
+    flex: 1;
+    width: 100%;
+  }
+
+  .ant-card-head {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: @primary-color-bg;
+    width: 100%;
+
+
+    .ant-card-head-wrapper {
+      width: 100%;
+    }
+
+    &-title {
+      font-weight: bolder;
+      letter-spacing: 2px;
+    }
+  }
+
+  .ant-card-body {
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+
+
+    .h-card-content {
+      flex: 1;
+      width: 100%;
+    }
+  }
+
+  .ant-table-wrapper {
+    height: auto !important;
+  }
+
+  // card 是否固定高度
+  &-fixed {
+    .ant-card-body {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+
+      .h-card-content {
+
+        overflow: hidden;
+      }
+    }
+
+  }
+
+  &-unfixed {
+    .ant-card-body {
+      padding: 5px 3px;
+      overflow: auto;
+    }
+
+  }
+
+  // card 是否折叠
+  &-collapse {
+    .ant-card-head {
+      border-bottom: solid 3px @border-color-base;
+    }
+
+    .ant-card-body {
+      display: none;
+    }
+  }
+
+
+
+  &-title {
+    font-size: 16px;
+    font-weight: 700;
+    // height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &-extra {
+    .anticon {
+      font-size: 16px;
+      font-weight: bolder;
+
+      &:hover {
+        color: @primary-color;
+      }
+    }
+
+    &-collapse {
+      .anticon {
+        color: @primary-color;
+      }
+    }
+
+  }
+}
+
+// card 全屏样式
+.h-full-screen-extra{
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  height: 100%;
+  width: 100%;
+}

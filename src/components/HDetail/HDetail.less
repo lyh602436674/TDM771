@@ -1,0 +1,95 @@
+.h-detail {
+  &-wrapper {
+    position: relative;
+  }
+
+  &-show-elevator {
+    padding-right: 50px;
+  }
+}
+
+.h-descriptions {
+  &.h-descriptions-card {
+    border-radius: @border-radius-base;
+    overflow: hidden;
+
+    fieldset {
+      background: @background-color;
+
+      .ant-descriptions {
+        margin: 0 5px 5px;
+        background: #fff;
+      }
+    }
+
+    legend {
+      background: @border-color-base;
+      border-bottom: 0;
+
+      >div.h-descriptions-title {
+        height: 100%;
+        padding: 10px 0 4px 10px;
+      }
+    }
+  }
+
+  legend {
+    margin-bottom: 10px !important;
+    display: block;
+    width: 100%;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.45);
+    font-size: 16px;
+    line-height: inherit;
+    border: 0;
+    border-bottom: 1px solid #d9d9d9;
+  }
+
+  &-title {
+    width: 100%;
+
+    &::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    display: inline-block;
+
+    .content {
+      float: left;
+      vertical-align: middle;
+    }
+
+    &-extra {
+      float: right;
+      vertical-align: middle;
+    }
+  }
+
+  .ant-descriptions-view {
+    width: 100%;
+
+    table {
+      width: 100%;
+    }
+  }
+
+  .ant-descriptions-row {
+
+    tr,
+    td {
+      padding-bottom: 10px;
+    }
+  }
+
+  .ant-descriptions-item-no-label {
+    // display: none;
+    padding: 0 !important;
+    border-right:0 !important;
+
+    &+.ant-descriptions-item-content {
+      width: 100%;
+    }
+  }
+}

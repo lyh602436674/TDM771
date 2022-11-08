@@ -1,0 +1,50 @@
+@primary-color: #409EFF;
+
+@primary-color-bd: #b3d8ff;
+@primary-color-bg: #ecf5ff;
+@link-color: #409EFF;
+@success-color: #67C23A;
+@success-color-tiny: #74DF3F;
+@success-color-bg: #F0F9EB;
+@success-color-bd: #c2e7b0;
+@warning-color: #E6A23C;
+@warning-color-tiny: #F5B658;
+@warning-color-bg: #fdf6ec;
+@warning-color-bd: #f5dab1;
+@danger-color: #F56C6C;
+@danger-color-bg: #fef0f0;
+@danger-color-bd: #fbc4c4;
+@default-color:#d9d9d9;
+@heading-color: rgba(0, 0, 0, 0.85);
+@text-color: rgba(0, 0, 0, 0.65);
+@text-color-secondary: rgba(0, 0, 0, 0.45);
+@disabled-color: rgba(0, 0, 0, 0.25);
+@border-color-base: #d9d9d9;
+@box-shadow-base: 0 2px 8px rgba(0, 0, 0, 0.15);
+@border-radius-base: 3px;
+@background-color:#efefef;
+
+// 各类状态颜色
+@success-status:#1ABDA2;
+@danger-status:#FF5319;
+@normal-status:#006BFF;
+@warning-status:#FF9B00;
+
+// 文字显示N行，超出显示省略号
+.text-overflow(@clamp) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @clamp;
+  overflow: hidden;
+}
+
+.fullscreenIcon{
+  position: absolute;
+  right: 40px;
+  top: 0;
+  width: 56px;
+  height: 56px;
+  text-align: center;
+  line-height: 56px;
+  cursor: pointer;
+}

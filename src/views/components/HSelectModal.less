@@ -1,0 +1,58 @@
+.h-select-modal {
+  // position: relative;
+  // width: 100%;
+  // height: 100%;
+
+  .ant-modal-mask {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ant-modal-wrap {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.h-select-modal-fullScreen {
+  .ant-modal-wrap {
+    overflow: hidden;
+  }
+  .ant-modal {
+    top: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding:0;
+  }
+  .ant-modal-content{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    height:100%;
+    width:100%;
+    overflow: hidden;
+    .ant-modal-body,.ant-modal-header,.ant-modal-footer{
+      width:100%;
+    }
+    .ant-modal-body{
+      overflow: auto;
+      flex:1;
+      padding:0;
+      box-sizing: border-box;
+      .h-card-wrapper{
+        padding:0;
+      }
+    }
+  }
+  .h-card-content{
+    height:100%;
+  }
+}
+
+// .h-select-table{
+//   height:100%;
+//   overflow: hidden;
+// }

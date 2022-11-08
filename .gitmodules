@@ -1,0 +1,7 @@
+[submodule "src/views/hifar/hifar-physico-chemical"]
+	path = src/views/hifar/hifar-physico-chemical
+	url = http://192.168.3.240:9090/platform-plus/hifar-physico-chemical.git
+[submodule "src/views/hifar/hifar-environmental-test"]
+	path = src/views/hifar/hifar-environmental-test
+	url = http://192.168.3.240:9090/platform-plus/hifar-environmental-test.git
+	

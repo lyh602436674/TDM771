@@ -1,0 +1,181 @@
+@import "./common_variable.less";
+
+/* 自定义按钮样式全局覆盖 */
+.ant-btn {
+  &-sm {
+    font-size: 12px;
+  }
+
+  &.ant-btn {
+
+    &-ghost-primary,
+    &-ghost-primary:active,
+    &-ghost-primary.active，&-ghost-primary:focus {
+      border: solid 1px @primary-color;
+      background-color: @primary-color-bg;
+      color: @primary-color;
+
+      &:hover {
+        border-color: @primary-color;
+        background-color: @primary-color;
+        color: #fff;
+      }
+    }
+
+    &-ghost-danger,
+    &-ghost-danger:active,
+    &-ghost-danger.active,
+    &-ghost-danger:focus {
+      border: solid 1px @danger-color;
+      background-color: @danger-color-bg;
+      color: @danger-color;
+
+      &:hover {
+        border-color: @danger-color;
+        background-color: @danger-color;
+        color: #fff;
+      }
+    }
+
+    &-warning,
+    &-warning:active,
+    &-warning.active,
+    &-warning:focus {
+      border: solid 1px @warning-color;
+      background-color: @warning-color;
+      color: #fff;
+
+      &:hover {
+        border-color: @warning-color-tiny;
+        background-color: @warning-color-tiny;
+        color: #fff;
+      }
+
+      &.ant-btn-background-ghost {
+        color: @warning-color;
+
+        &:hover {
+          border-color: @warning-color-tiny;
+          color: @warning-color-tiny;
+        }
+      }
+    }
+
+
+
+    &-ghost-warning,
+    &-ghost-warning:active,
+    &-ghost-warning.active,
+    &-ghost-warning:focus {
+      border: solid 1px @warning-color;
+      background-color: @warning-color-bg;
+      color: @warning-color;
+
+      &:hover {
+        border-color: @warning-color;
+        background-color: @warning-color;
+        color: #fff;
+      }
+    }
+
+    &-success,
+    &-success:active,
+    &-success.active,
+    &-success:focus {
+      border: solid 1px @success-color;
+      background-color: @success-color;
+      color: #fff;
+
+      &:hover {
+        border-color: @success-color-tiny;
+        background-color: @success-color-tiny;
+        color: #fff;
+      }
+
+      &.ant-btn-background-ghost {
+        color: @success-color;
+
+        &:hover {
+          border-color: @success-color-tiny;
+          color: @success-color-tiny;
+        }
+      }
+    }
+
+
+
+    &-ghost-success,
+    &-ghost-success:active,
+    &-ghost-success.active,
+    &-ghost-success:focus {
+      border: solid 1px @success-color;
+      background-color: @success-color-bg;
+      color: @success-color;
+
+      &:hover {
+        border-color: @success-color;
+        background-color: @success-color;
+        color: #fff;
+      }
+    }
+  }
+
+}
+
+/* 自定义文本样式*/
+.danger-text {
+  color: @danger-color  !important;
+
+  &:hover {
+    color: @danger-color-bd;
+  }
+}
+
+.success-text {
+  color: @success-color  !important;
+
+  &:hover {
+    color: @success-color-bd;
+  }
+}
+
+.primary-text {
+  color: @primary-color  !important;
+
+  &:hover {
+    color: @primary-color-bd;
+  }
+}
+
+.warning-text {
+  color: @warning-color  !important;
+
+  &:hover {
+    color: @warning-color-bd;
+  }
+}
+
+/* 自定义card样式全局覆盖 */
+.ant-card {
+  .ant-card-extra {
+    padding: 16px 0;
+  }
+}
+
+
+/**ant-alert 样式调整*/
+.ant-alert {
+  padding: 4px 15px 4px 27px;
+  font-size: 12px;
+
+  &.ant-alert-no-icon {
+    padding: 4px 15px 4px 27px;
+    font-size: 12px;
+  }
+}
+
+.ant-alert-icon {
+  position: absolute;
+  top: 7px;
+  left: 10px;
+}

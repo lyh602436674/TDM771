@@ -1,0 +1,25 @@
+.h-tabs {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
+
+  .ant-tabs-bar,
+  .ant-tabs-content {
+    width: 100%;
+  }
+
+  .ant-tabs-content {
+    flex: 1;
+  }
+
+  &-fixed {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    // .ant-tabs-content {
+    //   overflow: hidden;
+    // }
+  }
+}

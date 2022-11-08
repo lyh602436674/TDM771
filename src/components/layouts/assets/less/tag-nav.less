@@ -1,0 +1,117 @@
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.size {
+  width: 100%;
+  height: 100%;
+}
+
+.tags-nav {
+  position: relative;
+  .no-select;
+  .size;
+
+  .btn-con {
+    position: absolute;
+    top: 0px;
+    // height: 100%;
+    // background: #fff;
+    z-index: 10;
+
+    &.left-btn {
+      left: 0px;
+    }
+
+    &.right-btn {
+      right: 0px;
+    }
+  }
+
+  .scroll-outer {
+    position: absolute;
+    left: 26px;
+    right: 26px;
+    top: 0;
+    bottom: 0;
+    overflow: hidden;
+
+    .scroll-body {
+      position: absolute;
+      overflow: visible;
+      white-space: nowrap;
+      transition: left .3s ease;
+
+      .ivu-tag-dot-inner {
+        transition: background .2s ease;
+      }
+    }
+  }
+
+  .ant-tag {
+    margin-right: 0;
+    font-size: 14px;
+    padding: 2px 5px;
+
+    .ant-badge-status-dot {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}
+
+
+// 自定义page-content
+.page-content {
+  overflow: hidden;
+  height: 100%;
+  // 2021-10-26 雷宇航
+  position:relative;
+
+  &-router-view {
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+    // padding: 2px 5px 0;
+  }
+}
+
+// 多页签固定配置
+.tab-layout-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  &-active {
+    background: #fff;
+  }
+
+  &-multipage {
+    background: #dadcdf;
+    width: 100%;
+    height: 28px;
+  }
+
+  &-fixed {
+    width: 100%;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    z-index: 5;
+  }
+  
+  .h-icon-item {
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 3px;
+    background-color: #FFFFFF;
+    color: #000;
+    text-align: center;
+    line-height: 28px;
+  }
+}

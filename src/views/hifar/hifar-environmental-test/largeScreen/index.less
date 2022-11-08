@@ -1,0 +1,149 @@
+.largeScreenPage {
+  background-color: #0b122e;
+  color: #fff;
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  header {
+    width: 100%;
+    height: .234375rem /* 90/384 */;
+    background: url(./image/bg_top.png) center no-repeat;
+    text-align: center;
+    font-size: .135rem /* 52/384 */;
+    color: #00f6ff;
+    line-height: .234375rem /* 90/384 */;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  main {
+    display: flex;
+    width: 100%;
+    height: calc(100% - .234375rem);
+    padding: .052083rem /* 20/384 */;
+
+    .main-left {
+      width: 20%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      //设备使用率页面css
+      .equipUsageRate {
+        width: 100%;
+        height: 20%;
+        background-image: url(./image/zuoyi.png);
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: contain;
+      }
+
+      //设备台账状态页面css
+      .equipStandingBookStatus {
+        height: 35%;
+        background-image: url(./image/zuo2.png);
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+      }
+
+      //项目任务类型统计页面
+      .projectTaskTypeStatistics {
+        flex: 1;
+        margin-top: .052083rem /* 20/384 */;
+        background-image: url(./image/hangye.png);
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+      }
+    }
+
+    .main-center {
+      flex: 1;
+      height: 100%;
+      margin: 0 .052083rem;
+      display: flex;
+      flex-direction: column;
+      //设备位置分布页面css
+      .equipLocationDistribute {
+        height: 70%;
+        background-image: url(./image/center01.png);
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        margin-bottom: .052083rem;
+      }
+
+      //设备信息详情列表页面
+      .equipDetailList {
+        height: calc(30% - 0.052rem);
+        background-image: url(./image/center02.png);
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+      }
+    }
+
+    .main-right {
+      width: 20%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      //当天设备警告信息页面css
+      .equipWarningByIntraDay {
+        width: 100%;
+        height: 20%;
+        background-image: url(./image/zuoyi.png);
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: flex;
+        padding-bottom: .052083rem;
+      }
+
+      //交接班记录页面css
+      .shiftRecords {
+        width: 100%;
+        height: 35%;
+        background-image: url(./image/zuo2.png);
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+      }
+
+      //近三十天任务完成数量页面css
+      .tasksCompletedByThirtyDays {
+        flex: 1;
+        width: 100%;
+        margin-top: .052083rem;
+        background-image: url(./image/hangye.png);
+        background-position: top;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+      }
+    }
+  }
+  .equipStatus-detail {
+    position: absolute;
+    width: 1.302rem /* 500/384 */;
+    padding: .078rem /* 30/384 */;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: .078rem /* 30/384 */;
+    transform-origin: 0 0;
+    &-item{
+      width: 100%;
+      display: flex;
+      color: #000;
+      font-size: .073rem /* 28/384 */;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
+      white-space: nowrap;
+    }
+  }
+}
+
+img {
+  vertical-align: middle;
+}

@@ -1,0 +1,93 @@
+.h-select-group,
+.h-date-picker {
+  margin: 0;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.65);
+  display: inline-block;
+  width: 100%;
+  &-input-wrapper{
+    > div{
+      width:100%;
+    }
+  }
+  &-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow: hidden;
+
+    .ant-select,
+    .ant-calendar-picker {
+      flex: 1;
+      .text-overflow(1);
+    }
+    .ant-select-selection{
+      width:100%;
+    }
+  }
+
+  &-addonBefore {
+    >span:first-child {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      border-right: 0;
+    }
+
+    .ant-select-selection,
+    .ant-calendar-picker-input {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  &-addonAfter {
+    >span:last-child {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      border-left: 0;
+    }
+
+    .ant-select-selection,
+    .ant-calendar-picker-input {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  &-addon {
+    position: relative;
+    padding: 0 11px;
+    color: rgba(0, 0, 0, 0.65);
+    font-weight: normal;
+    font-size: 14px;
+    text-align: center;
+    background-color: #fafafa;
+    border: 1px solid #d9d9d9;
+    border-radius: 3px;
+    transition: all 0.3s;
+    align-self: stretch;
+    line-height: 1;
+
+    &::after {
+      content: '';
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+    }
+
+    >span,
+    >div,
+    >p {
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
+}
+.h-date-picker{
+  &-wrapper{
+    overflow: inherit;
+  }
+}

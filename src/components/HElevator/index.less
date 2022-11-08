@@ -1,0 +1,47 @@
+@import "~@/assets/less/common_variable.less";
+
+.h-elevator {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 40px;
+  overflow: hidden;
+  border-radius: @border-radius-base;
+  box-shadow: @box-shadow-base;
+  :last-child{
+    &::after{
+      display: none;
+    }
+  }
+  &-item {
+    width: 40px;
+    overflow: hidden;
+    font-size: 12px;
+    padding: 5px;
+    word-break: break-all;
+    text-overflow: ellipsis;
+    background-color: @primary-color;
+    color:#fff;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+    &::after{
+      display: block;
+      content:"";
+      width:50%;
+      height:1px;
+      position:absolute;
+      bottom:0;
+      left:50%;
+      transform: translate(-50%,-100%);
+      background-color: #fff;
+    }
+    &-active {
+      background-color: #fff;
+      color:@primary-color;
+    }
+  }
+}
