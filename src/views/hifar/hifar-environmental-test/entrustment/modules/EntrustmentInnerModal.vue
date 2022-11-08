@@ -32,7 +32,7 @@
             <h-form
               ref='entrustFrom'
               v-model='entrustModel'
-              :column='3'
+              :column='4'
               :formData='entrustFormData'
               style='margin-top: 40px'
             >
@@ -142,10 +142,10 @@
             >
               项目添加
             </a-button>
-            <new-test-project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
-                                   :pieceTableData="pieceTableData" style="margin-bottom:20px"
-                                   @change='projectFormChange'
-                                   @emptyData="emptyDatCallback"></new-test-project-form>
+            <project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
+                          :pieceTableData="pieceTableData" style="margin-bottom:20px"
+                          @change='projectFormChange'
+                          @emptyData="emptyDatCallback"></project-form>
           </div>
         </div>
       </a-spin>
@@ -157,20 +157,18 @@
 </template>
 
 <script>
-import NewTestProjectForm from "@views/hifar/hifar-environmental-test/entrustment/components/NewTestProjectForm";
+import ProjectForm from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectForm";
 import ProjectAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal";
 import moment from "moment";
 import PhemismCustomSelect from "@views/components/PhhemismCustomSelect";
-import store from '@/store'
 import {cloneDeep, isArray} from 'lodash'
 import {postAction} from "@api/manage";
-import {randomUUID} from "@/utils/util";
 import ProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProductAddModal";
-import HAutoScroll from "@comp/HAutoScroll/HAutoScroll";
+import {randomUUID} from "@/utils/util";
 
 export default {
-  name: "NewEntrustmentModal",
-  components: {HAutoScroll, ProductAddModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
+  name: "EntrustmentInnerModal",
+  components: {ProductAddModal, ProjectAddModal, ProjectForm, PhemismCustomSelect},
   inject: {
     getContainer: {
       default: () => document.body
@@ -239,6 +237,16 @@ export default {
           },
         },
         {
+          title: '要求试验时间',
+          key: 'requireTestTime',
+          formType: 'datePick',
+          showTime: true,
+          format: "YYYY-MM-DD HH:mm:ss",
+          validate: {
+            rules: [{required: true, message: '请选择要求试验时间'}]
+          }
+        },
+        {
           title: '密级',
           key: 'secretLevelCode',
           formType: 'dict',
@@ -248,11 +256,11 @@ export default {
           },
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           key: 'custName',
           formType: 'input',
           validate: {
-            rules: [{required: true, message: '请输入委托单位'}]
+            rules: [{required: true, message: '请输入送试单位'}]
           }
         },
         {
@@ -272,153 +280,83 @@ export default {
           }
         },
         {
-          title: '委托人',
-          key: 'entrustPerson',
-          formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入委托人'}]
-          }
-        }, {
-          title: '委托人手机号',
-          key: 'entrustPersonPhone',
-          formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入委托人手机号'}]
-          }
-        },
-        {
-          title: '单位地址',
-          key: 'custAddress',
-          formType: 'input',
-          validate: {
-            rules: [{required: false, message: '请输入单位地址'}]
-          }
-        },
-        {
-          title: '样品制造单位',
-          key: 'sampleMakeUnit',
-          formType: 'input',
-          validate: {
-            rules: [{required: false, message: '请输入样品制造单位'}]
-          }
-        },
-        {
-          title: '样品状态',
-          key: 'sampleStatus',
+          title: '试验性质',
+          key: 'testPropertyCode',
           formType: 'dict',
-          dictCode: 'en_sample_status',
+          dictCode: 'env_test_quality',
           validate: {
-            rules: [{required: true, message: '请选择样品状态'}]
+            rules: [{required: true, message: '请选择试验性质'}]
           },
-          change: (val, option) => {
-          }
         },
         {
-          title: '样品提供方式',
-          key: 'sampleProvisionMethod',
+          title: '优先级',
+          key: 'priority',
           formType: 'dict',
-          dictCode: 'en_sample_pro_method',
+          dictCode: 'hf_entrust_priority',
           validate: {
-            rules: [{required: true, message: '请选择样品提供方式'}]
+            rules: [{required: true, message: '请选择试验性质'}]
           },
-          change: (val, option) => {
-          }
         },
         {
-          title: '样品处置方式',
-          key: 'sampleDisposeMethod',
-          formType: 'dict',
-          dictCode: 'en_sample_dis_method',
-          validate: {
-            rules: [{required: true, message: '请选择样品处置方式'}]
-          },
-          change: (val, option) => {
-          }
-        },
-        {
-          title: '试验目的',
-          key: 'testPurpose',
-          formType: 'dict',
-          dictCode: 'en_test_purpose',
-          validate: {
-            rules: [{required: true, message: '请选择试验目的'}]
-          },
-          change: (val, option) => {
-          }
-        },
-        {
-          title: '进度要求',
-          key: 'progressRequire',
-          formType: 'dict',
-          dictCode: 'en_progress_require',
-          validate: {
-            rules: [{required: true, message: '请选择进度要求'}]
-          },
-          change: (val, option) => {
-          }
-        },
-        {
-          title: '性能测试',
-          key: 'performanceTest',
-          formType: 'dict',
-          dictCode: 'en_performance_test',
-          validate: {
-            rules: [{required: true, message: '请选择性能测试'}]
-          },
-          change: (val, option) => {
-          }
-        },
-        {
-          title: '检测照片',
-          key: 'testPicture',
-          formType: 'dict',
-          dictCode: 'en_test_picture',
-          validate: {
-            rules: [{required: true, message: '请选择检测照片'}]
-          },
-          change: (val, option) => {
-          }
-        },
-        {
-          title: '报告形式',
-          key: 'reportForm',
-          formType: 'dict',
-          dictCode: 'en_report_form',
-          validate: {
-            rules: [{required: true, message: '请选择报告形式'}]
-          },
-          change: (val, option) => {
-          }
-        },
-        {
-          title: '报告密级',
-          key: 'reportSecretLevel',
-          formType: 'dict',
-          dictCode: 'en_report_secretLevel',
-          validate: {
-            rules: [{required: true, message: '请选择报告密级'}]
-          },
-          change: (val, option) => {
-          }
-        },
-        {
-          title: '报告份数',
-          key: 'reportNum',
+          title: '预计时长',
+          key: 'expectedTime',
           formType: 'input-number',
           style: {
             width: '100%'
           }
         },
         {
-          title: '报告领取方式',
-          key: 'reportCollectionMethod',
-          formType: 'dict',
-          dictCode: 'en_report_coll_method',
+          title: '任务编码',
+          key: 'outSourceCode',
+          formType: 'input',
           validate: {
-            rules: [{required: true, message: '请选择报告领取方式'}]
-          },
-          change: (val, option) => {
+            rules: [{required: true, message: '请输入任务编码'}]
           }
+        },
+        {
+          title: '是否生成报告',
+          key: 'isBuildingReport',
+          formType: 'radio',
+          radioType: 'radioButton',
+          defaultValue: '2',
+          options: [
+            {title: '是', value: '1', key: '1'},
+            {title: '否', value: '2', key: '2'}
+          ],
+        },
+        {
+          title: '是否拍照',
+          key: 'isPhotograph',
+          formType: 'radio',
+          radioType: 'radioButton',
+          defaultValue: '2',
+          options: [
+            {title: '是', value: '1', key: '1'},
+            {title: '否', value: '2', key: '2'}
+          ],
+        },
+        {
+          title: '发起人/电话',
+          key: 'initiator',
+          formType: 'input',
+          placeholder: '例：张三/0000',
+          validate: {
+            rules: [{required: true, message: '请输入发起人/电话'}]
+          }
+        },
+        {
+          title: '测试软件/测试方法',
+          key: 'testMethod',
+          formType: 'textarea',
+          placeholder: '例：运行XX测试软件V1.00/使用XX测试工装进行监测/使用FLUKE45测量输出电压等',
+          style: {
+            width: '100%',
+          },
+          validate: {
+            rules: [{required: true, message: '请输入测试软件/测试方法'}]
+          },
+          autoSize: {minRows: 2},
+          span: 4
         },
         {
           title: '备注',
@@ -428,16 +366,8 @@ export default {
             width: '100%',
           },
           autoSize: {minRows: 4},
-          span: 3
+          span: 4
         },
-        {
-          title: '委托单附件',
-          key: 'attachIds',
-          span: 3,
-          component: (
-            <h-upload-file showSecret={true} secretLevel={1} v-decorator={['attachIds', {initialValue: []}]}/>
-          )
-        }
       ],
       activePieceRow: "",
       url: {
@@ -464,18 +394,10 @@ export default {
     },
     // 新增默认值
     handleAdd() {
-      let userInfo = store.getters.userInfo
       this.entrustModel = {
-        linkName: userInfo.idName,
-        entrustPerson: userInfo.idName,
-        linkMobile: userInfo.mobile,
-        entrustPersonPhone: userInfo.mobile,
         entrustTime: moment(),
-        attachIds: [],
         entrustType: '1',
         secretLevelCode: 1,
-        custName: userInfo.deptName,
-        custId: userInfo.deptId
       }
       this.tableData = []
       this.projectInfoData = []
@@ -485,24 +407,7 @@ export default {
       postAction(this.url.edit, {id}).then(res => {
         if (res.code === 200) {
           let obj = Object.assign({}, res.data)
-          let fileList = []
-          obj.attachInfo.length && obj.attachInfo.forEach(item => {
-            fileList.push({
-              fileId: item.id,
-              size: item.fileSize,
-              status: item.status == 9 ? 'success' : 'exception',
-              url: item.filePath,
-              name: item.fileName,
-              uuid: item.id,
-              percent: 100,
-              uploadTime: item.createTime,
-              secretLevel: item.secretLevel,
-              type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-              replaceStatus: item.replaceStatus
-            })
-          })
-          obj.attachIds = fileList || []
-          obj.entrustTime = obj.entrustTime && obj.entrustTime != 0 ? moment(parseFloat(obj.entrustTime)) : moment()
+          obj.entrustTime = obj.entrustTime && +obj.entrustTime !== 0 ? moment(parseFloat(obj.entrustTime)) : moment()
           this.entrustType = obj.entrustType
           this.entrustModel = obj
           this.tableData = []
@@ -517,73 +422,6 @@ export default {
     //内部新增样品
     handleAddPiece() {
       this.$refs.productAddModal.show()
-    },
-    // 新增样品弹框返回数据
-    productAddCallback(values) {
-      if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
-        this.tableData.push(...this.splitByBoth(values))
-      } else if (values.pieceNo.includes(',')) {
-        this.tableData.push(...this.splitByComma(values, values.pieceNo.split(',')))
-      } else if (values.pieceNo.includes('-')) {
-        this.tableData.push(...this.splitByHorizontalLine(values, values.pieceNo.split('-')))
-      } else {
-        this.tableData.push({
-          id: randomUUID(),
-          productName: values.productName,
-          pieceNum: 1,
-          productModel: values.productModel,
-          pieceNo: (values.piecePrefix || '') + values.pieceNo,
-        })
-      }
-      this.setProjectPieceNos()
-    },
-    splitByHorizontalLine(values, arr) {
-      //根据横杠分隔
-      let tableData = []
-      let num = +arr[1] + 1 - +arr[0] > +values.pieceNum ? +arr[0] + +values.pieceNum - 1 : +arr[1]
-      for (let i = +arr[0]; i <= num; i++) {
-        tableData.push({
-          id: randomUUID(),
-          productName: values.productName,
-          pieceNum: 1,
-          productModel: values.productModel,
-          pieceNo: (values.piecePrefix || '') + i,
-        })
-      }
-      return tableData
-    },
-    splitByComma(values, arr) {
-      // 根据逗号分隔
-      let tableData = []
-      arr.forEach(item => {
-        tableData.push({
-          id: randomUUID(),
-          productName: values.productName,
-          pieceNum: 1,
-          productModel: values.productModel,
-          pieceNo: (values.piecePrefix || '') + item,
-        })
-      })
-      return tableData
-    },
-    splitByBoth(values) {
-      // 逗号和横杠都存在
-      let commaArr = values.pieceNo.split(',')
-      let tableData = []
-      for (let i = 0; i < commaArr.length; i++) {
-        if (commaArr[i].includes('-')) {
-          tableData.push(...this.splitByHorizontalLine(values, commaArr[i].split('-')))
-        } else {
-          tableData.push({
-            id: randomUUID(),
-            productName: values.productName,
-            pieceNum: 1,
-            productModel: values.productModel,
-            pieceNo: (values.piecePrefix || '') + commaArr[i],
-          })
-        }
-      }
-      return tableData
     },
     pieceDataFocus({row,column}) {
       // 记录一下编辑前的数据
@@ -684,6 +522,73 @@ export default {
           pieceNos: pieceSorting[i] ? pieceSorting[i].pieceNos.toString() : ''
         }
       })
+    },
+    // 新增样品弹框返回数据
+    productAddCallback(values) {
+      if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
+        this.tableData.push(...this.splitByBoth(values))
+      } else if (values.pieceNo.includes(',')) {
+        this.tableData.push(...this.splitByComma(values, values.pieceNo.split(',')))
+      } else if (values.pieceNo.includes('-')) {
+        this.tableData.push(...this.splitByHorizontalLine(values, values.pieceNo.split('-')))
+      } else {
+        this.tableData.push({
+          id: randomUUID(),
+          productName: values.productName,
+          pieceNum: 1,
+          productModel: values.productModel,
+          pieceNo: (values.piecePrefix || '') + values.pieceNo,
+        })
+      }
+      this.setProjectPieceNos()
+    },
+    splitByHorizontalLine(values, arr) {
+      //根据横杠分隔
+      let tableData = []
+      let num = +arr[1] + 1 - +arr[0] > +values.pieceNum ? +arr[0] + +values.pieceNum - 1 : +arr[1]
+      for (let i = +arr[0]; i <= num; i++) {
+        tableData.push({
+          id: randomUUID(),
+          productName: values.productName,
+          pieceNum: 1,
+          productModel: values.productModel,
+          pieceNo: (values.piecePrefix || '') + i,
+        })
+      }
+      return tableData
+    },
+    splitByComma(values, arr) {
+      // 根据逗号分隔
+      let tableData = []
+      arr.forEach(item => {
+        tableData.push({
+          id: randomUUID(),
+          productName: values.productName,
+          pieceNum: 1,
+          productModel: values.productModel,
+          pieceNo: (values.piecePrefix || '') + item,
+        })
+      })
+      return tableData
+    },
+    splitByBoth(values) {
+      // 逗号和横杠都存在
+      let commaArr = values.pieceNo.split(',')
+      let tableData = []
+      for (let i = 0; i < commaArr.length; i++) {
+        if (commaArr[i].includes('-')) {
+          tableData.push(...this.splitByHorizontalLine(values, commaArr[i].split('-')))
+        } else {
+          tableData.push({
+            id: randomUUID(),
+            productName: values.productName,
+            pieceNum: 1,
+            productModel: values.productModel,
+            pieceNo: (values.piecePrefix || '') + commaArr[i],
+          })
+        }
+      }
+      return tableData
     },
     // 样品分类：根据样品名称和型号/规格进行分类
     pieceSorting(data, name, model) {
@@ -833,16 +738,6 @@ export default {
     },
     // 构建委托表单数据
     buildEntrustData(entrustModelInfo) {
-      let attachIds = [], secretLevelArr = []
-      entrustModelInfo.attachIds.length && entrustModelInfo.attachIds.forEach(item => {
-        attachIds.push(item.fileId)
-        secretLevelArr.push({
-          id: item.fileId,
-          secretLevel: item.secretLevel
-        })
-      })
-      this.secretLevelArr = secretLevelArr
-      entrustModelInfo.attachIds = attachIds.length > 0 ? attachIds.join(',') : ''
       entrustModelInfo.custId = isArray(entrustModelInfo.custId) && entrustModelInfo.custId.length > 0 ? entrustModelInfo.custId[0] : entrustModelInfo.custId
       entrustModelInfo.entrustTime = entrustModelInfo.entrustTime ? entrustModelInfo.entrustTime.valueOf() : ''
       this.entrustModelInfo = entrustModelInfo

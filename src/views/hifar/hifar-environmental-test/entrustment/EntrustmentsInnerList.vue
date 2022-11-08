@@ -1,11 +1,3 @@
-<!--
- * @Author: 赵峰
- * @Date: 2021-09-15 10:09:09
- * @LastEditTime: 2021-12-06 21:48:37
- * @LastEditors: 赵文凯
- * @Descripttion: 委托管理--委托列表
- * @FilePath: \tdm200-client\src\views\hifar\hifar-environmental-test\entrustment\EntrustmentsList.vue
--->
 <template>
   <div ref="entrustmentList" class="entrustment-list">
     <h-card fixed>
@@ -139,7 +131,7 @@ export default {
           formType: 'input'
         },
         {
-          title: '样品名称',
+          title: '产品名称',
           key: 'productName',
           formType: 'input'
         },
@@ -149,7 +141,7 @@ export default {
           formType: 'input'
         },
         {
-          title: '样品编号',
+          title: '产品编号',
           key: 'pieceNo',
           formType: 'input'
         },
@@ -230,7 +222,7 @@ export default {
           }
         },
         {
-          title: '样品名称',
+          title: '产品名称',
           align: 'left',
           minWidth: 200,
           dataIndex: 'productNames',

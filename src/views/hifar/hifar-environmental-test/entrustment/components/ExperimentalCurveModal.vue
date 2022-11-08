@@ -13,19 +13,18 @@
       <a-button type="ghost-danger" @click="handleCancel">关闭</a-button>
     </div>
     <h-card :bordered="false" class="ExperimentalCurve" fixed>
-      <new-test-experimentalcurve ref="Experimentalcurve"
-                                         @change="curveUrlChange"/>
+      <experimentalcurve ref="Experimentalcurve" @change="curveUrlChange"/>
     </h-card>
   </h-modal>
 </template>
 
 <script>
-import NewTestExperimentalcurve from './NewTestExperimentalcurve'
+import Experimentalcurve from './Experimentalcurve'
 
 export default {
   name: "ExperimentalCurveModal",
   components: {
-    NewTestExperimentalcurve
+    Experimentalcurve
   },
   inject: {
     getContainer: {

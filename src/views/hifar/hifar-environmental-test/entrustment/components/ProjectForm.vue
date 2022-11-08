@@ -1,8 +1,8 @@
 <!--
  * @Author: 雷宇航
  * @Date: 2022-09-29 15:48:21
- * @fileName: NewTestProjectForm.vue
- * @FilePath: tdm724-client\src\views\hifar\hifar-environmental-test\entrustment\components\NewTestProjectForm.vue
+ * @fileName: ProjectForm.vue
+ * @FilePath: tdm724-client\src\views\hifar\hifar-environmental-test\entrustment\components\ProjectForm.vue
  * @Description: 项目信息
 -->
 <template>
@@ -10,8 +10,8 @@
     <div v-for="(item, index) in formInfoDataList" :key="index" class="panel-custom">
       <div class="panel-custom-item">
         <div class="panel-custom-item-left">
-          <new-test-project-form-item ref="projectFormItem" :index="index" :entrustType="entrustType"
-                                      :pieceTableData="pieceTableData" :project="item"></new-test-project-form-item>
+          <project-form-item ref="projectFormItem" :index="index" :entrustType="entrustType"
+                                      :pieceTableData="pieceTableData" :project="item"></project-form-item>
         </div>
         <div class="panel-custom-item-right">
           <a-button
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import NewTestProjectFormItem from '@views/hifar/hifar-environmental-test/entrustment/components/NewTestProjectFormItem'
+import ProjectFormItem from '@views/hifar/hifar-environmental-test/entrustment/components/ProjectFormItem'
 import moment from 'moment'
 
 export default {
@@ -50,7 +50,7 @@ export default {
     },
   },
   components: {
-    NewTestProjectFormItem
+    ProjectFormItem
   },
   watch: {
     formInfoData: {

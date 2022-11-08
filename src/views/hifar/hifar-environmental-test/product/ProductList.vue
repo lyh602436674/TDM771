@@ -1,15 +1,7 @@
-<!--
- * @Author: 赵峰
- * @Date: 2021-09-16 13:51:34
- * @LastEditTime: 2021-11-30 13:42:08
- * @LastEditors: 马潭龙
- * @Descripttion: 试品管理
- * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\product\ProductList.vue
--->
 <template>
   <div ref='productList' class='product-list'>
     <h-card fixed :bordered='true'>
-      <template slot='title'>试品管理</template>
+      <template slot='title'>产品管理</template>
       <h-search
         v-model='queryParams'
         slot='search-form'
@@ -119,70 +111,45 @@ export default {
       },
       searchBar: [
         {
-          title: '试品代号',
+          title: '产品代号',
           key: 'c_productAlias_7',
           formType: 'input'
         },
         {
-          title: '试品工号',
+          title: '产品工号',
           key: 'c_productCode_7',
           formType: 'input'
         },
         {
-          title: '试品名称',
+          title: '产品名称',
           key: 'c_productName_7',
           formType: 'input'
         },
         {
-          title: '试品型号',
+          title: '产品型号',
           key: 'c_productModel_7',
           formType: 'input'
         },
-        // {
-        //   title: '试品图号',
-        //   key: 'c_drawNo_7',
-        //   formType: 'input'
-        // },
-        // {
-        //   title: '试品规格',
-        //   key: 'c_productSpec_7',
-        //   formType: 'input'
-        // }
       ],
       formData: [
         {
-          title: '试品代号',
+          title: '产品代号',
           key: 'productAlias',
           formType: 'input'
         },
         {
-          title: '试品工号',
+          title: '产品工号',
           key: 'productCode',
           formType: 'input'
         },
         {
-          title: '试品名称',
+          title: '产品名称',
           key: 'productName',
           formType: 'input'
         },
         {
-          title: '试品型号',
+          title: '产品型号',
           key: 'productModel',
-          formType: 'input'
-        },
-        // {
-        //   title: '图号',
-        //   key: 'drawNo',
-        //   formType: 'input'
-        // },
-        // {
-        //   title: '试品规格',
-        //   key: 'productSpec',
-        //   formType: 'input'
-        // },
-        {
-          title: '机号范围',
-          key: 'baseNumberCode',
           formType: 'input'
         },
         {
@@ -195,18 +162,18 @@ export default {
       // 表头
       columns: [
         {
-          title: '试品工号',
+          title: '产品工号',
           align: 'left',
           dataIndex: 'productCode'
         },
         {
-          title: '试品代号',
+          title: '产品代号',
           align: 'left',
           dataIndex: 'productAlias',
           scopedSlots: {customRender: 'productAlias'}
         },
         {
-          title: '试品名称',
+          title: '产品名称',
           align: 'left',
           dataIndex: 'productName'
         },
@@ -337,7 +304,7 @@ export default {
       this.detailData = record
       this.$refs.productDetailModal.showModal()
     },
-    // 点击试品代号跳转详情
+    // 点击产品代号跳转详情
     handleDetailCode(record) {
       this.handleDetail(record)
     }

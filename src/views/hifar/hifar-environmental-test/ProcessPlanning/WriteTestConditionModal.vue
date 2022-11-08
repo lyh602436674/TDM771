@@ -70,8 +70,8 @@ import {filterDictTextByCache} from "@comp/_util/JDictSelectUtil";
 import {cloneDeep, isObject} from "lodash";
 import {postAction} from "@api/manage";
 import drawCurveMixin from "@views/hifar/hifar-environmental-test/entrustment/drawCurveMixin";
-import NewTestExperimentalCurveModal
-  from "@views/hifar/hifar-environmental-test/entrustment/components/NewTestExperimentalCurveModal";
+import ExperimentalCurveModal
+  from "@views/hifar/hifar-environmental-test/entrustment/components/ExperimentalCurveModal";
 import moment from "moment";
 import {randomUUID} from "@/utils/util";
 
@@ -84,7 +84,7 @@ export default {
   },
   mixins: [entrustmentMixins, drawCurveMixin],
   components: {
-    TestConditionTabItem, PointList, NewTestExperimentalCurveModal
+    TestConditionTabItem, PointList, ExperimentalCurveModal
   },
   data() {
     return {

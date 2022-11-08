@@ -161,7 +161,7 @@
 </template>
 
 <script>
-import NewTestProjectForm from "@views/hifar/hifar-environmental-test/entrustment/components/NewTestProjectForm";
+import ProjectForm from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectForm";
 import ProjectAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal";
 import ProductSelectModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProductSelectModal";
 import moment from "moment";
@@ -173,7 +173,7 @@ import ProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/m
 
 export default {
   name: "NewEntrustmentModal",
-  components: {ProductAddModal, ProductSelectModal, ProjectAddModal, NewTestProjectForm, PhemismCustomSelect},
+  components: {ProductAddModal, ProductSelectModal, ProjectAddModal, ProjectForm, PhemismCustomSelect},
   inject: {
     getContainer: {
       default: () => document.body

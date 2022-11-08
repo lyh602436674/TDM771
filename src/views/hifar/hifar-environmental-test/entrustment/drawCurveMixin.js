@@ -15,7 +15,7 @@ export default {
       initialHumTime: moment(0).format('x'),//湿度初始时间
       initialTemperature: 25, // 初始温度
       initialHumidity: 30, // 初始湿度
-      entrustOrTaskFlag:false,// 绘制曲线数据的标记，false=> 在工艺规划页面绘制曲线，true=> 在试验任务中绘制曲线，因为两种绘制曲线的数据格式不一样
+      entrustOrTaskFlag:false,// 绘制曲线数据的标记，false=> 在委托单中绘制曲线，true=> 在试验任务中绘制曲线，因为两种绘制曲线的数据格式不一样
     }
   },
   methods: {
@@ -123,15 +123,15 @@ export default {
     },
     highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh05Index) {
       let result = []
-      let qh01Val = parseFloat(abilityInfo[qh01Index].minValue).toFixed(1)
-      let qh05Val = parseFloat(abilityInfo[qh05Index].minValue).toFixed(1)
-      let addMin = (qh01Val - 25) / qh05Val
+      let qh01Val = Number(abilityInfo[qh01Index].minValue)
+      let qh05Val = Number(abilityInfo[qh05Index].minValue)
+      let addMin = (+qh01Val - 25) / qh05Val
       let highTime = moment(nodeTime).add(addMin, 'm').format('x')
       nodeTime = parseInt(highTime)
       nodeVal = qh01Val
-      if(this.entrustOrTaskFlag){
+      if (this.entrustOrTaskFlag) {
         result.push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-      }else{
+      } else {
         result.push({name: nodeTime, value: [nodeTime, nodeVal]})
       }
       if (qh03Index >= 0 && abilityInfo[qh03Index].minValue) {
@@ -152,16 +152,16 @@ export default {
     },
     lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh06Index) {
       let result = []
-      let qh02Val = parseFloat(abilityInfo[qh02Index].minValue).toFixed(1) // 最低温度
-      let qh06Val = parseFloat(abilityInfo[qh06Index].minValue).toFixed(1) // 降温速率
+      let qh02Val = Number(abilityInfo[qh02Index].minValue) // 最低温度
+      let qh06Val = Number(abilityInfo[qh06Index].minValue) // 降温速率
       let addMin = (nodeVal - qh02Val) / qh06Val
       let lowTime = moment(nodeTime).add(addMin, 'm').format('x')
       nodeTime = parseInt(lowTime)
       nodeVal = qh02Val
 
-      if(this.entrustOrTaskFlag){
+      if (this.entrustOrTaskFlag) {
         result.push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-      }else{
+      } else {
         result.push({name: nodeTime, value: [nodeTime, nodeVal]})
       }
       if (qh04Index >= 0 && abilityInfo[qh04Index].minValue) {
@@ -263,14 +263,14 @@ export default {
     },
     highTreatmentHumidity(abilityInfo, nodeTime, nodeVal, rh01Index, rh03Index, rh05Index) {
       let result = []
-      let rh01Val = parseFloat(abilityInfo[rh01Index].minValue).toFixed(1)
-      let rh05Val = parseFloat(abilityInfo[rh05Index].minValue).toFixed(1)
+      let rh01Val = Number(abilityInfo[rh01Index].minValue)
+      let rh05Val = Number(abilityInfo[rh05Index].minValue)
       let highTime = moment(nodeTime).add(rh05Val, 'm').format('x')
       nodeTime = parseInt(highTime)
       nodeVal = rh01Val
-      if(this.entrustOrTaskFlag){
+      if (this.entrustOrTaskFlag) {
         result.push(['Humidity_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-      }else{
+      } else {
         result.push({name: nodeTime, value: [nodeTime, nodeVal]})
       }
       if (rh03Index >= 0 && abilityInfo[rh03Index].minValue) {
@@ -291,14 +291,14 @@ export default {
     },
     lowTreatmentHumidity(abilityInfo, nodeTime, nodeVal, rh02Index, rh04Index, rh06Index) {
       let result = []
-      let rh02Val = parseFloat(abilityInfo[rh02Index].minValue).toFixed(1)
-      let rh06Val = parseFloat(abilityInfo[rh06Index].minValue).toFixed(1)
+      let rh02Val = Number(abilityInfo[rh02Index].minValue)
+      let rh06Val = Number(abilityInfo[rh06Index].minValue)
       let lowTime = moment(nodeTime).add(rh06Val, 'm').format('x')
       nodeTime = parseInt(lowTime)
       nodeVal = rh02Val
-      if(this.entrustOrTaskFlag){
+      if (this.entrustOrTaskFlag) {
         result.push(['Humidity_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-      }else{
+      } else {
         result.push({name: nodeTime, value: [nodeTime, nodeVal]})
       }
       if (rh04Index >= 0 && abilityInfo[rh04Index].minValue) {
