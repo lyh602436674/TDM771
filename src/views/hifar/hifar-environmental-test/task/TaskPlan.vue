@@ -344,7 +344,7 @@ export default {
           align: 'center',
         },
         {
-          title: '检测依据',
+          title: '试验标准',
           dataIndex: 'standardName',
           minWidth: 150,
         },

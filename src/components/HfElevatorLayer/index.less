@@ -1,0 +1,35 @@
+.elevator-layer-wrapper {
+  z-index: 9999;
+  position: fixed;
+  right: 15px;
+  bottom: 100px;
+  //transform: translate(0, -50%);
+  width: 50px;
+  border: 1px solid #d9d9d9;
+  border-radius: 5px;
+
+  &-item {
+    width: 100%;
+    border-bottom: 1px solid #d9d9d9;
+    background: #fff;
+    color: #1890ff;
+    padding: 10px;
+    cursor: pointer;
+
+    &-active {
+      background: #1890ff;
+      color: #fff;
+    }
+  }
+
+  &-item:first-child {
+    border-radius: 5px 5px 0 0;
+  }
+
+  &-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 5px 5px;
+  }
+
+
+}

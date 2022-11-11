@@ -172,6 +172,8 @@ export default {
       url: {
         list: '/HfProductBaseBusiness/listPage',
       },
+      selectedRows: [],
+      selectedRowKeys: [],
     }
   },
   methods: {
@@ -188,15 +190,8 @@ export default {
     },
     async handleOk() {
       if (this.entrustType === '1') {
-        let res = await this.rowValidate()
-        if (res) {
-          let data = {
-            productId: res.id,
-            ...res,
-          }
-          this.$emit('change', data)
-          this.handleCancel()
-        }
+        this.$emit('callback', this.selectedRows)
+        this.handleCancel()
       }
       if (this.entrustType === '2') {
         this.$refs.addProductForm.validateForm()
@@ -211,12 +206,13 @@ export default {
       }
       this.loadData(pick(this.pagination, ['pageNo', 'pageSize']))
     },
-    //  单选
     onSelectChange({records}) {
-      console.log(records, 'records')
+      this.selectedRows = records
+      this.selectedRowKeys = records.map(item => item.id)
     },
     onSelectAllChange({records}) {
-      console.log(records, 'records')
+      this.selectedRows = records
+      this.selectedRowKeys = records.map(item => item.id)
     },
     loadData(params) {
       if (this.loading) return
@@ -253,16 +249,6 @@ export default {
     },
     showTotal(total, range) {
       return range[0] + '-' + range[1] + ' 共' + total + '条'
-    },
-    async rowValidate() {
-      const $table = this.$refs.xTable
-      const selectRecords = $table.getRadioRecord()
-      if (selectRecords) {
-        const errMap = await $table.validate(selectRecords).catch((errMap) => errMap)
-        if (!errMap) {
-          return selectRecords
-        }
-      }
     },
   }
 }

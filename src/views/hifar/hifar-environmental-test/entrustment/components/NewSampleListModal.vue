@@ -1,11 +1,3 @@
-<!--
- * @Author: 赵峰
- * @Date: 2021-09-16 11:57:20
- * @LastEditTime: 2021-12-06 21:58:56
- * @LastEditors: 赵文凯
- * @Descripttion: 样品样品组件
- * @FilePath: \tdm200-client\src\views\hifar\hifar-environmental-test\entrustment\components\SampleListModal.vue
--->
 <template>
   <div class="sys-product-select">
     <div :class="['sys-product-select-wrapper', type]" @click="showSelectModal">
@@ -74,7 +66,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: '请选择样品',
+      default: '请选择产品',
     },
     size: {
       type: String,
@@ -139,7 +131,7 @@ export default {
     return {
       visible: false,
       queryParams: {},
-      title: '选择样品',
+      title: '选择产品',
       loading: false,
       localSelectedName: this.selectedName || [],
       dataList: [],
@@ -147,49 +139,33 @@ export default {
       selectedRows: [],
       pieceNoArr: [],
       pieceIds: [],
+      columns: [
+        {
+          title: '产品名称',
+          align: 'center',
+          dataIndex: 'productName',
+        },
+        {
+          title: '产品代号',
+          dataIndex: 'productAlias',
+          align: 'center',
+        },
+        {
+          title: '产品编号',
+          align: 'center',
+          dataIndex: 'pieceNo',
+        },
+        {
+          title: '产品数量',
+          align: 'center',
+          dataIndex: 'pieceNum',
+        },
+      ],
       activeKey: 1,
       url: {
         detailById: '/HfEnvEntrustBusiness/queryById',
       },
     }
-  },
-  computed: {
-    columns() {
-      let defaultArr = [
-        {
-          title: '样品名称',
-          align: 'left',
-          dataIndex: 'productName',
-        },
-        {
-          title: '样品编号',
-          align: 'left',
-          dataIndex: 'pieceNo',
-        },
-        {
-          title: '样品数量',
-          align: 'left',
-          dataIndex: 'pieceNum',
-        },
-      ]
-      let dynamicArr = [
-        {
-          title: '型号/规格',
-          dataIndex: 'productModel',
-          align: 'left',
-        },
-        {
-          title: '图号',
-          dataIndex: 'productAlias',
-          align: 'left',
-        }
-      ]
-      defaultArr.splice(1, 0, dynamicArr[+this.entrustType - 1])
-      return defaultArr
-    },
-  },
-  created() {
-
   },
   methods: {
     triggerChange() {
@@ -213,13 +189,13 @@ export default {
       let modelOrAlias = [{title: '型号/规格', key: 'productModel'}, {title: "图号", key: 'productAlias'}]
       let nameModelAlias = selectedRows.map((item) => item.productName + item[modelOrAlias[[+this.entrustType - 1]].key])
       if (Array.from(new Set(nameModelAlias)).length > 1) {
-        return this.$message.warning('只能选择相同的样品名称和' + modelOrAlias[[+this.entrustType - 1]].title)
+        return this.$message.warning('只能选择相同的产品名称和' + modelOrAlias[[+this.entrustType - 1]].title)
       }
       if (selectedRowKeys.length > 0) {
         this.handleCancel()
         this.triggerChange()
       } else {
-        this.$message.error('请选择样品')
+        this.$message.error('请选择产品')
       }
     },
     onClickRow(record) {

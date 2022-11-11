@@ -179,7 +179,7 @@ export default {
             formType: 'input',
           },
           {
-            title: '检测依据',
+            title: '试验标准',
             key: 'basis',
             formType: 'input',
           },

@@ -9,16 +9,16 @@
 <template>
   <div class="sys-product-select">
     <div :class="['sys-product-select-wrapper', type]" @click="showSelectModal">
-      <div
-        v-if="type === 'radio'"
-        v-html="localSelectedName"
-        class="sys-product-select"
-        tabindex="2"
-        :placeholder="placeholder"
-      ></div>
-      <div v-else-if="type === 'checkbox'" class="sys-product-select"></div>
-      <a-button type="ghost-primary" :size="size" icon='select'>
-      </a-button>
+      <a-tooltip v-if="type === 'radio'" :title="localSelectedName ? localSelectedName : null">
+        <div
+          v-if="type === 'radio'"
+          v-html="localSelectedName"
+          class="sys-product-select"
+          tabindex="2"
+        ></div>
+        <div v-else-if="type === 'checkbox'" class="sys-product-select" v-html="localSelectedName"></div>
+      </a-tooltip>
+      <a-button type="ghost-primary" :size="size" icon='select'></a-button>
     </div>
     <h-modal
       destroyOnClose
@@ -54,8 +54,9 @@
 </template>
 
 <script>
-import { getAction } from '@/api/manage'
-import { isString, isArray, isFunction } from 'lodash'
+import {getAction} from '@/api/manage'
+import {isArray, isFunction, isString} from 'lodash'
+
 export default {
   inject: {
     getContainer: {

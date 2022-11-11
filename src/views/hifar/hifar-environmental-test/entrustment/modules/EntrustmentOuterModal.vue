@@ -146,10 +146,10 @@
             >
               项目添加
             </a-button>
-            <new-test-project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
+            <project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
                                    :pieceTableData="pieceTableData" style="margin-bottom:20px"
                                    @change='projectFormChange'
-                                   @emptyData="emptyDatCallback"></new-test-project-form>
+                                   @emptyData="emptyDatCallback"></project-form>
           </div>
         </div>
       </a-spin>

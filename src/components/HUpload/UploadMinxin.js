@@ -428,7 +428,7 @@ export default {
           detailUrl = this.customParams.detail
         }
         postAction(detailUrl, { id: id }).then((res) => {
-          if (res.code == 200 && res.data.status == 9) {
+          if (res.code === 200 && res.data.status === 9) {
             // let link = document.createElement('a')
             // link.style.display = 'none'
             // link.href = res.data.downloadPath || filePath

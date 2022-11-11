@@ -11,6 +11,7 @@
     :visible='visible'
     destroyOnClose
     fullScreen inner
+    class="entrustModal"
     @cancel='handleCancel'>
     <div slot='footer' class='footer'>
       <a-button :loading="submitLoading" style='margin-right: 8px' type='ghost-danger' @click='handleCancel'> 关闭
@@ -23,7 +24,7 @@
     <h-card bordered>
       <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}内部委托试验</template>
       <a-spin :spinning="submitLoading">
-        <div class="item-wrapper">
+        <div class="item-wrapper" id="entrust">
           <div class="item-wrapper-title">
             <span class="title">委托信息</span>
             <span class="description">填写申请单基本信息</span>
@@ -39,10 +40,10 @@
             </h-form>
           </div>
         </div>
-        <div class="item-wrapper">
+        <div class="item-wrapper" id="product">
           <div class="item-wrapper-title">
-            <span class="title">样品信息</span>
-            <span class="description">填写样品信息</span>
+            <span class="title">产品信息</span>
+            <span class="description">填写产品信息</span>
           </div>
           <div class="item-wrapper-content">
             <div style="margin-top:20px">
@@ -53,7 +54,7 @@
                 type='ghost-primary'
                 @click='handleAddPiece'
               >
-                新增样品
+                新增产品
               </a-button>
               <a-popconfirm title="确定删除吗?" @confirm="handleDelete">
                 <a-button v-if='selectedRowKeys.length' icon='minus' size='small' type='danger'>
@@ -69,7 +70,7 @@
                 :edit-config="{
                   trigger: 'click',
                   mode: 'cell',
-                  activeMethod: ({column})=> { return column.property !== 'pieceNum'},
+                  activeMethod: ({column})=> { return ['pieceNo','pieceNum'].includes(column.property)},
                 }"
                 :edit-rules='validRules'
                 :valid-config='{ showMessage: false }'
@@ -83,19 +84,19 @@
                 <vxe-table-column type='checkbox' width='60'></vxe-table-column>
                 <vxe-table-column type='seq' width='60'></vxe-table-column>
                 <vxe-table-column
-                    :edit-render="{
+                  :edit-render="{
                       name: 'input',
-                      attrs: { type: 'text', placeholder: '请输入样品名称' },
+                      attrs: { type: 'text', placeholder: '请输入产品名称' },
                       events:{
                         blur: this.pieceDataBlur,
                         focus: this.pieceDataFocus,
                       }
                     }"
-                    field='productName'
-                    title="样品名称"
+                  field='productName'
+                  title="产品名称"
                 />
                 <vxe-table-column
-                    :edit-render="{
+                  :edit-render="{
                        name:'input',
                        attrs: { type: 'text', placeholder: '请输入型号/规格' },
                        events:{
@@ -103,31 +104,40 @@
                           focus: this.pieceDataFocus,
                        }
                     }"
-                    field='productModel'
-                    title="型号/规格"
+                  field='productAlias'
+                  title="产品代号"
                 />
                 <vxe-table-column
                   :edit-render="{
                     showAsterisk:true,
                     name: 'input',
-                    attrs: { type: 'text', placeholder: '请输入样品编号' },
+                    attrs: { type: 'text', placeholder: '请输入产品编号' },
                     events:{
                       blur: this.pieceDataBlur,
                       focus: this.pieceDataFocus,
                     }
                   }"
                   field='pieceNo'
-                  title="样品编号"
+                  title="产品编号"
                 />
                 <vxe-table-column
-                    field='pieceNum'
-                    title="数量"
+                  :edit-render="{
+                    showAsterisk:true,
+                    name: 'input',
+                    attrs: { type: 'text', placeholder: '请输入产品数量' },
+                    events:{
+                      blur: this.pieceDataBlur,
+                      focus: this.pieceDataFocus,
+                    }
+                  }"
+                  field='pieceNum'
+                  title="数量"
                 />
               </vxe-table>
             </div>
           </div>
         </div>
-        <div class="item-wrapper">
+        <div class="item-wrapper" id="project">
           <div class="item-wrapper-title">
             <span class="title">项目信息</span>
             <span class="description">填写项目基本信息</span>
@@ -142,6 +152,15 @@
             >
               项目添加
             </a-button>
+            <a-button
+              icon='plus'
+              size='small'
+              style='margin-left:10px'
+              type='ghost-primary'
+              @click='handleAddHistory'
+            >
+              历史库新增
+            </a-button>
             <project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
                           :pieceTableData="pieceTableData" style="margin-bottom:20px"
                           @change='projectFormChange'
@@ -150,9 +169,11 @@
         </div>
       </a-spin>
     </h-card>
+    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
     <project-add-modal ref='projectAddModal' @change='projectModalCallback'></project-add-modal>
     <product-add-modal ref='productAddModal' :entrustType="entrustType"
                        @callback='productAddCallback'></product-add-modal>
+    <history-project-modal ref='historyProjectModal' @callback='projectModalCallback'></history-project-modal>
   </h-modal>
 </template>
 
@@ -164,11 +185,19 @@ import PhemismCustomSelect from "@views/components/PhhemismCustomSelect";
 import {cloneDeep, isArray} from 'lodash'
 import {postAction} from "@api/manage";
 import ProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProductAddModal";
-import {randomUUID} from "@/utils/util";
+import HistoryProjectModal from "@views/hifar/hifar-environmental-test/entrustment/modules/HistoryProjectModal";
+import HfElevatorLayer from '@/components/HfElevatorLayer'
 
 export default {
   name: "EntrustmentInnerModal",
-  components: {ProductAddModal, ProjectAddModal, ProjectForm, PhemismCustomSelect},
+  components: {
+    HfElevatorLayer,
+    HistoryProjectModal,
+    ProductAddModal,
+    ProjectAddModal,
+    ProjectForm,
+    PhemismCustomSelect
+  },
   inject: {
     getContainer: {
       default: () => document.body
@@ -179,7 +208,7 @@ export default {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           if (!cellValue) {
-            reject(new Error('样品编号不能为空'))
+            reject(new Error('产品编号不能为空'))
           } else {
             resolve()
           }
@@ -198,13 +227,14 @@ export default {
       selectedRowKeys: [],
       projectInfoData: [],
       validRules: {
-        pieceNo: [{required: true, message: '样品编号不能为空'}, {validator: nameValid}]
+        pieceNo: [{required: true, message: '产品编号不能为空'}, {validator: nameValid}]
       },
       entrustModelInfo: {},
       pieceModelInfo: [],
       projectModelInfo: [],
       secretLevelArr: [],
       staticTableData: [],
+      layerColumns: [],
       entrustFormData: [
         {
           key: 'id',
@@ -257,11 +287,22 @@ export default {
         },
         {
           title: '送试单位',
-          key: 'custName',
+          key: 'custId',
           formType: 'input',
           validate: {
-            rules: [{required: true, message: '请输入送试单位'}]
-          }
+            rules: [{required: true, message: '请选择送试单位'}]
+          },
+          component: (
+            <phemism-custom-select
+              ref='PhemismCustomSelect'
+              placeholder={'请选择委托单位'}
+              v-decorator={['custId', {rules: [{required: true, initialValue: []}]}]}
+              selectedName={() => {
+                return this.entrustModel.custName
+              }}
+              onchange={this.selectCustomerChange}
+            />
+          )
         },
         {
           title: '联系人',
@@ -318,10 +359,10 @@ export default {
           key: 'isBuildingReport',
           formType: 'radio',
           radioType: 'radioButton',
-          defaultValue: '2',
+          defaultValue: 2,
           options: [
-            {title: '是', value: '1', key: '1'},
-            {title: '否', value: '2', key: '2'}
+            {title: '是', value: 1, key: 1},
+            {title: '否', value: 2, key: 2}
           ],
         },
         {
@@ -329,10 +370,10 @@ export default {
           key: 'isPhotograph',
           formType: 'radio',
           radioType: 'radioButton',
-          defaultValue: '2',
+          defaultValue: 2,
           options: [
-            {title: '是', value: '1', key: '1'},
-            {title: '否', value: '2', key: '2'}
+            {title: '是', value: 1, key: 1},
+            {title: '否', value: 2, key: 2}
           ],
         },
         {
@@ -401,33 +442,73 @@ export default {
       }
       this.tableData = []
       this.projectInfoData = []
+      this.buildLayer()
     },
     handleEdit(id) {
       this.submitLoading = true
       postAction(this.url.edit, {id}).then(res => {
         if (res.code === 200) {
           let obj = Object.assign({}, res.data)
-          obj.entrustTime = obj.entrustTime && +obj.entrustTime !== 0 ? moment(parseFloat(obj.entrustTime)) : moment()
+          obj.entrustTime = obj.entrustTime && +obj.entrustTime !== 0 ? moment(+obj.entrustTime) : moment()
+          obj.requireTestTime = obj.requireTestTime && +obj.requireTestTime !== 0 ? moment(+obj.requireTestTime) : moment()
           this.entrustType = obj.entrustType
           this.entrustModel = obj
           this.tableData = []
           this.tableData = obj.pieceInfo
           this.projectInfoData = obj.projectInfo
-          this.pieceSorting(this.tableData, 'productName', 'productModel')
+          this.buildLayer(obj.projectInfo)
+          this.pieceSorting(this.tableData)
         }
       }).finally(() => {
         this.submitLoading = false
       })
     },
-    //内部新增样品
+    buildLayer(column) {
+      let defaultLayer = [
+        {
+          title: "委托信息",
+          id: "entrust"
+        },
+        {
+          title: "产品信息",
+          id: "product"
+        },
+        {
+          title: "项目信息",
+          id: "project"
+        },
+      ]
+      this.layerColumns = []
+      column && column.length && column.forEach((item, index) => {
+        defaultLayer.push({
+          title: item.unitName || item.testName,
+          id: 'projectItem' + index
+        })
+      })
+      this.layerColumns = defaultLayer
+    },
+    selectCustomerChange(val, record) {
+      let [customer] = record
+      this.entrustModel.custName = customer.custName ? customer.custName : ''
+      this.$refs.entrustFrom.form.setFieldsValue(
+        {
+          custName: customer.custName,
+          custId: customer.id,
+          custAddress: customer.custAddress,
+          linkMobile: customer.linkMobile,
+          linkName: customer.linkName,
+        }
+      )
+    },
+    //内部新增产品
     handleAddPiece() {
       this.$refs.productAddModal.show()
     },
-    pieceDataFocus({row,column}) {
+    pieceDataFocus({row, column}) {
       // 记录一下编辑前的数据
       this.activePieceRow = row[column.property]
     },
-    pieceDataBlur({row, rowIndex,column}) {
+    pieceDataBlur({row, rowIndex, column}) {
       // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更和提醒
       setTimeout(() => {
         if (row[column.property] !== this.activePieceRow) {
@@ -435,7 +516,7 @@ export default {
         }
       }, 1)
     },
-    // 样品删除
+    // 产品删除
     handleDelete() {
       const $table = this.$refs.pieceTable
       $table.removeCheckboxRow()
@@ -453,15 +534,15 @@ export default {
       this.selectedRowKeys = []
       this.setProjectPieceNos()
     },
-    // 动态设置项目中已选样品
+    // 动态设置项目中已选产品
     setProjectPieceNos() {
       if (this.projectInfoData.length) {
-        this.$message.warning('样品数据改变，也将同步项目信息中的已选样品数据改变')
+        this.$message.warning('产品数据改变，也将同步项目信息中的已选产品数据改变')
         setTimeout(() => {
           let ProjectForm = this.$refs.ProjectForm
           let projectFormItem = ProjectForm.$refs.projectFormItem
           let tableData = this.$refs.pieceTable.getData()
-          let pieceSorting = this.pieceSorting(tableData, 'productName', 'productModel')
+          let pieceSorting = this.pieceSorting(tableData)
           let pieceIds = index => pieceSorting[index] ? pieceSorting[index].pieceIds.toString() : ''
           let pieceNos = index => pieceSorting[index] ? pieceSorting[index].pieceNos.toString() : ''
           for (let i = 0; i < this.projectInfoData.length; i++) {
@@ -475,26 +556,34 @@ export default {
       }
     },
     //  多选
-    onSelectChange(records) {
-      this.selectedRowKeys = records.records
+    onSelectChange({records}) {
+      this.selectedRowKeys = records
     },
     // 全选
-    selectAllEvent(records) {
-      this.selectedRowKeys = records.records
+    selectAllEvent({records}) {
+      this.selectedRowKeys = records
+    },
+    async handleAddHistory() {
+      let errMap = await this.$refs.pieceTable.validate().catch(errMap => errMap)
+      if (errMap) return this.$message.warning('请填写产品编号')
+      if (!this.tableData.length) return this.$message.warning('请先添加产品')
+      this.$refs.historyProjectModal.show(this.tableData.map(item => item.id).toString())
+      this.$refs.historyProjectModal.selectedKeys = this.projectInfoData && this.projectInfoData.length && this.projectInfoData.map(item => item.id) || []
     },
     // 选择项目
     async handleAddProject() {
       let errMap = await this.$refs.pieceTable.validate().catch(errMap => errMap)
-      if (errMap) return this.$message.warning('请填写样品编号')
-      if (!this.tableData.length) return this.$message.warning('请先添加样品')
+      if (errMap) return this.$message.warning('请填写产品编号')
+      if (!this.tableData.length) return this.$message.warning('请先添加产品')
       this.$refs.projectAddModal.visible = true
       await this.$refs.projectAddModal.getProjectTree()
       this.$refs.projectAddModal.selectedRowKeys = this.projectInfoData && this.projectInfoData.length && this.projectInfoData.map(item => item.id) || []
     },
+
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
       let pieceTableData = this.$refs.pieceTable.getData()
-      let pieceSorting = this.pieceSorting(pieceTableData, 'productName', 'productModel')
+      let pieceSorting = this.pieceSorting(pieceTableData)
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
         for (let i = 0; i < extendRecord.length; i++) {
@@ -522,76 +611,16 @@ export default {
           pieceNos: pieceSorting[i] ? pieceSorting[i].pieceNos.toString() : ''
         }
       })
+      this.buildLayer(this.projectInfoData)
     },
-    // 新增样品弹框返回数据
+    // 新增产品弹框返回数据
     productAddCallback(values) {
-      if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
-        this.tableData.push(...this.splitByBoth(values))
-      } else if (values.pieceNo.includes(',')) {
-        this.tableData.push(...this.splitByComma(values, values.pieceNo.split(',')))
-      } else if (values.pieceNo.includes('-')) {
-        this.tableData.push(...this.splitByHorizontalLine(values, values.pieceNo.split('-')))
-      } else {
-        this.tableData.push({
-          id: randomUUID(),
-          productName: values.productName,
-          pieceNum: 1,
-          productModel: values.productModel,
-          pieceNo: (values.piecePrefix || '') + values.pieceNo,
-        })
-      }
-      this.setProjectPieceNos()
-    },
-    splitByHorizontalLine(values, arr) {
-      //根据横杠分隔
-      let tableData = []
-      let num = +arr[1] + 1 - +arr[0] > +values.pieceNum ? +arr[0] + +values.pieceNum - 1 : +arr[1]
-      for (let i = +arr[0]; i <= num; i++) {
-        tableData.push({
-          id: randomUUID(),
-          productName: values.productName,
-          pieceNum: 1,
-          productModel: values.productModel,
-          pieceNo: (values.piecePrefix || '') + i,
-        })
-      }
-      return tableData
-    },
-    splitByComma(values, arr) {
-      // 根据逗号分隔
-      let tableData = []
-      arr.forEach(item => {
-        tableData.push({
-          id: randomUUID(),
-          productName: values.productName,
-          pieceNum: 1,
-          productModel: values.productModel,
-          pieceNo: (values.piecePrefix || '') + item,
-        })
+      this.tableData = values.map(item => {
+        return {...item, pieceNum: 1}
       })
-      return tableData
     },
-    splitByBoth(values) {
-      // 逗号和横杠都存在
-      let commaArr = values.pieceNo.split(',')
-      let tableData = []
-      for (let i = 0; i < commaArr.length; i++) {
-        if (commaArr[i].includes('-')) {
-          tableData.push(...this.splitByHorizontalLine(values, commaArr[i].split('-')))
-        } else {
-          tableData.push({
-            id: randomUUID(),
-            productName: values.productName,
-            pieceNum: 1,
-            productModel: values.productModel,
-            pieceNo: (values.piecePrefix || '') + commaArr[i],
-          })
-        }
-      }
-      return tableData
-    },
-    // 样品分类：根据样品名称和型号/规格进行分类
-    pieceSorting(data, name, model) {
+    // 产品分类：根据产品名称和代号进行分类
+    pieceSorting(data, name = 'productName', model = 'productAlias') {
       let result = [], hash = {}
       for (let i = 0; i < data.length; i++) {
         let field = hash[data[i][name] + data[i][model]]
@@ -667,7 +696,7 @@ export default {
             this.$refs.ProjectForm.submitHandle(true, 10)
           } else {
             this.submitLoading = false
-            return this.$message.warning('请添加样品！')
+            return this.$message.warning('请添加产品！')
           }
         })
       })
@@ -675,11 +704,11 @@ export default {
     // 暂存-提交请求
     submitRequest(status) {
       let {entrustModelInfo, pieceModelInfo, projectModelInfo} = this
-      // 项目中实际用到的样品
+      // 项目中实际用到的产品
       let projectOfPiece = projectModelInfo.reduce((pre, next) => {
         return pre.concat(...next.pieceIds.split(','))
       }, [])
-      // 判断样品列表中的数量和项目实际用到的样品数量
+      // 判断产品列表中的数量和项目实际用到的产品数量
       if (pieceModelInfo.length !== projectOfPiece.length && status === 10) {
         let pieceNosDom = [], index = 0, pieceIds = []
         let usedPieceIds = projectModelInfo.reduce((pre, next) => {
@@ -702,13 +731,13 @@ export default {
             title: '提示',
             content: h => {
               return h('div', {}, [
-                <p>还有如下编号的样品未添加分配试验项目</p>,
+                <p>还有如下编号的产品未添加分配试验项目</p>,
                 <p>{pieceNosDom}</p>,
                 <p>确定继续提交吗？</p>
               ])
             },
             onOk: () => {
-              // 这里需要删除多余没有用到的样品
+              // 这里需要删除多余没有用到的产品
               fn.call(this, pieceIds)
             }
           })
@@ -740,6 +769,7 @@ export default {
     buildEntrustData(entrustModelInfo) {
       entrustModelInfo.custId = isArray(entrustModelInfo.custId) && entrustModelInfo.custId.length > 0 ? entrustModelInfo.custId[0] : entrustModelInfo.custId
       entrustModelInfo.entrustTime = entrustModelInfo.entrustTime ? entrustModelInfo.entrustTime.valueOf() : ''
+      entrustModelInfo.requireTestTime = entrustModelInfo.requireTestTime ? entrustModelInfo.requireTestTime.valueOf() : ''
       this.entrustModelInfo = entrustModelInfo
     },
     // 给附件设置密级
@@ -765,7 +795,7 @@ export default {
         }
       })
     },
-    // 获取样品表格数据
+    // 获取产品表格数据
     getPiecesTableData(bool) {
       // bool 是否进行表格验证
       let pieceTable = this.$refs.pieceTable
@@ -852,7 +882,7 @@ export default {
   text-align: center;
 }
 
-/deep/ .ant-modal-close-x {
+.entrustModal /deep/ .ant-modal-close-x {
   line-height: 33px !important;
 }
 

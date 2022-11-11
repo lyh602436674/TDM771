@@ -11,7 +11,7 @@
     <!-- 委托信息 -->
     <detail-base-info :detailDataObj="detailData"></detail-base-info>
     <!--样品信息-->
-    <piece-detail-template :entrust-type="detailData.entrustType" :dataSource="detailData.pieceInfo"/>
+    <piece-detail-template :dataSource="detailData.pieceInfo"/>
     <!-- 项目信息 -->
     <detail-project-info
       :projectInfoArr="detailData && detailData.projectInfo ? detailData.projectInfo : []"

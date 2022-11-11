@@ -7,11 +7,11 @@
 -->
 <template>
   <div style="height: 100%">
-    <div v-for="(item, index) in formInfoDataList" :key="index" class="panel-custom">
+    <div :id="'projectItem'+index" v-for="(item, index) in formInfoDataList" :key="index" class="panel-custom">
       <div class="panel-custom-item">
         <div class="panel-custom-item-left">
           <project-form-item ref="projectFormItem" :index="index" :entrustType="entrustType"
-                                      :pieceTableData="pieceTableData" :project="item"></project-form-item>
+                             :pieceTableData="pieceTableData" :project="item"></project-form-item>
         </div>
         <div class="panel-custom-item-right">
           <a-button
@@ -32,9 +32,10 @@
 
 <script>
 import ProjectFormItem from '@views/hifar/hifar-environmental-test/entrustment/components/ProjectFormItem'
-import moment from 'moment'
+import entrustmentMixins from "@views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins";
 
 export default {
+  mixins: [entrustmentMixins],
   props: {
     formInfoData: {
       type: Array,
@@ -100,6 +101,30 @@ export default {
         for (let i = 0; i < formInfoDataList.length; i++) {
           let that = this.$refs.projectFormItem[i]
           let projectForm = that.$refs['projectInfoForm' + [i]]
+          // 判断是否是 结构化条件 试验项目（根据项目编码判断）
+          let filterUnitCodeFlag = this.filterUnitCode(formInfoDataList[i].unitCode)
+          if (filterUnitCodeFlag) {
+            that.resultEcharts()
+          }
+          let tabItemTableAllData = [];
+          if (filterUnitCodeFlag) {
+            let testConditionTabItem = that.$refs.testConditionTabItem;
+            [].forEach.call(testConditionTabItem, (item, index) => {
+              let tabPanelItem = that.model.abilityRequire[index]
+              let _item_ = item.$refs['pointTable' + [i] + [index]]
+              tabItemTableAllData.push({
+                title: tabPanelItem.title,
+                type: tabPanelItem.type,
+                abilityInfo: _item_.getData()
+              })
+            })
+          } else {
+            tabItemTableAllData.push({
+              title: '试验条件',
+              type: 'default',
+              abilityInfo: that.$refs.testConditionTabItem.$refs['pointTable' + [i] + 0].getData()
+            })
+          }
           if (bool) {
             projectForm.form.validateFieldsAndScroll((error, val) => {
               if (error) {
@@ -108,8 +133,9 @@ export default {
                 let projectFormValue = val
                 let attachIds = val.attachIds.map(item => item.fileId).toString()
                 projectFormValue.unitName = that.model.unitName;
-                projectFormValue.taskExpectStartTime = val.taskExpectStartTime && moment(val.taskExpectStartTime).format('x');
                 projectFormValue.attachIds = attachIds;
+                projectFormValue.abilityRequire = tabItemTableAllData;
+                projectFormValue.curveUrl = that.curveUrl;
                 projectResult.push(projectFormValue)
               }
             })
@@ -119,7 +145,8 @@ export default {
             let projectFormValue = projectForm.form.getFieldsValue()
             projectFormValue.unitName = that.model.unitName
             projectFormValue.attachIds = projectFormValue.attachIds.map(item => item.fileId).toString()
-            projectFormValue.taskExpectStartTime = projectFormValue.taskExpectStartTime && moment(projectFormValue.taskExpectStartTime).format('x');
+            projectFormValue.abilityRequire = tabItemTableAllData
+            projectFormValue.curveUrl = that.curveUrl
             projectResult.push(projectFormValue)
           }
         }

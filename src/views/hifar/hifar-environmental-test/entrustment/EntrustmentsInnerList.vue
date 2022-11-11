@@ -136,7 +136,7 @@ export default {
           formType: 'input'
         },
         {
-          title: '型号/规格',
+          title: '产品代号',
           key: 'productModel',
           formType: 'input'
         },
@@ -231,24 +231,14 @@ export default {
           }
         },
         {
-          title: '型号/规格',
+          title: '产品代号',
           align: 'left',
-          dataIndex: 'productModel',
+          dataIndex: 'productAlias',
           minWidth: 120,
           customRender: (text, record) => {
             return text || '--';
           }
         },
-        {
-          title: '委托单位',
-          align: 'left',
-          minWidth: 120,
-          dataIndex: 'custName',
-          customRender: (text, record) => {
-            return text || '--';
-          }
-        },
-
         {
           title: '委托日期',
           align: 'left',
@@ -256,6 +246,15 @@ export default {
           minWidth: 100,
           customRender: (time) => {
             return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD') : '--'
+          }
+        },
+        {
+          title: '送试单位',
+          align: 'left',
+          minWidth: 120,
+          dataIndex: 'custName',
+          customRender: (text, record) => {
+            return text || '--';
           }
         },
         {
@@ -277,19 +276,28 @@ export default {
           }
         },
         {
-          title: '委托人',
+          title: '要求试验时间',
           align: 'center',
-          dataIndex: 'entrustPerson',
-          width: 100,
+          width: 150,
+          dataIndex: 'requireTestTime',
+          customRender: (text, record) => {
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
+          }
+        },
+        {
+          title: '试验性质',
+          align: 'center',
+          width: 120,
+          dataIndex: 'testPropertyCode_dictText',
           customRender: (text, record) => {
             return text || '--';
           }
         },
         {
-          title: '委托人手机号',
+          title: '优先级',
           align: 'center',
           width: 120,
-          dataIndex: 'entrustPersonPhone',
+          dataIndex: 'priority_dictText',
           customRender: (text, record) => {
             return text || '--';
           }

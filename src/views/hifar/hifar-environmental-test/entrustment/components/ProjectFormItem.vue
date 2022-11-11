@@ -43,19 +43,10 @@
                                    :projectIndex="index" @add="handleAdd" @delete="handleDelete"/>
         </template>
       </div>
-      <div slot="content">
-        <h-form
-          :ref="'testConditionDataForm' + index"
-          v-model="model"
-          :column="3"
-          :formData="testConditionData"
-          style="margin-top: 18px; margin-left: 15px"
-        >
-        </h-form>
-      </div>
     </h-collapse>
     <point-list ref="PointList" @change="pointSelectChange"></point-list>
     <experimental-curve-modal ref="ExperimentalCurveModal" @change="curveUrlChange"></experimental-curve-modal>
+    <div id='echarts-result' style='display: none;width: 1000px;height: 500px;'></div>
   </div>
 </template>
 
@@ -72,9 +63,11 @@ import ExperimentalCurveModal from './ExperimentalCurveModal'
 import sortable from 'sortablejs'
 import {randomUUID} from "@/utils/util";
 import {filterDictTextByCache} from '@comp/_util/JDictSelectUtil'
+import SysUserSelect from '@/views/components/SysUserSelect'
+
 export default {
   components: {
-    NewSampleListModal, MethodSelectModal, TestConditionTabItem, ExperimentalCurveModal, PointList
+    NewSampleListModal, MethodSelectModal, TestConditionTabItem, ExperimentalCurveModal, PointList, SysUserSelect
   },
   mixins: [drawCurveMixin, entrustmentMixins],
   props: {
@@ -103,7 +96,6 @@ export default {
         if (isObject(val) && Object.keys(val).length) {
           let obj = Object.assign({}, val)
           let filterUnitCodeFlag = this.filterUnitCode(obj.unitCode)
-          obj.taskExpectStartTime = obj.taskExpectStartTime && obj.taskExpectStartTime != 0 ? moment(+obj.taskExpectStartTime).format('YYYY-MM-DD HH:mm:ss') : ''
           obj.unitId = obj.unitId ? obj.unitId : obj.id
           obj.testName = obj.unitName
           let fileList = []
@@ -245,53 +237,6 @@ export default {
           }
         },
         {
-          title: '技术文件',
-          key: 'technicalFile',
-          formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入技术文件'}]
-          }
-        },
-        {
-          title: '检测依据',
-          key: 'standardId',
-          validate: {
-            rules: [{required: true, message: '请选择试验标准'}]
-          },
-          component: (
-            <method-select-modal
-              v-decorator={['standardId', {initialValue: []}]}
-              selectedName={() => {
-                return this.model.standardName
-              }}
-              itemUnitId={() => {
-                return this.model.unitId
-              }}
-              onchange={(selectedRowKeys, selectedRows) => {
-                let formName = 'projectInfoForm' + this.index
-                let standardName = selectedRows[0] ? selectedRows[0].standardCode + '-' + selectedRows[0].standardName : ''
-                this.model.standardId = selectedRowKeys
-                this.model.standardName = standardName
-                this.$refs[formName].form.setFieldsValue({standardName: standardName})
-              }}
-            />
-          )
-        },
-        {
-          title: "是否分包",
-          key: 'isSubpackage',
-          formType: 'radio',
-          radioType: 'radioButton',
-          options: [
-            {title: '是', value: '1', key: '1'},
-            {title: '否', value: '2', key: '2'}
-          ],
-          defaultValue: '2',
-          validate: {
-            rules: [{required: true, message: '请选择是否分包'}]
-          }
-        },
-        {
           title: '',
           key: 'pieceNos',
           formType: 'input',
@@ -323,11 +268,110 @@ export default {
           )
         },
         {
-          title: '期望开始时间',
-          key: 'taskExpectStartTime',
-          formType: 'datePick',
-          showTime: true,
-          format: "YYYY-MM-DD HH:mm:ss"
+          title: '试验标准',
+          key: 'standardId',
+          validate: {
+            rules: [{required: true, message: '请选择试验标准'}]
+          },
+          component: (
+            <method-select-modal
+              v-decorator={['standardId', {initialValue: []}]}
+              selectedName={() => {
+                return this.model.standardName
+              }}
+              itemUnitId={() => {
+                return this.model.unitId
+              }}
+              onchange={(selectedRowKeys, selectedRows) => {
+                let formName = 'projectInfoForm' + this.index
+                let standardName = selectedRows[0] ? selectedRows[0].standardCode + '-' + selectedRows[0].standardName : ''
+                this.model.standardId = selectedRowKeys
+                this.model.standardName = standardName
+                this.$refs[formName].form.setFieldsValue({standardName: standardName})
+              }}
+            />
+          )
+        },
+        {
+          title: '最终用户',
+          key: 'lastUser',
+          formType: 'dict',
+          dictCode: 'hf_entrust_lastUser',
+          placeholder: '请选择最终用户',
+          validate: {
+            rules: [{required: true, message: '请选择最终用户'}],
+          },
+        },
+        {
+          title: "是否加电",
+          key: 'isPowerUp',
+          formType: 'radio',
+          radioType: 'radioButton',
+          options: [
+            {title: '是', value: '1', key: '1'},
+            {title: '否', value: '2', key: '2'}
+          ],
+          defaultValue: '2',
+          validate: {
+            rules: [{required: true, message: '请选择是否加电'}]
+          }
+        },
+        {
+          title: "报告中是否显示最终用户",
+          key: 'isShowUserInReport',
+          formType: 'radio',
+          radioType: 'radioButton',
+          options: [
+            {title: '是', value: '1', key: '1'},
+            {title: '否', value: '2', key: '2'}
+          ],
+          defaultValue: '2',
+          validate: {
+            rules: [{required: true, message: '请选择报告中是否显示最终用户'}]
+          }
+        },
+        {
+          title: '加电时间',
+          key: 'powerUpTime',
+          formType: 'dict',
+          dictCode: 'hf_powerup_time',
+          placeholder: '请选择加电时间',
+          validate: {
+            rules: [{required: true, message: '请选择加电时间'}]
+          },
+        },
+        {
+          title: '试验判据',
+          key: 'testCriteria',
+          formType: 'textarea',
+          span: 3,
+          placeholder: '请输入试验判据',
+          autoSize: {minRows: 4},
+          validate: {
+            rules: [{required: true, message: '请输入试验判据'}]
+          }
+        },
+        {
+          title: '合格判据',
+          key: 'conformityCriteria',
+          formType: 'textarea',
+          span: 3,
+          placeholder: '请输入合格判据',
+          autoSize: {minRows: 4},
+          validate: {
+            rules: [{required: true, message: '请输入合格判据'}]
+          }
+        },
+        {
+          title: '试验依据',
+          key: 'testEvidence',
+          formType: 'textarea',
+          span: 3,
+          placeholder: '请输入试验依据',
+          autoSize: {minRows: 4},
+          validate: {
+            rules: [{required: true, message: '请输入试验依据'}]
+          }
         },
         {
           title: '试验条件',
@@ -336,8 +380,6 @@ export default {
           span: 3,
           placeholder: '请输入试验条件',
           autoSize: {minRows: 4},
-          maxLength: 240,
-          rows: 4,
           validate: {
             rules: [{required: true, message: '请输入试验条件'}],
           },

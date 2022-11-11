@@ -7,7 +7,7 @@
 -->
 <template>
   <div>
-    <h-desc :data="detailData" labelWidth='130px' size='small' title='基本信息'>
+    <h-desc :data="detailData" labelWidth='160px' size='small' title='基本信息'>
       <h-desc-item label='委托单号'>
         {{ detailData.entrustNo || '--' }}
       </h-desc-item>
@@ -22,134 +22,56 @@
           {{ detailData.status | wtStatusFilter(detailData.entrustType) }}
         </a-tag>
       </h-desc-item>
-      <h-desc-item :label='detailData.entrustType == 1 ? "委托日期" : "申请日期"'>
+      <h-desc-item label='委托日期'>
         {{
           detailData.entrustTime && detailData.entrustTime != 0
-            ? moment(parseInt(detailData.entrustTime)).format('YYYY-MM-DD')
+            ? moment(+detailData.entrustTime).format('YYYY-MM-DD')
             : '--'
         }}
+      </h-desc-item>
+      <h-desc-item label='密级'>
+        {{ detailData.secretLevelCode_dictText || '--' }}
       </h-desc-item>
       <h-desc-item label='委托单类型'>
         {{ detailData.entrustType | entrustTypeFilter }}
       </h-desc-item>
-      <h-desc-item label='委托单位'>
+      <h-desc-item label='要求试验时间'>
+        {{
+          detailData.requireTestTime && detailData.requireTestTime != 0
+            ? moment(+detailData.requireTestTime).format('YYYY-MM-DD HH:mm:ss')
+            : '--'
+        }}
+      </h-desc-item>
+      <h-desc-item label='送试单位'>
         {{ detailData.custName || '--' }}
       </h-desc-item>
-      <h-desc-item :label='detailData.entrustType == 1 ? "联系人" : "申请人"'>
+      <h-desc-item label="联系人">
         {{ detailData.linkName || '--' }}
       </h-desc-item>
       <h-desc-item label='联系方式'>
         {{ detailData.linkMobile || '--' }}
       </h-desc-item>
-      <template v-if="detailData.entrustType == 1">
-        <h-desc-item label='委托人'>
-          {{ detailData.entrustPerson || '--' }}
-        </h-desc-item>
-        <h-desc-item label='委托人手机号'>
-          {{ detailData.entrustPersonPhone || '--' }}
-        </h-desc-item>
-      </template>
-      <h-desc-item label='单位地址' v-if="detailData.entrustType == 1">
-        {{ detailData.custAddress || '--' }}
+      <h-desc-item label='试验性质'>
+        {{ detailData.testPropertyCode_dictText || '--' }}
       </h-desc-item>
-      <h-desc-item label='密级'>
-        {{ detailData.secretLevelCode_dictText || '--' }}
+      <h-desc-item label='优先级'>
+        {{ detailData.priority_dictText || '--' }}
       </h-desc-item>
-      <template v-if="detailData.entrustType == 1">
-        <h-desc-item label='样品制造单位'>
-          {{ detailData.sampleMakeUnit || '--' }}
-        </h-desc-item>
-        <h-desc-item label='样品状态'>
-          {{ detailData.sampleStatus_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='样品提供方式'>
-          {{ detailData.sampleProvisionMethod_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='样品处置方式'>
-          {{ detailData.sampleDisposeMethod_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='试验目的'>
-          {{ detailData.testPurpose_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='进度要求'>
-          {{ detailData.progressRequire_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='性能测试'>
-          {{ detailData.performanceTest_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='检测照片'>
-          {{ detailData.testPicture_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='报告形式'>
-          {{ detailData.reportForm_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='报告密级'>
-          {{ detailData.reportSecretLevel_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='报告份数'>
-          {{ detailData.reportNum || '--' }}
-        </h-desc-item>
-        <h-desc-item label='报告领取方式'>
-          {{ detailData.reportCollectionMethod_dictText || '--' }}
-        </h-desc-item>
-      </template>
-      <template v-if="detailData.entrustType == 2">
-        <h-desc-item label='工作令号'>
-          {{ detailData.workOrderNo || '--' }}
-        </h-desc-item>
-        <h-desc-item label='产品名称'>
-          {{ detailData.productName || '--' }}
-        </h-desc-item>
-        <h-desc-item label='试验目的'>
-          {{ detailData.testPurpose_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='要求完成时间'>
-          {{
-            detailData.requireCompletionTime && detailData.requireCompletionTime != 0
-              ? moment(parseInt(detailData.requireCompletionTime)).format('YYYY-MM-DD')
-              : '--'
-          }}
-        </h-desc-item>
-        <h-desc-item label='样品制造单位'>
-          {{ detailData.sampleMakeUnit || '--' }}
-        </h-desc-item>
-        <h-desc-item label='样品状态'>
-          {{ detailData.sampleStatus_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='样品提供方式'>
-          {{ detailData.sampleProvisionMethod_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='样品处置方式'>
-          {{ detailData.sampleDisposeMethod_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='性能测试'>
-          {{ detailData.performanceTest_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='测试地点'>
-          {{ detailData.testAddress_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='检测报告'>
-          {{ detailData.testReport_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='检测照片'>
-          {{ detailData.testPicture_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='报告形式'>
-          {{ detailData.reportForm_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='报告份数'>
-          {{ detailData.reportNum || '--' }}
-        </h-desc-item>
-        <h-desc-item label='报告领取方式'>
-          {{ detailData.reportCollectionMethod_dictText || '--' }}
-        </h-desc-item>
-        <h-desc-item label='试验依据'>
-          {{ detailData.testEvidence || '--' }}
-        </h-desc-item>
-        <h-desc-item label='试验要求'>
-          {{ detailData.testRequire || '--' }}
-        </h-desc-item>
-      </template>
+      <h-desc-item label='预计时长'>
+        {{ detailData.expectedTime || '--' }}
+      </h-desc-item>
+      <h-desc-item label='任务编码'>
+        {{ detailData.outSourceCode || '--' }}
+      </h-desc-item>
+      <h-desc-item label='是否生成报告'>
+        {{ detailData.isBuildingReport === 1 ? '是' : '否' }}
+      </h-desc-item>
+      <h-desc-item label='是否拍照'>
+        {{ detailData.isPhotograph === 1 ? '是' : '否' }}
+      </h-desc-item>
+      <h-desc-item label='发起人/电话'>
+        {{ detailData.initiator || '--' }}
+      </h-desc-item>
       <h-desc-item label='创建人'>
         {{ detailData.createUserName || '--' }}
       </h-desc-item>
@@ -159,6 +81,9 @@
             ? moment(parseInt(detailData.createTime)).format('YYYY-MM-DD HH:mm:ss')
             : '--'
         }}
+      </h-desc-item>
+      <h-desc-item :span='3' label='测试软件/测试方法'>
+        <span slot='content' v-html="detailData.testMethod && detailData.testMethod.replace(/\n/g,'<br/>')"></span>
       </h-desc-item>
       <h-desc-item :span='3' label='委托单附件'>
         <div slot='content'>
