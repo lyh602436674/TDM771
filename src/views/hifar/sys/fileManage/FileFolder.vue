@@ -283,7 +283,7 @@ export default {
         delete data.createTime
 
         return postAction(this.url.folderListByPid, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.breadcrumb = res.ext ? (res.ext.parentList ? res.ext.parentList : []) : []
             return res.data
           }
@@ -308,7 +308,7 @@ export default {
         publicFlag: this.activeFolderKey.join(''),
       }
       postAction(this.url.folderList, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let expandedKeys = []
           let folderList = []
           let treeData = res.data.map((folder) => {
@@ -425,7 +425,7 @@ export default {
     // 删除文件
     handleDelete(ids) {
       postAction(this.url.delete, { id: ids }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.handleRefresh()
         }
       })
@@ -474,7 +474,7 @@ export default {
       if (id) {
         let detailUrl = this.url.detail
         postAction(detailUrl, {id: id}).then((res) => {
-          if (res.code == 200 && res.data.status == 9) {
+          if (res.code === 200 && res.data.status == 9) {
             downloadFile(fileAccessUrl, fileName)
           } else {
             this.$message.warning(`文件[${fileName}]正在合并中，请稍后再点击下载`)

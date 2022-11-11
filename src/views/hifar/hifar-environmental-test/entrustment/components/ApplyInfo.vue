@@ -77,7 +77,7 @@ export default {
         priId: flowId,
       }
       postAction(this.url.proList, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let { proData, taskHisList, taskList } = res.data
           this.taskHisList = taskHisList
           proData.nodeList = proData.nodeList.map((item) => {

@@ -101,7 +101,7 @@ export default {
           backupFlag: 2,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -123,7 +123,7 @@ export default {
         content: '数据库备份会消耗一段时间，稍等片刻后查看备份记录可以看到备份结果。',
         onOk: () => {
           postAction(this.url.manual, { id: record.id }).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               this.$message.success('已经开始手动备份，稍等片刻后查看备份记录可以看到备份结果。')
               this.refresh()
             }

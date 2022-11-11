@@ -191,7 +191,7 @@ export default {
     },
     loadDetailData(id) {
       postAction(this.url.detail, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let obj = Object.assign({}, res.data)
           this.model = obj
           this.testCheckData = res.data.checkItem
@@ -260,7 +260,7 @@ export default {
         }
         console.log('params==========================', params)
         postAction(url, params).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('change', true)
             this.handleCancel()

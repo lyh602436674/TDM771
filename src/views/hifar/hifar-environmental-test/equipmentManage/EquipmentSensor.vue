@@ -215,7 +215,7 @@ export default {
           equipId: this.selectedKeys.join(''),
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -278,7 +278,7 @@ export default {
     },
     handleDelete(ids) {
       postAction(this.url.delete, { sensorIds: ids, equipId: this.selectedKeys.join('') }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.selectedRowKeys = []
           this.selectedRows = []
@@ -304,7 +304,7 @@ export default {
     },
     handleSubmitPoint(val) {
       postAction(this.url.editPoint, val).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('添加成功')
           this.refresh()
         }

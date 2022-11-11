@@ -92,7 +92,7 @@ export default {
           formType: "input",
         },
         {
-          title: "委托单位",
+          title: "送试单位",
           key: "c_custName_7",
           formType: "input",
         },
@@ -141,7 +141,7 @@ export default {
           }
         },
         {
-          title: '样品名称',
+          title: '产品名称',
           align: 'left',
           minWidth: 200,
           dataIndex: 'productNames',
@@ -150,16 +150,7 @@ export default {
           }
         },
         {
-          title: "型号/规格",
-          align: "left",
-          dataIndex: "productModel",
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: "图号",
+          title: "产品代号",
           align: "left",
           dataIndex: "productAlias",
           minWidth: 100,
@@ -168,7 +159,7 @@ export default {
           },
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           align: 'left',
           minWidth: 100,
           dataIndex: 'custName',
@@ -205,22 +196,31 @@ export default {
           },
         },
         {
-          title: "委托人",
-          align: "center",
-          dataIndex: "entrustPerson",
-          width: 120,
+          title: '要求试验时间',
+          align: 'center',
+          width: 150,
+          dataIndex: 'requireTestTime',
           customRender: (text, record) => {
-            return text || "--";
-          },
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
+          }
         },
         {
-          title: "委托人手机号",
-          align: "center",
-          width: 150,
-          dataIndex: "entrustPersonPhone",
+          title: '试验性质',
+          align: 'center',
+          width: 120,
+          dataIndex: 'testPropertyCode_dictText',
           customRender: (text, record) => {
-            return text || "--";
-          },
+            return text || '--';
+          }
+        },
+        {
+          title: '优先级',
+          align: 'center',
+          width: 120,
+          dataIndex: 'priority_dictText',
+          customRender: (text, record) => {
+            return text || '--';
+          }
         },
         {
           title: '创建人 ',
@@ -269,7 +269,7 @@ export default {
     handleSubmit(record) {
       let _this = this
       postAction(_this.url.flowNode, {priId: record.flowId, proCode: record.entrustFlowCode}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           if (res.data.needSelectNextUser == 2) {
             _this.submitHandle(record.id)
           } else {
@@ -293,7 +293,7 @@ export default {
     handleCopyItem(record) {
       let url = this.url.copy
       postAction(url, {id: record.id}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('复制成功!')
           this.refresh(true)
         }

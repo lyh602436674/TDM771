@@ -201,7 +201,7 @@ export default {
           id: this.record.id,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -247,7 +247,7 @@ export default {
         params.testTemhumInfo.push(testTemhumInfo)
       })
       postAction(this.url.submit, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('提交成功')
           this.edit = false
         }

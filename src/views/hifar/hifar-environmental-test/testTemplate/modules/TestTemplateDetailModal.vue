@@ -92,7 +92,7 @@ export default {
     },
     loadDetailData(id) {
       postAction(this.url.detail, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.editor(res.data)
         }
       })

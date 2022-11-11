@@ -234,7 +234,7 @@ export default {
           ],
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           key: 'custName',
           formType: 'input',
         },
@@ -255,22 +255,17 @@ export default {
           formType: 'input',
         },
         {
-          title: '样品名称',
+          title: '产品名称',
           key: 'productName',
           formType: 'input',
         },
         {
-          title: '型号/规格',
-          key: 'productModel',
-          formType: 'input',
-        },
-        {
-          title: '图号',
+          title: '产品代号',
           key: 'productAlias',
           formType: 'input',
         },
         {
-          title: '样品编号',
+          title: '产品编号',
           key: 'productNo',
           formType: 'input',
         },
@@ -304,7 +299,7 @@ export default {
           minWidth: 100,
         },
         {
-          title: "样品名称",
+          title: "产品名称",
           align: "left",
           dataIndex: "productName",
           minWidth: 100,
@@ -313,16 +308,7 @@ export default {
           },
         },
         {
-          title: "型号/规格",
-          align: "left",
-          dataIndex: "productModel",
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: "图号",
+          title: "产品代号",
           align: "left",
           dataIndex: "productAlias",
           minWidth: 100,
@@ -331,7 +317,7 @@ export default {
           },
         },
         {
-          title: "样品编号",
+          title: "产品编号",
           align: "left",
           dataIndex: "pieceNo",
           minWidth: 100,
@@ -340,7 +326,7 @@ export default {
           },
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           dataIndex: 'custNames',
           minWidth: 100,
         },
@@ -407,7 +393,7 @@ export default {
         delete data.realStartTime
 
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })

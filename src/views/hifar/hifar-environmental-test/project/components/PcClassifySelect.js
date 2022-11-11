@@ -43,7 +43,7 @@ export default {
         groupCode: this.groupCode
       }
       let res = await postAction(this.url, params)
-      if (res.code == 200) {
+      if (res.code === 200) {
         let options = []
         options = res.data.map(item => {
           return {

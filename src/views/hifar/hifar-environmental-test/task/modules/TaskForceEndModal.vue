@@ -112,7 +112,7 @@ export default {
     },
     getTestDetail() {
       postAction(this.testDetailUrl, {id: this.model.id}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.testDetailData = res.data
         }
       })

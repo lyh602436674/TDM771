@@ -363,7 +363,7 @@
       },
       loadWorkDetail(id) {
         postAction(this.url.detailWorkById, { personId: id }).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             let record = res.data
             let workRecordList = []
             if (record.length > 0) {
@@ -432,7 +432,7 @@
             params.graduationTime && params.graduationTime != 0 ? params.graduationTime.valueOf() : ''
           params.workRecord = workRecord
           postAction(url, params).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               this.$message.success(this.title + '成功')
               this.$emit('change', true)
               this.handleCancel()

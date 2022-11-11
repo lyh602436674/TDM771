@@ -141,7 +141,7 @@ export default {
     },
     getTestDetail(id) {
       postAction(this.url.detail, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const { data } = res
           let productArr = []
           let personArr = []

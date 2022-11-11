@@ -378,7 +378,7 @@ export default {
     handleCopyItem(record) {
       let url = this.url.copy
       postAction(url, { id: record.id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('复制成功!')
           this.refresh(true)
         }

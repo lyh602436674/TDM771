@@ -129,7 +129,7 @@ export default {
     },
     loadLineTimeData(taskTestId) {
       postAction(this.url, { taskTestId: taskTestId }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const { data } = res
           this.timeLineData = data
         }

@@ -128,7 +128,7 @@ export default {
       res = await postAction(url, values).finally((res) => {
         this.confirmLoading = false
       })
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.$message.success((values.id ? '编辑' : '添加') + '成功')
         this.$emit('ok', true)
         this.handleCancel()

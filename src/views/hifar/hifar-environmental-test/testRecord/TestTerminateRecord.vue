@@ -202,7 +202,7 @@ export default {
           ...params,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -281,11 +281,4 @@ export default {
   height: 100%;
   position: relative;
 }
-</style>
-
-  methods: {}
-}
-
-</script>
-<style lang='less' scoped>
 </style>

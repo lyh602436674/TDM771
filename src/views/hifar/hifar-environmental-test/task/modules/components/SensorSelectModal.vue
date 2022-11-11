@@ -119,7 +119,7 @@ export default {
           c_id_99: this.selectedRowKeys.join(','),
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             res.data.data.map((sensor) => {
               sensor.sensorId = sensor.id
             })

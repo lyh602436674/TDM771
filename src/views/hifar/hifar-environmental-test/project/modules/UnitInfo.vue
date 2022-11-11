@@ -339,7 +339,7 @@ export default {
           unitId: this.id,
         }
         return postAction(this.url.experiment, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.experimentReady = true
             return res.data
           }
@@ -398,7 +398,7 @@ export default {
           unitId: this.id,
         }
         return postAction(this.url.equipment, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.equipmentReady = true
             return res.data
           }
@@ -477,7 +477,7 @@ export default {
           unitId: this.id,
         }
         return postAction(this.url.parameter, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.parameterReady = true
             return res.data
           }
@@ -520,7 +520,7 @@ export default {
           templateType: 'data',
         }
         return postAction(this.url.template, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.dataTempReady = true
             return res.data
           }
@@ -537,7 +537,7 @@ export default {
           templateType: 'report',
         }
         return postAction(this.url.template, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.reportTempReady = true
             return res.data
           }
@@ -594,7 +594,7 @@ export default {
           dataType: 'work',
         }
         return postAction(this.url.workcenter, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.workcenterReady = true
             return res.data
           }
@@ -649,7 +649,7 @@ export default {
           checkType: 1,
         }
         return postAction(this.url.testUnitList, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.testBeforeTemplateReady = true
             return res.data
           }
@@ -663,7 +663,7 @@ export default {
           checkType: 2,
         }
         return postAction(this.url.testUnitList, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.testHalfwayTemplateReady = true
             return res.data
           }
@@ -677,7 +677,7 @@ export default {
           checkType: 3,
         }
         return postAction(this.url.testUnitList, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.testAfterTemplateReady = true
             return res.data
           }
@@ -723,7 +723,7 @@ export default {
           unitId: this.id,
         }
         return postAction(this.url.processDescList, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.processDescReady = true
             return res.data
           }
@@ -1100,7 +1100,7 @@ export default {
      */
     async getUnitInfo() {
       let res = await getAction(this.url.detail, {id: this.id})
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.unitInfo = res.data
         this.title = `${this.unitInfo.unitName} - ${this.unitInfo.classifyName}`
       }
@@ -1174,7 +1174,7 @@ export default {
       console.log(url, params)
       postAction(url, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('添加成功')
             this.$refs.hSelectModal.handleCancel()
             this.show(this.activeKey, this.id)
@@ -1242,7 +1242,7 @@ export default {
               break
           }
           let res = await postAction(url, params)
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('删除成功')
             this.show(this.activeKey, this.id)
           }
@@ -1257,7 +1257,7 @@ export default {
       }
       console.log('record', record, params)
       postAction(this.url.templateDefault, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success(record.name + ',设置默认成功')
           this.show(this.activeKey, this.id)
         }
@@ -1271,7 +1271,7 @@ export default {
         checkId: record.id,
       }
       postAction(this.url.testTempateSetDefault, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('设置默认成功')
           this.show(this.activeKey, this.id)
         }

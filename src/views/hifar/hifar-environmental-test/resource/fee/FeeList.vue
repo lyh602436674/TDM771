@@ -157,7 +157,7 @@ export default {
           groupCode: 'data',
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })

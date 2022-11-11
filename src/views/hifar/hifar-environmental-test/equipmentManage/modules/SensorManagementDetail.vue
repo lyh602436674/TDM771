@@ -134,7 +134,7 @@ export default {
     },
     loadDetailData(id) {
       postAction(this.url.detail, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           res.data.buyTime = moment(parseFloat(res.data.buyTime))
           res.data.checkTime = moment(parseFloat(res.data.checkTime))
           const { data } = res

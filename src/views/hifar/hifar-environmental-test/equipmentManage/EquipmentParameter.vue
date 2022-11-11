@@ -307,7 +307,7 @@ export default {
           checkType: 1
         }
         return postAction(this.url.testEquipList, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.testBeforeTemplateReady = true
             return res.data
           }
@@ -321,7 +321,7 @@ export default {
           checkType: 3
         }
         return postAction(this.url.testEquipList, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.testAfterTemplateReady = true
             return res.data
           }
@@ -335,7 +335,7 @@ export default {
           checkType: 2
         }
         return postAction(this.url.testEquipList, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.testHalfwayTemplateReady = true
             return res.data
           }
@@ -591,7 +591,7 @@ export default {
                   click: () => {
                     // this.$refs.equipmentAmendmentParameterTable.delete(params)
                     postAction(this.url.batchDeleteTagamendment, {ids: params.row.id}).then(res => {
-                      if (res.code == 200) {
+                      if (res.code === 200) {
                         this.$message.success("删除成功")
                         this.refresh(true)
                       }
@@ -610,7 +610,7 @@ export default {
           equipId: this.selectedKeys.join('')
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -622,7 +622,7 @@ export default {
           equipCode: this.selectedTreeRows[0].equipCode
         }
         return postAction(this.url.amendmentList, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -667,7 +667,7 @@ export default {
       }
       if (updateRecords.length > 0) {
         postAction(this.url.batchEditTagamendment, {list: updateRecords}).then(res => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.refresh(true)
           }
         })
@@ -756,7 +756,7 @@ export default {
       }
       postAction(url, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('添加成功')
             this.$refs.hSelectModal.handleCancel()
             this.$refs[ref].refresh(true)
@@ -781,7 +781,7 @@ export default {
           params.checkIds = id
           params.checkType = checkType
           let res = await postAction(this.url.testTemplateDel, params)
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('删除成功')
             this.refresh(true)
           }
@@ -801,7 +801,7 @@ export default {
             checkType: checkType
           }
           let res = await postAction(this.url.testTemplateDel, params)
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('删除成功')
             this.refresh(true)
           }
@@ -819,7 +819,7 @@ export default {
         checkId: record.id
       }
       postAction(this.url.testTemplateSetDefault, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('设置默认成功')
           this.refresh(true)
         }
@@ -910,7 +910,7 @@ export default {
     },
     conditionTypeChange(row) {
       postAction(this.url.editPoint, row).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('添加成功')
           this.refresh()
         }
@@ -918,7 +918,7 @@ export default {
     },
     handleDelete(ids) {
       postAction(this.url.delete, {id: ids}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.selectedRowKeys = []
           this.selectedRows = []
@@ -968,7 +968,7 @@ export default {
     },
     handleDeleteEquip(ids) {
       postAction(this.url.deleteEquip, {id: ids}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除设备成功')
           if (this.selectedKeys.includes(ids)) {
             this.selectedKeys = []
@@ -979,7 +979,7 @@ export default {
     },
     handleSubmitPoint(val) {
       postAction(this.url.editPoint, val).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('添加成功')
           this.refresh()
         }

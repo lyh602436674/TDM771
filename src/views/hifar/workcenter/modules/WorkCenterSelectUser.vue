@@ -118,7 +118,7 @@ export default {
       }
       postAction(this.url.add, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('添加成功')
             this.handleCancel()
             this.$emit('change', true)
@@ -136,7 +136,7 @@ export default {
         dataType: this.dataType,
       }
       return postAction(this.url.list, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
         }
       })

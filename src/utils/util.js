@@ -284,7 +284,7 @@ export function validateDuplicateValue(tableName, columnName, columnValue, callb
     if (columnValue) {
         let params = { tableName, columnName, columnValue }
         api.duplicateCheck(params).then(res => {
-            if(res.code == 200){
+            if(res.code === 200){
                 callback()
             }else{
                 callback(res.data.msg)

@@ -214,7 +214,7 @@ export default {
         url = this.url.add
       }
       postAction(url, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('操作成功')
           this.handleCancel()
           this.$emit('change', true)

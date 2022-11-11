@@ -361,7 +361,7 @@ export default {
     },
     toolsCodeChange(v) {
       getAction(this.url.queryByCode, { code: v, type: this.type }).then(res => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.mainModel = res.data.toolsData
           this.model = res.data.borrowData
           this.model.toolsCode = v
@@ -389,7 +389,7 @@ export default {
         params.borrowDate = moment(params.borrowDate).format('X') * 1000
       }
       postAction(this.url.saveOrUpdate, params).then(res => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.handleCancel()
           this.$emit('change')
         } else {

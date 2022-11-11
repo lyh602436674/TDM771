@@ -364,7 +364,7 @@ export default {
     // 试验详情
     getTestDetail() {
       postAction(this.url.testDetail, { id: this.testId }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let testPieceInfo = res.data.testPieceInfo
           let pieceInfoArr = []
           if (testPieceInfo.length) {
@@ -384,7 +384,7 @@ export default {
     // 异常详情
     loadDetail(id) {
       postAction(this.url.detail, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const { data } = res
           let obj = Object.assign({}, data)
           let attachInfo = obj.attachInfo
@@ -448,7 +448,7 @@ export default {
       }
       postAction(url, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.handleCancel()
             this.$emit('change', true)
           }

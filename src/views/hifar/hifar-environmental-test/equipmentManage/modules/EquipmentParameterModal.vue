@@ -111,7 +111,7 @@ export default {
           equipId: this.equipId
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -145,7 +145,7 @@ export default {
         equipId: this.equipId,
         abilityParamIds: this.selectedRowKeys.join(','),
       }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('添加成功')
           this.$emit('change', true)
           this.handleCancel()

@@ -192,7 +192,7 @@ export default {
           ],
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           key: 'c_custName_7',
           formType: 'input',
         },
@@ -235,7 +235,7 @@ export default {
           dataIndex: 'testCode',
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           align: 'left',
           dataIndex: 'custName',
           customRender: (text, record) => {
@@ -313,7 +313,7 @@ export default {
           ...params,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -437,7 +437,7 @@ export default {
         coverTemplateId: record.coverTemplateId,
         reportCode: record.reportCode,
       }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('操作成功!')
           this.refresh(true)
         }
@@ -450,7 +450,7 @@ export default {
         coverTemplateId: record.coverTemplateId,
         reportCode: record.reportCode,
       }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('操作成功!')
           this.refresh(true)
         }
@@ -466,7 +466,7 @@ export default {
         unitId: record.unitId,
         projectId: record.projectId,
       }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('操作成功!')
           this.refresh(true)
           this.loadReportNum()

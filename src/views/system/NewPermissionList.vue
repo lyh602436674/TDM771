@@ -143,7 +143,7 @@ export default {
       this.loading = true
       getSystemMenuList()
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.dataSource = rebuildRouter(res.data)
             return this.loadDataByExpandedRows(this.dataSource)
           }

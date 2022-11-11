@@ -79,7 +79,7 @@ export default {
     // 删除文件
     handleDelete(ids) {
       postAction(this.url.delete, { id: ids }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           console.log('delete finished')
           this.$emit('change', true)
         }

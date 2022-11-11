@@ -262,7 +262,7 @@ export default {
       ],
       loadData: () => {
         return postAction(this.url.taskListAll).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.model = Object.assign({}, this.model, {runNum: res.data.length})
             // this.$refs.handoverAddForm.form.setFieldsValue({ runNum: this.model.runNum })
             return res.data
@@ -299,7 +299,7 @@ export default {
     // 通过id查找
     loadDetail(id) {
       postAction(this.url.loadDetail, {id: id}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.editor(res.data)
         }
       })
@@ -336,7 +336,7 @@ export default {
       }
       params.handoverTime = params.handoverTime && params.handoverTime != 0 ? params.handoverTime.valueOf() : ''
       postAction(url, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('操作成功')
           this.$emit('change', true)
           this.handleCancel()

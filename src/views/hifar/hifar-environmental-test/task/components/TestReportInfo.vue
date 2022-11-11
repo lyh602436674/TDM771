@@ -278,7 +278,7 @@ export default {
           c_testId_7: this.testId
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.currentDataSource = cloneDeep(res.data.data)
             return res.data
           }

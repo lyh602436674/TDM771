@@ -78,7 +78,7 @@ export default {
     },
     loadData(id) {
       postAction(this.url.workId, { id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.model = Object.assign({}, res.data)
           this.title = this.model.workName + '详情'
           this.userList = res.data.userList

@@ -118,7 +118,7 @@ export default {
     },
     loadDetail(id) {
       postAction(this.url.detailById, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let record = res.data
           this.detailData = record
         }

@@ -248,7 +248,7 @@ export default {
         ...this.queryParam,
       }
       let res = await queryDepartTreeList(params)
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.allTreeKeys = []
         this.departTree = res.data
       }
@@ -334,7 +334,7 @@ export default {
       } else {
         res = await addDepart(params)
       }
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.$message.success('保存成功')
         this.loadData()
       }
@@ -385,7 +385,7 @@ export default {
       }
       postAction(this.url.addDeptUsers, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('添加用户成功')
             this.$refs.departUserSelect.handleCancel()
             this.$refs.departUser.show(this.currSelected.id)

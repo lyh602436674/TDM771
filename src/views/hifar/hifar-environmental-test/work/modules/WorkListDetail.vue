@@ -161,7 +161,7 @@ export default {
         }
         this.postId = this.postionDetail.id
         return getAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -217,7 +217,7 @@ export default {
         userIds: id,
       }
       postAction(this.url.del, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)
         }

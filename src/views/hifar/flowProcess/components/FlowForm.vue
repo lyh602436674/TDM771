@@ -328,7 +328,7 @@ export default {
       }
       duplicateCheck(params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             if (res.data.num == 0) {
               callback()
             } else {

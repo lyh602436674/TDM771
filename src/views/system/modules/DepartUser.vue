@@ -127,7 +127,7 @@ export default {
         deptId: this.deptId,
       }
       return getUserByDeptId(query).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           res.data.data.map((item) => {
             if (item.userRole && item.userRole.length) {
               item.userRole = item.userRole.split(',')
@@ -159,7 +159,7 @@ export default {
         userIds: ids,
       }
       postAction(this.url.delUser, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)
         }

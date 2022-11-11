@@ -236,7 +236,7 @@ export default {
         params.useTime = params.useTime && params.useTime != 0 ? params.useTime.valueOf(): ''
         params.publishTime = params.publishTime && params.publishTime != 0 ? params.publishTime.valueOf(): ''
         postAction(url, params).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('ok', true)
             this.handleCancel()
@@ -250,7 +250,7 @@ export default {
         }
         params.publishTime = params.publishTime && params.publishTime != 0 ? params.publishTime.valueOf(): ''
         postAction(url, params).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('ok', true)
             this.handleCancel()

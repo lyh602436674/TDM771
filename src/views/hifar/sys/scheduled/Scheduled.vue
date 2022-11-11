@@ -106,7 +106,7 @@ export default {
           ...this.queryParams
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -133,7 +133,7 @@ export default {
     },
     handleDelete(ids) {
       postAction(this.url.delete, { id: ids }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh()
         }
@@ -148,7 +148,7 @@ export default {
         url = this.url.stop
       }
       postAction(url, { id: record.id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success(checked == 2 ? '启用成功' : '停用成功')
           this.refresh()
         }

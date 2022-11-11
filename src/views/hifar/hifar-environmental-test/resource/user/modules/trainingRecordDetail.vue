@@ -3,7 +3,7 @@
  * @Date: 2021-08-06 17:54:55
  * @LastEditTime: 2021-11-10 15:22:09
  * @LastEditors: 赵峰
- * @Descripttion: 
+ * @Descripttion:
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\resource\user\modules\trainingRecordDetail.vue
 -->
 <template>
@@ -96,7 +96,7 @@ export default {
     },
     loadCheckDetail(id) {
       postAction(this.url.detailCheckById, { trainRecordId: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let record = res.data
           let checkRecordData = []
           if (record.length > 0) {

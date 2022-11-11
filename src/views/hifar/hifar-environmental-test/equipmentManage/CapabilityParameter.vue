@@ -141,7 +141,7 @@ export default {
           ...this.queryParams,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -172,7 +172,7 @@ export default {
           content: '删除后不可恢复，确认删除？',
           onOk: () => {
             postAction(this.url.delete, {id: this.selectedRowKeys.toString()}).then((res) => {
-              if (res.code == 200) {
+              if (res.code === 200) {
                 this.$message.success('删除成功')
                 this.selectedRowKeys = []
                 this.selectedRows = []
@@ -187,7 +187,7 @@ export default {
     },
     handleDelete(ids) {
       postAction(this.url.delete, {id: ids}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh()
         }

@@ -103,7 +103,7 @@ export default {
         centerId: this.centerId,
       }
       return postAction(this.url, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
         }
       })

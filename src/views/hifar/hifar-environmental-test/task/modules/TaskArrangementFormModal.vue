@@ -218,7 +218,7 @@ export default {
       params.chargeUserId = params.chargeUserId && params.chargeUserId.toString()
       params.predictStartTime = moment(params.predictStartTime).valueOf()
       postAction(this.url.distribute, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           if (res.msg && res.msg.includes('error')) {
             this.$confirm({
               title: "提示",

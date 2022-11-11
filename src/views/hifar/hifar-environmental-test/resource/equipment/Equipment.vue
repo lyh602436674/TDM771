@@ -367,7 +367,7 @@ export default {
           searchType: this.expiryTime,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             let statisticsNum = res.ext
             this.$emit('change', statisticsNum)
             return res.data

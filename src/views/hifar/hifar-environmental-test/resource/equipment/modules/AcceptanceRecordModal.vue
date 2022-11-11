@@ -192,7 +192,7 @@ export default {
     },
     loadDetail(id) {
       postAction(this.url.detailById, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.editor(res.data)
           this.loadAcceptInfoDetail(id)
         }
@@ -200,7 +200,7 @@ export default {
     },
     loadAcceptInfoDetail(id) {
       postAction(this.url.accessDetailById, { acceptId: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let record = res.data
           let acceptList = []
           if (record.length > 0) {
@@ -270,7 +270,7 @@ export default {
         if (ids) {
           this.handleByIdDelete(ids)
         }
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success(this.title + '成功')
           this.$emit('change', true)
           this.handleCancel()

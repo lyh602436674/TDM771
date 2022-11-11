@@ -181,7 +181,7 @@ export default {
       return postAction(this.url.detail, params)
         .then((res) => {
           console.log('Get Task Info', res)
-          if (res.code == 200) {
+          if (res.code === 200) {
             let { needSelectNextNode, nextNodeId, nextNodeList, needSelectNextUser, selectNextUserType, nextUserList } =
               res.data
             Object.assign(this, {
@@ -204,7 +204,7 @@ export default {
       }
       postAction(this.url.proList, params).then((res) => {
         console.log('流程信息', res)
-        if (res.code == 200) {
+        if (res.code === 200) {
           let { priMap, proData, taskHisList, taskList } = res.data
           this.taskHisList = taskHisList
           proData.nodeList = proData.nodeList.map((item) => {
@@ -240,7 +240,7 @@ export default {
         taskId: this.model.taskId,
       }
       postAction(this.url.pull, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('签收成功')
           this.getTaskInfo()
           this.getProcessInfo()
@@ -271,7 +271,7 @@ export default {
       console.log('审核提交数据', params)
       postAction(this.url.commit, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(rsStatus == 1 ? '审核通过' : '驳回成功')
             this.$emit('change', true)
             this.handelCancel()

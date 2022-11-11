@@ -330,7 +330,7 @@ export default {
     getSecretList() {
       //hf_sys_file_secret
       listByDictCode('hf_sys_file_secret').then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.secretList = res.data
         }
       })
@@ -462,7 +462,7 @@ export default {
     },
     async createMinioClient() {
       let res = await getAction(this.url.minioConfig)
-      if (res.code == 200) {
+      if (res.code === 200) {
         let { accessKey, secretKey, endPoint, port, bucketName, useSSL } = res.data
         this.bucket = bucketName
         this.MinioClient = new Minio.Client({

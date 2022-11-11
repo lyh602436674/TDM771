@@ -70,7 +70,7 @@ export default {
     },
     loadCoverData() {
       postAction(this.url.cover, {}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let coverList = []
           let { data } = res
           data.forEach((item) => {

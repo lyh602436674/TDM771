@@ -3,7 +3,7 @@
  * @Date: 2021-07-30 19:04:51
  * @LastEditTime: 2021-10-27 15:53:10
  * @LastEditors: 陈乾龙
- * @Description: 计量检定 
+ * @Description: 计量检定
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\project\MetrologicalVerification.vue
 -->
 <template>
@@ -163,7 +163,7 @@ export default {
             delUrl = this.url.classifyDelete
           }
           postAction(delUrl, { id: selectedRow.id }).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               this.$message.success('删除成功')
               this.handleRloadTree()
             }
@@ -180,7 +180,7 @@ export default {
         ...this.treeSearchParams,
       }
       let res = await chemicalTree(params)
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.treeData = res.data
         this.selectedRows = []
         this.selectedKeys = []

@@ -232,7 +232,7 @@ export default {
           c_status_1: 1,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -251,7 +251,7 @@ export default {
     // 左边树结构
     loadTreeData() {
       postAction(this.url.treeData, {}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let treeData = []
           this.treeCustData = res.data
           res.data.forEach((item) => {

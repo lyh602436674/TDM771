@@ -170,7 +170,7 @@ export default {
             delUrl = this.url.classifyDelete
           }
           postAction(delUrl, { id: selectedRow.id }).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               this.$message.success('删除成功')
               this.handleRloadTree()
             }
@@ -187,7 +187,7 @@ export default {
         ...this.treeSearchParams,
       }
       let res = await chemicalTree(params)
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.treeData = res.data
         this.selectedRows = []
         this.selectedKeys = []

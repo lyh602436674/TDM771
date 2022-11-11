@@ -361,7 +361,7 @@ export default {
       return getAction(this.url.roleUserList, data)
         .then((res) => {
           console.log(res)
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -379,7 +379,7 @@ export default {
         return
       }
       postAction(this.url.delRoleUser, { roleId: this.currentRoleId, userIds: ids }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.roleUserRefresh(true)
           this.resetSelectedUser(ids)
@@ -407,7 +407,7 @@ export default {
       }
       console.log(params)
       postAction(this.url.addRoleUser, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.roleUserRefresh(true)
           this.$message.success('添加用户成功！')
         }

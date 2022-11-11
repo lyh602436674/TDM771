@@ -153,7 +153,7 @@ export default {
         ...this.treeSearchParams,
       }
       let res = await postAction(this.url.list, params)
-      if (res.code == 200) {
+      if (res.code === 200) {
         console.log(res.data)
         this.treeData = res.data.map((item) => {
           item.scopedSlots = {

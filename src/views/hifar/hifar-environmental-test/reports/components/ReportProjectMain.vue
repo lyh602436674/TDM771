@@ -58,7 +58,7 @@ export default {
           custId: this.custId,
         }
         return postAction('/HfEnvReportBusiness/listPageEntrustByCusId', data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })

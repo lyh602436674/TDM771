@@ -364,7 +364,7 @@ export default {
     },
     loadDetail(id) {
       postAction(this.url.detail, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const { data } = res
           let obj = Object.assign({}, data)
           let attachInfo = obj.attachInfo
@@ -423,7 +423,7 @@ export default {
       }
       postAction(url, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('change')
             this.handleCancel()

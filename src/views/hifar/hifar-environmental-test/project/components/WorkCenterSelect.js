@@ -39,7 +39,7 @@ export default {
   methods: {
     async getWorkCenterList() {
       let res = await getAction(this.url)
-      if (res.code == 200) {
+      if (res.code === 200) {
         let options = []
         options = res.data.map(item => {
           return {

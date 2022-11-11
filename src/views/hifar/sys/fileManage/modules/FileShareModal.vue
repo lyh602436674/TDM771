@@ -102,7 +102,7 @@ export default {
     },
     getUserList() {
       return postAction(this.url.list).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let treeData = []
           this.localTree = res.data
           createTree(this.localTree, treeData, null, '0')
@@ -137,7 +137,7 @@ export default {
       }
       postAction(this.url.share, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('分享成功')
             this.$emit('change', true)
             this.handleCancel()

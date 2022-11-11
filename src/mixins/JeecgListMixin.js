@@ -86,7 +86,7 @@ export const JeecgListMixin = {
       var params = this.getQueryParams();//查询条件
       this.loading = true;
       getAction(this.url.list, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           //update-begin---author:zhangyafei    Date:20201118  for：适配不分页的数据列表------------
           this.dataSource = res.data.data || res.data;
           if (res.data.totalCount) {
@@ -178,7 +178,7 @@ export const JeecgListMixin = {
           onOk: function () {
             that.loading = true;
             postAction(that.url.deleteBatch, { id: ids }).then((res) => {
-              if (res.code == 200) {
+              if (res.code === 200) {
                 that.$message.success(res.data.msg || '批量删除成功');
                 that.loadData();
                 that.onClearSelected();
@@ -197,7 +197,7 @@ export const JeecgListMixin = {
       }
       var that = this;
       postAction(that.url.delete, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           that.$message.success(res.data.msg || '删除成功');
           that.loadData();
         }

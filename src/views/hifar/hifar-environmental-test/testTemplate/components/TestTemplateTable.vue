@@ -178,7 +178,7 @@ export default {
           c_checkType_1: this.checkType,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })

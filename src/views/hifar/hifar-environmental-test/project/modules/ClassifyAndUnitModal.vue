@@ -228,7 +228,7 @@ export default {
           url = this.url.unitAdd
         }
         postAction(url, params).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('ok', true)
             this.handleCancel()
@@ -244,7 +244,7 @@ export default {
           params.centerIds = params.centerIds.join(',')
         }
         postAction(url, params).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('ok', true)
             this.handleCancel()

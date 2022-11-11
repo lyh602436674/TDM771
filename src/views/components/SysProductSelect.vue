@@ -258,7 +258,7 @@ export default {
         groupCode: this.groupCode,
       }
       return getAction(this.url, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
         }
       })

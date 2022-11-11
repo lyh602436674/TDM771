@@ -63,7 +63,7 @@ export default {
       handler(val) {
         if (val.id) {
           postAction(this.url.query, { id: val.id }).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               let { base, nodeList, lineList } = res.data
               this.localFlow = base
               this.$nextTick(() => {
@@ -224,7 +224,7 @@ export default {
         lineList: lineList,
       }
       postAction(this.url.publish, { proData: params, id: params.id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('发布成功！')
           this.$emit('change', true)
         }
@@ -245,7 +245,7 @@ export default {
           params = filterObj(params)
           postAction(this.url.add, params)
             .then((res) => {
-              if (res.code == 200) {
+              if (res.code === 200) {
                 this.$message.success('保存成功！')
                 this.$emit('change', true)
               }
@@ -260,7 +260,7 @@ export default {
       let res = await postAction(params.id ? this.url.edit : this.url.add, params.base).finally(() => {
         this.$refs.flowForm.loading = false
       })
-      if (res.code == 200) {
+      if (res.code === 200) {
         if (res.data.id) {
           this.localFlow = Object.assign({}, this.localFlow, { id: res.data.id })
           params.id = res.data.id
@@ -270,7 +270,7 @@ export default {
         res = await postAction(this.url.save, { proData: params, id: params.id }).finally(() => {
           this.$refs.flowForm.loading = false
         })
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('保存成功！')
           this.$emit('change', true)
         }
@@ -280,7 +280,7 @@ export default {
       let res = await postAction(this.url.save, { proData: params, id: params.id }).finally(() => {
         this.$refs.flowForm.loading = false
       })
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.$message.success('保存成功！')
         this.$emit('change', true)
       }

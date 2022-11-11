@@ -321,7 +321,7 @@ export default {
       this.loading = true
       return getUserList(data)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -356,7 +356,7 @@ export default {
           content: '是否' + (status == 1 ? '解冻' : '冻结') + '选中账号?',
           onOk: function () {
             frozenBatch({ ids: ids, status: status }).then((res) => {
-              if (res.code == 200) {
+              if (res.code === 200) {
                 that.$message.success((status == 1 ? '解冻' : '冻结') + '成功')
                 that.refresh()
                 that.onClearSelected()
@@ -386,7 +386,7 @@ export default {
         status: status,
       }
       frozenBatch(params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success(status == 1 ? '启用成功' : '冻结成功')
           this.refresh()
         }
@@ -394,7 +394,7 @@ export default {
     },
     handleChangePassword(id) {
       postAction('/OrgUserBusiness/resetDefaultPwdById', { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('重置成功')
         }
       })
@@ -402,7 +402,7 @@ export default {
     handleSyncUser() {
       var that = this
       putAction(that.url.syncUser, {}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           that.$message.success(res.message)
         } else {
           that.$message.warning(res.message)

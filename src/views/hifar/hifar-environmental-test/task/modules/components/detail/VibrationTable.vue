@@ -128,7 +128,7 @@ export default {
           id: this.testId,
         }
         return postAction(this.url.installation, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             res.data.data.map((item) => {
               if (isArray(item.testDirectionInfo)) {
                 item.testDirectionIds = []
@@ -196,7 +196,7 @@ export default {
           id: this.testId,
         }
         return postAction(this.url.sensor, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             res.data.data.map((sensor) => {
               sensor.sensorId = sensor.equipId
             })
@@ -289,7 +289,7 @@ export default {
       })
       postAction(this.url.submit, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('提交成功')
             this.edit = false
           }

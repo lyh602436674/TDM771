@@ -158,7 +158,7 @@ export default {
     },
     loadDetail(id) {
       postAction(this.url.detail, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const { data } = res
           this.title = (data.testNames ? data.testNames : '') + '-异常记录详情'
           this.detailData = data
@@ -168,7 +168,7 @@ export default {
     },
     getTestDetail(testId) {
       postAction(this.url.testDetail, { id: testId }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           for (let item in res.data) {
             for (let i = 0; i < this.testData.length; i++) {
               if (item === this.testData[i].key) {

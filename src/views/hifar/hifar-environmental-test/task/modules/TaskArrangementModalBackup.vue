@@ -338,7 +338,7 @@ export default {
       }
       postAction(this.url.equipList, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             let list = res.data.sort((a,b)=> a.rowSort - b.rowSort)
             let selectOptions = []
             let ext = res.ext
@@ -401,7 +401,7 @@ export default {
       }
       params.predictStartTime = moment(params.predictStartTime).valueOf()
       postAction(this.url.distribute, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('分配成功')
           this.$emit('change', true)
           this.handleCancel()

@@ -130,7 +130,7 @@ export default {
     loadDetail(id) {
       let url = this.url.detail
       postAction(url, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let record = res.data
           this.detailData = record
           // this.src = pdf.createLoadingTask(record.pdfPath)
@@ -144,7 +144,7 @@ export default {
     },
     handleCheckPass(id, examineFlag) {
       postAction(this.url.check, { id: id, examineFlag: examineFlag }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('操作成功')
           this.loadDetail(this.reportId)
         }
@@ -152,7 +152,7 @@ export default {
     },
     handleCheckApprovePass(id, examineFlag) {
       postAction(this.url.checkApprove, { id: id, examineFlag: examineFlag }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('操作成功')
           this.loadDetail(this.reportId)
         }

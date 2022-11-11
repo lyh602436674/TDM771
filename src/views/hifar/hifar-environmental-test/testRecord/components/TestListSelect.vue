@@ -240,7 +240,7 @@ export default {
         c_status_97: '1,20,25,30',
       }
       return postAction(this.url, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
         }
       })

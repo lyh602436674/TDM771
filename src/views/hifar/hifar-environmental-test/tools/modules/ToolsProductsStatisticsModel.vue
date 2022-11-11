@@ -152,7 +152,7 @@ export default {
           type: this.type,
         }
         return postAction(this.url.statistics, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$emit('change', res.data.totalCount)
             return res.data
           }

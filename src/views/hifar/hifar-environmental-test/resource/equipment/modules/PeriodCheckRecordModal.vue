@@ -171,7 +171,7 @@ export default {
     },
     loadDetail(id) {
       postAction(this.url.detailById, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.editor(res.data)
         }
       })
@@ -199,7 +199,7 @@ export default {
       }
       params.checkTime = params.checkTime && params.checkTime != 0 ? params.checkTime.valueOf() : ''
       postAction(url, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success(this.title + '成功')
           this.$emit('change', true)
           this.handleCancel()

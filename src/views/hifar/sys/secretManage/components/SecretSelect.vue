@@ -40,7 +40,7 @@ export default {
         return
       }
       listByDictCode(this.dictCode, null).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.secretList = res.data
         }
       })

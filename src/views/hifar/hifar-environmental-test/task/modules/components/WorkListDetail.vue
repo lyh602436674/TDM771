@@ -139,7 +139,7 @@ export default {
         }
         this.postId = this.postionDetail.id
         return getAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })

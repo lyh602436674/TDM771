@@ -163,7 +163,7 @@ export default {
           entrustId: this.entrustId,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -209,7 +209,7 @@ export default {
     },
     loadCoverData() {
       postAction(this.url.cover, {}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let { data } = res
           this.coverList = data
           this.coverTemplateId = data.length > 0 ? data[0].id : undefined
@@ -218,7 +218,7 @@ export default {
     },
     loadTreeData() {
       postAction(this.url.tree, {}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let treeData = []
           this.treeCustData = res.data
           res.data.forEach((item) => {

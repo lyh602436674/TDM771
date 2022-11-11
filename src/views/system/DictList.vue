@@ -165,7 +165,7 @@ export default {
       }
       data = filterObj(data)
       return postAction(this.url.list, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
         }
       })
@@ -183,7 +183,7 @@ export default {
     // 删除字典
     handleDelete(id) {
       postAction(this.url.delete, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)
         }
@@ -222,7 +222,7 @@ export default {
     refleshCache() {
       // getAction(this.url.refleshCache)
       //   .then((res) => {
-      //     if (res.code == 200) {
+      //     if (res.code === 200) {
       //       //重新加载缓存
       //       getAction(this.url.queryAllDictItems).then((res) => {
       //         if (res.data == 200) {

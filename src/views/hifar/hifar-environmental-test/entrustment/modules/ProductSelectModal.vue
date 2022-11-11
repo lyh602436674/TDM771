@@ -51,10 +51,6 @@
           title="试品名称"
         />
         <vxe-table-column
-          field="baseNumberCode"
-          title="机号范围"
-        />
-        <vxe-table-column
           :edit-render="{}"
           field="pieceNo"
           title="试品编号"
@@ -168,7 +164,7 @@ export default {
       }
       postAction(this.url.list, data)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             res.data.data.map((item) => {
               ;(item.startNum = ''), (item.pieceNum = ''), (item.pieceNoPrefix = ''), (item.pieceNoSuffix = '')
             })

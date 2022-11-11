@@ -105,7 +105,7 @@ export default {
           ...this.queryParams,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -132,7 +132,7 @@ export default {
         id: record.id,
       }
       postAction(this.url.delete, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh()
         }

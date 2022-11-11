@@ -177,7 +177,7 @@ export default {
         pageSize: 100,
       }
       return postAction(this.url.venueList, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let dataArr = res.data.data
           this.venueListData = dataArr
           this.placeId = dataArr.length > 0 ? dataArr[0].id : ''
@@ -194,7 +194,7 @@ export default {
         placeId: this.placeId,
       }
       return postAction(this.url.list, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let data = res.data.data
           res.data.data = data.map((item) => {
             return {

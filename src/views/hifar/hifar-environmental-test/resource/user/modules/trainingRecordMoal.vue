@@ -230,7 +230,7 @@ export default {
     },
     loadCheckDetail(id) {
       postAction(this.url.detailCheckById, { trainRecordId: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let record = res.data
           let checkRecordData = []
           if (record.length > 0) {
@@ -305,7 +305,7 @@ export default {
         params.trainTime = params.trainTime && params.trainTime != 0 ? params.trainTime.valueOf() : ''
         params.checkRecord = checkRecord
         postAction(url, params).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('change', true)
             this.handleCancel()

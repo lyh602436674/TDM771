@@ -190,7 +190,7 @@ export default {
         }
         this.workCenterId = this.workCenterDetail.id
         return getAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -267,7 +267,7 @@ export default {
         userIds: id,
       }
       postAction(this.url.del, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)
         }
@@ -280,7 +280,7 @@ export default {
         dataType,
       }
       postAction(this.url.setManager, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success(dataType == 'user' ? '取消负责人成功' : '设置负责人成功')
           this.refresh()
         }

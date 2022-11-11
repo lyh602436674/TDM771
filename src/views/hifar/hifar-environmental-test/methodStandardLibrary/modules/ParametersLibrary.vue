@@ -229,7 +229,7 @@ export default {
         methodId: this.selectedLeftRows[0].id,
       }
       return postAction(this.url.list, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
         }
       })
@@ -237,7 +237,7 @@ export default {
     conditionTypeDescOfNumberChange(row) {
       row.minValue = row.conditionTypeDesc
       postAction(this.url.edit, row).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('添加成功')
           this.refresh()
         }
@@ -246,7 +246,7 @@ export default {
     conditionTypeDescOfStringChange(row) {
       row.strValue = row.conditionTypeDesc
       postAction(this.url.edit, row).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('添加成功')
           this.refresh()
         }
@@ -258,7 +258,7 @@ export default {
     },
     handleDelete(ids) {
       postAction(this.url.delete, {id: ids}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.selectedRowKeys = []
           this.refresh()
@@ -267,7 +267,7 @@ export default {
     },
     handleSubmitPoint(val) {
       postAction(this.url.editPoint, val).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('添加成功')
           this.refresh()
         }

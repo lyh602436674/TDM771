@@ -84,7 +84,7 @@ export default {
       }
       params.optTime = params.optTime.valueOf()
       postAction(this.url.suspend, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.handleCancel()
           this.$emit('change', this.type, params)
         }

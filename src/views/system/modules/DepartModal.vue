@@ -3,7 +3,7 @@
  * @Date: 2021-07-14 09:37:41
  * @LastEditTime: 2021-10-21 15:58:54
  * @LastEditors: 陈乾龙
- * @Description: 
+ * @Description:
  * @FilePath: \hifar-platform-client\src\views\system\modules\DepartModal.vue
 -->
 <template>
@@ -51,7 +51,7 @@ export default {
       } else {
         res = await addDepart(params)
       }
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.$message.success(this.title + '成功')
         this.$emit('ok', true)
         this.close()

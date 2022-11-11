@@ -3,7 +3,7 @@
  * @Date: 2021-09-06 14:16:27
  * @LastEditTime: 2021-09-06 17:54:05
  * @LastEditors: 赵峰
- * @Descripttion: 
+ * @Descripttion:
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-physico-chemical\resource\EquipmentCheck\EquipmentCheckDetail.vue
 -->
 <template>
@@ -101,7 +101,7 @@ export default {
     },
     loadAcceptInfoDetail(id) {
       postAction(this.url.accessDetailById, { templateId: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.acceptListData = res.data
         }
       })

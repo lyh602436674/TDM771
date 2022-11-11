@@ -178,7 +178,7 @@ export default {
     getCheckDetail() {
       console.log(this.testId)
       postAction(this.url.detail, { id: this.testId }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let { beforeCheckInfo, inCheckInfo, afterCheckInfo } = res.data
           this.beforeCheckInfo = isArray(beforeCheckInfo) && beforeCheckInfo.length ? beforeCheckInfo : []
           this.inCheckInfo = isArray(inCheckInfo) && inCheckInfo.length ? inCheckInfo : []
@@ -226,7 +226,7 @@ export default {
     },
     handleFillSubmit(values) {
       postAction(this.url.fill, values).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('检查审核成功')
           this.getCheckDetail()
           this.$refs.ensureModal.handleCancel()
@@ -252,7 +252,7 @@ export default {
     },
     handleCheckSubmit(values) {
       postAction(this.url.check, values).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('检查复核成功')
           this.getCheckDetail()
           this.$refs.ensureModal.handleCancel()

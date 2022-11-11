@@ -3,7 +3,7 @@
  * @Date: 2021-08-23 18:34:08
  * @LastEditTime: 2021-08-31 14:25:54
  * @LastEditors: 陈乾龙
- * @Descripttion: 
+ * @Descripttion:
  * @FilePath: \hifar-platform-client\src\api\api.js
  */
 import { getAction, deleteAction, putAction, postAction, httpAction } from '@/api/manage'
@@ -59,7 +59,7 @@ const getSystemSubmenuBatch = (params) => getAction('/sys/permission/getSystemSu
 // 查询所有权限
 export const queryTreeListToTree = (params, hasKey = false) => {
     return getAction('/OrgMenuBusiness/listAll', params).then(res => {
-        if (res.code == 200) {
+        if (res.code === 200) {
             let roleTree = rebuildRouter(res.data)
             if (hasKey) {
                 let allKeys = []
@@ -160,7 +160,7 @@ export const listByDictCode = (code, params) => {
 };
 /**
  * @name: 赵峰
- * @test: 
+ * @test:
  * @msg: 从localStorage缓存中获取字典配置
  * @param {*} dictCode
  * @return {*}

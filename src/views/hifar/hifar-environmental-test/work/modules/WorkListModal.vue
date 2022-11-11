@@ -110,7 +110,7 @@ export default {
       }
       postAction(url, values)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('change')
             this.handleCancel()

@@ -980,7 +980,7 @@ export default {
       let productArr = []
       let personArr = []
       postAction(this.url.detail, {id: id}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.entrustType = res.data.entrustInfo[0].entrustType
           res.data.testPieceInfo.forEach((item) => {
             productArr.push({

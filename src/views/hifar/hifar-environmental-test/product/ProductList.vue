@@ -29,7 +29,7 @@
         :row-selection='{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }'
       >
         <span slot='productAlias' slot-scope='text, record'>
-          <a href='javascript:;' @click='handleDetailCode(record)'>
+          <a @click='handleDetailCode(record)'>
             {{ record.productAlias ? record.productAlias : '--' }}
           </a>
         </span>
@@ -104,7 +104,7 @@ export default {
           ...params
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -176,14 +176,6 @@ export default {
           title: '产品名称',
           align: 'left',
           dataIndex: 'productName'
-        },
-        {
-          title: '机号范围 ',
-          align: 'left',
-          dataIndex: 'baseNumberCode',
-          customRender: (text, record) => {
-            return text || '--'
-          }
         },
         {
           title: '备注 ',

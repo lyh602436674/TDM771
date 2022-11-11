@@ -194,7 +194,7 @@ export default {
           formType: 'input',
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           key: 'c_custName_7',
           formType: 'input',
         },
@@ -236,12 +236,12 @@ export default {
           ],
         },
         {
-          title: '样品名称',
+          title: '产品名称',
           key: 'productName',
           formType: 'input',
         },
         {
-          title: '样品代号',
+          title: '产品代号',
           key: 'productAlias',
           formType: 'input',
         },
@@ -269,7 +269,7 @@ export default {
           },
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           dataIndex: 'custName',
           minWidth: 120,
         },
@@ -296,7 +296,7 @@ export default {
           },
         },
         {
-          title: "样品名称",
+          title: "产品名称",
           align: "left",
           dataIndex: "productNames",
           minWidth: 100,
@@ -305,16 +305,7 @@ export default {
           },
         },
         {
-          title: "型号/规格",
-          align: "left",
-          dataIndex: "productModels",
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: "图号",
+          title: "产品代号",
           align: "left",
           dataIndex: "productAliass",
           minWidth: 100,
@@ -323,7 +314,7 @@ export default {
           },
         },
         {
-          title: "样品编号",
+          title: "产品编号",
           align: "left",
           dataIndex: "pieceNo",
           minWidth: 100,

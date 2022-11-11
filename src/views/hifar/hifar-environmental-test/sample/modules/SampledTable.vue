@@ -233,7 +233,7 @@ export default {
           c_status_1: 10,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })

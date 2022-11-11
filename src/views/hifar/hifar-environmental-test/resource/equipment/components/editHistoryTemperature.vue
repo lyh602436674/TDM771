@@ -90,7 +90,7 @@ export default {
     handleClickSubmit(values){
       console.log(">>>>>>",values)
       postAction(this.url.save,values).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('保存成功')
          this.visible=false
           this.$emit("change",true)

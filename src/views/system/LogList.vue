@@ -116,7 +116,7 @@
           }
           delete data.c_createTime_1
           return postAction(this.activeTab == 1 ? this.url.login : this.url.busi, data).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               return res.data
             }
           })

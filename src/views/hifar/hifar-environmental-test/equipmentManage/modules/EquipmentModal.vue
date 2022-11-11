@@ -103,7 +103,7 @@ export default {
       }
       postAction(url, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('change', true)
             this.handleCancel()
@@ -115,7 +115,7 @@ export default {
     },
     getEquipDetail() {
       getAction(this.url.detail, { id: this.localEquipId }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           res.data.buyTime = res.data.buyTime && res.data.buyTime != 0 ? moment(parseFloat(res.data.buyTime)) : ''
           res.data.checkTime =
             res.data.checkTime && res.data.checkTime != 0 ? moment(parseFloat(res.data.checkTime)) : ''

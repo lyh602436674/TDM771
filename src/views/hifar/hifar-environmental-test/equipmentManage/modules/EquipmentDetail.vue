@@ -168,7 +168,7 @@ export default {
   methods: {
     getEquipDetail() {
       getAction(this.url.detail, {id: this.localEquipId}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           res.data.buyTime = res.data.buyTime && res.data.buyTime != 0 ? moment(parseFloat(res.data.buyTime)) : ''
           res.data.checkTime =
             res.data.checkTime && res.data.checkTime != 0 ? moment(parseFloat(res.data.checkTime)) : ''
@@ -232,7 +232,7 @@ export default {
         params.attachIds = attachInfo.join(',')
       }
       postAction(this.url.edit, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('修改成功')
           this.isEdit = false
           this.getEquipDetail()

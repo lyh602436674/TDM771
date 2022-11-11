@@ -73,7 +73,7 @@ export default {
         columnValue: value,
       }
       duplicateCheck(params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           callback()
         } else {
           callback(res.message)
@@ -105,7 +105,7 @@ export default {
       }
       obj
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('ok')
           } else {

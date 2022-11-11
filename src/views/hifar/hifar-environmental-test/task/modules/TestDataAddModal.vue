@@ -164,7 +164,7 @@ export default {
     // 附件
     loadAttachData() {
       postAction(this.url.testAttachList, { refType: 'test_attach', refId: this.testId }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const { data } = res
           let fileArr = []
           let obj = {}
@@ -196,7 +196,7 @@ export default {
     // 视频
     loadVideoData() {
       postAction(this.url.attachList, { refType: 'test_video', refId: this.testId }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const { data } = res
           let fileArr = []
           let obj = {}

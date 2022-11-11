@@ -114,7 +114,7 @@
             let params = Object.assign({userCode:this.userCode},values)
             console.log("修改密码提交数据",params)
             postAction(this.url,params).then((res)=>{
-              if(res.code == 200){
+              if(res.code === 200){
                 console.log(res)
                 that.$message.success(res.msg);
                 that.close();

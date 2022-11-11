@@ -366,7 +366,7 @@ export default {
           formType: 'input',
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           key: 'custName',
           formType: 'input',
         },
@@ -504,12 +504,12 @@ export default {
           minWidth: 140,
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           dataIndex: 'custNames',
           minWidth: 100,
         },
         {
-          title: '样品名称',
+          title: '产品名称',
           align: 'left',
           minWidth: 120,
           dataIndex: 'productNames',
@@ -518,16 +518,7 @@ export default {
           }
         },
         {
-          title: "型号/规格",
-          align: "left",
-          dataIndex: "productModel",
-          minWidth: 100,
-          customRender: (text, record) => {
-            return text || "--";
-          },
-        },
-        {
-          title: '图号',
+          title: '产品代号',
           align: 'left',
           minWidth: 100,
           dataIndex: 'productAliass',
@@ -536,7 +527,7 @@ export default {
           }
         },
         {
-          title: "样品编号",
+          title: "产品编号",
           align: "left",
           dataIndex: "pieceNos",
           minWidth: 100,
@@ -652,7 +643,7 @@ export default {
         ...this.equipQuery,
       }
       let res = await postAction(this.url.equipList, params)
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.loadEquip = res.data.map((item) => {
           item.scopedSlots = {
             title: 'customTitle',
@@ -685,7 +676,7 @@ export default {
       }
       let url = this.url[type]
       postAction(url, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('操作成功')
           this.refreshEquipTaskList()
         }
@@ -696,7 +687,7 @@ export default {
         id: this.selectedKeys.join(''),
       }
       postAction(this.url.equipDetail, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.equipDetail = res.data
         } else {
           this.equipDetail = {}

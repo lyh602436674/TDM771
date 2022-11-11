@@ -124,7 +124,7 @@ export default {
     },
     getTreeData(params = {}) {
       postAction(this.url.list, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let data = []
           let treeData = []
           let selectedOption = [],

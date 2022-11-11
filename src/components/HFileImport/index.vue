@@ -140,7 +140,7 @@ export default {
     //获取导入结果
     loadData() {
       postAction(this.url.importHistory, { importCode: this.paramsData.importCode }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.upLoadShow = false
           const { data } = res
           this.importResult = isEmpty(data) ? null : data

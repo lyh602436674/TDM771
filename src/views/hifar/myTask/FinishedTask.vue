@@ -3,7 +3,7 @@
  * @Date: 2021-08-30 11:14:51
  * @LastEditTime: 2021-09-14 11:29:19
  * @LastEditors: 赵峰
- * @Description: 
+ * @Description:
  * @FilePath: \hifar-platform-client\src\views\hifar\myTask\FinishedTask.vue
 -->
 <template>
@@ -138,7 +138,7 @@ export default {
           ...params,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -165,7 +165,7 @@ export default {
             taskId: record.taskId,
           }
           postAction(this.url.revoke, params).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               this.$message.success('撤销成功')
               this.refresh()
             }

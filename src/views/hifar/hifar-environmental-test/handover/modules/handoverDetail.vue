@@ -153,7 +153,7 @@
         ],
         loadData: (params) => {
           return postAction(this.url.headDetail, { id: this.id }).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               return res.data.taskTestList
             }
           })
@@ -172,7 +172,7 @@
       // 详情数据
       getheadDetail(id) {
         postAction(this.url.headDetail, { id: id }).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.headDetail = res.data
           }
         })

@@ -171,7 +171,7 @@ export default {
       this.spinning = true
       let url = this.url.detailById
       postAction(url, {id, type}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let record = res.data
           let status = record.status
           if (status == 10 || status == 30) {

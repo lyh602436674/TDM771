@@ -207,7 +207,7 @@ export default {
         delete data.endTime
         delete data.handoverTime
         return postAction(this.url.countBorrow, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             let statisticsNum = res.ext
             this.$emit('change', statisticsNum)
             return res.data

@@ -133,7 +133,7 @@ export default {
     },
     loadWorkDetail(id) {
       postAction(this.url.detailWorkById, { personId: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let record = res.data
           let workRecordList = []
           console.log(res)

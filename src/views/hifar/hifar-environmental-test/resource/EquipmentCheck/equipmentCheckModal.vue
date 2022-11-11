@@ -185,7 +185,7 @@ export default {
         return
       }
       listByDictCode(this.dictCode, null).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let dictVal = this.$ls.get(UI_CACHE_DB_DICT_DATA)
           let dictCode = this.dictCode
           let dictOptions = res.data
@@ -210,7 +210,7 @@ export default {
     },
     loadAcceptInfoDetail(id) {
       postAction(this.url.detailByTemplateId, { templateId: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let record = res.data
           let acceptList = []
           if (record.length > 0) {
@@ -282,7 +282,7 @@ export default {
           // if (ids) {
           //   this.handleByIdDelete(ids)
           // }
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('change', true)
             this.handleCancel()

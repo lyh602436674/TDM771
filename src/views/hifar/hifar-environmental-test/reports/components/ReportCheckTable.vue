@@ -111,7 +111,7 @@ export default {
           formType: 'input',
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           key: 'c_custName_7',
           formType: 'input',
         },
@@ -155,7 +155,7 @@ export default {
           dataIndex: 'testCode',
         },
         {
-          title: '委托单位',
+          title: '送试单位',
           align: 'left',
           dataIndex: 'custName',
           customRender: (text, record) => {
@@ -235,7 +235,7 @@ export default {
           queryType: this.queryType,
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })
@@ -258,7 +258,7 @@ export default {
     },
     handleCheckPass(id) {
       postAction(this.url.check, {id: id, examineFlag: 20}).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('操作成功')
           this.refresh(true)
         }

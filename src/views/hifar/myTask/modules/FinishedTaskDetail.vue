@@ -3,7 +3,7 @@
  * @Date: 2021-08-30 11:32:28
  * @LastEditTime: 2021-11-09 11:14:09
  * @LastEditors: 赵峰
- * @Description: 
+ * @Description:
  * @FilePath: \hifar-platform-client\src\views\hifar\myTask\modules\FinishedTaskDetail.vue
 -->
 <template>
@@ -133,7 +133,7 @@ export default {
         priId: this.model.id,
       }
       postAction(this.url.proList, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let { priMap, proData, taskHisList, taskList } = res.data
           this.taskHisList = taskHisList
           proData.nodeList = proData.nodeList.map((item) => {
@@ -169,7 +169,7 @@ export default {
         taskId: this.model.taskId,
       }
       postAction(this.url.pull, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('签收成功')
           this.getTaskInfo()
           this.getProcessInfo()
@@ -200,7 +200,7 @@ export default {
       console.log('审核提交数据', params)
       postAction(this.url.commit, params)
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success(rsStatus == 1 ? '审核通过' : '驳回成功')
             this.$emit('change', true)
             this.handelCancel()

@@ -155,7 +155,7 @@ export default {
           pid: this.selectedKeys.join(''),
         }
         return postAction(url, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.breadcrumb = res.ext ? (res.ext.parentList ? res.ext.parentList : []) : []
             return res.data
           }
@@ -204,7 +204,7 @@ export default {
             fileIds: record.id,
           }
           postAction(this.url.revoke, params).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               this.$message.success('撤销成功')
               this.refresh(true)
             }

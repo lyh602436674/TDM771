@@ -98,28 +98,10 @@ export default {
           },
         },
         {
-          title: '机号范围',
-          key: 'baseNumberCode',
-          formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入机号范围',},],
-          },
-        },
-        {
           title: '试品型号',
           key: 'productModel',
           formType: 'input',
         },
-        // {
-        //   title: '图号',
-        //   key: 'drawNo',
-        //   formType: 'input',
-        // },
-        // {
-        //   title: '规格',
-        //   key: 'productSpec',
-        //   formType: 'input',
-        // },
         {
           title: '备注',
           key: 'remarks',
@@ -161,7 +143,7 @@ export default {
       params.productType = "inside"
 
       postAction(url, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success(this.title + '成功')
           this.$emit('change', true)
           this.handleCancel()

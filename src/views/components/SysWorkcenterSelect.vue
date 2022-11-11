@@ -107,7 +107,7 @@ export default {
     },
     loadData() {
       getAction(this.url.list).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let options = res.data.map((item) => {
             return {
               title: item.workName,

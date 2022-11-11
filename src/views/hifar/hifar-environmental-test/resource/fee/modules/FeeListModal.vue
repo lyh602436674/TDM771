@@ -159,7 +159,7 @@ export default {
     loadUnitById(costId) {
       let newTableData = []
       postAction(this.url.priceUnit, { costId: costId }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let record = res.data
           if (record.length > 0) {
             record.forEach((item) => {

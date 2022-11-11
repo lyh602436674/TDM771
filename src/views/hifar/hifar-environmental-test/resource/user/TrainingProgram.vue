@@ -133,7 +133,7 @@ export default {
           data.c_trainYear_1 = moment(data.c_trainYear_1).format('X') * 1000
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             return res.data
           }
         })

@@ -122,7 +122,7 @@ export default {
     },
     loadAcceptInfoDetail(id) {
       postAction(this.url.accessDetailById, { acceptId: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.acceptListData = res.data
         }
       })

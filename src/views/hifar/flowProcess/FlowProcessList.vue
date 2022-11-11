@@ -141,7 +141,7 @@ export default {
         ...this.queryParams,
       }
       return getAction(this.url.list, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
         }
       })
@@ -171,7 +171,7 @@ export default {
     },
     handleDelete(ids) {
       postAction(this.url.del, { id: ids }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success('删除成功')
           this.selectedRowKeys = []
           this.refresh(true)

@@ -351,7 +351,7 @@ export default {
           isEntrustListReport: true
         }
         return postAction(this.url.list, data).then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.currentDataSource = cloneDeep(res.data.data)
             return res.data
           }

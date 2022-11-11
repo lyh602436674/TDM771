@@ -76,7 +76,7 @@ export default {
         proCode: record.entrustFlowCode,
         nextNodeId: this.nextNodeId,
       }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let { nextNodeId, nextNodeList, needSelectNextUser, selectNextUserType, nextUserList } = res.data
           Object.assign(this, {
             nextNodeId,

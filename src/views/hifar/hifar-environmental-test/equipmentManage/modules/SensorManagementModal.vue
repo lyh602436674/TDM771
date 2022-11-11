@@ -177,7 +177,7 @@ export default {
     },
     loadDetailData(id) {
       postAction(this.url.detail, { id: id }).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           const { data } = res
           this.edit(data)
         }
@@ -230,7 +230,7 @@ export default {
         url = this.url.add
       }
       postAction(url, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success(this.title + '成功')
           this.handleCancel()
           this.$emit('change', true)

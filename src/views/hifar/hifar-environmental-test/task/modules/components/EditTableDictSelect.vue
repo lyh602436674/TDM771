@@ -144,7 +144,7 @@ export default {
         return
       }
       listByDictCode(this.dictCode, params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           let dictVal = this.$ls.get(UI_CACHE_DB_DICT_DATA)
           let dictCode = this.dictCode
           this.dictOptions_buffer = cloneDeep(res.data)

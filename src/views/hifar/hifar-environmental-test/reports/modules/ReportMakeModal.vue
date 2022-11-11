@@ -131,7 +131,7 @@ export default {
         }
         postAction(this.url.submit, params).then((res) => {
           this.submitLoading = false
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('操作成功')
             this.$emit('change', true)
             this.handleCancel()
@@ -188,7 +188,7 @@ export default {
         }
         postAction(this.url.submit, params).then((res) => {
           this.submitLoading = false
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.$message.success('操作成功')
             this.$emit('change', true)
             this.handleCancel()

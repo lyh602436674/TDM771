@@ -40,7 +40,7 @@ export default {
     async getDetail(id) {
       this.id = id
       let res = await getAction(this.url.detail, { id: this.id })
-      if (res.code == 200) {
+      if (res.code === 200) {
         this.classifyInfo = res.data
         this.title = this.classifyInfo.classifyName
       }

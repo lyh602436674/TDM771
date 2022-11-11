@@ -140,7 +140,7 @@ export default {
       this.loading = true
       console.log('请求参数：', params)
       saveRolePermission(params).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           this.$message.success("保存成功")
           this.loading = false
           if (exit) {
@@ -161,7 +161,7 @@ export default {
           return queryRolePermission({ roleId: this.roleId })
         })
         .then((res) => {
-          if (res.code == 200) {
+          if (res.code === 200) {
             this.checkedKeys = res.data
           }
         })

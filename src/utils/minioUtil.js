@@ -12,7 +12,7 @@ var fileDir = 'hifar/idm'
 
 async function createMinioClient() {
   let res = await getAction(url.minioConfig)
-  if (res.code == 200) {
+  if (res.code === 200) {
     let { accessKey, secretKey, endPoint, port, bucketName, useSSL } = res.data
     bucket = bucketName
     MinioClient = new Minio.Client({

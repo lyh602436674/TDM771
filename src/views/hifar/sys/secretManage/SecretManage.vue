@@ -175,7 +175,7 @@ export default {
         ...this.queryParams,
       }
       return postAction(this.url.list, data).then((res) => {
-        if (res.code == 200) {
+        if (res.code === 200) {
           return res.data
         }
       })
@@ -200,7 +200,7 @@ export default {
             ids: this.selectedRowKeys.join(','),
             secretLevel: secret.itemKey,
           }).then((res) => {
-            if (res.code == 200) {
+            if (res.code === 200) {
               this.$message.success('设置成功')
               this.refresh()
             }
