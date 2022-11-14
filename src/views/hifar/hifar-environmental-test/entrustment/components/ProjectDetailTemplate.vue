@@ -32,15 +32,31 @@
         <span v-else>暂无附件</span>
       </div>
     </h-desc-item>
+    <h-desc-item :span='3' label='试验条件？？'>
+      <template slot='content'>
+        <template v-if="!model.abilityRequire.length">
+          <a-empty style="width: 100%"></a-empty>
+        </template>
+        <a-tabs v-else :default-active-key="0" style="width: 100%">
+          <template v-for="(proItem,itemIndex) in model.abilityRequire">
+            <a-tab-pane :key="itemIndex" :tab="proItem.type === 'stage' ? proItem.title + itemIndex : proItem.title">
+              <test-condition-template :data-source="proItem.abilityInfo"></test-condition-template>
+            </a-tab-pane>
+          </template>
+        </a-tabs>
+      </template>
+    </h-desc-item>
   </h-desc>
 </template>
 
 <script>
 import moment from 'moment'
 import {downloadFile, getFileAccessHttpUrl} from "@api/manage";
+import TestConditionTemplate from "@views/hifar/hifar-environmental-test/components/TestConditionTemplate";
 
 export default {
   name: "ProjectDetailTemplate",
+  components: {TestConditionTemplate},
   data() {
     return {
       moment,
