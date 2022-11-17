@@ -41,6 +41,42 @@ export const drag = {
   }
 };
 
+export const dragger = {
+  // 只能上下移动（一般用于固定在侧边的元素）
+  // 使用方法 <div v-dragger="{click:xxxx}">
+  install(Vue, options) {
+    Vue.directive('dragger', {
+      inserted: function (el, binding) {
+        const dragDom = el
+        dragDom.onmousedown = (e) => {
+          let time = new Date().getTime();
+          e.stopPropagation();
+          dragDom.style.position = "fixed";
+          const disY = e.clientY - dragDom.offsetTop;
+          document.onmousemove = (e) => {
+            dragDom.style.cursor = 'move';
+            let top = e.clientY - disY;
+            if (top <= 0 || top >= el.parentNode.offsetHeight) {
+              return
+            }
+            //移动当前元素
+            dragDom.style.top = `${top}px`
+          };
+
+          document.onmouseup = (e) => {
+            if (new Date().getTime() - time < 100) {
+              binding.value.click()
+            }
+            dragDom.style.cursor = 'auto'
+            document.onmousemove = null;
+            document.onmouseup = null;
+          };
+        }
+      }
+    })
+  }
+};
+
 export const resize = {
   install(Vue, options) {
     Vue.directive('resize', {

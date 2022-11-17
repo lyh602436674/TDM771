@@ -3,7 +3,7 @@
  * @Date: 2021-08-05 16:15:56
  * @LastEditTime: 2021-11-24 13:52:41
  * @LastEditors: 赵峰
- * @Descripttion: 试品管理新增、添加
+ * @Descripttion: 产品管理新增、添加
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\product\modules\productModal.vue
 -->
 <template>
@@ -19,10 +19,9 @@
     @submit="handleClickSubmit"
   >
     <h-form
-      v-if="visible"
       ref="productModalForm"
       v-model="model"
-      :column="1"
+      :column="2"
       :formData="formData"
       @change="submitHandle"
     ></h-form>
@@ -45,7 +44,7 @@ export default {
       moment,
       visible: false,
       confirmLoading: false,
-      drawerWidth: 800,
+      drawerWidth: 1000,
       title: '添加',
       url: {
         add: '/HfProductBaseBusiness/add',
@@ -59,7 +58,7 @@ export default {
           hidden: true,
         },
         {
-          title: '试品代号',
+          title: '产品代号',
           key: 'productAlias',
           formType: 'input',
           validate: {
@@ -72,20 +71,36 @@ export default {
           },
         },
         {
-          title: '试品工号',
-          key: 'productCode',
-          formType: 'input',
-          validate: {
-            rules: [
-              {
-                required: true,
-                validator: this.validateProductCode,
-              },
-            ],
-          },
+          title: '分类选择',
+          key: 'productType',
+          formType: 'treeSelect',
+          treeData: [
+            {
+              title: 'Node1',
+              value: '0-0',
+              key: '0-0',
+              children: [
+                {
+                  value: '0-0-1',
+                  key: '0-0-1',
+                  title: 'title',
+                },
+                {
+                  title: 'Child Node2',
+                  value: '0-0-2',
+                  key: '0-0-2',
+                },
+              ],
+            },
+            {
+              title: 'Node2',
+              value: '0-1',
+              key: '0-1',
+            },
+          ]
         },
         {
-          title: '试品名称',
+          title: '产品名称',
           key: 'productName',
           formType: 'input',
           validate: {
@@ -98,9 +113,58 @@ export default {
           },
         },
         {
-          title: '试品型号',
+          title: "内部产品编码",
+          key: 'productCodeInner',
+          formType: 'input',
+          disabled: true,
+        },
+        {
+          title: '统一产品编码',
+          key: 'productCode',
+          formType: 'input',
+          validate: {
+            rules: [
+              {
+                required: true,
+                validator: this.validateProductCode,
+              },
+            ],
+          },
+        },
+        {
+          title: '规格大小',
+          key: 'productSpec',
+          formType: 'input',
+        },
+        {
+          title: '产品图号',
+          key: 'productChartNo',
+          formType: 'input',
+        },
+        {
+          title: '产品型号',
           key: 'productModel',
           formType: 'input',
+        },
+        {
+          title: '阶段',
+          key: 'productStage',
+          formType: 'dict',
+          dictCode: 'hf_product_stage',
+          validate: {
+            rules: [{required: true, message: '请选择阶段', trigger: 'blur'}]
+          },
+        },
+        {
+          title: '有效性',
+          key: 'productEffect',
+          formType: 'radio',
+          radioType: 'radioButton',
+          defaultValue: 1,
+          options: [
+            {title: '正常', value: 1, key: 1},
+            {title: '停用', value: 2, key: 2}
+          ],
         },
         {
           title: '备注',
@@ -139,7 +203,7 @@ export default {
         url = this.url.add
       }
       params.classifyId = 0
-      // 默认试品类型为内部
+      // 默认产品类型为内部
       params.productType = "inside"
 
       postAction(url, params).then((res) => {
@@ -154,39 +218,39 @@ export default {
       this.visible = false
       this.modal = {}
     },
-    // 试品代号
+    // 产品代号
     validateProductAlias(rule, value, callback) {
       if (!value) {
-        callback('请输入试品代号')
+        callback('请输入产品代号')
       } else {
         if (new RegExp(/^\S+$/).test(value)) {
           callback()
         } else {
-          callback('请输入正确格式的试品代号')
+          callback('请输入正确格式的产品代号')
         }
       }
     },
-    // 试品编号
+    // 产品编号
     validateProductCode(rule, value, callback) {
       if (!value) {
-        callback('请输入试品编号')
+        callback('请输入产品编号')
       } else {
         if (new RegExp(/^\S+$/).test(value)) {
           callback()
         } else {
-          callback('请输入正确格式的试品编号')
+          callback('请输入正确格式的产品编号')
         }
       }
     },
-    // 试品名称
+    // 产品名称
     validateProductName(rule, value, callback) {
       if (!value) {
-        callback('请输入试品名称')
+        callback('请输入产品名称')
       } else {
         if (new RegExp(/^\S+$/).test(value)) {
           callback()
         } else {
-          callback('请输入正确格式的试品名称')
+          callback('请输入正确格式的产品名称')
         }
       }
     },

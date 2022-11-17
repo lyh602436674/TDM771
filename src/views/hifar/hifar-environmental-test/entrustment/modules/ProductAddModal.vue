@@ -20,57 +20,93 @@
       <a-button type="primary" @click="handleOk">确定</a-button>
     </template>
     <template v-if="entrustType === '1'">
-      <h-search v-model='queryParams' :data='searchForm' class="common-search" size='default' @change='refresh(true)'/>
-      <div class="product_table">
-        <vxe-table
-          ref="xTable"
-          size="small"
-          :auto-resize="true"
-          :data="productData"
-          :edit-config="{ trigger: 'click', mode: 'row'}"
-          :edit-rules="validRules"
-          :checkbox-config="{ highlight: true, strict: true, trigger: 'row' }"
-          :valid-config="{ showMessage:false }"
-          border
-          keep-source
-          show-overflow
-          @checkbox-all='onSelectAllChange'
-          @checkbox-change="onSelectChange"
-        >
-          <vxe-table-column align="center" type="checkbox" width="60"></vxe-table-column>
-          <vxe-table-column type="seq" width="60"></vxe-table-column>
-          <vxe-table-column
-            field="productName"
-            title="产品名称"
-          />
-          <vxe-table-column
-            field="productAlias"
-            title="产品代号"
-          />
-          <vxe-table-column
-            :edit-render="{}"
-            field="pieceNo"
-            title="产品编号"
-          >
-            <template #edit="{row,rowIndex}">
-              <a-input v-model="row.pieceNo"></a-input>
-            </template>
-          </vxe-table-column>
-        </vxe-table>
-        <div class="product-record-pagination">
-          <a-pagination
-            v-model="pagination.pageNo"
-            :pageSize="pagination.pageSize"
-            :pageSizeOptions="['20', '30', '40', '50', '100']"
-            :showTotal="showTotal"
-            :total="pagination.total"
-            showSizeChanger
-            size="small"
-            @change="handlePageChange"
-            @showSizeChange="handleSizeChange"
-          />
-        </div>
-      </div>
+      <r-l-layout :leftMinWidth="250" style="height: 100%">
+        <template slot="left">
+          <div style="height: 100%;border-right: 1px solid #e8e8e8"></div>
+        </template>
+        <template slot="right">
+          <h-search v-model='queryParams' :data='searchForm' class="common-search" size='default'
+                    @change='refresh(true)'/>
+          <div class="switcher">
+            <span class="change">自动生成编号</span>
+            <h-switch
+              v-model="autoCreate"
+              :defaultChecked="false"
+              :options="[1, 2]"
+              @change="autoCreateChange"
+            />
+          </div>
+          <div class="product_table">
+            <vxe-table
+              ref="xTable"
+              :auto-resize="true"
+              :checkbox-config="{ highlight: true, strict: true}"
+              :data="productData"
+              :edit-config="{ trigger: 'click', mode: 'row'}"
+              :edit-rules="validRules"
+              :valid-config="{ showMessage:false }"
+              border
+              keep-source
+              show-overflow
+              size="small"
+              style="width: 100%"
+              @checkbox-all='onSelectAllChange'
+              @checkbox-change="onSelectChange"
+            >
+              <vxe-table-column align="center" type="checkbox" width="60"></vxe-table-column>
+              <vxe-table-column type="seq" width="60"></vxe-table-column>
+              <vxe-table-column
+                field="productName"
+                title="产品名称"
+              />
+              <vxe-table-column
+                field="productAlias"
+                title="产品代号"
+              />
+              <template v-if="autoCreate === 1">
+                <vxe-table-column
+                  :edit-render="{
+                    name: 'input',
+                    attrs: { type: 'text', placeholder: '请输入编号前缀' },
+                  }"
+                  field="piecePrefix"
+                  title="编号前缀"
+                />
+                <vxe-table-column
+                  :edit-render="{
+                    name: 'input',
+                    attrs: { type: 'number', placeholder: '请输入起始号' },
+                  }"
+                  field="pieceStartNo"
+                  title="起始号"
+                />
+              </template>
+              <vxe-table-column
+                :edit-render="{
+                    showAsterisk:true,
+                    name: 'input',
+                    attrs: { type: 'number', placeholder: '请输入数量' },
+                }"
+                field="pieceNum"
+                title="数量"
+              />
+            </vxe-table>
+            <div class="product-record-pagination">
+              <a-pagination
+                v-model="pagination.pageNo"
+                :pageSize="pagination.pageSize"
+                :pageSizeOptions="['15','20', '30', '40', '50', '100']"
+                :showTotal="showTotal"
+                :total="pagination.total"
+                showSizeChanger
+                size="small"
+                @change="handlePageChange"
+                @showSizeChange="handleSizeChange"
+              />
+            </div>
+          </div>
+        </template>
+      </r-l-layout>
     </template>
     <template v-if="entrustType === '2'">
       <h-form
@@ -108,6 +144,15 @@ export default {
     },
   },
   data() {
+    const pieceTableValid = ({cellValue}, msg) => {
+      return new Promise((resolve, reject) => {
+        if (!cellValue) {
+          reject(new Error(msg))
+        } else {
+          resolve()
+        }
+      })
+    }
     return {
       visible: false,
       model: {},
@@ -154,7 +199,7 @@ export default {
           key: 'pieceNo',
           formType: 'input',
           validate: {
-            rules: [{required: true, message: '请输入产品编号',}],
+            rules: [{required: true, message: '请输入编号',}],
           }
         },
         {
@@ -167,13 +212,24 @@ export default {
         },
       ],
       validRules: {
-        pieceNum: [{required: true, type: 'number', min: 1, max: 200}],
+        pieceNum: [{
+          required: true,
+          type: 'number',
+          min: 1,
+          max: 200,
+          validator: (params) => pieceTableValid(params, '请输入产品数量')
+        }],
+        pieceStartNo: [{
+          required: true,
+          validator: (params) => pieceTableValid(params, '请输入起始号')
+        }],
       },
       url: {
         list: '/HfProductBaseBusiness/listPage',
       },
       selectedRows: [],
       selectedRowKeys: [],
+      autoCreate: 2,
     }
   },
   methods: {
@@ -188,8 +244,13 @@ export default {
       this.$refs.addProductForm.form.resetFields()
       this.handleCancel()
     },
+    autoCreateChange(val) {
+      this.autoCreate = val
+    },
     async handleOk() {
       if (this.entrustType === '1') {
+        if (!this.selectedRows.length) return this.$message.warning('请选择产品')
+        await this.$refs.xTable.validate(this.selectedRows)
         this.$emit('callback', this.selectedRows)
         this.handleCancel()
       }
@@ -254,7 +315,21 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang='less' scoped>
+.switcher {
+  text-align: right;
+  display: inline-block;
+  width: 100%;
+  padding: 0 20px 10px;
+
+  .change {
+    vertical-align: middle;
+    padding-right: 5px;
+    font-size: 16px;
+  }
+}
+
+
 .help {
   width: 100%;
   color: red;
@@ -267,12 +342,13 @@ export default {
 }
 
 .product-record-pagination {
-  padding: 10px 30px 0;
+  padding: 10px 0;
   text-align: right;
   width: 100%;
 }
 
-/deep/ .product_table .vxe-table .vxe-body--column.col--valid-error .vxe-cell--valid .vxe-cell--valid-msg {
-  background: transparent !important;
+
+/deep/ .product_table .vxe-table .vxe-body--column.col--valid-error .vxe-cell--valid {
+  width: 100%;
 }
 </style>

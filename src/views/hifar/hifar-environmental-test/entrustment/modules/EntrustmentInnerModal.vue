@@ -121,15 +121,6 @@
                   title="产品编号"
                 />
                 <vxe-table-column
-                  :edit-render="{
-                    showAsterisk:true,
-                    name: 'input',
-                    attrs: { type: 'text', placeholder: '请输入产品数量' },
-                    events:{
-                      blur: this.pieceDataBlur,
-                      focus: this.pieceDataFocus,
-                    }
-                  }"
                   field='pieceNum'
                   title="数量"
                 />
@@ -170,9 +161,9 @@
       </a-spin>
     </h-card>
     <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
-    <project-add-modal ref='projectAddModal' @change='projectModalCallback'></project-add-modal>
     <product-add-modal ref='productAddModal' :entrustType="entrustType"
                        @callback='productAddCallback'></product-add-modal>
+    <project-add-modal ref='projectAddModal' @change='projectModalCallback'></project-add-modal>
     <history-project-modal ref='historyProjectModal' @callback='projectModalCallback'></history-project-modal>
   </h-modal>
 </template>
@@ -342,6 +333,9 @@ export default {
           title: '预计时长',
           key: 'expectedTime',
           formType: 'input-number',
+          validate: {
+            rules: [{required: true, message: '请输入预计时长'}]
+          },
           style: {
             width: '100%'
           }
@@ -359,7 +353,7 @@ export default {
           key: 'isBuildingReport',
           formType: 'radio',
           radioType: 'radioButton',
-          defaultValue: 2,
+          defaultValue: 1,
           options: [
             {title: '是', value: 1, key: 1},
             {title: '否', value: 2, key: 2}
@@ -370,7 +364,7 @@ export default {
           key: 'isPhotograph',
           formType: 'radio',
           radioType: 'radioButton',
-          defaultValue: 2,
+          defaultValue: 1,
           options: [
             {title: '是', value: 1, key: 1},
             {title: '否', value: 2, key: 2}
@@ -615,9 +609,18 @@ export default {
     },
     // 新增产品弹框返回数据
     productAddCallback(values) {
-      this.tableData = values.map(item => {
-        return {...item, pieceNum: 1}
-      })
+      let result = []
+      for (let i = 0; i < values.length; i++) {
+        let v = values[i]
+        for (let j = 0; j < +v.pieceNum; j++) {
+          result.push({
+            ...v,
+            pieceNum: 1,
+            pieceNo: v.piecePrefix ? v.piecePrefix + (+v.pieceStartNo + j) : v.pieceStartNo ? +v.pieceStartNo + j : ''
+          })
+        }
+      }
+      this.tableData = this.tableData.concat(result)
     },
     // 产品分类：根据产品名称和代号进行分类
     pieceSorting(data, name = 'productName', model = 'productAlias') {

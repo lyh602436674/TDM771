@@ -202,7 +202,7 @@ export default {
           align: 'left',
           width: 160,
           dataIndex: 'entrustNo',
-          scopedSlots: { customRender: 'entrustNo' },
+          scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'
         },
         {
@@ -210,15 +210,15 @@ export default {
           align: 'left',
           dataIndex: 'status',
           minWidth: 100,
-          scopedSlots: { customRender: 'status' }
+          scopedSlots: {customRender: 'status'}
         },
         {
-          title: '试验项目',
+          title: '送试单位',
           align: 'left',
-          dataIndex: 'unitNames',
-          minWidth: 100,
+          minWidth: 120,
+          dataIndex: 'custName',
           customRender: (text, record) => {
-            return text || '--'
+            return text || '--';
           }
         },
         {
@@ -231,6 +231,15 @@ export default {
           }
         },
         {
+          title: '产品编号',
+          align: 'left',
+          dataIndex: 'pieceNo',
+          minWidth: 120,
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
           title: '产品代号',
           align: 'left',
           dataIndex: 'productAlias',
@@ -240,39 +249,39 @@ export default {
           }
         },
         {
+          title: '试验项目',
+          align: 'left',
+          dataIndex: 'unitNames',
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '试验名称',
+          align: 'left',
+          dataIndex: 'testNames',
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '工序编号',
+          align: 'left',
+          dataIndex: 'processNo',
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
           title: '委托日期',
           align: 'left',
           dataIndex: 'entrustTime',
           minWidth: 100,
           customRender: (time) => {
             return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD') : '--'
-          }
-        },
-        {
-          title: '送试单位',
-          align: 'left',
-          minWidth: 120,
-          dataIndex: 'custName',
-          customRender: (text, record) => {
-            return text || '--';
-          }
-        },
-        {
-          title: '联系人',
-          align: 'center',
-          dataIndex: 'linkName',
-          width: 100,
-          customRender: (text, record) => {
-            return text || '--';
-          }
-        },
-        {
-          title: '联系方式',
-          align: 'center',
-          width: 120,
-          dataIndex: 'linkMobile',
-          customRender: (text, record) => {
-            return text || '--';
           }
         },
         {
@@ -294,12 +303,21 @@ export default {
           }
         },
         {
-          title: '优先级',
+          title: '试件数量',
           align: 'center',
-          width: 120,
-          dataIndex: 'priority_dictText',
+          width: 100,
+          dataIndex: 'pieceNum',
           customRender: (text, record) => {
             return text || '--';
+          }
+        },
+        {
+          title: '更新时间 ',
+          align: 'left',
+          minWidth: 140,
+          dataIndex: 'updateTime',
+          customRender: (text, record) => {
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
         {
@@ -321,12 +339,21 @@ export default {
           }
         },
         {
+          title: '备注信息 ',
+          align: 'left',
+          minWidth: 150,
+          dataIndex: 'remarks',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
           title: '操作',
           dataIndex: 'actions',
           fixed: 'right',
           width: 100,
           align: 'center',
-          scopedSlots: { customRender: 'actions' }
+          scopedSlots: {customRender: 'actions'}
         }
       ],
       loadData: (params) => {

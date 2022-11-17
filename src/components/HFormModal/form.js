@@ -118,6 +118,8 @@ export default {
         if (!err) {
           console.log("表单校验释放出去的值", values)
           this.$emit('change', values)
+        } else {
+          this.$emit('change')
         }
       })
     },
@@ -251,6 +253,33 @@ export default {
               mode: com.multiple ? 'multiple' : 'default',
               placeholder: com.placeholder || '请选择',
               options: com.options,
+              allowClear: com.allowClear || true
+            },
+            style: com.style,
+            on: {
+              change: (v, option) => {
+                if (isFunction(com.change)) {
+                  com.change(v, option)
+                }
+                let data = {}
+                data[com.key] = v
+                this.form.setFieldsValue(data)
+                this.triggleChange()
+              }
+            },
+            directives: [{
+              name: 'decorator',
+              value: [com.key, com.validate || {}]
+            }],
+          })
+        case 'treeSelect':
+          return this.$createElement('a-tree-select', {
+            props: {
+              disabled: com.disabled,
+              mode: com.multiple || false,
+              placeholder: com.placeholder || '请选择',
+              treeData: com.treeData,
+              loadData: com.loadData,
               allowClear: com.allowClear || true
             },
             style: com.style,
