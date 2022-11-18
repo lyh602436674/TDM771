@@ -24,7 +24,7 @@
     <h-card bordered>
       <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}内部委托试验</template>
       <a-spin :spinning="submitLoading">
-        <div class="item-wrapper" id="entrust">
+        <div id="entrust" class="item-wrapper">
           <div class="item-wrapper-title">
             <span class="title">委托信息</span>
             <span class="description">填写申请单基本信息</span>
@@ -40,7 +40,7 @@
             </h-form>
           </div>
         </div>
-        <div class="item-wrapper" id="product">
+        <div id="product" class="item-wrapper">
           <div class="item-wrapper-title">
             <span class="title">产品信息</span>
             <span class="description">填写产品信息</span>
@@ -128,7 +128,7 @@
             </div>
           </div>
         </div>
-        <div class="item-wrapper" id="project">
+        <div id="project" class="item-wrapper">
           <div class="item-wrapper-title">
             <span class="title">项目信息</span>
             <span class="description">填写项目基本信息</span>
@@ -436,7 +436,10 @@ export default {
       }
       this.tableData = []
       this.projectInfoData = []
-      this.buildLayer()
+      this.$nextTick(() => {
+        this.buildLayer()
+        this.handleScroll()
+      })
     },
     handleEdit(id) {
       this.submitLoading = true
@@ -451,11 +454,17 @@ export default {
           this.tableData = obj.pieceInfo
           this.projectInfoData = obj.projectInfo
           this.buildLayer(obj.projectInfo)
+          this.handleScroll()
           this.pieceSorting(this.tableData)
         }
       }).finally(() => {
         this.submitLoading = false
       })
+    },
+    handleScroll() {
+      document.addEventListener('scroll', (e) => {
+        console.log(e, 'e')
+      }, true)
     },
     buildLayer(column) {
       let defaultLayer = [

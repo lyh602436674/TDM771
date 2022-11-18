@@ -94,6 +94,15 @@ export default {
     selectedListConfig: {
       type: Object,
       default: () => undefined
+    },
+    // 树表配置项
+    treeConfig: {
+      type: Object,
+      default: () => {
+        return {
+          children: "children"
+        }
+      }
     }
   }),
   data() {
@@ -586,7 +595,8 @@ export default {
       resizable: true,
       tooltipConfig: {
         enterable: true
-      }
+      },
+      treeConfig: this.treeConfig
     }
     let events = {}
     // 是否显示序列号

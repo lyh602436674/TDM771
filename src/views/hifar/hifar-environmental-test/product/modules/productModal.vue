@@ -30,7 +30,7 @@
 
 <script>
 import moment from 'moment'
-import {postAction} from '@/api/manage'
+import {getAction, postAction} from '@/api/manage'
 
 export default {
   components: {},
@@ -49,9 +49,15 @@ export default {
       url: {
         add: '/HfProductBaseBusiness/add',
         edit: '/HfProductBaseBusiness/modifyById',
+        tree: "/HfProductClassifyBusiness/listAll"
       },
       model: {},
-      formData: [
+      treeData: []
+    }
+  },
+  computed: {
+    formData() {
+      return [
         {
           key: 'id',
           formType: 'input',
@@ -74,30 +80,7 @@ export default {
           title: '分类选择',
           key: 'productType',
           formType: 'treeSelect',
-          treeData: [
-            {
-              title: 'Node1',
-              value: '0-0',
-              key: '0-0',
-              children: [
-                {
-                  value: '0-0-1',
-                  key: '0-0-1',
-                  title: 'title',
-                },
-                {
-                  title: 'Child Node2',
-                  value: '0-0-2',
-                  key: '0-0-2',
-                },
-              ],
-            },
-            {
-              title: 'Node2',
-              value: '0-1',
-              key: '0-1',
-            },
-          ]
+          treeData: this.treeData
         },
         {
           title: '产品名称',
@@ -172,18 +155,37 @@ export default {
           formType: 'textarea',
           span: 2,
         },
-      ],
+      ]
     }
   },
   methods: {
     show(record, title) {
       this.visible = true
       this.title = title
+      this.getTreeData()
       this.editor(record)
     },
+    recursive(arr) {
+      return arr.map(item => {
+        return {
+          ...item,
+          title: item.categoryName,
+          key: item.id,
+          value: item.id,
+          children: item.children && item.children.length ? this.recursive(item.children) : []
+        }
+      })
+    },
+    getTreeData() {
+      this.confirmLoading = true
+      getAction(this.url.tree).then((res) => {
+        if (res.code === 200) {
+          this.treeData = this.recursive(res.data)
+        }
+      }).finally(() => this.confirmLoading = false)
+    },
     editor(record) {
-      let obj = Object.assign({}, record)
-      this.model = obj
+      this.model = Object.assign({}, record)
     },
     handleClickSubmit() {
       this.$refs.productModalForm.validateForm()

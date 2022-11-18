@@ -103,14 +103,14 @@ export default {
             fileList.push({
               fileId: item.id,
               size: item.fileSize,
-              status: item.status == 9 ? 'success' : 'exception',
+              status: item.status === 9 ? 'success' : 'exception',
               url: item.filePath,
               name: item.fileName,
               uuid: item.id,
               percent: 100,
               uploadTime: item.createTime,
               secretLevel: item.secretLevel,
-              type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
+              type: item.viewType === 2 ? 'image/jpeg' : 'text/plain',
               replaceStatus: item.replaceStatus
             })
           })
@@ -389,10 +389,7 @@ export default {
           key: 'attachIds',
           span: 3,
           component: (
-            <h-upload-img
-              accept={"image/png,image/gif,image/jpg,image/jpeg"}
-              v-decorator={['attachIds', {initialValue: []}]}
-            />
+            <h-upload-file v-decorator={['attachIds', {initialValue: []}]}/>
           ),
         }
       ],
@@ -409,13 +406,13 @@ export default {
       try {
         let dragTab = document.getElementById('drag-tab').querySelector('.ant-tabs-nav').firstChild
         let dom = dragTab.querySelectorAll('.ant-tabs-tab');
-        [].forEach.call(dom, ((item, index) => {
+        [].forEach.call(dom, (item, index) => {
           item.classList.remove('disabledDrag')
           //给第一个dom添加 不可以进行拖动的类名
           if (index === 0) {
             item.classList.add('disabledDrag')
           }
-        }))
+        })
         if (this.model.abilityRequire.length) {
           this.model.abilityRequire.map((item, index) => {
             item.closable = index !== 0 && index !== 1;

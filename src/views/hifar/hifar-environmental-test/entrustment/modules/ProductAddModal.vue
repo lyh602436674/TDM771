@@ -235,6 +235,7 @@ export default {
   methods: {
     show() {
       this.visible = true
+      this.autoCreate = 2
       if (this.entrustType === '1') {
         this.refresh(true)
       }

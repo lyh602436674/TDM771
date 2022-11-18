@@ -25,6 +25,7 @@
         ref='productCategoryTable'
         slot='content'
         :columns='columns'
+        :showSeq="false"
         :data='loadData'
         :rowKey='(record) => record.id'
         :scroll='{ x: true }'
@@ -59,7 +60,7 @@
             style='cursor: pointer'
             title='在此分类下新增'
             type='plus'
-            @click="handleAdd(record)"
+            @click="handleAdd({id:record.categoryId})"
           />
         </span>
       </h-vex-table>
@@ -88,13 +89,12 @@ export default {
       selectedRowKeys: [],
       selectedRows: [],
       url: {
-        list: '/HfProductBaseBusiness/listPage',
-        delete: '/HfProductBaseBusiness/logicRemoveById'
+        list: '/HfProductClassifyBusiness/listAll',
+        delete: '/HfProductClassifyBusiness/logicRemoveById',
       },
       loadData: (params) => {
         let data = {
           ...this.queryParams,
-          ...params
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
@@ -116,6 +116,7 @@ export default {
           title: '分类名称',
           align: 'left',
           dataIndex: 'categoryName',
+          treeNode: true,
           scopedSlots: {customRender: 'categoryName'}
         },
         {
@@ -161,9 +162,6 @@ export default {
     }
   },
   methods: {
-    testClick() {
-      console.log(99999, this, 'this')
-    },
     refresh() {
       this.$refs.productCategoryTable.refresh(true)
       this.selectedRowKeys = []

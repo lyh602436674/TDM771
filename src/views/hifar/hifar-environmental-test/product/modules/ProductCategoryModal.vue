@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import {postAction} from '@/api/manage'
+import {getAction, postAction} from '@/api/manage'
 
 export default {
   name: "ProductCategoryModal",
@@ -38,7 +38,12 @@ export default {
       visible: false,
       confirmLoading: false,
       model: {},
-      treeData: []
+      treeData: [],
+      url: {
+        add: "/HfProductClassifyBusiness/add",
+        edit: "/HfProductClassifyBusiness/modifyById",
+        tree: "/HfProductClassifyBusiness/listAll"
+      }
     }
   },
   computed: {
@@ -86,35 +91,24 @@ export default {
       this.model = record || {}
       this.getTreeData()
     },
+    recursive(arr) {
+      return arr.map(item => {
+        return {
+          ...item,
+          title: item.categoryName,
+          key: item.id,
+          value: item.id,
+          children: item.children && item.children.length ? this.recursive(item.children) : []
+        }
+      })
+    },
     getTreeData() {
       this.confirmLoading = true
-      setTimeout(() => {
-        this.treeData = [
-          {
-            title: 'Node1',
-            value: '0-0',
-            key: '0-0',
-            children: [
-              {
-                value: '0-0-1',
-                key: '0-0-1',
-                title: 'title',
-              },
-              {
-                title: 'Child Node2',
-                value: '0-0-2',
-                key: '0-0-2',
-              },
-            ],
-          },
-          {
-            title: 'Node2',
-            value: '0-1',
-            key: '0-1',
-          },
-        ]
-        this.confirmLoading = false
-      }, 500)
+      getAction(this.url.tree).then((res) => {
+        if (res.code === 200) {
+          this.treeData = this.recursive(res.data)
+        }
+      }).finally(() => this.confirmLoading = false)
     },
     handleCancel() {
       this.visible = false
@@ -124,18 +118,17 @@ export default {
       this.$refs.productModalForm.validateForm()
     },
     submitHandle(values) {
-      if (!values) {
-        this.confirmLoading = false
-      }
-      postAction(this.url.save, values).then((res) => {
+      if (!values) return this.confirmLoading = false
+      const {add, edit} = this.url
+      postAction(!values.id ? add : edit, values).then((res) => {
         if (res.code === 200) {
-          this.$message.success('添加成功')
+          this.$message.success(!values.id ? '添加成功' : "编辑成功")
           this.$emit('change')
+          this.handleCancel()
         }
       }).finally(() => {
         this.confirmLoading = false
       })
-
     },
   }
 }
