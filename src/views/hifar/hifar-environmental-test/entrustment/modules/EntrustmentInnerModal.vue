@@ -155,6 +155,7 @@
             <project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
                           :pieceTableData="pieceTableData" style="margin-bottom:20px"
                           @change='projectFormChange'
+                          @deleteProject="deleteProject"
                           @emptyData="emptyDatCallback"></project-form>
           </div>
         </div>
@@ -275,6 +276,12 @@ export default {
           validate: {
             rules: [{required: false, message: '请选择密级'}]
           },
+        },
+        {
+          title: '试件数量',
+          key: 'pieceCount',
+          formType: 'input',
+          disabled: true,
         },
         {
           title: '送试单位',
@@ -417,6 +424,13 @@ export default {
       return this.tableData
     },
   },
+  watch: {
+    tableData(val) {
+      this.$nextTick(() => {
+        this.$refs.entrustFrom.form.setFieldsValue({pieceCount: val.length})
+      })
+    }
+  },
   methods: {
     show(record, type) {
       this.visible = true
@@ -462,9 +476,10 @@ export default {
       })
     },
     handleScroll() {
-      document.addEventListener('scroll', (e) => {
-        console.log(e, 'e')
-      }, true)
+      // 滚动条滚动时电梯层自动定位，暂时先不做
+      // document.addEventListener('scroll', (e) => {
+      //   console.log(e, 'e')
+      // }, true)
     },
     buildLayer(column) {
       let defaultLayer = [
@@ -660,6 +675,9 @@ export default {
     //项目信息为空时
     emptyDatCallback() {
       this.submitLoading = false
+    },
+    deleteProject() {
+      this.buildLayer(this.projectInfoData)
     },
     // 项目信息返回数据
     projectFormChange(data, bool, status) {

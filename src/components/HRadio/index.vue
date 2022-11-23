@@ -96,7 +96,7 @@ export default {
   },
   data() {
     return {
-      valueRadio: '',
+      valueRadio: undefined,
     }
   },
   methods: {

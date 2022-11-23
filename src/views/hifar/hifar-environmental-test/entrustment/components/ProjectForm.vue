@@ -83,6 +83,7 @@ export default {
       const {formInfoDataList} = this
       formInfoDataList.splice(index, 1)
       this.formInfoDataList = formInfoDataList
+      this.$emit('deleteProject')
     },
     submitHandle(bool) {
       // bool 是否进行验证

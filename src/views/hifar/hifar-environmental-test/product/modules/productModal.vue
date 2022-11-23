@@ -78,9 +78,14 @@ export default {
         },
         {
           title: '分类选择',
-          key: 'productType',
+          key: 'categoryId',
           formType: 'treeSelect',
-          treeData: this.treeData
+          treeData: this.treeData,
+          showSearch: true,
+          treeNodeFilterProp: "title",
+          change: (selectedKey, title) => {
+
+          }
         },
         {
           title: '产品名称',
@@ -197,17 +202,12 @@ export default {
       let params = {
         ...values,
       }
-      console.log(params)
       let url = null
       if (params.id) {
         url = this.url.edit
       } else {
         url = this.url.add
       }
-      params.classifyId = 0
-      // 默认产品类型为内部
-      params.productType = "inside"
-
       postAction(url, params).then((res) => {
         if (res.code === 200) {
           this.$message.success(this.title + '成功')

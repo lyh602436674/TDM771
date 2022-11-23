@@ -703,8 +703,11 @@ export default {
     onSelect(selectedKeys, event) {
       //关闭弹窗
       for (let ref in this.$refs) {
-        if (this.$refs[ref].visible === true) {
-          this.$refs[ref].visible = false
+        try {
+          if (this.$refs[ref].visible || this.$refs[ref].visible === true) {
+            this.$refs[ref].visible = false
+          }
+        } catch {
         }
       }
       // 切换设备列表,按钮恢复默认

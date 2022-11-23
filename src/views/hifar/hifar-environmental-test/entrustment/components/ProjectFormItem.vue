@@ -15,7 +15,7 @@
       style="margin-top: 18px; margin-left: 15px"
     >
     </h-form>
-    <h-collapse :activeKey="1" :forceRender="false" class="collapseStyle" title="试验条件">
+    <h-collapse :activeKey="1" :forceRender="false" class="collapseStyle" title="试验条件结构化">
       <div slot="extraBox" v-if="filterUnitCode(model.unitCode)">
         <a-button size="small" type="primary" @click.stop="previewEcharts"> 预览</a-button>
       </div>
@@ -399,8 +399,7 @@ export default {
       selectBeforeItemIndex: 0,
       dragFlag: true
     }
-  }
-  ,
+  },
   methods: {
     createSortable() {
       try {
@@ -428,8 +427,7 @@ export default {
         })
       } catch {
       }
-    }
-    ,
+    },
     dragTabMoveFun(customEvent, originalEvent) {
       if (customEvent.related.className.includes('disabledDrag') && customEvent.related.innerText === '前置处理') {
         if (this.dragFlag) {
@@ -445,8 +443,7 @@ export default {
         }
         return false
       }
-    }
-    ,
+    },
     dragTabEndFun(customEvent) {
       let {oldIndex, newIndex, to, from, item} = customEvent
       to.removeChild(item)
@@ -460,8 +457,7 @@ export default {
       setTimeout(() => {
         this.tabsActiveKey = newIndex
       }, 0)
-    }
-    ,
+    },
     onEdit(index, type) {
       if (type === 'remove') {
         this.model.abilityRequire.splice(index, 1)
@@ -469,21 +465,18 @@ export default {
           this.tabsActiveKey = index - 1
         }, 0)
       }
-    }
-    ,
+    },
     curveUrlChange(url) {
       this.curveUrl = url;
       this.$refs['projectInfoForm' + this.index].form.setFieldsValue({
         curveUrl: url
       })
-    }
-    ,
+    },
     // 删除指标
     removeEvent(row, index) {
       const $table = this.$refs['pointTable' + [index]]
       $table.remove(row)
-    }
-    ,
+    },
     //预览
     previewEcharts() {
       this.splitByCurveType()
@@ -492,8 +485,7 @@ export default {
       setTimeout(() => {
         this.$refs.ExperimentalCurveModal.open(obj)
       }, 0)
-    }
-    ,
+    },
     momentFormat(value) {
       let hours = Math.floor(value / 1000 / 60 / 60)
       hours = hours < 10 ? '0' + hours : hours
@@ -502,8 +494,7 @@ export default {
       let seconds = Math.floor(value % 60)
       seconds = seconds < 10 ? '0' + seconds : seconds
       return `${hours}:${minutes}:${seconds}`
-    }
-    ,
+    },
     resultEcharts() {
       this.splitByCurveType()
       let {temperatureCurveFlag, humidityCurveFlag} = this
@@ -572,8 +563,7 @@ export default {
         chart.setOption(option)
         this.curveUrl = chart.getDataURL()
       }
-    }
-    ,
+    },
     //新增循环阶段
     addLoopStage() {
       this.model.abilityRequire.push(Object.assign({}, cloneDeep(this.model.abilityRequire[this.model.abilityRequire.length - 1]), {closable: true}))
@@ -581,8 +571,7 @@ export default {
         this.createSortable()
         this.tabsActiveKey = this.model.abilityRequire.length - 1
       })
-    }
-    ,
+    },
     // 新增指标项
     handleAdd(projectIndex, itemIndex) {
       this.selectBeforeProjectIndex = projectIndex
@@ -605,12 +594,10 @@ export default {
       }
       this.model.abilityRequire[itemIndex].abilityInfo = pointInfoAllData
       this.$refs.PointList.showSelectModal(this.model.abilityRequire[itemIndex])
-    }
-    ,
+    },
     handleDelete(row, rowIndex, projectIndex, itemIndex) {
       this.model.abilityRequire[itemIndex].abilityInfo.splice(rowIndex, 1)
-    }
-    ,
+    },
     // 指标项--新增change
     async pointSelectChange(selectedRowKeys, selectedRows) {
       selectedRows.forEach((item) => {
@@ -631,8 +618,7 @@ export default {
           curveType: item.curveType
         })
       })
-    }
-    ,
+    },
     splitByCurveType() {
       let testConditionTab = this.$refs.testConditionTabItem || [];
       let pointTableItem = [];
@@ -673,15 +659,13 @@ export default {
         this.predictDuration = 0
       }
       this.initialCurveData()
-    }
-    ,
+    },
     initialCurveData() {
       this.initialTemTime = moment(0).format('x')//温度湿度初始时间
       this.initialHumTime = moment(0).format('x')//温度湿度初始时间
       this.initialTemperature = 25 // 初始温度
       this.initialHumidity = 30 // 初始湿度
-    }
-    ,
+    },
   }
 }
 </script>

@@ -22,9 +22,30 @@
     <template v-if="entrustType === '1'">
       <r-l-layout :leftMinWidth="250" style="height: 100%">
         <template slot="left">
-          <div style="height: 100%;border-right: 1px solid #e8e8e8"></div>
+          <div style="height: 100%;">
+            <h-edit-tree
+              ref="productTree"
+              :replaceFields="replaceFields"
+              :selectedKeys="selectedTreeKeys"
+              :tree="treeData"
+              title="产品分类"
+              @onSelect="onTreeSelect"
+            >
+              <template slot="extra"></template>
+              <a-input-search
+                slot="search-form"
+                v-model="queryTreeParams.keyWord"
+                allowClear
+                enter-button="搜索"
+                placeholder="请输入分类名称"
+                size="small"
+                @search="loadLeftTree"
+                @keyup.enter.native="loadLeftTree"
+              />
+            </h-edit-tree>
+          </div>
         </template>
-        <template slot="right">
+        <div slot="right" style="height:100%;border-left: 1px solid #e8e8e8">
           <h-search v-model='queryParams' :data='searchForm' class="common-search" size='default'
                     @change='refresh(true)'/>
           <div class="switcher">
@@ -105,7 +126,7 @@
               />
             </div>
           </div>
-        </template>
+        </div>
       </r-l-layout>
     </template>
     <template v-if="entrustType === '2'">
@@ -123,11 +144,15 @@
 </template>
 
 <script>
-import {postAction} from '@/api/manage'
+import {getAction, postAction} from '@/api/manage'
 import {pick} from 'lodash'
+import HEditTree from '@/views/components/HEditTree.js'
 
 export default {
   name: "productAddModal",
+  components: {
+    HEditTree
+  },
   inject: {
     getContainer: {
       default: () => document.body,
@@ -157,7 +182,17 @@ export default {
       visible: false,
       model: {},
       queryParams: {},
+      queryTreeParams: {
+        keyWord: "",
+      },
       productData: [],
+      selectedTreeKeys: [],
+      treeData: [],
+      replaceFields: {
+        children: 'children',
+        title: 'categoryName',
+        key: 'id',
+      },
       searchForm: [
         {
           title: '产品名称',
@@ -226,6 +261,7 @@ export default {
       },
       url: {
         list: '/HfProductBaseBusiness/listPage',
+        tree: "/HfProductClassifyBusiness/listAll",
       },
       selectedRows: [],
       selectedRowKeys: [],
@@ -237,8 +273,31 @@ export default {
       this.visible = true
       this.autoCreate = 2
       if (this.entrustType === '1') {
+        this.loadLeftTree()
         this.refresh(true)
       }
+    },
+    recursive(arr) {
+      return arr.map(item => {
+        return {
+          ...item,
+          title: item.categoryName,
+          key: item.id,
+          value: item.id,
+          children: item.children && item.children.length ? this.recursive(item.children) : []
+        }
+      })
+    },
+    loadLeftTree() {
+      getAction(this.url.tree).then((res) => {
+        if (res.code === 200) {
+          this.treeData = this.recursive(res.data)
+        }
+      }).finally(() => this.confirmLoading = false)
+    },
+    onTreeSelect(selectedKeys, event) {
+      this.selectedTreeKeys = selectedKeys
+      console.log(selectedKeys, event)
     },
     formChange(values) {
       this.$emit('callback', values)

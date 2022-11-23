@@ -55,9 +55,9 @@
         <template v-else>
           <!-- 这里展示对应的分类详情或项目详情组件 -->
           <!-- 分类信息 -->
-          <classify-info v-if="selectedRows[0] && selectedRows[0].type == 'classify'" ref="classifyInfo" />
+          <classify-info v-if="selectedRows[0] && selectedRows[0].type === 'classify'" ref="classifyInfo" />
           <!-- 项目信息 -->
-          <unit-info v-if="selectedRows[0] && selectedRows[0].type == 'unit'" ref="unitInfo" />
+          <unit-info v-if="selectedRows[0] && selectedRows[0].type === 'unit'" ref="unitInfo" />
         </template>
       </div>
     </r-l-layout>

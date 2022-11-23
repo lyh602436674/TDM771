@@ -63,54 +63,6 @@
           </h-vex-table>
         </h-card>
       </a-tab-pane>
-      <!-- 报告模板 -->
-      <a-tab-pane :key="5" tab="报告模板">
-        <h-card :bordered="false" :title="title + ' 报告模板'" fixed>
-          <h-search
-            slot="search-form"
-            v-model="reportTempParams"
-            :data="tempSearchBar"
-            :showToggleButton="false"
-            size="small"
-            @change="() => handleSearch('reportTemp')"
-          />
-          <template slot="table-operator">
-            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(5)">
-              添加模板
-            </a-button>
-            <a-button icon="delete" size="small" type="danger" @click="deleteBatch(5)"> 批量删除</a-button>
-          </template>
-          <h-vex-table
-            ref="reportTemp"
-            slot="content"
-            :columns="tempColumns"
-            :data="reportTempLoadData"
-            :rowKey="(record) => record.id"
-            :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :scroll="{ x: true }"
-          >
-            <template slot="name" slot-scope="text, record">
-              {{ record.name }}
-              <a-tooltip v-if="record.isDefault == 1" title="默认模板">
-                <h-icon class="primary-text" type="icon-moren"/>
-              </a-tooltip>
-            </template>
-            <template slot="actions" slot-scope="text, record">
-              <a-tooltip v-if="record.isDefault == 2" title="设置成默认">
-                <h-icon
-                  :class="record.isDefault == 2 ? 'primary-text' : 'danger-text'"
-                  type="icon-moren"
-                  @click="() => handleSetDefault(record, 'report')"
-                />
-                <a-divider type="vertical"/>
-              </a-tooltip>
-              <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(5, record.id)"/>
-              </a-tooltip>
-            </template>
-          </h-vex-table>
-        </h-card>
-      </a-tab-pane>
       <!-- 试前模板 -->
       <a-tab-pane :key="7" tab="试前模板">
         <h-card :bordered="false" :title="title + ' 试前模板'" fixed>

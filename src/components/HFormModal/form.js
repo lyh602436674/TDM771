@@ -276,11 +276,14 @@ export default {
           return this.$createElement('a-tree-select', {
             props: {
               disabled: com.disabled,
+              showSearch: com.showSearch || false,
               mode: com.multiple || false,
               placeholder: com.placeholder || '请选择',
               treeData: com.treeData,
               loadData: com.loadData,
-              allowClear: com.allowClear || true
+              allowClear: com.allowClear || true,
+              filterTreeNode: com.filterTreeNode,
+              treeNodeFilterProp: com.treeNodeFilterProp,
             },
             style: com.style,
             on: {

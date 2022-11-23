@@ -99,12 +99,15 @@ export default {
     treeConfig: {
       type: Object,
       default: () => {
-        return {
-          children: "children"
-        }
+        return {}
       }
     }
   }),
+  computed: {
+    isTreeTable() {
+      return this.treeConfig && isObject(this.treeConfig) && Object.keys(this.treeConfig).length > 0
+    }
+  },
   data() {
     return {
       tableId: this.uid || randomUUID(), // 当前vexTable的唯一标识
@@ -573,7 +576,7 @@ export default {
       id: this.tableId,
       height: this.height,
       autoResize: true,
-      stripe: true,
+      stripe: this.isTreeTable,
       border: this.bordered || true,
       round: true,
       size: this.size,
@@ -596,7 +599,7 @@ export default {
       tooltipConfig: {
         enterable: true
       },
-      treeConfig: this.treeConfig
+      treeConfig: this.isTreeTable ? this.treeConfig : undefined
     }
     let events = {}
     // 是否显示序列号
@@ -616,7 +619,7 @@ export default {
           highlight: true,
           strict: true,
           reserve: true,
-          range: true,
+          range: this.isTreeTable,
         }
         if (isFunction(this.checkMethod)) {
           vxeTableProps['checkboxConfig'].checkMethod = this.checkMethod

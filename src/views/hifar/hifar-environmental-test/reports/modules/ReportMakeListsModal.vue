@@ -16,12 +16,14 @@
       </a-button>
     </template>
     <report-experiment-table ref='reportExperimentMain' @change='selectChange'></report-experiment-table>
+    <report-template-select ref='reportTemplateSelect' @callback="selectedTemplate"></report-template-select>
   </h-modal>
 </template>
 
 <script>
 import {postAction} from '@/api/manage'
 import ReportExperimentTable from '../components/ReportExperimentTable'
+import ReportTemplateSelect from "@views/hifar/hifar-environmental-test/reports/modules/ReportTemplateSelect";
 
 export default {
   inject: {
@@ -42,6 +44,7 @@ export default {
     }
   },
   components: {
+    ReportTemplateSelect,
     ReportExperimentTable
   },
   methods: {
@@ -68,6 +71,12 @@ export default {
     },
     // 按试验生成报告按钮
     saveTestHandle() {
+      this.$refs.reportTemplateSelect.show()
+    },
+    selectedTemplate(selectedRow) {
+      console.log(selectedRow,'selected')
+    },
+    handleSubmit() {
       let {entrustCodeArr, selectedRowKeys} = this
       if (!selectedRowKeys.length) {
         this.$message.warning('请选择试验')

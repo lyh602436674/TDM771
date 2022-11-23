@@ -42,9 +42,6 @@
         <span slot="status" slot-scope="text, record">
           <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
         </span>
-        <!--        <span slot="reportCode" slot-scope="text, record">-->
-        <!--          <a @click="() => handleDetail(record)">{{ record.reportCode }}</a>-->
-        <!--        </span>-->
         <div slot="action" slot-scope="text, record">
           <a-icon
             class="primary-text"

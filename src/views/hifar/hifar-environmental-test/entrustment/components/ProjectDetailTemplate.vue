@@ -32,7 +32,7 @@
         <span v-else>暂无附件</span>
       </div>
     </h-desc-item>
-    <h-desc-item :span='3' label='试验条件？？'>
+    <h-desc-item :span='3' label='试验条件结构化'>
       <template slot='content'>
         <template v-if="!model.abilityRequire.length">
           <a-empty style="width: 100%"></a-empty>

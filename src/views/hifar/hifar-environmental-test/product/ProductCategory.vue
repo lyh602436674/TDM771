@@ -29,6 +29,7 @@
         :data='loadData'
         :rowKey='(record) => record.id'
         :scroll='{ x: true }'
+        :treeConfig="treeConfig"
       >
         <template #categoryName="text, record">
           <a @click="handleEdit(record)">{{ text || '--' }}</a>
@@ -60,7 +61,7 @@
             style='cursor: pointer'
             title='在此分类下新增'
             type='plus'
-            @click="handleAdd({id:record.categoryId})"
+            @click="handleAdd({categoryId:record.categoryId})"
           />
         </span>
       </h-vex-table>
@@ -86,6 +87,9 @@ export default {
     return {
       moment,
       queryParams: {},
+      treeConfig: {
+        children: "children"
+      },
       selectedRowKeys: [],
       selectedRows: [],
       url: {
