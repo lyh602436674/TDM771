@@ -1,14 +1,7 @@
-<!--
- * @Author: 雷宇航
- * @Date: 2022-11-16 10:52:49
- * @fileName: ProductCategory.vue
- * @FilePath: tdm771-client\src\views\hifar\hifar-environmental-test\product\ProductCategory.vue
- * @Description: 产品分类页面
--->
 <template>
-  <div ref='productCategory' class='productCategory'>
+  <div ref='testDirection' class='testDirection'>
     <h-card :bordered='true' fixed>
-      <template slot='title'>产品分类</template>
+      <template slot='title'>试验方向</template>
       <h-search
         slot='search-form'
         v-model='queryParams'
@@ -18,7 +11,7 @@
         @change='refresh'
       />
       <div slot='table-operator' style='border-top: 5px'>
-        <a-button v-has="'productCategory:add'" icon='plus' size='small' type='ghost-primary' @click='handleAdd("")'>添加
+        <a-button v-has="'testDirection:add'" icon='plus' size='small' type='ghost-primary' @click='handleAdd("")'>添加
         </a-button>
       </div>
       <h-vex-table
@@ -42,10 +35,10 @@
             type='edit'
             @click='() => handleEdit(record)'
           />
-          <a-divider v-has="'productCategory:delete'" type='vertical'/>
+          <a-divider v-has="'testDirection:delete'" type='vertical'/>
           <a-popconfirm title='确定删除吗?' @confirm='() => handleDelete(record.id)'>
             <a-icon
-              v-has="'productCategory:delete'"
+              v-has="'testDirection:delete'"
               class='primary-text'
               style='cursor: pointer'
               theme='twoTone'
@@ -54,9 +47,9 @@
               type='delete'
             />
           </a-popconfirm>
-          <a-divider v-has="'productCategory:add'" type='vertical'/>
+          <a-divider v-has="'testDirection:add'" type='vertical'/>
           <a-icon
-            v-has="'productCategory:add'"
+            v-has="'testDirection:add'"
             class='primary-text'
             style='cursor: pointer'
             title='在此分类下新增'
@@ -71,16 +64,14 @@
 </template>
 
 <script>
-import moment from 'moment'
-import {postAction} from '@/api/manage'
-import ProductCategoryModal from "@views/hifar/hifar-environmental-test/product/modules/ProductCategoryModal";
+import moment from "moment";
+import {postAction} from "@api/manage";
 
 export default {
-  name: "ProductCategory",
-  components: {ProductCategoryModal},
+  name: "TestDirectionList",
   provide() {
     return {
-      getContainer: () => this.$refs.productCategory
+      getContainer: () => this.$refs.testDirection
     }
   },
   data() {
@@ -197,8 +188,8 @@ export default {
 }
 </script>
 
-<style lang='less' scoped>
-.productCategory {
+<style lang="less" scoped>
+.testDirection {
   width: 100%;
   height: 100%;
   position: relative;
