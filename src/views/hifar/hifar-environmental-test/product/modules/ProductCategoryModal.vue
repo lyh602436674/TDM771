@@ -58,6 +58,8 @@ export default {
           title: '上级产品分类',
           key: 'categoryId',
           formType: 'treeSelect',
+          showSearch: true,
+          treeNodeFilterProp: "title",
           treeData: this.treeData
         },
         {

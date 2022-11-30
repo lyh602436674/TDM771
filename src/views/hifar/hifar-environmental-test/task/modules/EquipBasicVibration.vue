@@ -16,8 +16,8 @@
     @cancel="handleCancel"
     @submit="handleSubmit"
   >
-    <vibration ref="vibration" v-if="typeCode == 'vibration'" :record="this.record"></vibration>
-    <humiture ref="humiture" v-else-if="typeCode == 'humiture'" :record="this.record"></humiture>
+    <vibration v-if="typeCode === 'vibration'" ref="vibration" :record="this.record"></vibration>
+    <humiture v-else-if="typeCode === 'humiture'" ref="humiture" :record="this.record"></humiture>
     <a-empty v-else></a-empty>
   </h-modal>
 </template>
@@ -26,7 +26,8 @@
 import moment from 'moment'
 import vibration from '../modules/testRecord/Vibration.vue'
 import humiture from '../modules/testRecord/Humiture.vue'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
+
 export default {
   components: {
     vibration,
@@ -79,12 +80,12 @@ export default {
       this.visible = false
     },
     handleSubmit() {
-      if(this.typeCode=='vibration'){
+      if (this.typeCode === 'vibration') {
         this.$refs.vibration.handleSubmit()
-        this.visible=false
-      }else{
+        this.visible = false
+      } else {
         this.$refs.humiture.handleEnsureCheckEnsure()
-        this.visible=false
+        this.visible = false
       }
     },
     submitForm(values) {

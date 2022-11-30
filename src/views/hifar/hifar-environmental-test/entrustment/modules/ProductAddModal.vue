@@ -297,7 +297,6 @@ export default {
     },
     onTreeSelect(selectedKeys, event) {
       this.selectedTreeKeys = selectedKeys
-      console.log(selectedKeys, event)
     },
     formChange(values) {
       this.$emit('callback', values)

@@ -23,7 +23,7 @@
       <a-tabs v-model="activeTab" style="width: 100%" type="card" @change="handleTabsChange">
         <a-tab-pane :key="1" tab="基本信息"/>
         <a-tab-pane :key="2" tab="试验检查"/>
-        <!--        <a-tab-pane :key="3" tab="试验记录" />-->
+        <a-tab-pane :key="3" tab="试验记录"/>
         <a-tab-pane :key="4" tab="试验数据"/>
         <a-tab-pane :key="5" tab="异常记录"/>
         <a-tab-pane :key="6" tab="终止记录"/>
@@ -45,7 +45,7 @@
             :toolsProductData="toolsProductData"
           />
           <test-task-check v-if="activeTab === 2" ref="TestTaskCheck" :testId="testId"></test-task-check>
-<!--          <vibration-table v-if="activeTab === 3" ref="VibrationTable" :record="records"></vibration-table>-->
+          <vibration-table v-if="activeTab === 3" ref="VibrationTable" :record="records"></vibration-table>
           <test-task-data v-if="activeTab === 4" ref="TestData" :testId="testId"></test-task-data>
           <abnormal-record-table v-if="activeTab === 5" ref="AbnormalRecordTable" :records="records" />
           <termination-record-table v-if="activeTab === 6" ref="TerminationRecordTable" :records="records" />

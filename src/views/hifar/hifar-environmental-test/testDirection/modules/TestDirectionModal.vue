@@ -40,9 +40,9 @@ export default {
       model: {},
       treeData: [],
       url: {
-        add: "/HfProductClassifyBusiness/add",
-        edit: "/HfProductClassifyBusiness/modifyById",
-        tree: "/HfProductClassifyBusiness/listAll"
+        add: "/HfResTestDirection/add",
+        edit: "/HfResTestDirection/modifyById",
+        tree: "/HfResTestDirection/listTree"
       }
     }
   },
@@ -56,8 +56,10 @@ export default {
         },
         {
           title: '上级目录',
-          key: 'pId',
+          key: 'pid',
           formType: 'treeSelect',
+          showSearch: true,
+          treeNodeFilterProp: "title",
           treeData: this.treeData
         },
         {
@@ -72,9 +74,6 @@ export default {
           title: '本级排序号',
           key: 'rowSort',
           formType: 'input',
-          validate: {
-            rules: [{required: true, message: '请输入分类编码'}],
-          },
         },
         {
           title: '备注',
@@ -95,7 +94,7 @@ export default {
       return arr.map(item => {
         return {
           ...item,
-          title: item.categoryName,
+          title: item.directionName,
           key: item.id,
           value: item.id,
           children: item.children && item.children.length ? this.recursive(item.children) : []
@@ -123,7 +122,7 @@ export default {
       postAction(!values.id ? add : edit, values).then((res) => {
         if (res.code === 200) {
           this.$message.success(!values.id ? '添加成功' : "编辑成功")
-          this.$emit('change')
+          this.$emit('change',this.model)
           this.handleCancel()
         }
       }).finally(() => {

@@ -1,86 +1,109 @@
 <template>
   <div ref='productList' class='product-list'>
-    <h-card fixed :bordered='true'>
-      <template slot='title'>产品管理</template>
-      <h-search
-        v-model='queryParams'
-        slot='search-form'
-        size='small'
-        :showToggleButton='true'
-        :data='searchBar'
-        @change='refresh'
-      />
-      <div slot='table-operator' style='border-top: 5px'>
-        <a-button v-has="'product:add'" size='small' @click='handleAdd' type='ghost-primary' icon='plus'>添加</a-button>
-        <template>
-          <a-button v-has="'product:delete'" type='danger' size='small' icon='delete' @click='batchDel'>
-            批量删除
-          </a-button>
-        </template>
-      </div>
-
-      <h-vex-table
-        slot='content'
-        ref='materialTable'
-        :scroll='{ x: true }'
-        :columns='columns'
-        :data='loadData'
-        :rowKey='(record) => record.id'
-        :row-selection='{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }'
-      >
-        <span slot='productAlias' slot-scope='text, record'>
-          <a @click='handleDetailCode(record)'>
-            {{ record.productAlias ? record.productAlias : '--' }}
-          </a>
-        </span>
-        <span slot='action' slot-scope='text, record'>
-          <a-icon
-            type='edit'
-            title='编辑'
-            class='primary-text'
-            style='cursor: pointer'
-            @click='() => handleEdit(record)'
-          />
-          <a-divider type='vertical' />
-          <a-icon
-            type='eye'
-            title='详情'
-            class='primary-text'
-            style='cursor: pointer'
-            @click='() => handleDetail(record)'
-          />
-          <a-divider type='vertical' />
-          <a-popconfirm title='确定删除吗?' @confirm='() => handleDelete(record.id)'>
-            <a-icon
-              type='delete'
-              title='删除'
-              class='primary-text'
-              style='cursor: pointer'
-              theme='twoTone'
-              two-tone-color='#ff4d4f'
+    <r-l-layout :leftMinWidth="250" style="height: 100%">
+      <template slot="left">
+        <div style="height: 100%;">
+          <h-edit-tree
+            ref="productTree"
+            :replaceFields="replaceFields"
+            :selectedKeys="selectedTreeKeys"
+            :tree="treeData"
+            title="产品分类"
+            @onSelect="onTreeSelect"
+          >
+            <template slot="extra"></template>
+            <a-input-search
+              slot="search-form"
+              v-model="queryTreeParams.keyWord"
+              allowClear
+              enter-button="搜索"
+              placeholder="请输入分类名称"
+              size="small"
+              @search="loadLeftTree"
+              @keyup.enter.native="loadLeftTree"
             />
-          </a-popconfirm>
-        </span>
-      </h-vex-table>
-      <product-modal ref='productModal' @change='refresh'></product-modal>
-      <product-detail-modal ref='productDetailModal' :detail='detailData' :config='formData'></product-detail-modal>
-    </h-card>
+          </h-edit-tree>
+        </div>
+      </template>
+      <div slot="right" style="height:100%;border-left: 1px solid #e8e8e8">
+        <h-card :bordered='true' fixed>
+          <template slot='title'>产品管理</template>
+          <h-search
+            slot='search-form'
+            v-model='queryParams'
+            :data='searchBar'
+            :showToggleButton='true'
+            size='small'
+            @change='refresh'
+          />
+          <div slot='table-operator' style='border-top: 5px'>
+            <a-button v-has="'product:add'" icon='plus' size='small' type='ghost-primary' @click='handleAdd'>添加
+            </a-button>
+            <a-button v-has="'product:delete'" icon='delete' size='small' type='danger' @click='batchDel'>
+              批量删除
+            </a-button>
+          </div>
+          <h-vex-table
+            ref='materialTable'
+            slot='content'
+            :columns='columns'
+            :data='loadData'
+            :row-selection='{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }'
+            :rowKey='(record) => record.id'
+            :scroll='{ x: true }'
+          >
+            <span slot='productAlias' slot-scope='text, record'>
+              <a @click='handleDetailCode(record)'>
+                {{ record.productAlias ? record.productAlias : '--' }}
+              </a>
+            </span>
+            <span slot='action' slot-scope='text, record'>
+              <a-icon
+                class='primary-text'
+                style='cursor: pointer'
+                title='编辑'
+                type='edit'
+                @click='() => handleEdit(record)'
+              />
+              <a-divider type='vertical'/>
+              <a-icon
+                class='primary-text'
+                style='cursor: pointer'
+                title='详情'
+                type='eye'
+                @click='() => handleDetail(record)'
+              />
+              <a-divider type='vertical'/>
+              <a-popconfirm title='确定删除吗?' @confirm='() => handleDelete(record.id)'>
+                <a-icon
+                  class='primary-text'
+                  style='cursor: pointer'
+                  theme='twoTone'
+                  title='删除'
+                  two-tone-color='#ff4d4f'
+                  type='delete'
+                />
+              </a-popconfirm>
+            </span>
+          </h-vex-table>
+        </h-card>
+      </div>
+    </r-l-layout>
+    <product-modal ref='productModal' @change='refresh'></product-modal>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import {postAction} from '@/api/manage'
+import {getAction, postAction} from '@/api/manage'
 import productModal from './modules/productModal.vue'
-import productDetailModal from './modules/productDetailModal.vue'
-import mixin from '@/views/hifar/hifar-environmental-test/mixin.js'
+import HEditTree from '@/views/components/HEditTree.js'
 
 export default {
   components: {
     productModal,
-    productDetailModal
+    HEditTree
   },
-  mixins: [mixin],
   provide() {
     return {
       getContainer: () => this.$refs.productList
@@ -89,19 +112,29 @@ export default {
   data() {
     return {
       moment,
-      queryParams: {
-        c_productType_1: 'inside'
-      },
+      queryParams: {},
       selectedRowKeys: [],
+      replaceFields: {
+        children: 'children',
+        title: 'categoryName',
+        key: 'id',
+      },
+      selectedTreeKeys: [],
+      treeData: [],
+      queryTreeParams: {
+        keyWord: "",
+      },
       url: {
         list: '/HfProductBaseBusiness/listPage',
-        delete: '/HfProductBaseBusiness/logicRemoveById'
+        delete: '/HfProductBaseBusiness/logicRemoveById',
+        tree: "/HfProductClassifyBusiness/listAll",
       },
       detailData: {},
       loadData: (params) => {
         let data = {
           ...this.queryParams,
-          ...params
+          ...params,
+          c_classifyId_1: this.selectedTreeKeys.toString()
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
@@ -131,41 +164,8 @@ export default {
           formType: 'input'
         },
       ],
-      formData: [
-        {
-          title: '产品代号',
-          key: 'productAlias',
-          formType: 'input'
-        },
-        {
-          title: '产品工号',
-          key: 'productCode',
-          formType: 'input'
-        },
-        {
-          title: '产品名称',
-          key: 'productName',
-          formType: 'input'
-        },
-        {
-          title: '产品型号',
-          key: 'productModel',
-          formType: 'input'
-        },
-        {
-          title: '备注',
-          key: 'remarks',
-          formType: 'textarea',
-          span: 2
-        }
-      ],
       // 表头
       columns: [
-        {
-          title: '产品工号',
-          align: 'left',
-          dataIndex: 'productCode'
-        },
         {
           title: '产品代号',
           align: 'left',
@@ -173,16 +173,31 @@ export default {
           scopedSlots: {customRender: 'productAlias'}
         },
         {
-          title: '产品名称',
+          title: '产品型号',
           align: 'left',
-          dataIndex: 'productName'
+          dataIndex: 'productModel'
         },
         {
-          title: '备注 ',
+          title: '规格大小',
           align: 'left',
-          dataIndex: 'remarks',
-          customRender: (text, record) => {
-            return text || '--'
+          dataIndex: 'productSpec'
+        },
+        {
+          title: '产品图号',
+          align: 'left',
+          dataIndex: 'productChartNo'
+        },
+        {
+          title: '阶段',
+          align: 'left',
+          dataIndex: 'productStage_dictText'
+        },
+        {
+          title: '有效性',
+          align: 'left',
+          dataIndex: 'productEffect',
+          customRender: (text) => {
+            return text === 1 ? '正常' : '停用'
           }
         },
         {
@@ -202,21 +217,26 @@ export default {
           }
         },
         {
+          title: '备注 ',
+          align: 'left',
+          dataIndex: 'remarks',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           fixed: 'right',
           width: 100,
           align: 'center',
-          scopedSlots: { customRender: 'action' }
+          scopedSlots: {customRender: 'action'}
         }
       ]
     }
   },
-
-  computed: {
-    hasSelected() {
-      return this.selectedRowKeys.length > 0
-    }
+  created() {
+    this.loadLeftTree()
   },
   methods: {
     refresh() {
@@ -226,10 +246,31 @@ export default {
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
-
+    onTreeSelect(selectedKeys, event) {
+      this.selectedTreeKeys = selectedKeys
+      this.refresh()
+    },
+    recursive(arr) {
+      return arr.map(item => {
+        return {
+          ...item,
+          title: item.categoryName,
+          key: item.id,
+          value: item.id,
+          children: item.children && item.children.length ? this.recursive(item.children) : []
+        }
+      })
+    },
+    loadLeftTree() {
+      getAction(this.url.tree).then((res) => {
+        if (res.code === 200) {
+          this.treeData = this.recursive(res.data)
+        }
+      }).finally(() => this.confirmLoading = false)
+    },
     // 单个删除
     handleDelete(id) {
-      postAction(this.url.delete, { id: id }).then((res) => {
+      postAction(this.url.delete, {id: id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh()
@@ -238,26 +279,6 @@ export default {
         }
       })
     },
-
-    // // 批量删除
-    // batchDel() {
-    //   let _this = this
-    //   this.$confirm({
-    //     title: '确认删除',
-    //     content: '删除后不可恢复，确认删除？',
-    //     onOk: function () {
-    //       postAction(_this.url.delete, { id: _this.selectedRowKeys.join() }).then((res) => {
-    //         if (res.code === 200) {
-    //           _this.$message.success('删除成功')
-    //           _this.refresh()
-    //           _this.selectedRowKeys = []
-    //         } else {
-    //           _this.$message.warning('删除失败')
-    //         }
-    //       })
-    //     },
-    //   })
-    // },
     // 批量删除
     batchDel() {
       let _this = this
@@ -284,7 +305,9 @@ export default {
     },
     // 添加
     handleAdd() {
-      let record = {}
+      let record = {
+        productEffect: 1
+      }
       this.$refs.productModal.show(record, '添加')
     },
     // 编辑

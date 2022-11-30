@@ -78,7 +78,7 @@ export default {
         },
         {
           title: '分类选择',
-          key: 'categoryId',
+          key: 'classifyId',
           formType: 'treeSelect',
           treeData: this.treeData,
           showSearch: true,
@@ -140,7 +140,7 @@ export default {
           formType: 'dict',
           dictCode: 'hf_product_stage',
           validate: {
-            rules: [{required: true, message: '请选择阶段', trigger: 'blur'}]
+            rules: [{required: true, message: '请选择阶段'}]
           },
         },
         {

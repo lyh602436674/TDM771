@@ -61,7 +61,7 @@
             style='cursor: pointer'
             title='在此分类下新增'
             type='plus'
-            @click="handleAdd({categoryId:record.categoryId})"
+            @click="handleAdd({categoryId:record.id})"
           />
         </span>
       </h-vex-table>

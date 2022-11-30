@@ -17,14 +17,14 @@
       <h-vex-table
         ref='productCategoryTable'
         slot='content'
+        :treeConfig="{children: 'children',expandRowKeys}"
         :columns='columns'
         :showSeq="false"
         :data='loadData'
-        :rowKey='(record) => record.id'
+        rowKey='id'
         :scroll='{ x: true }'
-        :treeConfig="treeConfig"
       >
-        <template #categoryName="text, record">
+        <template #directionName="text, record">
           <a @click="handleEdit(record)">{{ text || '--' }}</a>
         </template>
         <span slot='action' slot-scope='text, record'>
@@ -54,11 +54,11 @@
             style='cursor: pointer'
             title='在此分类下新增'
             type='plus'
-            @click="handleAdd({categoryId:record.categoryId})"
+            @click="handleAdd({pid:record.id})"
           />
         </span>
       </h-vex-table>
-      <product-category-modal ref="productCategoryModal" @change="refresh"></product-category-modal>
+      <test-direction-modal ref="testDirectionModal" @change="handleModalChange"/>
     </h-card>
   </div>
 </template>
@@ -66,9 +66,11 @@
 <script>
 import moment from "moment";
 import {postAction} from "@api/manage";
+import TestDirectionModal from "@views/hifar/hifar-environmental-test/testDirection/modules/TestDirectionModal";
 
 export default {
   name: "TestDirectionList",
+  components: {TestDirectionModal},
   provide() {
     return {
       getContainer: () => this.$refs.testDirection
@@ -78,20 +80,18 @@ export default {
     return {
       moment,
       queryParams: {},
-      treeConfig: {
-        children: "children"
-      },
+      expandRowKeys: [],
       selectedRowKeys: [],
       selectedRows: [],
       url: {
-        list: '/HfProductClassifyBusiness/listAll',
-        delete: '/HfProductClassifyBusiness/logicRemoveById',
+        listTree: '/HfResTestDirection/listTree',
+        delete: '/HfResTestDirection/logicRemoveById',
       },
       loadData: (params) => {
         let data = {
           ...this.queryParams,
         }
-        return postAction(this.url.list, data).then((res) => {
+        return postAction(this.url.listTree, data).then((res) => {
           if (res.code === 200) {
             return res.data
           }
@@ -99,8 +99,30 @@ export default {
       },
       searchBar: [
         {
-          title: '分类名称',
-          key: 'c_categoryName_7',
+          title: '分类',
+          key: 'c_directionName_7',
+          formType: 'input'
+        },
+        {
+          title: '状态',
+          key: 'c_status_1',
+          formType: 'select',
+          options: [
+            {
+              title: '正常',
+              key: 1,
+              value: 1
+            },
+            {
+              title: '停用',
+              key: 2,
+              value: 2
+            },
+          ]
+        },
+        {
+          title: '备注信息',
+          key: 'c_remarks_7',
           formType: 'input'
         },
 
@@ -110,22 +132,21 @@ export default {
         {
           title: '分类名称',
           align: 'left',
-          dataIndex: 'categoryName',
+          dataIndex: 'directionName',
           treeNode: true,
-          scopedSlots: {customRender: 'categoryName'}
+          scopedSlots: {customRender: 'directionName'}
         },
         {
-          title: '创建人',
+          title: '本级排序号',
           align: 'center',
-          dataIndex: 'createUserName',
+          dataIndex: 'rowSort',
         },
         {
-          title: '创建时间 ',
+          title: '状态',
           align: 'center',
-          minWidth: 150,
-          dataIndex: 'createTime',
+          dataIndex: 'status',
           customRender: (text) => {
-            return text && text !== '0' ? moment(+text).format('YYYY-MM-DD HH:mm:ss') : '--'
+            return text === 1 ? '正常' : text === 2 ? '停用' : '--'
           }
         },
         {
@@ -138,7 +159,7 @@ export default {
           }
         },
         {
-          title: '备注 ',
+          title: '备注信息',
           align: 'left',
           dataIndex: 'remarks',
           customRender: (text, record) => {
@@ -157,6 +178,10 @@ export default {
     }
   },
   methods: {
+    handleModalChange(record) {
+      this.refresh()
+      this.expandRowKeys = [record.pid]
+    },
     refresh() {
       this.$refs.productCategoryTable.refresh(true)
       this.selectedRowKeys = []
@@ -178,11 +203,11 @@ export default {
     },
     // 添加
     handleAdd(record) {
-      this.$refs.productCategoryModal.show(record, '添加')
+      this.$refs.testDirectionModal.show(record, '添加')
     },
     // 编辑
     handleEdit(record) {
-      this.$refs.productCategoryModal.show(record, '编辑')
+      this.$refs.testDirectionModal.show(record, '编辑')
     },
   }
 }
