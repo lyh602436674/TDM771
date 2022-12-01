@@ -29,7 +29,8 @@
       />
       <h-vex-table slot="content" ref="testInfoListTable" :columns="equipColumns" :data="loadData">
         <template slot="status" slot-scope="text">
-          <a-badge v-if="text == 1" color="geekblue" text="未开始" />
+          <a-badge v-if="text == 0" color="grey" text="未发布" />
+          <a-badge v-else-if="text == 1" color="geekblue" text="已发布" />
           <a-badge v-else-if="text == 10" color="red" text="已撤销" />
           <a-badge v-else-if="text == 20" color="green" text="进行中" />
           <a-badge v-else-if="text == 25" color="orange" text="异常" />
@@ -38,6 +39,15 @@
           <a-badge v-else-if="text == 50" color="grey" text="已完成" />
         </template>
         <span slot="actions" slot-scope="text, record">
+          <a-popconfirm title="确定删除吗？" @confirm="() => handleDelete(record.id)">
+            <a v-if="[0].includes(record.status)" style="color: red">删除</a>
+          </a-popconfirm>
+          <a-popconfirm title="确定发布吗？" @confirm="() => handleRelease(record.id)">
+            <a-divider
+              v-if="[0].includes(record.status)"
+              type="vertical"/>
+            <a v-if="[0].includes(record.status)">发布</a>
+          </a-popconfirm>
           <a-popconfirm title="确定撤销吗？" @confirm="() => handleBack(record.id)">
             <a v-if="[1,20,25,30,40].includes(record.status)">撤销</a>
           </a-popconfirm>
@@ -60,6 +70,8 @@ export default {
       url: {
         testList: '/HfEnvTaskTestBusiness/listPageForTask',
         recover: '/HfEnvTaskTestBusiness/recover',
+        release: '/HfEnvTaskTestBusiness/release', // 发布url
+        delete: '/HfEnvTaskTestBusiness/logicRemoveById' // 删除
       },
       queryParams: {},
       equipColumns: [
@@ -67,7 +79,7 @@ export default {
           title: '设备名称',
           dataIndex: 'equipName',
           customRender: (text) => {
-            return text ? text : '--'
+            return text || '--'
           },
           minWidth: 120
         },
@@ -75,7 +87,7 @@ export default {
           title: '设备型号',
           dataIndex: 'equipModel',
           customRender: (text) => {
-            return text ? text : '--'
+            return text || '--'
           },
           minWidth: 120
         },
@@ -83,7 +95,7 @@ export default {
           title: '内部名称',
           dataIndex: 'innerName',
           customRender: (text) => {
-            return text ? text : '--'
+            return text || '--'
           },
           minWidth: 120
         },
@@ -91,7 +103,7 @@ export default {
           title: '试验编号',
           dataIndex: 'testCode',
           customRender: (text) => {
-            return text ? text : '--'
+            return text || '--'
           },
           minWidth: 120
         },
@@ -99,7 +111,7 @@ export default {
           title: '试验项目',
           dataIndex: 'testNames',
           customRender: (text) => {
-            return text ? text : '--'
+            return text || '--'
           },
           minWidth: 120
         },
@@ -107,7 +119,7 @@ export default {
           title: '状态',
           dataIndex: 'status',
           scopedSlots: {
-            customRender: 'status',
+            customRender: 'status'
           },
           minWidth: 100
         },
@@ -115,7 +127,7 @@ export default {
           title: '试验员',
           dataIndex: 'chargeUserName',
           customRender: (text) => {
-            return text ? text : '--'
+            return text || '--'
           },
           minWidth: 80
         },
@@ -123,7 +135,7 @@ export default {
           title: '设备速率',
           dataIndex: 'testRate',
           customRender: (text) => {
-            return text ? text : '--'
+            return text || '--'
           },
           minWidth: 80
         },
@@ -159,20 +171,20 @@ export default {
         },
         {
           title: '操作',
-          width: 90,
+          width: 120,
           align: 'center',
           dataIndex: 'actions',
           fixed: 'right',
           scopedSlots: {
-            customRender: 'actions',
-          },
-        },
+            customRender: 'actions'
+          }
+        }
       ],
       searchData: [
         {
           title: '试验编号',
           key: 'c_testCode_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '试验状态',
@@ -182,53 +194,53 @@ export default {
             {
               title: '未开始',
               key: 1,
-              value: 1,
+              value: 1
             },
             {
               title: '已撤销',
               key: 10,
-              value: 10,
+              value: 10
             },
             {
               title: '进行中',
               key: 20,
-              value: 20,
+              value: 20
             },
             {
               title: '暂停',
               key: 30,
-              value: 30,
+              value: 30
             },
             {
               title: '终止',
               key: 40,
-              value: 40,
+              value: 40
             },
             {
               title: '已完成',
               key: 50,
-              value: 50,
-            },
-          ],
+              value: 50
+            }
+          ]
         },
         {
           title: '设备名称',
           key: 'c_equipName_7',
-          formType: 'input',
-        },
+          formType: 'input'
+        }
       ],
       loadData: (params) => {
         let data = {
           ...params,
           ...this.queryParams,
-          taskId: this.taskId,
+          taskId: this.taskId
         }
         return postAction(this.url.testList, data).then((res) => {
           if (res.code === 200) {
             return res.data
           }
         })
-      },
+      }
     }
   },
   methods: {
@@ -240,20 +252,44 @@ export default {
     },
     handleCancel() {
       this.visible = false
-      this.$emit('change',this.handleBack())
+      this.$emit('change', this.handleBack())
     },
     refresh(bool = true) {
       this.$refs.testInfoListTable.refresh(bool)
     },
     handleBack(id) {
-      postAction(this.url.recover, { id: id }).then((res)=>{
-        if(res.code==200){
+      postAction(this.url.recover, { id: id }).then((res) => {
+        if (res.code == 200) {
           this.$message.success('操作成功')
           this.refresh()
         }
       })
     },
-  },
+    /**
+     * 发布
+     * @param id 试验id
+     */
+    handleRelease(id) {
+      postAction(this.url.release, { id }).then((res) => {
+        if (res.code == 200) {
+          this.$message.success('操作成功')
+          this.refresh()
+        } else {
+          this.$message.success('发布失败')
+        }
+      })
+    },
+    handleDelete(id) {
+      postAction(this.url.delete, { id }).then((res) => {
+        if (res.code == 200) {
+          this.$message.success('操作成功')
+          this.refresh()
+        } else {
+          this.$message.success('删除失败')
+        }
+      })
+    }
+  }
 }
 </script>
 
