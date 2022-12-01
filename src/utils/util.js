@@ -1,6 +1,5 @@
 import * as api from '@/api/api'
-import { isURL } from '@/utils/validate'
-import { asyncRouterMap } from '@/config/router.config.js'
+import {asyncRouterMap} from '@/config/router.config.js'
 
 //hifar add begin
 export function validateDuplicateMultiValueWithMsg(tableName, fieldNames, fieldVals, dataId, msg, callback) {
@@ -483,14 +482,32 @@ export function neverNull(value, def) {
  * @returns {string}
  */
 export function removeArrayElement(array, prod, value) {
-    let index = -1
-    for (let i = 0; i < array.length; i++) {
-        if (array[i][prod] == value) {
-            index = i;
-            break;
-        }
+  let index = -1
+  for (let i = 0; i < array.length; i++) {
+    if (array[i][prod] == value) {
+      index = i;
+      break;
     }
-    if (index >= 0) {
-        array.splice(index, 1);
+  }
+  if (index >= 0) {
+    array.splice(index, 1);
+  }
+}
+
+/*
+* 数组递归
+* arr 源数组
+* title title的字段
+* id id的字段
+* */
+export function recursive(arr, title, id) {
+  return arr.map(item => {
+    return {
+      ...item,
+      title: item[title],
+      key: item[id],
+      value: item[id],
+      children: item.children && item.children.length ? recursive(item.children, title, id) : []
     }
+  })
 }

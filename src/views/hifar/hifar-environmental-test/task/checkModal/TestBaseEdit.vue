@@ -12,8 +12,8 @@
     :title="'试验编辑(' + records.testCode + ')'"
     :visible='visible'
     destroyOnClose
+    fullScreen
     inner
-    width='95%'
     @cancel='handleCancel'
   >
     <div slot='footer' class='footer'>
@@ -21,23 +21,36 @@
       </a-button>
       <a-button :loading="submitLoading" type='primary' @click='handleSave'>保存</a-button>
     </div>
-    <!-- 样品信息 -->
-    <h-desc title='样品信息'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='productAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
+    <div ref="modalBody">
+      <h-desc title='试件信息'>
+        <h-card :bordered='false' style='width: 100%'>
+          <template slot='table-operator'>
+            <a-button icon='plus' size='small' type='primary' @click='productAdd'>
+              添加
+            </a-button>
+          </template>
           <a-table
-            :columns='testProductColumns[+entrustType]'
+            :columns='testProductColumns'
+            style="width: 100%;"
             :dataSource='productTable'
             :pagination='false'
             bordered
             rowKey='id'
             size='small'
           >
+            <template slot="productFile" slot-scope="text, record">
+              <a @click="previewProductFile(record)">{{ text || 0 }}</a>
+            </template>
+            <template slot="productBeforeStatus" slot-scope="text, record">
+              <h-select v-model="record.productBeforeStatus"
+                        :options="productStatusOptions"
+                        @change="(e)=>productStatusChange(record,e,'productBeforeStatus')"/>
+            </template>
+            <template slot="productAfterStatus" slot-scope="text, record">
+              <h-select v-model="record.productAfterStatus"
+                        :options="productStatusOptions"
+                        @change="(e)=>productStatusChange(record,e,'productAfterStatus')"/>
+            </template>
             <template #action='text, record'>
               <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(record.id)'>
                 <a-icon
@@ -51,41 +64,52 @@
               </a-popconfirm>
             </template>
           </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <!-- 实施过程 -->
-    <h-desc style='margin-top: 20px' title='实施过程'>
-      <h-card :bordered='false' style='width: 100%'>
-        <h-form
-          ref='carryOutProcessForm'
-          v-model='carryOutProcessModel'
-          :column='2'
-          :formData='carryOutProcessFormData'
-          style='width: 100%'
-        />
-      </h-card>
-    </h-desc>
-    <!-- 参试人员 -->
-    <h-desc style='margin-top: 20px' title='参试人员'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='personAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
+        </h-card>
+      </h-desc>
+      <!-- 实施过程 -->
+      <h-desc style='margin-top: 20px' title='实施过程'>
+        <h-card :bordered='false' style='width: 100%'>
+          <h-form
+            ref='carryOutProcessForm'
+            v-model='model'
+            :column='2'
+            :formData='formData'
+            style='width: 100%'
+          />
+        </h-card>
+      </h-desc>
+      <!--巡检记录-->
+      <h-desc title='巡检记录'>
+        <h-card :bordered='false' style='width: 100%'>
+          <template slot='table-operator'>
+            <a-button icon='plus' size='small' type='primary' @click='siteInspectionAdd'>
+              添加
+            </a-button>
+          </template>
           <a-table
-            ref='personTable'
-            :columns='personColumns'
-            :dataSource='personArr'
+            :columns='siteInspectionColumns'
+            :dataSource='siteInspectionTable'
             :pagination='false'
-            :rowKey='(record) => record.testUserId'
             bordered
+            rowKey='id'
             size='small'
+            style="width: 100%;"
           >
+            <template slot="productFile" slot-scope="text, record">
+              <a @click="previewProductFile(record)">{{ text || 0 }}</a>
+            </template>
+            <template slot="productBeforeStatus" slot-scope="text, record">
+              <h-select v-model="record.productBeforeStatus"
+                        :options="productStatusOptions"
+                        @change="(e)=>productStatusChange(record,e,'productBeforeStatus')"/>
+            </template>
+            <template slot="productAfterStatus" slot-scope="text, record">
+              <h-select v-model="record.productAfterStatus"
+                        :options="productStatusOptions"
+                        @change="(e)=>productStatusChange(record,e,'productAfterStatus')"/>
+            </template>
             <template #action='text, record'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => personHandleDelete(record.testUserId)'>
+              <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(record.id)'>
                 <a-icon
                   class='primary-text'
                   style='cursor: pointer'
@@ -97,115 +121,151 @@
               </a-popconfirm>
             </template>
           </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <!-- 测试设备 -->
-    <h-desc style='margin-top: 20px' title='测试设备'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='equipAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
-          <a-table
-            :columns='testEquipColumns'
-            :dataSource='equipData'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-          >
-            <template #action='text, record'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => equipHandleDelete(record.id)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
-            </template>
-          </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <h-desc style='margin-top: 20px' title='传感器'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='sensorAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
-          <a-table
-            :columns='sensorColumns'
-            :dataSource='sensorData'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-          >
-            <template #action='text, record,index'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => sensorHandleDelete(index)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
-            </template>
-          </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <h-desc style='margin-top: 20px' title='振动工装'>
-      <h-card :bordered='false' style='width: 100%'>
-        <template slot='table-operator'>
-          <a-button icon='plus' size='small' style='margin-bottom: 10px' type='primary' @click='toolsProductAdd'>
-            添加
-          </a-button>
-        </template>
-        <div slot='content'>
-          <a-table
-            :columns='toolsProductColumns'
-            :dataSource='toolsProductData'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-          >
-            <template #action='text, record,index'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => toolsProductHandleDelete(index)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
-            </template>
-          </a-table>
-        </div>
-      </h-card>
-    </h-desc>
-    <h-desc style='margin-top: 20px' title='图片图谱'>
-      <h-upload-file accept="image/png,image/gif,image/jpg,image/jpeg" style="width: 100%" v-model="pictureData"
-                     isWriteRemarks :customParams="pictureCustomParams" @delete="handleDeleteImg"></h-upload-file>
-    </h-desc>
+        </h-card>
+      </h-desc>
+      <!-- 参试人员 -->
+      <h-desc style='margin-top: 20px' title='参试人员'>
+        <h-card :bordered='false' style='width: 100%'>
+          <template slot='table-operator'>
+            <a-button icon='plus' size='small' type='primary' @click='personAdd'>
+              添加
+            </a-button>
+          </template>
+          <div slot='content'>
+            <a-table
+              ref='personTable'
+              :columns='personColumns'
+              :dataSource='personArr'
+              :pagination='false'
+              :rowKey='(record) => record.testUserId'
+              bordered
+              size='small'
+            >
+              <template #action='text, record,index'>
+                <a-popconfirm title='确定删除吗?' @confirm='() => personHandleDelete(index)'>
+                  <a-icon
+                    class='primary-text'
+                    style='cursor: pointer'
+                    theme='twoTone'
+                    title='删除'
+                    two-tone-color='#ff4d4f'
+                    type='delete'
+                  />
+                </a-popconfirm>
+              </template>
+            </a-table>
+          </div>
+        </h-card>
+      </h-desc>
+      <!-- 测试设备 -->
+      <h-desc style='margin-top: 20px' title='测试设备'>
+        <h-card :bordered='false' style='width: 100%'>
+          <template slot='table-operator'>
+            <a-button icon='plus' size='small' type='primary' @click='equipAdd'>
+              添加
+            </a-button>
+          </template>
+          <div slot='content'>
+            <a-table
+              :columns='testEquipColumns'
+              :dataSource='equipData'
+              :pagination='false'
+              bordered
+              rowKey='id'
+              size='small'
+            >
+              <template #action='text, record,index'>
+                <a-popconfirm title='确定删除吗?' @confirm='() => equipHandleDelete(index)'>
+                  <a-icon
+                    class='primary-text'
+                    style='cursor: pointer'
+                    theme='twoTone'
+                    title='删除'
+                    two-tone-color='#ff4d4f'
+                    type='delete'
+                  />
+                </a-popconfirm>
+              </template>
+            </a-table>
+          </div>
+        </h-card>
+      </h-desc>
+      <h-desc style='margin-top: 20px' title='传感器'>
+        <h-card :bordered='false' style='width: 100%'>
+          <template slot='table-operator'>
+            <a-button icon='plus' size='small' type='primary' @click='sensorAdd'>
+              添加
+            </a-button>
+          </template>
+          <div slot='content'>
+            <a-table
+              :columns='sensorColumns'
+              :dataSource='sensorData'
+              :pagination='false'
+              bordered
+              rowKey='id'
+              size='small'
+            >
+              <template #action='text, record,index'>
+                <a-popconfirm title='确定删除吗?' @confirm='() => sensorHandleDelete(index)'>
+                  <a-icon
+                    class='primary-text'
+                    style='cursor: pointer'
+                    theme='twoTone'
+                    title='删除'
+                    two-tone-color='#ff4d4f'
+                    type='delete'
+                  />
+                </a-popconfirm>
+              </template>
+            </a-table>
+          </div>
+        </h-card>
+      </h-desc>
+      <h-desc style='margin-top: 20px' title='振动工装'>
+        <h-card :bordered='false' style='width: 100%'>
+          <template slot='table-operator'>
+            <a-button icon='plus' size='small' type='primary' @click='toolsProductAdd'>
+              添加
+            </a-button>
+          </template>
+          <div slot='content'>
+            <a-table
+              :columns='toolsProductColumns'
+              :dataSource='toolsProductData'
+              :pagination='false'
+              bordered
+              rowKey='id'
+              size='small'
+            >
+              <template #action='text, record,index'>
+                <a-popconfirm title='确定删除吗?' @confirm='() => toolsProductHandleDelete(index)'>
+                  <a-icon
+                    class='primary-text'
+                    style='cursor: pointer'
+                    theme='twoTone'
+                    title='删除'
+                    two-tone-color='#ff4d4f'
+                    type='delete'
+                  />
+                </a-popconfirm>
+              </template>
+            </a-table>
+          </div>
+        </h-card>
+      </h-desc>
+      <h-desc style='margin-top: 20px' title='图片图谱'>
+        <h-upload-file v-model="pictureData" :customParams="pictureCustomParams"
+                       accept="image/png,image/gif,image/jpg,image/jpeg"
+                       isWriteRemarks style="width: 100%" @delete="handleDeleteImg"></h-upload-file>
+      </h-desc>
+    </div>
+    <!-- 试件信息 -->
     <handle-select-modal
       ref='productHandleSelectModal'
       :columns='addProductColumns'
       :data-url='productList'
-      :title="'添加样品信息'"
+      :title="'添加试件信息'"
       type='product'
       @callback='productCallback'
     />
@@ -246,6 +306,8 @@ import {cloneDeep} from 'lodash'
 import {postAction} from '@/api/manage'
 import HandleSelectModal from '../modules/components/HandleSelectModal.vue'
 import PostionModal from '../modules/PostionModal'
+import {randomUUID, recursive} from "@/utils/util";
+import {USER_INFO} from "@/store/mutation-types";
 
 export default {
   inject: {
@@ -272,13 +334,195 @@ export default {
   data() {
     return {
       moment,
+      productStatusOptions: [{key: '1', value: '1', label: '完好'}, {key: '2', value: '2', label: '损坏'}],
+      siteRunningStatus: [
+        {key: '1', value: '1', label: '正常'},
+        {key: '2', value: '2', label: '异常'},
+        {key: '3', value: '3', label: '未知'}
+      ],
+      siteInspectionColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return parseInt(index) + 1
+          }
+        },
+        {
+          title: '试验方向',
+          dataIndex: 'testDirection',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return this.$createElement('a-tree-select', {
+              props: {
+                showSearch: true,
+                placeholder: '请选择试验方向',
+                treeData: this.testDirectionTreeData,
+                allowClear: true,
+                treeNodeFilterProp: 'title',
+                dropdownStyle: {
+                  maxHeight: '300px'
+                },
+              },
+              value: row.testDirectionId,
+              style: {width: "100%"},
+              on: {
+                change: (v, option) => {
+                  row.testDirectionId = v
+                }
+              },
+            })
+          }
+        },
+        {
+          title: '向次',
+          dataIndex: 'directionNum',
+          align: 'center',
+          width: 100,
+          scopedSlots: {customRender: 'directionNum'},
+          customRender: (t, row, index) => {
+            return this.$createElement('a-input', {
+              props: {
+                placeholder: '请输入向次',
+                allowClear: true,
+              },
+              value: row.directionNum,
+              style: {width: "100%"},
+              on: {
+                change: (e) => {
+                  row.directionNum = e.target.value
+                }
+              },
+            })
+          }
+        },
+        {
+          title: '日期时间',
+          dataIndex: 'inspectionTime',
+          align: 'center',
+          width: 170,
+          customRender: (t, row) => {
+            return this.$createElement('a-date-picker', {
+              props: {
+                placeholder: '请选择时间',
+                format: 'YYYY-MM-DD HH:mm:ss',
+                showTime: true,
+              },
+              style: {width: '100%'},
+              value: row.inspectionTime,
+              on: {
+                change: (val) => {
+                  row.inspectionTime = moment(val).valueOf()
+                }
+              }
+            })
+          }
+        },
+        {
+          title: '温度设定值(℃)',
+          dataIndex: 'setUpValue',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return this.$createElement('a-input-number', {
+              props: {
+                placeholder: '请输入温度设定值(℃)',
+                allowClear: true,
+              },
+              value: row.setUpValue,
+              style: {width: "100%"},
+              on: {
+                change: (value) => {
+                  row.setUpValue = value
+                }
+              },
+            })
+          }
+        },
+        {
+          title: '温度实测值(℃)',
+          dataIndex: 'measuredValue',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return this.$createElement('a-input-number', {
+              props: {
+                placeholder: '请输入温度实测值(℃)',
+                allowClear: true,
+              },
+              value: row.measuredValue,
+              style: {width: "100%"},
+              on: {
+                change: (value) => {
+                  row.measuredValue = value
+                }
+              },
+            })
+          }
+        },
+        {
+          title: '运行状态',
+          dataIndex: 'runStatus',
+          align: 'center',
+          width: 120,
+          customRender: (t, row, index) => {
+            return this.$createElement('h-select', {
+              props: {
+                placeholder: '请选择运行状态',
+                allowClear: true,
+                options: this.siteRunningStatus
+              },
+              value: row.runStatus,
+              style: {width: "100%"},
+              on: {
+                change: (value) => {
+                  row.runStatus = value
+                }
+              },
+            })
+          }
+        },
+        {
+          title: '操作人',
+          dataIndex: 'operationPerson',
+          align: 'center',
+          scopedSlots: {customRender: 'operationPerson'},
+        },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          align: 'center',
+          width: 270,
+          customRender: (t, row) => {
+            return this.$createElement('a-textarea', {
+              props: {
+                placeholder: '请输入备注',
+                autoSize: {minRows: 1}
+              },
+              style: {width: '100%'},
+              value: row.remarks,
+              on: {
+                change: (val) => {
+                  row.remarks = val
+                }
+              }
+            })
+          }
+        },
+      ],
+      siteInspectionTable: [],
+      // 试验方向下拉树数据
+      testDirectionTreeData: [],
       pictureData: [],
       visible: false,
       submitLoading: false,
-      entrustType: 2,
       title: '',
       testId: '',
-      carryOutProcessModel: {},
+      model: {},
       url: {
         detail: '/HfEnvTaskTestBusiness/queryById',
         save: '/HfEnvTaskTestBusiness/modifyById',
@@ -288,6 +532,7 @@ export default {
         updateFileStatus: '/HfEnvTestPressureRecordBusiness/updateFileStatus',
         attachList: '/MinioBusiness/listByRefId',
         deleteImg: '/MinioBusiness/logicRemoveById',
+        listTree: '/HfResTestDirection/listTree',
       },
       equipSearchData: [
         {
@@ -371,11 +616,28 @@ export default {
         list: '/HfToolsProducts/listAll',
         queryParams: {}
       },
-      carryOutProcessFormData: [
+      formData: [
+        {
+          title: '入场时间',
+          key: 'approachTime',
+          validate: {rules: [{required: false, validator: this.validateStartTime}]},
+          component: (
+            <h-time-select
+              v-decorator={['approachTime', {rules: [{required: false, message: '请选择入场时间'}]}]}
+            />
+          )
+        },
+        {
+          title: '离场时间',
+          key: 'departureTime',
+          validate: {rules: [{required: false, validator: this.validateEndTime}]},
+          component: (
+            <h-time-select v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
+          )
+        },
         {
           title: '开始时间',
           key: 'realStartTime',
-          span: 1,
           validate: {rules: [{required: false, validator: this.validateStartTime}]},
           component: (
             <h-time-select
@@ -386,37 +648,39 @@ export default {
         {
           title: '结束时间',
           key: 'realEndTime',
-          span: 1,
           validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
             <h-time-select v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
           )
         },
         {
-          title: '试验结果',
-          key: 'processDesc',
-          validate: {
-            rules: [{required: true, message: '请输入或者选择试验结果'}]
-          },
-          span: 2,
-          component: (
-            <a-select
-              v-decorator={['processDesc', {initialValue: []}]}
-              showSearch={true}
-              onSearch={(value) => {
-                this.$refs.carryOutProcessForm.form.setFieldsValue({processDesc: value})
-              }}
-              onBlur={(value) => {
-                this.$refs.carryOutProcessForm.form.setFieldsValue({processDesc: value})
-              }}
-            >
-              <a-select-option key={'满足试验条件'}>{'满足试验条件'}</a-select-option>
-              <a-select-option key={'满足试验条件，附试验谱型'}>{'满足试验条件，附试验谱型'}</a-select-option>
-            </a-select>
-          )
+          title: '温度(°C)',
+          key: 'temperature',
+          formType: 'input-number',
+          style: {
+            width: '100%',
+          }
         },
         {
-          title: '备注',
+          title: '湿度(RH)',
+          key: 'humidity',
+          formType: 'input-number',
+          style: {
+            width: '100%',
+          }
+        },
+        {
+          title: '自检',
+          key: 'selfInspection',
+          formType: 'input',
+        },
+        {
+          title: '互检',
+          key: 'mutualInspection',
+          formType: 'input',
+        },
+        {
+          title: '实施过程',
           key: 'remarks',
           formType: 'textarea',
           span: 2
@@ -431,49 +695,49 @@ export default {
           }
         },
         {
-          title: '样品单位',
+          title: '试件单位',
           dataIndex: 'custName',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '样品编号',
+          title: '试件编号',
           dataIndex: 'pieceCode',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '样品名称',
+          title: '试件名称',
           dataIndex: 'productName',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '样品代号',
+          title: '试件代号',
           dataIndex: 'productAlias',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '样品型号',
+          title: '试件型号',
           dataIndex: 'productModel',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '样品规格',
+          title: '试件规格',
           dataIndex: 'productSpec',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '样品数量',
+          title: '试件数量',
           dataIndex: 'pieceNum',
           customRender: (t) => {
             return t ? t : '--'
@@ -532,90 +796,66 @@ export default {
         }
       ],
       productTable: [],
-      testProductColumns: {
-        1: [
-          {
-            title: '#',
-            dataIndex: '',
-            key: 'rowIndex',
-            width: 60,
-            align: 'center',
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1
-            }
-          },
-          {
-            title: '样品名称',
-            dataIndex: 'productName',
-            align: 'center',
-          },
-          {
-            title: '型号/规格',
-            dataIndex: 'productModel',
-            align: 'center',
-          },
-          {
-            title: '样品编号',
-            dataIndex: 'pieceNo',
-            align: 'center',
-          },
-          {
-            title: '样品数量',
-            dataIndex: 'pieceNum',
-            align: 'center',
-          },
-          {
-            title: '操作',
-            dataIndex: 'action',
-            scopedSlots: {customRender: 'action'},
-            width: 60,
-            fixed: 'right',
-            align: 'center'
+      testProductColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return parseInt(index) + 1
           }
-        ],
-        2: [
-          {
-            title: '#',
-            dataIndex: '',
-            key: 'rowIndex',
-            width: 60,
-            align: 'center',
-            customRender: function (t, r, index) {
-              return parseInt(index) + 1
-            }
-          },
-          {
-            title: '样品名称',
-            dataIndex: 'productName',
-            align: 'center',
-          },
-          {
-            title: '图号',
-            dataIndex: 'productAlias',
-            align: 'center',
-          },
-          {
-            title: '样品编号',
-            dataIndex: 'pieceNo',
-            align: 'center',
-          },
-          {
-            title: '样品数量',
-            dataIndex: 'pieceNum',
-            align: 'center',
-          },
-          {
-            title: '操作',
-            dataIndex: 'action',
-            scopedSlots: {customRender: 'action'},
-            width: 60,
-            fixed: 'right',
-            align: 'center'
-          }
-        ],
-
-
-      },
+        },
+        {
+          title: '试件编号',
+          dataIndex: 'pieceNo',
+          align: 'center',
+        },
+        {
+          title: '试件附件',
+          dataIndex: 'productFile',
+          align: 'center',
+          scopedSlots: {customRender: 'productFile'},
+        },
+        {
+          title: '试前状态',
+          dataIndex: 'productBeforeStatus',
+          align: 'center',
+          width: 120,
+          scopedSlots: {customRender: 'productBeforeStatus'},
+        },
+        {
+          title: '试后状态',
+          dataIndex: 'productAfterStatus',
+          align: 'center',
+          width: 120,
+          scopedSlots: {customRender: 'productAfterStatus'},
+        },
+        {
+          title: '产品代号',
+          dataIndex: 'productAlias',
+          align: 'center',
+        },
+        {
+          title: '规格大小',
+          dataIndex: 'productSpec',
+          align: 'center',
+        },
+        {
+          title: '送试单位',
+          dataIndex: 'custName',
+          align: 'center',
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          scopedSlots: {customRender: 'action'},
+          width: 60,
+          fixed: 'right',
+          align: 'center'
+        }
+      ],
       personArr: [],
       personColumns: [
         {
@@ -632,7 +872,7 @@ export default {
         {title: '参试人员姓名', dataIndex: 'testUserName'},
         {
           title: '操作',
-          dataIndex: 'action',
+          key: 'action',
           scopedSlots: {customRender: 'action'},
           width: 60,
           fixed: 'right',
@@ -892,7 +1132,6 @@ export default {
       }
     }
   },
-
   methods: {
     show(record) {
       this.testId = record.id
@@ -902,6 +1141,32 @@ export default {
         this.productList.queryParams = {id: record.id, projectPieceInfo: []}
       })
       this.loadImgData()
+      this.getTestDirectionTreeData()
+    },
+    // 获取试验方向数据
+    getTestDirectionTreeData() {
+      postAction(this.url.listTree).then((res) => {
+        if (res.code === 200) {
+          this.testDirectionTreeData = recursive(res.data, 'directionName', 'id')
+        }
+      })
+    },
+    // 巡检记录新增行
+    siteInspectionAdd() {
+      let user = this.$ls.get(USER_INFO)
+      this.siteInspectionTable.push({
+        id: randomUUID(),
+        operationPerson: user.idName,
+        operationPersonId: user.id,
+      })
+    },
+    // 查看试件附件
+    previewProductFile(row) {
+
+    },
+    // 试前试后产品状态change事件
+    productStatusChange(row, e, type) {
+      console.log(row, e, type, 'row, e, type')
     },
     loadImgData() {
       postAction(this.url.attachList, {refType: 'test_picture', refId: this.testId}).then((res) => {
@@ -945,12 +1210,11 @@ export default {
       })
     },
     validateStartTime(rule, value, cb) {
-      let endTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['endTime'])
+      let endTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['realEndTime'])
       let valEnd = endTime.endTime
       let val = value ? moment(value).valueOf() : ''
       valEnd = valEnd ? moment(valEnd).valueOf() : ''
       if (!val) {
-        // cb('请选择开始时间')
         cb()
       } else {
         if (valEnd && val > valEnd) {
@@ -961,12 +1225,11 @@ export default {
       }
     },
     validateEndTime(rule, value, cb) {
-      let startTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['startTime'])
+      let startTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['realStartTime'])
       let valStart = startTime.startTime
       let val = value ? moment(value).valueOf() : ''
       valStart = valStart ? moment(valStart).valueOf() : ''
       if (!val) {
-        // cb('请选择结束时间')
         cb()
       } else {
         if (valStart && val < valStart) {
@@ -977,68 +1240,31 @@ export default {
       }
     },
     getTestDetail(id) {
-      let productArr = []
-      let personArr = []
       postAction(this.url.detail, {id: id}).then((res) => {
         if (res.code === 200) {
-          this.entrustType = res.data.entrustInfo[0].entrustType
-          res.data.testPieceInfo.forEach((item) => {
-            productArr.push({
-              id: item.id,
-              custName: item.custName,
-              entrustId: item.entrustId,
-              entrustCode: item.entrustCode,
-              projectId: item.projectId,
-              projectCode: item.projectCode,
-              taskId: item.taskId,
-              taskCode: item.taskCode,
-              pieceId: item.pieceId,
-              pieceNo: item.pieceNo,
-              pieceCode: item.pieceCode,
-              productId: item.productId,
-              productCode: item.productCode,
-              productName: item.productName,
-              productModel: item.productModel,
-              productAlias: item.productAlias,
-              pieceNum: item.pieceNum,
-              pieceCnum: item.pieceCnum,
-              intactStatus: item.intactStatus,
-              remarks: item.remarks
-            })
+          let model = Object.assign({}, res.data)
+          this.productTable = model.testPieceInfo.map(item => {
+            return {
+              ...item,
+              productBeforeStatus: item.productBeforeStatus || '1',
+              productAfterStatus: item.productAfterStatus || '1'
+            }
           })
-          res.data.testPersonInfo.forEach((item) => {
-            personArr.push({
-              id: item.id,
-              testPostName: item.testPostName,
-              testPostId: item.testPostId,
-              testUserId: item.testUserId,
-              testUserName: item.testUserName
-            })
-          })
-          this.productTable = productArr
-          this.personArr = personArr
-          this.testTaskData = res.data.testTaskInfo
-          this.projectData = res.data.testTaskInfo
+          this.personArr = model.testPersonInfo
+          this.testTaskData = model.testTaskInfo
+          this.projectData = model.testTaskInfo
           this.productList.queryParams.projectPieceInfo = []
           this.productTable.forEach((item) => {
             this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
           })
-          this.equipData = res.data.testEquipInfo.length ? res.data.testEquipInfo : this.selectedTreeRows
-          this.sensorData = res.data.testSensorInfo
-          this.toolsProductData = res.data.testToolsProductInfo
-          this.carryOutProcessModel = JSON.parse(JSON.stringify(res.data))
-          this.carryOutProcessModel.workId =
-            this.carryOutProcessModel.workId && this.carryOutProcessModel.workId != 0
-              ? this.carryOutProcessModel.workId
-              : undefined
-          this.carryOutProcessModel.realStartTime =
-            this.carryOutProcessModel.realStartTime && this.carryOutProcessModel.realStartTime != 0
-              ? moment(parseFloat(this.carryOutProcessModel.realStartTime))
-              : ''
-          this.carryOutProcessModel.realEndTime =
-            this.carryOutProcessModel.realEndTime && this.carryOutProcessModel.realEndTime != 0
-              ? moment(parseFloat(this.carryOutProcessModel.realEndTime))
-              : ''
+          this.equipData = model.testEquipInfo.length ? model.testEquipInfo : this.selectedTreeRows
+          this.sensorData = model.testSensorInfo
+          this.toolsProductData = model.testToolsProductInfo
+          model.realStartTime = model.realStartTime && this.model.realStartTime !== '0' ? moment(+(model.realStartTime)) : null
+          model.realEndTime = model.realEndTime && model.realEndTime !== '0' ? moment(+(model.realEndTime)) : null
+          model.approachTime = model.approachTime && this.model.approachTime !== '0' ? moment(+(model.approachTime)) : null
+          model.departureTime = model.departureTime && model.departureTime !== '0' ? moment(+(model.departureTime)) : null
+          this.model = model
         }
       })
     },
@@ -1057,30 +1283,7 @@ export default {
       }
     },
     productCallback(value) {
-      value.forEach((item) => {
-        this.productTable.push({
-          id: item.id,
-          custName: item.custName,
-          entrustId: item.entrustId,
-          entrustCode: item.entrustCode,
-          projectId: item.projectId,
-          projectCode: item.projectCode,
-          taskId: item.taskId,
-          taskCode: item.taskCode,
-          pieceId: item.pieceId,
-          pieceNo: item.pieceNo,
-          pieceCode: item.pieceCode,
-          productId: item.productId,
-          productCode: item.productCode,
-          productName: item.productName,
-          productModel: item.productModel,
-          productAlias: item.productAlias,
-          pieceNum: item.pieceNum,
-          pieceCnum: item.pieceCnum,
-          intactStatus: item.intactStatus,
-          remarks: item.remarks
-        })
-      })
+      this.productTable = this.productTable.concat(value)
     },
     personAdd() {
       this.$refs.PostionModal.show(this.personArr, '选择参试人员')
@@ -1097,12 +1300,8 @@ export default {
     toolsProductHandleDelete(index) {
       this.toolsProductData.splice(index, 1)
     },
-    personHandleDelete(testUserId) {
-      for (let i = 0; i < this.personArr.length; i++) {
-        if (testUserId === this.personArr[i].testUserId) {
-          this.personArr.splice(i, 1)
-        }
-      }
+    personHandleDelete(index) {
+      this.personArr.splice(index, 1)
     },
     selectPersonHandle(val) {
       let newPerson = []
@@ -1123,17 +1322,11 @@ export default {
     equipAdd() {
       this.$refs.equipHandleSelectModal.show(this.equipData)
     },
-    equipHandleDelete(id) {
-      for (let i = 0; i < this.equipData.length; i++) {
-        if (id === this.equipData[i].id) {
-          this.equipData.splice(i, 1)
-        }
-      }
+    equipHandleDelete(index) {
+      this.equipData.splice(index, 1)
     },
     equipCallback(value) {
-      for (let i = 0; i < value.length; i++) {
-        this.equipData.push(value[i])
-      }
+      this.equipData = this.equipData.concat(value)
     },
     sensorCallback(value) {
       this.sensorData = Array.isArray(this.sensorData) ? this.sensorData.concat(value) : [].concat(value)
@@ -1143,7 +1336,6 @@ export default {
     },
     // 保存
     handleSave() {
-      console.log(this.pictureData, 'this.pictureData')
       this.submitLoading = true
       const {
         $refs: {carryOutProcessForm}
@@ -1167,7 +1359,7 @@ export default {
           remarks: values[0].remarks, //备注
           personArr: this.personArr, //参试人员集合
           testEquipArr: this.equipData, //测试设备集合
-          pieceArr: this.productTable, //被试件(样品)集合
+          pieceArr: this.productTable, //被试件(试件)集合
           testSensorArr: this.sensorData,
           testToolsProductArr: this.toolsProductData,
           pictureData: this.pictureData, // 图片图谱

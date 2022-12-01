@@ -43,37 +43,23 @@
         </h-edit-tree>
       </template>
       <div slot="right" style="background: #fff; height: 100%">
-        <div
-          v-if="selectedRows && selectedRows.length <= 0"
-          style="display: flex; justify-content: center; align-items: center; height: 100%"
-        >
-          <a-empty description="请选择右方岗位列表">
-            <img slot="image" src="../../../../../assets/no-data.png" />
-          </a-empty>
-        </div>
-        <template v-else>
-          <work-list-detail ref="WorkListDetail" :ids="ids" :type='type' @change="selectPersonChange"></work-list-detail>
-        </template>
+        <work-list-detail ref="WorkListDetail" :ids="ids" :post-id="selectedKeys.toString()" :type='type'
+                          @change="selectPersonChange"></work-list-detail>
       </div>
     </r-l-layout>
   </h-modal>
 </template>
 
 <script>
-import { getAction, postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import HEditTree from '@/views/components/HEditTree.js'
 import WorkListDetail from './components/WorkListDetail'
+
 export default {
   inject: {
     getContainer: {
       default: () => document.body,
     },
-  },
-  provide() {
-    return {
-      selectedRows: () => this.selectedRows,
-      selectedKeys: () => this.selectedKeys,
-    }
   },
   props:{
     type:{
@@ -154,7 +140,6 @@ export default {
       }
       let res = await postAction(this.url.list, params)
       if (res.code === 200) {
-        console.log(res.data)
         this.treeData = res.data.map((item) => {
           item.scopedSlots = {
             title: 'customTitle',
@@ -164,7 +149,7 @@ export default {
           return item
         })
         this.selectedRows = []
-        this.selectedKeys = []
+        this.selectedKeys = [this.treeData[0].id]
       }
     },
     selectPersonChange(arrVal) {

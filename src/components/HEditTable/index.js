@@ -3,13 +3,14 @@
  * @Date: 2021-10-29 13:50:00
  * @LastEditTime: 2021-11-05 21:16:37
  * @LastEditors: Please set LastEditors
- * @Description: 
+ * @Description:
  * @FilePath: \hifar-platform-client\src\components\HEditTable\index.js
  */
-import { isArray, isObject, isString, isNumber, merge } from 'lodash'
+import {isArray} from 'lodash'
 import T from "ant-design-vue/es/table/Table";
 import "./HEditTable.less";
-import { randomUUID } from '@/utils/util'
+import {randomUUID} from '@/utils/util'
+
 export default {
   props: {
     uid: {
@@ -248,7 +249,7 @@ export default {
       // eslint-disable-next-line
       if (result instanceof Promise) {
         result.then(r => {
-          let dataSource = r.records || r.data || []
+          let dataSource = r.records || r.data || r || []
           let totalCount = r.total || r.totalCount || 0
           let pageNo = r.pages || r.pageNo || 1
           this.localPagination = this.showPagination && Object.assign({}, this.localPagination, {
@@ -325,7 +326,7 @@ export default {
     /**
      * @Date: 2021-11-03 11:44:02
      * @Author: 陈乾龙
-     * @description: 
+     * @description:
      * @param {*} params 包含行数据，列数据，行下标，列下标 {row,column,rowIndex,columnIndex,$rowIndex,$columnIndex}
      */
     delete(params) {

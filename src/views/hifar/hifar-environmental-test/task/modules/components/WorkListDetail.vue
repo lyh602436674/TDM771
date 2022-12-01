@@ -8,7 +8,7 @@
 -->
 <template>
   <div ref="postionUser" style="height: 100%; position: relative">
-    <h-card :bordered="false" :fixed="true" :title="postionDetail.postName + '-人员'">
+    <h-card :bordered="false" :fixed="true" title="人员列表">
       <h-search
         slot="search-form"
         v-model="queryParams"
@@ -21,6 +21,7 @@
       <h-vex-table
         slot="content"
         ref="centerUserTable"
+        :autoLoad="false"
         :columns="columns"
         :data="loadData"
         :rowSelection="{
@@ -40,16 +41,15 @@
 </template>
 
 <script>
-import { getAction, postAction } from '@/api/manage'
+import {getAction} from '@/api/manage'
+
 export default {
-  components: {},
-  inject: {
-    selectedRows: {
-      default: () => {},
-    },
-  },
   props: {
     ids: {
+      type: String,
+      default: '',
+    },
+    postId: {
       type: String,
       default: '',
     },
@@ -58,12 +58,20 @@ export default {
       default: 'checkbox',
     }
   },
+  watch: {
+    postId(val) {
+      if (val) {
+        this.$nextTick(() => {
+          this.refresh(true)
+        })
+      }
+    },
+  },
   data() {
     return {
       url: {
         list: '/OrgPostUserBusiness/listPageUserByPostId',
       },
-      postId: null,
       queryParams: {},
       dataType: 'user',
       searchBar: [
@@ -134,10 +142,9 @@ export default {
         let data = {
           ...params,
           ...this.queryParams,
-          postId: this.postionDetail.id,
+          postId: this.postId,
           c_id_99: this.ids,
         }
-        this.postId = this.postionDetail.id
         return getAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
             return res.data
@@ -146,16 +153,6 @@ export default {
       },
       selectedRowKeys: [],
     }
-  },
-  computed: {
-    postionDetail() {
-      return this.selectedRows()[0] || {}
-    },
-  },
-  watch: {
-    postionDetail() {
-      this.refresh(true)
-    },
   },
   methods: {
     handleSearch(v) {
@@ -169,7 +166,6 @@ export default {
       this.$refs.centerUserTable.refresh(bool)
     },
     onSelect(selectedRowKeys, selectedRow) {
-      console.log('选中的行', selectedRowKeys, selectedRow)
       this.selectedRowKeys = selectedRowKeys
       this.$emit('change', selectedRow)
     },
