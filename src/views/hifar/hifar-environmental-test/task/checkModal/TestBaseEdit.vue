@@ -67,7 +67,7 @@
         </h-card>
       </h-desc>
       <!-- 实施过程 -->
-      <h-desc style='margin-top: 20px' title='实施过程'>
+      <h-desc class="mg-t-20" title='实施过程'>
         <h-card :bordered='false' style='width: 100%'>
           <h-form
             ref='carryOutProcessForm'
@@ -78,17 +78,17 @@
           />
         </h-card>
       </h-desc>
-      <!--巡检记录-->
-      <h-desc title='巡检记录'>
+      <!-- 安装、控制方式 -->
+      <h-desc class="mg-t-20" title='安装、控制方式'>
         <h-card :bordered='false' style='width: 100%'>
           <template slot='table-operator'>
-            <a-button icon='plus' size='small' type='primary' @click='siteInspectionAdd'>
+            <a-button icon='plus' size='small' type='primary' @click='installControlAdd'>
               添加
             </a-button>
           </template>
           <a-table
-            :columns='siteInspectionColumns'
-            :dataSource='siteInspectionTable'
+            :columns='installControlColumns'
+            :dataSource='installControlTable'
             :pagination='false'
             bordered
             rowKey='id'
@@ -123,8 +123,85 @@
           </a-table>
         </h-card>
       </h-desc>
+      <!-- 试验设备开关机记录 -->
+      <h-desc class="mg-t-20" title='试验设备开关机记录'>
+        <h-card :bordered='false' style='width: 100%'>
+          <template slot='table-operator'>
+            <a-button icon='plus' size='small' type='primary' @click='switchRecordingAdd'>
+              添加
+            </a-button>
+          </template>
+          <a-table
+            :columns='switchRecordingColumns'
+            :dataSource='switchRecordingTable'
+            :pagination='false'
+            bordered
+            rowKey='id'
+            size='small'
+            style="width: 100%;"
+          >
+            <template #action='text, record,index'>
+              <a-popconfirm title='确定删除吗?' @confirm='() => switchRecordingDelete(index)'>
+                <a-icon
+                  class='primary-text'
+                  style='cursor: pointer'
+                  theme='twoTone'
+                  title='删除'
+                  two-tone-color='#ff4d4f'
+                  type='delete'
+                />
+              </a-popconfirm>
+            </template>
+          </a-table>
+        </h-card>
+      </h-desc>
+      <!--巡检记录-->
+      <h-desc class="mg-t-20" title='巡检记录'>
+        <h-card :bordered='false' style='width: 100%'>
+          <template slot='table-operator'>
+            <a-button icon='plus' size='small' type='primary' @click='siteInspectionAdd'>
+              添加
+            </a-button>
+          </template>
+          <a-table
+            :columns='siteInspectionColumns'
+            :dataSource='siteInspectionTable'
+            :pagination='false'
+            bordered
+            rowKey='id'
+            size='small'
+            style="width: 100%;"
+          >
+            <template slot="productFile" slot-scope="text, record">
+              <a @click="previewProductFile(record)">{{ text || 0 }}</a>
+            </template>
+            <template slot="productBeforeStatus" slot-scope="text, record">
+              <h-select v-model="record.productBeforeStatus"
+                        :options="productStatusOptions"
+                        @change="(e)=>productStatusChange(record,e,'productBeforeStatus')"/>
+            </template>
+            <template slot="productAfterStatus" slot-scope="text, record">
+              <h-select v-model="record.productAfterStatus"
+                        :options="productStatusOptions"
+                        @change="(e)=>productStatusChange(record,e,'productAfterStatus')"/>
+            </template>
+            <template #action='text, record,index'>
+              <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(index)'>
+                <a-icon
+                  class='primary-text'
+                  style='cursor: pointer'
+                  theme='twoTone'
+                  title='删除'
+                  two-tone-color='#ff4d4f'
+                  type='delete'
+                />
+              </a-popconfirm>
+            </template>
+          </a-table>
+        </h-card>
+      </h-desc>
       <!-- 参试人员 -->
-      <h-desc style='margin-top: 20px' title='参试人员'>
+      <h-desc class="mg-t-20" title='参试人员'>
         <h-card :bordered='false' style='width: 100%'>
           <template slot='table-operator'>
             <a-button icon='plus' size='small' type='primary' @click='personAdd'>
@@ -158,7 +235,7 @@
         </h-card>
       </h-desc>
       <!-- 测试设备 -->
-      <h-desc style='margin-top: 20px' title='测试设备'>
+      <h-desc class="mg-t-20" title='测试设备'>
         <h-card :bordered='false' style='width: 100%'>
           <template slot='table-operator'>
             <a-button icon='plus' size='small' type='primary' @click='equipAdd'>
@@ -190,7 +267,7 @@
           </div>
         </h-card>
       </h-desc>
-      <h-desc style='margin-top: 20px' title='传感器'>
+      <h-desc class="mg-t-20" title='传感器'>
         <h-card :bordered='false' style='width: 100%'>
           <template slot='table-operator'>
             <a-button icon='plus' size='small' type='primary' @click='sensorAdd'>
@@ -222,7 +299,7 @@
           </div>
         </h-card>
       </h-desc>
-      <h-desc style='margin-top: 20px' title='振动工装'>
+      <h-desc class="mg-t-20" title='振动工装'>
         <h-card :bordered='false' style='width: 100%'>
           <template slot='table-operator'>
             <a-button icon='plus' size='small' type='primary' @click='toolsProductAdd'>
@@ -254,7 +331,7 @@
           </div>
         </h-card>
       </h-desc>
-      <h-desc style='margin-top: 20px' title='图片图谱'>
+      <h-desc class="mg-t-20" title='图片图谱'>
         <h-upload-file v-model="pictureData" :customParams="pictureCustomParams"
                        accept="image/png,image/gif,image/jpg,image/jpeg"
                        isWriteRemarks style="width: 100%" @delete="handleDeleteImg"></h-upload-file>
@@ -340,6 +417,218 @@ export default {
         {key: '2', value: '2', label: '异常'},
         {key: '3', value: '3', label: '未知'}
       ],
+      switchRecordingColumns: [
+        {
+          title: '试验开始时间',
+          dataIndex: 'testStartTime',
+          align: 'center',
+          width: 200,
+          customRender: (t, row, index) => {
+            return this.$createElement('a-date-picker', {
+              props: {
+                placeholder: '请选择试验开始时间',
+                format: 'YYYY-MM-DD HH:mm:ss',
+                showTime: true,
+              },
+              style: {width: '100%'},
+              value: row.testStartTime,
+              on: {
+                change: (val) => {
+                  row.testStartTime = moment(val).valueOf()
+                  if (row.testEndTime && +row.testEndTime > 0) {
+                    let start = moment(row.testStartTime)
+                    let end = moment(row.testEndTime)
+                    let res = end.diff(start, 'hours', true).toFixed(1)
+                    if (res && res !== 'NaN') {
+                      this.$set(this.switchRecordingTable[index], 'useTime', res)
+                    } else {
+                      this.$set(this.switchRecordingTable[index], 'useTime', '')
+                    }
+                  }
+                }
+              }
+            })
+          }
+        },
+        {
+          title: '试验结束时间',
+          dataIndex: 'testEndTime',
+          align: 'center',
+          width: 200,
+          customRender: (t, row, index) => {
+            return this.$createElement('a-date-picker', {
+              props: {
+                placeholder: '请选择试验结束时间',
+                format: 'YYYY-MM-DD HH:mm:ss',
+                showTime: true,
+              },
+              style: {width: '100%'},
+              value: row.testEndTime,
+              on: {
+                change: (val) => {
+                  row.testEndTime = moment(val).valueOf()
+                  if (row.testStartTime && +row.testStartTime > 0) {
+                    let start = moment(row.testStartTime)
+                    let end = moment(row.testEndTime)
+                    let res = end.diff(start, 'hours', true).toFixed(1)
+                    if (res && res !== 'NaN') {
+                      this.$set(this.switchRecordingTable[index], 'useTime', res)
+                    } else {
+                      this.$set(this.switchRecordingTable[index], 'useTime', '')
+                    }
+                  }
+                }
+              }
+            })
+          }
+        },
+        {
+          title: '耗时',
+          dataIndex: 'useTime',
+          align: 'center',
+          width: 100,
+        },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          align: 'center',
+          customRender: (t, row) => {
+            return this.$createElement('a-textarea', {
+              props: {
+                placeholder: '请输入备注',
+                autoSize: {minRows: 1}
+              },
+              style: {width: '100%'},
+              value: row.remarks,
+              on: {
+                change: (val) => {
+                  row.remarks = val
+                }
+              }
+            })
+          }
+        },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          scopedSlots: {customRender: 'action'},
+          width: 60,
+          align: 'center'
+        }
+      ],
+      switchRecordingTable: [],
+      installControlColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return parseInt(index) + 1
+          }
+        },
+        {
+          title: '安装方式',
+          dataIndex: 'installMethodCode',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return this.$createElement('h-dict-select', {
+              props: {
+                placeholder: '请选择安装方式',
+                allowClear: true,
+                dictCode: "install_control_method",
+              },
+              value: row.installMethodCode,
+              style: {width: "100%"},
+              on: {
+                change: (v, option) => {
+                  row.installMethodCode = v
+                  row.installMethodName = option.title
+                }
+              },
+            })
+          }
+        },
+        {
+          title: '试验方向',
+          dataIndex: 'testDirectionId',
+          align: 'center',
+          width: 250,
+          customRender: (t, row, index) => {
+            return this.$createElement('a-tree-select', {
+              props: {
+                showSearch: true,
+                placeholder: '请选择试验方向',
+                treeData: this.testDirectionTreeData,
+                allowClear: true,
+                multiple: true,
+                treeNodeFilterProp: 'title',
+                dropdownStyle: {
+                  maxHeight: '300px'
+                },
+              },
+              value: row.testDirectionId,
+              style: {width: "100%"},
+              on: {
+                change: (v, option) => {
+                  row.testDirectionId = v
+                }
+              },
+            })
+          }
+        },
+        {
+          title: '几台/次',
+          dataIndex: 'installNum',
+          align: 'center',
+          width: 150,
+          scopedSlots: {customRender: 'installNum'},
+          customRender: (t, row, index) => {
+            return this.$createElement('a-input', {
+              props: {
+                placeholder: '请输入几台/次',
+                allowClear: true,
+              },
+              value: row.installNum,
+              style: {width: "100%"},
+              on: {
+                change: (e) => {
+                  row.installNum = e.target.value
+                }
+              },
+            })
+          }
+        },
+        {
+          title: '控制方式',
+          dataIndex: 'controlMethod',
+          align: 'center',
+        },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          align: 'center',
+          width: 350,
+          customRender: (t, row) => {
+            return this.$createElement('a-textarea', {
+              props: {
+                placeholder: '请输入备注',
+                autoSize: {minRows: 1}
+              },
+              style: {width: '100%'},
+              value: row.remarks,
+              on: {
+                change: (val) => {
+                  row.remarks = val
+                }
+              }
+            })
+          }
+        },
+      ],
+      installControlTable: [],
       siteInspectionColumns: [
         {
           title: '#',
@@ -353,7 +642,7 @@ export default {
         },
         {
           title: '试验方向',
-          dataIndex: 'testDirection',
+          dataIndex: 'testDirectionId',
           align: 'center',
           width: 150,
           customRender: (t, row, index) => {
@@ -408,7 +697,7 @@ export default {
           customRender: (t, row) => {
             return this.$createElement('a-date-picker', {
               props: {
-                placeholder: '请选择时间',
+                placeholder: '请选择日期时间',
                 format: 'YYYY-MM-DD HH:mm:ss',
                 showTime: true,
               },
@@ -490,7 +779,6 @@ export default {
           title: '操作人',
           dataIndex: 'operationPerson',
           align: 'center',
-          scopedSlots: {customRender: 'operationPerson'},
         },
         {
           title: '备注',
@@ -956,15 +1244,25 @@ export default {
       ],
       sensorColumns: [
         {
-          title: '设备编号',
-          dataIndex: 'equipCode',
+          title: '设备名称',
+          dataIndex: 'equipName',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '设备名称',
-          dataIndex: 'equipName',
+          title: '序号',
+          dataIndex: 'equipIndex',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '内部名称',
+          dataIndex: 'innerName',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -972,15 +1270,63 @@ export default {
         {
           title: '计量有效期',
           dataIndex: 'checkValid',
+          align: 'center',
           customRender: (t, record) => {
             return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
           }
         },
         {
-          title: '设备型号',
-          dataIndex: 'equipModel',
-          customRender: (t) => {
-            return t ? t : '--'
+          title: '备注',
+          maxWidth: 150,
+          ellipsis: true,
+          align: 'center',
+          dataIndex: 'remarks',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '位置',
+          dataIndex: 'position',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return this.$createElement('h-dict-select', {
+              props: {
+                placeholder: '请选择位置',
+                allowClear: true,
+                dictCode: "sensing_equipment_location",
+              },
+              value: row.position,
+              style: {width: "100%"},
+              on: {
+                change: (v, option) => {
+                  row.position = v
+                }
+              },
+            })
+          }
+        },
+        {
+          title: '用途',
+          dataIndex: 'purpose',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return this.$createElement('h-dict-select', {
+              props: {
+                placeholder: '请选择用途',
+                allowClear: true,
+                dictCode: "sensing_equipment_purpose",
+              },
+              value: row.purpose,
+              style: {width: "100%"},
+              on: {
+                change: (v, option) => {
+                  row.purpose = v
+                }
+              },
+            })
           }
         },
         {
@@ -998,6 +1344,7 @@ export default {
         {
           title: '工装编号',
           dataIndex: 'toolsCode',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1005,6 +1352,7 @@ export default {
         {
           title: '工装名称',
           dataIndex: 'toolsName',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1012,6 +1360,7 @@ export default {
         {
           title: '工装规格',
           dataIndex: 'toolsSize',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1019,6 +1368,7 @@ export default {
         {
           title: '在库状态',
           dataIndex: 'larbaryStatus_dictText',
+          align: 'center',
           customRender: (text) => {
             return text || '--'
           }
@@ -1026,6 +1376,7 @@ export default {
         {
           title: '存放地点',
           dataIndex: 'location',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1033,6 +1384,7 @@ export default {
         {
           title: '责任部门',
           dataIndex: 'deptName',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1040,7 +1392,7 @@ export default {
         {
           title: '设备状态',
           dataIndex: 'toolsStatus_dictText',
-          align: 'left',
+          align: 'center',
           width: 120,
           customRender: (text, record) => {
             return text || '--'
@@ -1048,6 +1400,7 @@ export default {
         },
         {
           title: '工装分类',
+          align: 'center',
           dataIndex: 'classify_dictText',
           customRender: (text) => {
             return text || '--'
@@ -1058,6 +1411,7 @@ export default {
         {
           title: '工装编号',
           dataIndex: 'toolsCode',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1065,6 +1419,7 @@ export default {
         {
           title: '工装名称',
           dataIndex: 'toolsName',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1072,6 +1427,7 @@ export default {
         {
           title: '工装规格',
           dataIndex: 'toolsSize',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1079,6 +1435,7 @@ export default {
         {
           title: '在库状态',
           dataIndex: 'larbaryStatus_dictText',
+          align: 'center',
           customRender: (text) => {
             return text || '--'
           }
@@ -1086,6 +1443,7 @@ export default {
         {
           title: '存放地点',
           dataIndex: 'location',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1093,6 +1451,7 @@ export default {
         {
           title: '责任部门',
           dataIndex: 'deptName',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -1100,7 +1459,7 @@ export default {
         {
           title: '设备状态',
           dataIndex: 'toolsStatus_dictText',
-          align: 'left',
+          align: 'center',
           width: 120,
           customRender: (text, record) => {
             return text || '--'
@@ -1108,6 +1467,7 @@ export default {
         },
         {
           title: '工装分类',
+          align: 'center',
           dataIndex: 'classify_dictText',
           customRender: (text) => {
             return text || '--'
@@ -1149,6 +1509,18 @@ export default {
         if (res.code === 200) {
           this.testDirectionTreeData = recursive(res.data, 'directionName', 'id')
         }
+      })
+    },
+    // 试验设备开关机记录新增行
+    switchRecordingAdd() {
+      this.switchRecordingTable.push({
+        id: randomUUID(),
+      })
+    },
+    // 安装控制方式新增行
+    installControlAdd() {
+      this.installControlTable.push({
+        id: randomUUID(),
       })
     },
     // 巡检记录新增行
@@ -1275,12 +1647,11 @@ export default {
         this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
       })
     },
-    productHandleDelete(id) {
-      for (let i = 0; i < this.productTable.length; i++) {
-        if (id === this.productTable[i].id) {
-          this.productTable.splice(i, 1)
-        }
-      }
+    switchRecordingDelete(index) {
+      this.switchRecordingTable.splice(index, 1)
+    },
+    productHandleDelete(index) {
+      this.productTable.splice(index, 1)
     },
     productCallback(value) {
       this.productTable = this.productTable.concat(value)
@@ -1382,6 +1753,10 @@ export default {
 }
 </script>
 <style lang='less' scoped>
+.mg-t-20 {
+  margin-top: 20px !important;
+}
+
 .fastBtn {
   display: flex;
   align-items: center;
