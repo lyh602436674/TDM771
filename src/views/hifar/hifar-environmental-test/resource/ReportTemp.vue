@@ -36,8 +36,8 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <span slot="reportType" slot-scope="text, record">
-          <a href="javascript:;" @click="handleDetailCode(record)">
-            {{ text == 'cover' ? '封面' : text == 'report' ? '报告' : '--' }}
+          <a @click="handleDetailCode(record)">
+            {{ text === 'cover' ? '封面' : text === 'report' ? '报告' : '--' }}
           </a>
         </span>
         <span slot="action" slot-scope="text, record">

@@ -73,10 +73,10 @@ export default {
     saveTestHandle() {
       this.$refs.reportTemplateSelect.show()
     },
-    selectedTemplate(selectedRow) {
-      console.log(selectedRow,'selected')
+    selectedTemplate(selectedRowKeys) {
+      this.handleSubmit(selectedRowKeys)
     },
-    handleSubmit() {
+    handleSubmit(templateId) {
       let {entrustCodeArr, selectedRowKeys} = this
       if (!selectedRowKeys.length) {
         this.$message.warning('请选择试验')
@@ -87,12 +87,10 @@ export default {
           testId.push(item.id)
         })
         this.submitLoading = true
-        let data = {
-          tests: selectedRow
-        }
         let params = {
-          ...data,
-          buttonFlag: 'save'
+          tests: selectedRow,
+          buttonFlag: 'save',
+          templateId: templateId.toString(),
         }
         postAction('/HfEnvReportBusiness/addByTest', params).then((res) => {
           if (res.code === 200) {

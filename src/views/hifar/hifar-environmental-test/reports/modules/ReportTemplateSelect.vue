@@ -1,5 +1,5 @@
 <template>
-  <h-modal :getContainer='getContainer' :visible='visible' destroyOnClose inner title="选择模板"
+  <h-modal :getContainer='getContainer' :visible='visible' :width="1400" destroyOnClose inner title="选择模板"
            @cancel='handleCancel'>
     <template slot="footer">
       <a-button type='ghost-danger' @click='handleCancel'> 关闭</a-button>
@@ -10,6 +10,7 @@
     <h-vex-table
       :columns="columns"
       :data="loadData"
+      height="500"
       :row-selection="{ selectedRowKeys, onChange: onSelectChange,type:'radio' }"
       :rowKey="(record) => record.id"
       :scroll="{ x: true }"
@@ -21,6 +22,7 @@
 
 <script>
 import {postAction} from '@/api/manage'
+import moment from "moment";
 
 export default {
   name: "ReportTemplateSelect",
@@ -34,14 +36,52 @@ export default {
       visible: false,
       submitLoading: false,
       columns: [
-        {}
+        {
+          title: '模板分类',
+          dataIndex: 'reportType',
+          customRender: (text, record) => {
+            return text === 'cover' ? '封面' : text === 'report' ? '报告' : '--'
+          },
+        },
+        {
+          title: '模板名称',
+          align: 'left',
+          dataIndex: 'name',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '创建人 ',
+          align: 'left',
+          dataIndex: 'createUserName',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '创建时间 ',
+          align: 'left',
+          dataIndex: 'createTime',
+          customRender: (time) => {
+            return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
+          },
+        },
+        {
+          title: '备注',
+          align: 'left',
+          dataIndex: 'remarks',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
       ],
       url: {
-        list: ""
+        list: "/HfResTemplateBusiness/listPage"
       },
       selectedRowKeys: [],
       loadData: (params) => {
-        return postAction(this.url.list, {...params}).then(res => {
+        return postAction(this.url.list, {...params, groupCode: 'report',}).then(res => {
           if (res.code === 200) {
             return res.data
           }
