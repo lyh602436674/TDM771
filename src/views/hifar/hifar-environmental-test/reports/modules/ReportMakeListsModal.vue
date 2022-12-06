@@ -71,6 +71,7 @@ export default {
     },
     // 按试验生成报告按钮
     saveTestHandle() {
+      if (!this.selectedRowKeys.length) return this.$message.warning('请选择试验')
       this.$refs.reportTemplateSelect.show()
     },
     selectedTemplate(selectedRowKeys) {
