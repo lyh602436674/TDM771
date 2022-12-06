@@ -35,8 +35,8 @@ export default {
   components: {},
   inject: {
     getContainer: {
-      default: () => document.body,
-    },
+      default: () => document.body
+    }
   },
   data() {
     return {
@@ -49,7 +49,7 @@ export default {
       url: {
         add: '/HfResTemplateBusiness/add',
         edit: '/HfResTemplateBusiness/modifyById',
-        detailById: '/HfResTemplateBusiness/queryById',
+        detailById: '/HfResTemplateBusiness/queryById'
       },
       formData: [],
       formBackUpData: [
@@ -58,7 +58,7 @@ export default {
           {
             key: 'id',
             formType: 'input',
-            hidden: true,
+            hidden: true
           },
           {
             title: '模版分类',
@@ -68,39 +68,39 @@ export default {
               {
                 title: '封面',
                 key: 'cover',
-                value: 'cover',
+                value: 'cover'
               },
               {
                 title: '报告',
                 key: 'report',
-                value: 'report',
-              },
+                value: 'report'
+              }
             ],
             change: (v) => {
               this.changeType(v)
             },
             validate: {
-              rules: [{ required: true, message: '请选择模版分类' }],
-            },
+              rules: [{ required: true, message: '请选择模版分类' }]
+            }
           },
           {
             title: '模板名称',
             key: 'name',
             formType: 'input',
             validate: {
-              rules: [{ required: true, message: '请输入模板名称' }],
-            },
+              rules: [{ required: true, message: '请输入模板名称' }]
+            }
           },
           {
             title: '模版分组',
             key: 'groupCode',
             formType: 'input',
-            hidden: true,
+            hidden: true
           },
           {
             title: '备注',
             key: 'remarks',
-            formType: 'textarea',
+            formType: 'textarea'
           },
           {
             title: '附件',
@@ -111,15 +111,15 @@ export default {
                 multiple={true}
                 v-decorator={['attachIds', { initialValue: [] }]}
               />
-            ),
-          },
+            )
+          }
         ],
         // 报告模板--模板分类 --报告
         [
           {
             key: 'id',
             formType: 'input',
-            hidden: true,
+            hidden: true
           },
           {
             title: '模版分类',
@@ -129,39 +129,90 @@ export default {
               {
                 title: '封面',
                 key: 'cover',
-                value: 'cover',
+                value: 'cover'
               },
               {
                 title: '报告',
                 key: 'report',
-                value: 'report',
-              },
+                value: 'report'
+              }
             ],
             change: (v) => {
               this.changeType(v)
             },
             validate: {
-              rules: [{ required: true, message: '请选择模版分类' }],
-            },
+              rules: [{ required: true, message: '请选择模版分类' }]
+            }
           },
           {
             title: '模板名称',
             key: 'name',
             formType: 'input',
             validate: {
-              rules: [{ required: true, message: '请输入模板名称' }],
-            },
+              rules: [{ required: true, message: '请输入模板名称' }]
+            }
           },
           {
             title: '模版分组',
             key: 'groupCode',
             formType: 'input',
-            hidden: true,
+            hidden: true
+          },
+          {
+            title: '类型',
+            key: 'type',
+            formType: 'select',
+            options: [
+              {
+                title: '内部',
+                key: '1',
+                value: '1'
+              },
+              {
+                title: '外部',
+                key: '2',
+                value: '2'
+              }
+            ],
+            change: (v) => {
+              this.changeType(v)
+            },
+            validate: {
+              rules: [{ required: true, message: '请选择模版类型' }]
+            }
+          },
+          {
+            title: '试验类型',
+            key: 'testType',
+            formType: 'select',
+            options: [
+              {
+                title: '力学',
+                key: '1',
+                value: '1'
+              },
+              {
+                title: '气候',
+                key: '2',
+                value: '2'
+              }
+            ],
+            change: (v) => {
+              this.changeType(v)
+            },
+            validate: {
+              rules: [{ required: true, message: '请选择试验类型' }]
+            }
+          },
+          {
+            title: '类名',
+            key: 'className',
+            formType: 'input'
           },
           {
             title: '备注',
             key: 'remarks',
-            formType: 'textarea',
+            formType: 'textarea'
           },
           {
             title: '附件',
@@ -172,41 +223,92 @@ export default {
                 multiple={true}
                 v-decorator={['attachIds', { initialValue: [] }]}
               />
-            ),
-          },
+            )
+          }
         ],
         [
           {
             key: 'id',
             formType: 'input',
-            hidden: true,
+            hidden: true
           },
           {
             title: '模板名称',
             key: 'name',
             formType: 'input',
             validate: {
-              rules: [{ required: true, message: '请输入模板名称' }],
-            },
+              rules: [{ required: true, message: '请输入模板名称' }]
+            }
           },
           {
             title: '模版分组',
             key: 'groupCode',
             formType: 'input',
-            hidden: true,
+            hidden: true
+          },
+          {
+            title: '类型',
+            key: 'type',
+            formType: 'select',
+            options: [
+              {
+                title: '内部',
+                key: '1',
+                value: '1'
+              },
+              {
+                title: '外部',
+                key: '2',
+                value: '2'
+              }
+            ],
+            change: (v) => {
+              // this.changeType(v)
+            },
+            validate: {
+              rules: [{ required: true, message: '请选择模版类型' }]
+            }
+          },
+          {
+            title: '试验类型',
+            key: 'testType',
+            formType: 'select',
+            options: [
+              {
+                title: '力学',
+                key: '1',
+                value: '1'
+              },
+              {
+                title: '气候',
+                key: '2',
+                value: '2'
+              }
+            ],
+            change: (v) => {
+              // this.changeType(v)
+            },
+            validate: {
+              rules: [{ required: true, message: '请选择试验类型' }]
+            }
+          },
+          {
+            title: '类名',
+            key: 'className',
+            formType: 'input'
           },
           {
             title: '备注',
             key: 'remarks',
-            formType: 'textarea',
+            formType: 'textarea'
           },
           {
             title: '附件',
             key: 'attachIds',
-            component: <h-upload-file v-decorator={['attachIds', { initialValue: [] }]} />,
-          },
-        ],
-      ],
+            component: <h-upload-file v-decorator={['attachIds', { initialValue: [] }]} />
+          }
+        ]
+      ]
     }
   },
   methods: {
@@ -246,14 +348,14 @@ export default {
             name: item.fileName,
             uuid: item.id,
             percent: 100,
-            uploadTime:item.createTime,
+            uploadTime: item.createTime,
             secretLevel: item.secretLevel,
-            type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
+            type: item.viewType == 2 ? 'image/jpeg' : 'text/plain'
           })
         })
       }
-      obj.attachIds = fileArr ? fileArr : []
-      if(!obj.id){
+      obj.attachIds = fileArr || []
+      if (!obj.id) {
         obj.reportType = 'cover'
       }
       this.model = obj
@@ -267,7 +369,7 @@ export default {
       this.confirmLoading = false
       let params = {
         ...values,
-        groupCode: this.groupCode,
+        groupCode: this.groupCode
       }
       let url = null
       let attachIds = []
@@ -307,8 +409,8 @@ export default {
       } else {
         this.formData = this.formBackUpData[1]
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

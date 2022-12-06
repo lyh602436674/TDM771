@@ -39,14 +39,14 @@
           <a-badge v-else-if="text == 50" color="grey" text="已完成" />
         </template>
         <span slot="actions" slot-scope="text, record">
-          <a-popconfirm title="确定删除吗？" @confirm="() => handleDelete(record.id)">
-            <a v-if="[0].includes(record.status)" style="color: red">删除</a>
-          </a-popconfirm>
           <a-popconfirm title="确定发布吗？" @confirm="() => handleRelease(record.id)">
+            <a v-if="[0].includes(record.status)">发布</a>
+          </a-popconfirm>
+          <a-popconfirm title="确定删除吗？" @confirm="() => handleDelete(record.id)">
             <a-divider
               v-if="[0].includes(record.status)"
               type="vertical"/>
-            <a v-if="[0].includes(record.status)">发布</a>
+            <a v-if="[0].includes(record.status)" style="color: red">删除</a>
           </a-popconfirm>
           <a-popconfirm title="确定撤销吗？" @confirm="() => handleBack(record.id)">
             <a v-if="[1,20,25,30,40].includes(record.status)">撤销</a>
