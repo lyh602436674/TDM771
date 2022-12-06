@@ -21,238 +21,26 @@
       </a-button>
       <a-button :loading="submitLoading" type='primary' @click='handleSave'>保存</a-button>
     </div>
-    <div ref="modalBody">
-      <h-desc title='试件信息'>
-        <h-card :bordered='false' style='width: 100%'>
-          <template slot='table-operator'>
-            <a-button icon='plus' size='small' type='primary' @click='productAdd'>
-              添加
-            </a-button>
-          </template>
-          <a-table
-            :columns='testProductColumns'
-            style="width: 100%;"
-            :dataSource='productTable'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-          >
-            <template slot="productFile" slot-scope="text, record">
-              <a @click="previewProductFile(record)">{{ text || 0 }}</a>
+    <div style="width:100%;display:flex;">
+      <div style="flex:1">
+        <h-desc id="product" title='试件信息'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' type='primary' @click='productAdd'>
+                添加
+              </a-button>
             </template>
-            <template slot="productBeforeStatus" slot-scope="text, record">
-              <h-select v-model="record.productBeforeStatus"
-                        :options="productStatusOptions"
-                        @change="(e)=>productStatusChange(record,e,'productBeforeStatus')"/>
-            </template>
-            <template slot="productAfterStatus" slot-scope="text, record">
-              <h-select v-model="record.productAfterStatus"
-                        :options="productStatusOptions"
-                        @change="(e)=>productStatusChange(record,e,'productAfterStatus')"/>
-            </template>
-            <template #action='text, record'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(record.id)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
-            </template>
-          </a-table>
-        </h-card>
-      </h-desc>
-      <!-- 实施过程 -->
-      <h-desc class="mg-t-20" title='实施过程'>
-        <h-card :bordered='false' style='width: 100%'>
-          <h-form
-            ref='carryOutProcessForm'
-            v-model='model'
-            :column='2'
-            :formData='formData'
-            style='width: 100%'
-          />
-        </h-card>
-      </h-desc>
-      <!-- 安装、控制方式 -->
-      <h-desc class="mg-t-20" title='安装、控制方式'>
-        <h-card :bordered='false' style='width: 100%'>
-          <template slot='table-operator'>
-            <a-button icon='plus' size='small' type='primary' @click='installControlAdd'>
-              添加
-            </a-button>
-          </template>
-          <a-table
-            :columns='installControlColumns'
-            :dataSource='installControlTable'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-            style="width: 100%;"
-          >
-            <template slot="productFile" slot-scope="text, record">
-              <a @click="previewProductFile(record)">{{ text || 0 }}</a>
-            </template>
-            <template slot="productBeforeStatus" slot-scope="text, record">
-              <h-select v-model="record.productBeforeStatus"
-                        :options="productStatusOptions"
-                        @change="(e)=>productStatusChange(record,e,'productBeforeStatus')"/>
-            </template>
-            <template slot="productAfterStatus" slot-scope="text, record">
-              <h-select v-model="record.productAfterStatus"
-                        :options="productStatusOptions"
-                        @change="(e)=>productStatusChange(record,e,'productAfterStatus')"/>
-            </template>
-            <template #action='text, record'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(record.id)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
-            </template>
-          </a-table>
-        </h-card>
-      </h-desc>
-      <!-- 试验设备开关机记录 -->
-      <h-desc class="mg-t-20" title='试验设备开关机记录'>
-        <h-card :bordered='false' style='width: 100%'>
-          <template slot='table-operator'>
-            <a-button icon='plus' size='small' type='primary' @click='switchRecordingAdd'>
-              添加
-            </a-button>
-          </template>
-          <a-table
-            :columns='switchRecordingColumns'
-            :dataSource='switchRecordingTable'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-            style="width: 100%;"
-          >
-            <template #action='text, record,index'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => switchRecordingDelete(index)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
-            </template>
-          </a-table>
-        </h-card>
-      </h-desc>
-      <!--巡检记录-->
-      <h-desc class="mg-t-20" title='巡检记录'>
-        <h-card :bordered='false' style='width: 100%'>
-          <template slot='table-operator'>
-            <a-button icon='plus' size='small' type='primary' @click='siteInspectionAdd'>
-              添加
-            </a-button>
-          </template>
-          <a-table
-            :columns='siteInspectionColumns'
-            :dataSource='siteInspectionTable'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-            style="width: 100%;"
-          >
-            <template slot="productFile" slot-scope="text, record">
-              <a @click="previewProductFile(record)">{{ text || 0 }}</a>
-            </template>
-            <template slot="productBeforeStatus" slot-scope="text, record">
-              <h-select v-model="record.productBeforeStatus"
-                        :options="productStatusOptions"
-                        @change="(e)=>productStatusChange(record,e,'productBeforeStatus')"/>
-            </template>
-            <template slot="productAfterStatus" slot-scope="text, record">
-              <h-select v-model="record.productAfterStatus"
-                        :options="productStatusOptions"
-                        @change="(e)=>productStatusChange(record,e,'productAfterStatus')"/>
-            </template>
-            <template #action='text, record,index'>
-              <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(index)'>
-                <a-icon
-                  class='primary-text'
-                  style='cursor: pointer'
-                  theme='twoTone'
-                  title='删除'
-                  two-tone-color='#ff4d4f'
-                  type='delete'
-                />
-              </a-popconfirm>
-            </template>
-          </a-table>
-        </h-card>
-      </h-desc>
-      <!-- 参试人员 -->
-      <h-desc class="mg-t-20" title='参试人员'>
-        <h-card :bordered='false' style='width: 100%'>
-          <template slot='table-operator'>
-            <a-button icon='plus' size='small' type='primary' @click='personAdd'>
-              添加
-            </a-button>
-          </template>
-          <div slot='content'>
             <a-table
-              ref='personTable'
-              :columns='personColumns'
-              :dataSource='personArr'
-              :pagination='false'
-              :rowKey='(record) => record.testUserId'
-              bordered
-              size='small'
-            >
-              <template #action='text, record,index'>
-                <a-popconfirm title='确定删除吗?' @confirm='() => personHandleDelete(index)'>
-                  <a-icon
-                    class='primary-text'
-                    style='cursor: pointer'
-                    theme='twoTone'
-                    title='删除'
-                    two-tone-color='#ff4d4f'
-                    type='delete'
-                  />
-                </a-popconfirm>
-              </template>
-            </a-table>
-          </div>
-        </h-card>
-      </h-desc>
-      <!-- 测试设备 -->
-      <h-desc class="mg-t-20" title='测试设备'>
-        <h-card :bordered='false' style='width: 100%'>
-          <template slot='table-operator'>
-            <a-button icon='plus' size='small' type='primary' @click='equipAdd'>
-              添加
-            </a-button>
-          </template>
-          <div slot='content'>
-            <a-table
-              :columns='testEquipColumns'
-              :dataSource='equipData'
+              :columns='testProductColumns'
+              :dataSource='productTable'
               :pagination='false'
               bordered
               rowKey='id'
               size='small'
+              style="width: 100%;"
             >
               <template #action='text, record,index'>
-                <a-popconfirm title='确定删除吗?' @confirm='() => equipHandleDelete(index)'>
+                <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(index)'>
                   <a-icon
                     class='primary-text'
                     style='cursor: pointer'
@@ -264,27 +52,63 @@
                 </a-popconfirm>
               </template>
             </a-table>
-          </div>
-        </h-card>
-      </h-desc>
-      <h-desc class="mg-t-20" title='传感器'>
-        <h-card :bordered='false' style='width: 100%'>
-          <template slot='table-operator'>
-            <a-button icon='plus' size='small' type='primary' @click='sensorAdd'>
-              添加
-            </a-button>
-          </template>
-          <div slot='content'>
+          </h-card>
+        </h-desc>
+        <!-- 实施过程 -->
+        <h-desc id="processForm" class="mg-t-20" title='实施过程'>
+          <h-card :bordered='false' style='width: 100%'>
+            <h-form
+              ref='carryOutProcessForm'
+              v-model='model'
+              :column='2'
+              :formData='formData'
+              style='width: 100%'
+            />
+          </h-card>
+        </h-desc>
+        <!-- 安装、控制方式 -->
+        <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' type='primary' @click='installControlAdd'>
+                添加
+              </a-button>
+            </template>
             <a-table
-              :columns='sensorColumns'
-              :dataSource='sensorData'
+              :columns='installControlColumns'
+              :dataSource='installControlTable'
               :pagination='false'
               bordered
               rowKey='id'
               size='small'
+              style="width: 100%;"
             >
+              <div slot="expandedRowRender" slot-scope="record,index">
+                <a-table
+                  :columns='sensorColumns'
+                  :dataSource='record.testSensorInfo'
+                  :pagination='false'
+                  bordered
+                  rowKey='id'
+                  size='small'
+                  style="width: 100%;"
+                >
+                  <template #action='text, record,subIndex'>
+                    <a-popconfirm title='确定删除吗?' @confirm='() => testSensorHandleDelete(index,subIndex)'>
+                      <a-icon
+                        class='primary-text'
+                        style='cursor: pointer'
+                        theme='twoTone'
+                        title='删除'
+                        two-tone-color='#ff4d4f'
+                        type='delete'
+                      />
+                    </a-popconfirm>
+                  </template>
+                </a-table>
+              </div>
               <template #action='text, record,index'>
-                <a-popconfirm title='确定删除吗?' @confirm='() => sensorHandleDelete(index)'>
+                <a-popconfirm title='确定删除吗?' @confirm='() => installControlHandleDelete(index)'>
                   <a-icon
                     class='primary-text'
                     style='cursor: pointer'
@@ -294,29 +118,31 @@
                     type='delete'
                   />
                 </a-popconfirm>
+                <a-icon class='primary-text' style='cursor: pointer;margin-left: 10px' title="添加传感器"
+                        type="plus" @click='sensorAdd(record,index)'/>
               </template>
             </a-table>
-          </div>
-        </h-card>
-      </h-desc>
-      <h-desc class="mg-t-20" title='振动工装'>
-        <h-card :bordered='false' style='width: 100%'>
-          <template slot='table-operator'>
-            <a-button icon='plus' size='small' type='primary' @click='toolsProductAdd'>
-              添加
-            </a-button>
-          </template>
-          <div slot='content'>
+          </h-card>
+        </h-desc>
+        <!-- 试验设备开关机记录 -->
+        <h-desc id="switchRecording" class="mg-t-20" title='试验设备开关机记录'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' type='primary' @click='switchRecordingAdd'>
+                添加
+              </a-button>
+            </template>
             <a-table
-              :columns='toolsProductColumns'
-              :dataSource='toolsProductData'
+              :columns='switchRecordingColumns'
+              :dataSource='switchRecordingTable'
               :pagination='false'
               bordered
               rowKey='id'
               size='small'
+              style="width: 100%;"
             >
               <template #action='text, record,index'>
-                <a-popconfirm title='确定删除吗?' @confirm='() => toolsProductHandleDelete(index)'>
+                <a-popconfirm title='确定删除吗?' @confirm='() => switchRecordingDelete(index)'>
                   <a-icon
                     class='primary-text'
                     style='cursor: pointer'
@@ -328,14 +154,146 @@
                 </a-popconfirm>
               </template>
             </a-table>
-          </div>
-        </h-card>
-      </h-desc>
-      <h-desc class="mg-t-20" title='图片图谱'>
-        <h-upload-file v-model="pictureData" :customParams="pictureCustomParams"
-                       accept="image/png,image/gif,image/jpg,image/jpeg"
-                       isWriteRemarks style="width: 100%" @delete="handleDeleteImg"></h-upload-file>
-      </h-desc>
+          </h-card>
+        </h-desc>
+        <!--巡检记录-->
+        <h-desc id="siteInspection" class="mg-t-20" title='巡检记录'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' type='primary' @click='siteInspectionAdd'>
+                添加
+              </a-button>
+            </template>
+            <a-table
+              :columns='siteInspectionColumns'
+              :dataSource='siteInspectionTable'
+              :pagination='false'
+              bordered
+              rowKey='id'
+              size='small'
+              style="width: 100%;"
+            >
+              <template #action='text, record,index'>
+                <a-popconfirm title='确定删除吗?' @confirm='() => siteInspectionDelete(index)'>
+                  <a-icon
+                    class='primary-text'
+                    style='cursor: pointer'
+                    theme='twoTone'
+                    title='删除'
+                    two-tone-color='#ff4d4f'
+                    type='delete'
+                  />
+                </a-popconfirm>
+              </template>
+            </a-table>
+          </h-card>
+        </h-desc>
+        <!-- 参试人员 -->
+        <h-desc id="person" class="mg-t-20" title='参试人员'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' type='primary' @click='personAdd'>
+                添加
+              </a-button>
+            </template>
+            <div slot='content'>
+              <a-table
+                ref='personTable'
+                :columns='personColumns'
+                :dataSource='personArr'
+                :pagination='false'
+                :rowKey='(record) => record.testUserId'
+                bordered
+                size='small'
+              >
+                <template #action='text, record,index'>
+                  <a-popconfirm title='确定删除吗?' @confirm='() => personHandleDelete(index)'>
+                    <a-icon
+                      class='primary-text'
+                      style='cursor: pointer'
+                      theme='twoTone'
+                      title='删除'
+                      two-tone-color='#ff4d4f'
+                      type='delete'
+                    />
+                  </a-popconfirm>
+                </template>
+              </a-table>
+            </div>
+          </h-card>
+        </h-desc>
+        <!-- 测试设备 -->
+        <h-desc id="testEquip" class="mg-t-20" title='测试设备'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' type='primary' @click='equipAdd'>
+                添加
+              </a-button>
+            </template>
+            <div slot='content'>
+              <a-table
+                :columns='testEquipColumns'
+                :dataSource='equipData'
+                :pagination='false'
+                bordered
+                rowKey='id'
+                size='small'
+              >
+                <template #action='text, record,index'>
+                  <a-popconfirm title='确定删除吗?' @confirm='() => equipHandleDelete(index)'>
+                    <a-icon
+                      class='primary-text'
+                      style='cursor: pointer'
+                      theme='twoTone'
+                      title='删除'
+                      two-tone-color='#ff4d4f'
+                      type='delete'
+                    />
+                  </a-popconfirm>
+                </template>
+              </a-table>
+            </div>
+          </h-card>
+        </h-desc>
+        <h-desc id="toolsProduct" class="mg-t-20" title='振动工装'>
+          <h-card :bordered='false' style='width: 100%'>
+            <template slot='table-operator'>
+              <a-button icon='plus' size='small' type='primary' @click='toolsProductAdd'>
+                添加
+              </a-button>
+            </template>
+            <div slot='content'>
+              <a-table
+                :columns='toolsProductColumns'
+                :dataSource='toolsProductData'
+                :pagination='false'
+                bordered
+                rowKey='id'
+                size='small'
+              >
+                <template #action='text, record,index'>
+                  <a-popconfirm title='确定删除吗?' @confirm='() => toolsProductHandleDelete(index)'>
+                    <a-icon
+                      class='primary-text'
+                      style='cursor: pointer'
+                      theme='twoTone'
+                      title='删除'
+                      two-tone-color='#ff4d4f'
+                      type='delete'
+                    />
+                  </a-popconfirm>
+                </template>
+              </a-table>
+            </div>
+          </h-card>
+        </h-desc>
+        <h-desc id="picture" class="mg-t-20" title='图片图谱'>
+          <h-upload-file v-model="pictureData" :customParams="pictureCustomParams"
+                         accept="image/png,image/gif,image/jpg,image/jpeg"
+                         isWriteRemarks style="width: 100%" @delete="handleDeleteImg"></h-upload-file>
+        </h-desc>
+      </div>
+      <div style="width: 60px;"></div>
     </div>
     <!-- 试件信息 -->
     <handle-select-modal
@@ -374,6 +332,9 @@
       @callback='toolsProductCallback'
     />
     <postion-modal ref='PostionModal' :title="'添加参试人员'" @change='selectPersonHandle'/>
+    <check-ensure-modal ref="checkEnsureModal"></check-ensure-modal>
+    <product-file-modal @close="getTestDetail(testId)" ref='productFileModal'></product-file-modal>
+    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </h-modal>
 </template>
 
@@ -384,13 +345,15 @@ import {postAction} from '@/api/manage'
 import HandleSelectModal from '../modules/components/HandleSelectModal.vue'
 import PostionModal from '../modules/PostionModal'
 import {randomUUID, recursive} from "@/utils/util";
-import {USER_INFO} from "@/store/mutation-types";
+import CheckEnsureModal from '../modules/components/CheckEnsureModal'
+import ProductFileModal from "@views/hifar/hifar-environmental-test/task/modules/ProductFileModal";
+import HfElevatorLayer from '@/components/HfElevatorLayer'
 
 export default {
   inject: {
     getContainer: {
       default: () => document.body
-    }
+    },
   },
   props: {
     records: {
@@ -405,11 +368,52 @@ export default {
     }
   },
   components: {
+    HfElevatorLayer,
+    ProductFileModal,
     HandleSelectModal,
     PostionModal,
+    CheckEnsureModal
   },
   data() {
     return {
+      layerColumns: [
+        {
+          title: "试件信息",
+          id: "product"
+        },
+        {
+          title: "实施过程",
+          id: "processForm"
+        },
+        {
+          title: "安装控制方式",
+          id: "installControl"
+        },
+        {
+          title: "试验设备开关机记录",
+          id: "switchRecording"
+        },
+        {
+          title: "巡检记录",
+          id: "siteInspection"
+        },
+        {
+          title: "参试人员",
+          id: "person"
+        },
+        {
+          title: "测试设备",
+          id: "testEquip"
+        },
+        {
+          title: "振动工装",
+          id: "toolsProduct"
+        },
+        {
+          title: "图片图谱",
+          id: "picture"
+        },
+      ],
       moment,
       productStatusOptions: [{key: '1', value: '1', label: '完好'}, {key: '2', value: '2', label: '损坏'}],
       siteRunningStatus: [
@@ -418,6 +422,16 @@ export default {
         {key: '3', value: '3', label: '未知'}
       ],
       switchRecordingColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return parseInt(index) + 1
+          }
+        },
         {
           title: '试验开始时间',
           dataIndex: 'testStartTime',
@@ -429,12 +443,12 @@ export default {
                 placeholder: '请选择试验开始时间',
                 format: 'YYYY-MM-DD HH:mm:ss',
                 showTime: true,
+                value: row.testStartTime,
               },
               style: {width: '100%'},
-              value: row.testStartTime,
               on: {
                 change: (val) => {
-                  row.testStartTime = moment(val).valueOf()
+                  this.$set(row, 'testStartTime', val)
                   if (row.testEndTime && +row.testEndTime > 0) {
                     let start = moment(row.testStartTime)
                     let end = moment(row.testEndTime)
@@ -461,12 +475,12 @@ export default {
                 placeholder: '请选择试验结束时间',
                 format: 'YYYY-MM-DD HH:mm:ss',
                 showTime: true,
+                value: row.testEndTime,
               },
               style: {width: '100%'},
-              value: row.testEndTime,
               on: {
                 change: (val) => {
-                  row.testEndTime = moment(val).valueOf()
+                  this.$set(row, 'testEndTime', val)
                   if (row.testStartTime && +row.testStartTime > 0) {
                     let start = moment(row.testStartTime)
                     let end = moment(row.testEndTime)
@@ -496,13 +510,49 @@ export default {
             return this.$createElement('a-textarea', {
               props: {
                 placeholder: '请输入备注',
-                autoSize: {minRows: 1}
+                autoSize: {minRows: 1},
+                value: row.remarks,
               },
               style: {width: '100%'},
-              value: row.remarks,
               on: {
-                change: (val) => {
-                  row.remarks = val
+                change: (e) => {
+                  row.remarks = e.target.value
+                }
+              }
+            })
+          }
+        },
+        {
+          title: '值班人员',
+          dataIndex: 'personId',
+          align: 'center',
+          width: 220,
+          customRender: (t, row) => {
+            let {personName, personSignTime} = row
+            return this.$createElement('a-input', {
+              props: {
+                readOnly: true,
+                value: personName && personSignTime ? personName + ' ' + this.momentFormatFun(personSignTime, 'YYYY-MM-DD HH:mm:ss') : ''
+              },
+              on: {
+                click: (e) => {
+                  this.$refs.checkEnsureModal.show(row, (callbackRecord) => {
+                    let loginParams = {
+                      userCode: callbackRecord.userCode,
+                      pwd: callbackRecord.password
+                    }
+                    postAction('/BaseUserBusiness/sign', loginParams).then(res => {
+                      if (res.code === 200) {
+                        let {data} = res
+                        this.$set(row, 'personName', data.idName)
+                        this.$set(row, 'personId', data.id)
+                        this.$set(row, 'personSignTime', moment().valueOf())
+                        this.$refs.checkEnsureModal.handleCancel()
+                      } else {
+                        this.$message.warning(res.msg)
+                      }
+                    })
+                  })
                 }
               }
             })
@@ -539,8 +589,8 @@ export default {
                 placeholder: '请选择安装方式',
                 allowClear: true,
                 dictCode: "install_control_method",
+                value: row.installMethodCode,
               },
-              value: row.installMethodCode,
               style: {width: "100%"},
               on: {
                 change: (v, option) => {
@@ -553,7 +603,7 @@ export default {
         },
         {
           title: '试验方向',
-          dataIndex: 'testDirectionId',
+          dataIndex: 'directionId',
           align: 'center',
           width: 250,
           customRender: (t, row, index) => {
@@ -568,12 +618,13 @@ export default {
                 dropdownStyle: {
                   maxHeight: '300px'
                 },
+                value: row.directionId ? row.directionId.split(',') : [],
               },
-              value: row.testDirectionId,
               style: {width: "100%"},
               on: {
                 change: (v, option) => {
-                  row.testDirectionId = v
+                  this.$set(row, 'directionId', v.toString())
+                  this.$set(row, 'directionName', option.toString())
                 }
               },
             })
@@ -590,8 +641,8 @@ export default {
               props: {
                 placeholder: '请输入几台/次',
                 allowClear: true,
+                value: row.installNum,
               },
-              value: row.installNum,
               style: {width: "100%"},
               on: {
                 change: (e) => {
@@ -615,18 +666,25 @@ export default {
             return this.$createElement('a-textarea', {
               props: {
                 placeholder: '请输入备注',
-                autoSize: {minRows: 1}
+                autoSize: {minRows: 1},
+                value: row.remarks,
               },
               style: {width: '100%'},
-              value: row.remarks,
               on: {
-                change: (val) => {
-                  row.remarks = val
+                change: (e) => {
+                  row.remarks = e.target.value
                 }
               }
             })
           }
         },
+        {
+          title: '操作',
+          dataIndex: 'action',
+          scopedSlots: {customRender: 'action'},
+          width: 60,
+          align: 'center'
+        }
       ],
       installControlTable: [],
       siteInspectionColumns: [
@@ -652,16 +710,18 @@ export default {
                 placeholder: '请选择试验方向',
                 treeData: this.testDirectionTreeData,
                 allowClear: true,
+                multiple: true,
                 treeNodeFilterProp: 'title',
                 dropdownStyle: {
                   maxHeight: '300px'
                 },
+                value: row.testDirectionId ? row.testDirectionId.split(',') : [],
               },
-              value: row.testDirectionId,
               style: {width: "100%"},
               on: {
                 change: (v, option) => {
-                  row.testDirectionId = v
+                  this.$set(row, 'testDirectionId', v.toString())
+                  this.$set(row, 'testDirection', option.toString())
                 }
               },
             })
@@ -672,14 +732,13 @@ export default {
           dataIndex: 'directionNum',
           align: 'center',
           width: 100,
-          scopedSlots: {customRender: 'directionNum'},
           customRender: (t, row, index) => {
             return this.$createElement('a-input', {
               props: {
                 placeholder: '请输入向次',
                 allowClear: true,
+                value: row.directionNum,
               },
-              value: row.directionNum,
               style: {width: "100%"},
               on: {
                 change: (e) => {
@@ -693,19 +752,19 @@ export default {
           title: '日期时间',
           dataIndex: 'inspectionTime',
           align: 'center',
-          width: 170,
+          width: 210,
           customRender: (t, row) => {
             return this.$createElement('a-date-picker', {
               props: {
                 placeholder: '请选择日期时间',
                 format: 'YYYY-MM-DD HH:mm:ss',
                 showTime: true,
+                value: row.inspectionTime,
               },
               style: {width: '100%'},
-              value: row.inspectionTime,
               on: {
                 change: (val) => {
-                  row.inspectionTime = moment(val).valueOf()
+                  this.$set(row, 'inspectionTime', val)
                 }
               }
             })
@@ -721,12 +780,12 @@ export default {
               props: {
                 placeholder: '请输入温度设定值(℃)',
                 allowClear: true,
+                value: row.setUpValue,
               },
-              value: row.setUpValue,
               style: {width: "100%"},
               on: {
                 change: (value) => {
-                  row.setUpValue = value
+                  this.$set(row, 'setUpValue', value)
                 }
               },
             })
@@ -742,12 +801,12 @@ export default {
               props: {
                 placeholder: '请输入温度实测值(℃)',
                 allowClear: true,
+                value: row.measuredValue,
               },
-              value: row.measuredValue,
               style: {width: "100%"},
               on: {
                 change: (value) => {
-                  row.measuredValue = value
+                  this.$set(row, 'measuredValue', value)
                 }
               },
             })
@@ -763,9 +822,9 @@ export default {
               props: {
                 placeholder: '请选择运行状态',
                 allowClear: true,
-                options: this.siteRunningStatus
+                options: this.siteRunningStatus,
+                value: row.runStatus,
               },
-              value: row.runStatus,
               style: {width: "100%"},
               on: {
                 change: (value) => {
@@ -777,25 +836,56 @@ export default {
         },
         {
           title: '操作人',
-          dataIndex: 'operationPerson',
+          dataIndex: 'operationPersonId',
           align: 'center',
+          width: 220,
+          customRender: (t, row) => {
+            let {operationPerson, operationTime} = row
+            return this.$createElement('a-input', {
+              props: {
+                readOnly: true,
+                value: operationPerson && operationTime ? operationPerson + ' ' + this.momentFormatFun(operationTime, 'YYYY-MM-DD HH:mm:ss') : ''
+              },
+              on: {
+                click: (e) => {
+                  this.$refs.checkEnsureModal.show(row, (callbackRecord) => {
+                    let loginParams = {
+                      userCode: callbackRecord.userCode,
+                      pwd: callbackRecord.password
+                    }
+                    postAction('/BaseUserBusiness/sign', loginParams).then(res => {
+                      if (res.code === 200) {
+                        let {data} = res
+                        this.$set(row, 'operationPerson', data.idName)
+                        this.$set(row, 'operationPersonId', data.id)
+                        this.$set(row, 'operationTime', moment().valueOf())
+                        this.$refs.checkEnsureModal.handleCancel()
+                      } else {
+                        this.$message.warning(res.msg)
+                      }
+                    })
+                  })
+                }
+              }
+            })
+          }
         },
         {
           title: '备注',
           dataIndex: 'remarks',
           align: 'center',
-          width: 270,
+          ellipsis: true,
           customRender: (t, row) => {
             return this.$createElement('a-textarea', {
               props: {
                 placeholder: '请输入备注',
-                autoSize: {minRows: 1}
+                autoSize: {minRows: 1},
+                value: row.remarks,
               },
               style: {width: '100%'},
-              value: row.remarks,
               on: {
-                change: (val) => {
-                  row.remarks = val
+                change: (e) => {
+                  row.remarks = e.target.value
                 }
               }
             })
@@ -817,7 +907,6 @@ export default {
         process: '/HfPrjUnitProcessDescBusiness/listByUnitId',
         workName: '/HfPrjWorkCenterBusiness/listAll',
         testPerson: '/HfResEnvTestPersonBusiness/listAll',
-        updateFileStatus: '/HfEnvTestPressureRecordBusiness/updateFileStatus',
         attachList: '/MinioBusiness/listByRefId',
         deleteImg: '/MinioBusiness/logicRemoveById',
         listTree: '/HfResTestDirection/listTree',
@@ -1102,23 +1191,55 @@ export default {
         },
         {
           title: '试件附件',
-          dataIndex: 'productFile',
+          dataIndex: 'imgNum',
           align: 'center',
-          scopedSlots: {customRender: 'productFile'},
+          customRender: (t, row, index) => {
+            return this.$createElement('a', {
+              on: {
+                click: (e) => {
+                  this.previewProductFile(row)
+                }
+              }
+            }, [row.imgNum || 0])
+          }
         },
         {
           title: '试前状态',
-          dataIndex: 'productBeforeStatus',
+          dataIndex: 'beforeStatus',
           align: 'center',
           width: 120,
-          scopedSlots: {customRender: 'productBeforeStatus'},
+          customRender: (t, row, index) => {
+            return this.$createElement('h-select', {
+              props: {
+                value: row.beforeStatus,
+                options: this.productStatusOptions,
+              },
+              on: {
+                click: (val) => {
+                  this.$set(row, 'beforeStatus', val)
+                }
+              }
+            })
+          }
         },
         {
           title: '试后状态',
-          dataIndex: 'productAfterStatus',
+          dataIndex: 'afterStatus',
           align: 'center',
           width: 120,
-          scopedSlots: {customRender: 'productAfterStatus'},
+          customRender: (t, row, index) => {
+            return this.$createElement('h-select', {
+              props: {
+                value: row.afterStatus,
+                options: this.productStatusOptions,
+              },
+              on: {
+                click: (val) => {
+                  this.$set(row, 'afterStatus', val)
+                }
+              }
+            })
+          }
         },
         {
           title: '产品代号',
@@ -1140,7 +1261,6 @@ export default {
           dataIndex: 'action',
           scopedSlots: {customRender: 'action'},
           width: 60,
-          fixed: 'right',
           align: 'center'
         }
       ],
@@ -1163,7 +1283,6 @@ export default {
           key: 'action',
           scopedSlots: {customRender: 'action'},
           width: 60,
-          fixed: 'right',
           align: 'center'
         }
       ],
@@ -1194,7 +1313,6 @@ export default {
           dataIndex: 'action',
           scopedSlots: {customRender: 'action'},
           width: 60,
-          fixed: 'right',
           align: 'center'
         }
       ],
@@ -1296,8 +1414,8 @@ export default {
                 placeholder: '请选择位置',
                 allowClear: true,
                 dictCode: "sensing_equipment_location",
+                value: row.position,
               },
-              value: row.position,
               style: {width: "100%"},
               on: {
                 change: (v, option) => {
@@ -1318,8 +1436,8 @@ export default {
                 placeholder: '请选择用途',
                 allowClear: true,
                 dictCode: "sensing_equipment_purpose",
+                value: row.purpose,
               },
-              value: row.purpose,
               style: {width: "100%"},
               on: {
                 change: (v, option) => {
@@ -1334,11 +1452,9 @@ export default {
           dataIndex: 'action',
           scopedSlots: {customRender: 'action'},
           width: 60,
-          fixed: 'right',
           align: 'center'
         }
       ],
-      sensorData: [],
       toolsProductData: [],
       addToolsProductColumns: [
         {
@@ -1478,10 +1594,11 @@ export default {
           dataIndex: 'action',
           scopedSlots: {customRender: 'action'},
           width: 60,
-          fixed: 'right',
           align: 'center'
         }
       ],
+      selectedBeforeIndex: 0,
+      testRecordInfo: {}
     }
   },
   computed: {
@@ -1494,6 +1611,7 @@ export default {
   },
   methods: {
     show(record) {
+      this.testRecordInfo = record
       this.testId = record.id
       this.visible = true
       this.getTestDetail(record.id)
@@ -1521,24 +1639,18 @@ export default {
     installControlAdd() {
       this.installControlTable.push({
         id: randomUUID(),
+        testSensorInfo: []
       })
     },
     // 巡检记录新增行
     siteInspectionAdd() {
-      let user = this.$ls.get(USER_INFO)
       this.siteInspectionTable.push({
         id: randomUUID(),
-        operationPerson: user.idName,
-        operationPersonId: user.id,
       })
     },
     // 查看试件附件
     previewProductFile(row) {
-
-    },
-    // 试前试后产品状态change事件
-    productStatusChange(row, e, type) {
-      console.log(row, e, type, 'row, e, type')
+      this.$refs.productFileModal.show(row, this.testRecordInfo.equipId)
     },
     loadImgData() {
       postAction(this.url.attachList, {refType: 'test_picture', refId: this.testId}).then((res) => {
@@ -1572,14 +1684,14 @@ export default {
     handleCancel() {
       this.visible = false
     },
-    handlecCollect(file) {
-      postAction(this.url.updateFileStatus, {fileId: file.fileId, isInReport: file.isInReport})
-    },
     // 图片删除
     handleDeleteImg(file) {
       postAction(this.url.deleteImg, {id: file.fileId}).then(() => {
         this.$message.success('删除成功')
       })
+    },
+    momentFormatFun(value, format) {
+      return value && value !== '0' && moment(+value).format(format) || null
     },
     validateStartTime(rule, value, cb) {
       let endTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['realEndTime'])
@@ -1618,10 +1730,26 @@ export default {
           this.productTable = model.testPieceInfo.map(item => {
             return {
               ...item,
-              productBeforeStatus: item.productBeforeStatus || '1',
-              productAfterStatus: item.productAfterStatus || '1'
+              beforeStatus: item.beforeStatus || '1',
+              afterStatus: item.afterStatus || '1'
             }
           })
+          //试验设备开关机记录
+          this.switchRecordingTable = model.switchOnOffInfo.map(item => {
+            return {
+              ...item,
+              testStartTime: this.momentFormatFun(item.testStartTime, 'YYYY-MM-DD HH:mm:ss'),
+              testEndTime: this.momentFormatFun(item.testEndTime, 'YYYY-MM-DD HH:mm:ss'),
+            }
+          })
+          // 巡检记录
+          this.siteInspectionTable = model.siteInspectionInfo.map(item => {
+            return {
+              ...item,
+              inspectionTime: this.momentFormatFun(item.inspectionTime, 'YYYY-MM-DD HH:mm:ss'),
+            }
+          })
+          this.installControlTable = model.insertMethodInfo// 安装、控制方式+传感器
           this.personArr = model.testPersonInfo
           this.testTaskData = model.testTaskInfo
           this.projectData = model.testTaskInfo
@@ -1630,11 +1758,10 @@ export default {
             this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
           })
           this.equipData = model.testEquipInfo.length ? model.testEquipInfo : this.selectedTreeRows
-          this.sensorData = model.testSensorInfo
           this.toolsProductData = model.testToolsProductInfo
-          model.realStartTime = model.realStartTime && this.model.realStartTime !== '0' ? moment(+(model.realStartTime)) : null
+          model.realStartTime = model.realStartTime && model.realStartTime !== '0' ? moment(+(model.realStartTime)) : null
           model.realEndTime = model.realEndTime && model.realEndTime !== '0' ? moment(+(model.realEndTime)) : null
-          model.approachTime = model.approachTime && this.model.approachTime !== '0' ? moment(+(model.approachTime)) : null
+          model.approachTime = model.approachTime && model.approachTime !== '0' ? moment(+(model.approachTime)) : null
           model.departureTime = model.departureTime && model.departureTime !== '0' ? moment(+(model.departureTime)) : null
           this.model = model
         }
@@ -1653,20 +1780,34 @@ export default {
     productHandleDelete(index) {
       this.productTable.splice(index, 1)
     },
+    testSensorHandleDelete(index, subIndex) {
+      this.installControlTable[index].testSensorInfo.splice(subIndex, 1)
+    },
+    installControlHandleDelete(index) {
+      this.installControlTable.splice(index, 1)
+    },
+    siteInspectionDelete(index) {
+      this.siteInspectionTable.splice(index, 1)
+    },
     productCallback(value) {
       this.productTable = this.productTable.concat(value)
+      console.log(this.productTable, 'productTable')
     },
     personAdd() {
       this.$refs.PostionModal.show(this.personArr, '选择参试人员')
     },
-    sensorAdd() {
-      this.$refs.sensorHandleSelectModal.show(this.sensorData, '选择传感器')
+    sensorAdd(record, index) {
+      this.selectedBeforeIndex = index
+      this.$refs.sensorHandleSelectModal.show(this.installControlTable[index].testSensorInfo, '选择传感器')
+    },
+    // 选择传感器返回数据
+    sensorCallback(value) {
+      value.forEach((item) => {
+        this.installControlTable[this.selectedBeforeIndex].testSensorInfo.push(item)
+      })
     },
     toolsProductAdd() {
       this.$refs.toolsProductHandleSelectModal.show(this.toolsProductData, '选择振动工装')
-    },
-    sensorHandleDelete(index) {
-      this.sensorData.splice(index, 1)
     },
     toolsProductHandleDelete(index) {
       this.toolsProductData.splice(index, 1)
@@ -1699,18 +1840,13 @@ export default {
     equipCallback(value) {
       this.equipData = this.equipData.concat(value)
     },
-    sensorCallback(value) {
-      this.sensorData = Array.isArray(this.sensorData) ? this.sensorData.concat(value) : [].concat(value)
-    },
     toolsProductCallback(value) {
       this.toolsProductData = Array.isArray(this.toolsProductData) ? this.toolsProductData.concat(value) : [].concat(value)
     },
     // 保存
     handleSave() {
       this.submitLoading = true
-      const {
-        $refs: {carryOutProcessForm}
-      } = this
+      const {$refs: {carryOutProcessForm}} = this
       const carryOutProcess_form = new Promise((resolve, reject) => {
         carryOutProcessForm.form.validateFieldsAndScroll((err, values) => {
           if (err) {
@@ -1721,19 +1857,40 @@ export default {
         })
       })
       Promise.all([carryOutProcess_form]).then((values) => {
+        let record = values[0]
         let params = {
           id: this.records.id,
-          realStartTime: values[0].realStartTime ? values[0].realStartTime.valueOf() : '',
-          realEndTime: values[0].realEndTime ? values[0].realEndTime.valueOf() : '',
-          workId: values[0].workId,
-          processDesc: values[0].processDesc, //试验结果
-          remarks: values[0].remarks, //备注
+          realStartTime: record.realStartTime ? record.realStartTime.valueOf() : '',
+          approachTime: record.approachTime ? record.approachTime.valueOf() : '',
+          realEndTime: record.realEndTime ? record.realEndTime.valueOf() : '',
+          departureTime: record.departureTime ? record.departureTime.valueOf() : '',
+          remarks: record.remarks, //备注
+          temperature: record.temperature, //温度(°C)
+          humidity: record.humidity, //湿度(RH)
+          selfInspection: record.selfInspection, //自检
+          mutualInspection: record.mutualInspection, //互检
           personArr: this.personArr, //参试人员集合
           testEquipArr: this.equipData, //测试设备集合
           pieceArr: this.productTable, //被试件(试件)集合
-          testSensorArr: this.sensorData,
           testToolsProductArr: this.toolsProductData,
           pictureData: this.pictureData, // 图片图谱
+          //试验设备开关机记录
+          switchOnOffArr: this.switchRecordingTable.map(item => {
+            return {
+              ...item,
+              testStartTime: moment(item.testStartTime).valueOf(),
+              testEndTime: moment(item.testEndTime).valueOf(),
+            }
+          }),
+          // 巡检记录
+          siteInspectionArr: this.siteInspectionTable.map(item => {
+            return {
+              ...item,
+              inspectionTime: moment(item.inspectionTime).valueOf(),
+            }
+          }),
+          // 安装、控制方式 + 传感器
+          insertMethodArr: this.installControlTable,
         }
         postAction(this.url.save, params).then((res) => {
           if (res.code === 200) {
@@ -1753,6 +1910,9 @@ export default {
 }
 </script>
 <style lang='less' scoped>
+/deep/ .ant-table-small > .ant-table-content > .ant-table-body {
+  margin: 0;
+}
 .mg-t-20 {
   margin-top: 20px !important;
 }

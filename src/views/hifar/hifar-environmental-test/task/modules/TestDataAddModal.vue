@@ -19,15 +19,6 @@
   >
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭 </a-button>
     <div style="height: 100%; overflow: auto; padding: 0 20px">
-      <!--      <h-desc title="曲线/图谱图片" :bordered="false">-->
-      <!--        <h-form ref="imageForm" v-model="model_img" :column="1" :formData="imageData" style="width: 100%"/>-->
-      <!--      </h-desc>-->
-      <!--      <h-desc title="曲线" :bordered="false">
-              <h-form style="width: 100%" v-model="model_cure" ref="curveForm" :column="1" :formData="curveData" />
-            </h-desc>
-            <h-desc title="图谱" :bordered="false">
-              <h-form style="width: 100%" v-model="model_atlas" ref="atlasForm" :column="1" :formData="atlasData" />
-            </h-desc>-->
       <h-desc title="附件" :bordered="false">
         <h-form ref="attachForm" v-model="model_attach" :column="1" :formData="attachData" style="width: 100%"/>
       </h-desc>
@@ -51,11 +42,8 @@ export default {
     return {
       title: '',
       visible: false,
-      model_cure: {},
-      model_atlas: {},
       model_attach: {},
       model_video: {},
-      imglength: 0,
       testId: '',
       url: {
         attachList: '/MinioBusiness/listByRefId',
@@ -63,53 +51,6 @@ export default {
         delete: '/MinioBusiness/logicRemoveById',
         updateFileStatus:'/HfEnvTestPressureRecordBusiness/updateFileStatus'
       },
-      imageData: [
-        {
-          title: '曲线/图谱图片',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-img
-              multiple={true}
-              max={100}
-              isCollect={true}
-              customParams={{ refType: 'test_picture', refId: this.testId }}
-              accept="image/png,image/gif,image/jpg,image/jpeg"
-              v-decorator={['attachIds', { initialValue: [] }]}
-              on-delete={this.handleDelete}
-              on-collect={this.handlecCollect}
-            />
-          ),
-        },
-      ],
-      curveData: [
-        {
-          title: '曲线',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-file
-              v-decorator={['attachIds', { initialValue: [] }]}
-              customParams={{ refType: 'test_cure', refId: this.testId }}
-              on-delete={this.handleDelete}
-            />
-          ),
-        },
-      ],
-      atlasData: [
-        {
-          title: '图谱',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-file
-              v-decorator={['attachIds', { initialValue: [] }]}
-              customParams={{ refType: 'test_atlas', refId: this.testId }}
-              on-delete={this.handleDelete}
-            />
-          ),
-        },
-      ],
       attachData: [
         {
           title: '附件',
@@ -119,8 +60,6 @@ export default {
             <h-upload-file
                 v-decorator={['attachIds', { initialValue: [] }]}
                 customParams={{ refType: 'test_attach', refId: this.testId }}
-                // isReplace={true}
-                // isShowForm={true}
                 on-delete={this.handleDelete}
             />
           ),
@@ -143,9 +82,6 @@ export default {
     }
   },
   methods: {
-    handlecCollect(file) {
-      postAction(this.url.updateFileStatus, {fileId: file.fileId, isInReport: file.isInReport})
-    },
     show(record) {
       this.visible = true
       this.title = record.testNames + '(' + record.testCode + ') - 试验数据'
@@ -182,8 +118,6 @@ export default {
                 secretLevel: item.secretLevel,
                 type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
                 replaceStatus: item.replaceStatus,
-                // remarks: item.remarks,
-                // label: item.label,
                 rowSort: item.rowSort
               })
             })

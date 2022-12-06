@@ -73,7 +73,6 @@ export default {
     value: {
       immediate: true,
       handler(val) {
-        console.log('搜索参数变化：', val)
         if (isObject(val))
           this.queryParams = val
         else

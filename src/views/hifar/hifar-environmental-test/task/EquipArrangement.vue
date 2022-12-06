@@ -7,7 +7,7 @@
  * @FilePath: \tdm200-client\src\views\hifar\hifar-environmental-test\task\EquipArrangement.vue
 -->
 <template>
-  <r-l-layout :leftMinWidth="252" style="width: 100%; height: 100%">
+  <r-l-layout :leftMinWidth="252" style="position: relative;width: 100%; height: 100%">
     <h-card slot="left" :bordered="false" style="height: 100%">
       <a-spin :spinning="treeSpinning" style="height: 100%">
         <h-edit-tree

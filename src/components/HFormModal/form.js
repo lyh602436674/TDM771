@@ -83,14 +83,12 @@ export default {
       immediate: true,
       handler(val) {
         this.form = null
-        console.log('HForm data change:', val)
         this.initForm(val)
       }
     },
     formData: {
       immediate: true,
       handler(val) {
-        console.log('formDataChange:', val)
         this.form = null
         this.initForm()
       }

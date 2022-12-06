@@ -157,7 +157,6 @@ export default {
       immediate: true,
       handler(val) {
         if (isArray(val)) {
-          console.log('文件列表更新', val)
           this.fileList = val
         } else {
           this.fileList = []
@@ -265,7 +264,6 @@ export default {
      * @param file
      */
     handleReplace(file) {
-      console.log('file', file)
       file.replace = true
       this.extendRecords = file
       this.clickUpload()
