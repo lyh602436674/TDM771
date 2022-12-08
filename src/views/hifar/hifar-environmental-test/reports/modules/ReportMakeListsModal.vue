@@ -7,23 +7,29 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\reports\modules\ReportMakeListsModal.vue
  -->
 <template>
-  <h-modal title="添加" inner fullScreen destroyOnClose :visible='visible' :getContainer='getContainer'
-           @cancel='handleCancel'>
-    <template slot='footer'>
-      <a-button type='ghost-danger' @click='handleCancel'> 关闭</a-button>
-      <a-button type='ghost-success' :loading='submitLoading' @click='saveTestHandle'>
+  <h-modal
+    title="添加"
+    inner
+    fullScreen
+    destroyOnClose
+    :visible="visible"
+    :getContainer="getContainer"
+    @cancel="handleCancel">
+    <template slot="footer">
+      <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
+      <a-button type="ghost-success" :loading="submitLoading" @click="saveTestHandle">
         保存
       </a-button>
     </template>
-    <report-experiment-table ref='reportExperimentMain' @change='selectChange'></report-experiment-table>
-    <report-template-select ref='reportTemplateSelect' @callback="selectedTemplate"></report-template-select>
+    <report-experiment-table ref="reportExperimentMain" @change="selectChange"></report-experiment-table>
+    <report-template-select ref="reportTemplateSelect" @callback="selectedTemplate"></report-template-select>
   </h-modal>
 </template>
 
 <script>
-import {postAction} from '@/api/manage'
+import { postAction } from '@/api/manage'
 import ReportExperimentTable from '../components/ReportExperimentTable'
-import ReportTemplateSelect from "@views/hifar/hifar-environmental-test/reports/modules/ReportTemplateSelect";
+import ReportTemplateSelect from '@views/hifar/hifar-environmental-test/reports/modules/ReportTemplateSelect';
 
 export default {
   inject: {
@@ -78,7 +84,7 @@ export default {
       this.handleSubmit(selectedRowKeys)
     },
     handleSubmit(templateId) {
-      let {entrustCodeArr, selectedRowKeys} = this
+      let { entrustCodeArr, selectedRowKeys } = this
       if (!selectedRowKeys.length) {
         this.$message.warning('请选择试验')
       } else {
@@ -91,9 +97,9 @@ export default {
         let params = {
           tests: selectedRow,
           buttonFlag: 'save',
-          templateId: templateId.toString(),
+          templateId: templateId.toString()
         }
-        postAction('/HfEnvReportBusiness/addByTest', params).then((res) => {
+        postAction('/HfEnvReportBusiness/generateReport', params).then((res) => {
           if (res.code === 200) {
             this.$message.success('操作成功')
             this.$emit('change', true)
@@ -103,7 +109,7 @@ export default {
           this.submitLoading = false
         })
       }
-    },
+    }
   }
 }
 </script>
