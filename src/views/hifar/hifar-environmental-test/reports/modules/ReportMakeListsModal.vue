@@ -93,7 +93,7 @@ export default {
           buttonFlag: 'save',
           templateId: templateId.toString(),
         }
-        postAction('/HfEnvReportBusiness/addByTest', params).then((res) => {
+        postAction('/HfEnvReportBusiness/generateReport', params).then((res) => {
           if (res.code === 200) {
             this.$message.success('操作成功')
             this.$emit('change', true)
