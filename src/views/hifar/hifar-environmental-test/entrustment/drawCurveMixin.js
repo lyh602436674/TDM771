@@ -56,7 +56,7 @@ export default {
        * 2存在，{0,2,6}, {0,2,6,4}, {0,2,6,4,7},
        * 1,2都存在，先1后2
        */
-      flag = (qh01 || qh02) && ((qh01 && qh05) || (qh02 && qh06))
+      flag = ((qh01 || qh01 === 0) || (qh02 || qh02 === 0)) && (((qh01 || qh01 === 0) && qh05) || ((qh02 || qh02 === 0) && qh06))
       if (flag) {
         // let qh00Val = moment(0).format('x')
         let qh00Val = this.initialTemTime
@@ -89,12 +89,12 @@ export default {
     loopTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh02Index, qh03Index, qh04Index, qh05Index, qh06Index, qh01, qh02, qh05, qh06) {
       let result = []
       if (this.isHighTemperature) {
-        if (qh01 && qh05) {
+        if ((qh01 || qh01 === 0) && qh05) {
           let highResult = this.highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh05Index)
           result = result.concat(highResult.result)
           nodeTime = highResult.nodeTime
           nodeVal = highResult.nodeVal
-          if (qh02 && qh06) {
+          if ((qh02 || qh02 === 0) && qh06) {
             let lowTreatment = this.lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh06Index)
             result = result.concat(lowTreatment.result)
             nodeTime = lowTreatment.nodeTime
@@ -102,12 +102,12 @@ export default {
           }
         }
       } else {
-        if (qh02 && qh06) {
+        if ((qh02 || qh02 === 0) && qh06) {
           let lowTreatment = this.lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh06Index)
           result = result.concat(lowTreatment.result)
           nodeTime = lowTreatment.nodeTime
           nodeVal = lowTreatment.nodeVal
-          if (qh01 && qh05) {
+          if ((qh01 || qh01 === 0) && qh05) {
             let highResult = this.highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh05Index)
             result = result.concat(highResult.result)
             nodeTime = highResult.nodeTime
@@ -123,10 +123,10 @@ export default {
     },
     highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh05Index) {
       let result = []
-      let qh01Val = Number(abilityInfo[qh01Index].minValue)
-      let qh05Val = Number(abilityInfo[qh05Index].minValue)
-      let addMin = (+qh01Val - 25) / qh05Val
-      let highTime = moment(nodeTime).add(addMin, 'm').format('x')
+      let qh01Val = Number(abilityInfo[qh01Index].minValue) // 最高温度
+      let qh05Val = Number(abilityInfo[qh05Index].minValue) // 升温速率
+      let addMin = Math.abs(((qh01Val - nodeVal) / qh05Val) * 60)
+      let highTime = moment(nodeTime).add(addMin, 's').format('x')
       nodeTime = parseInt(highTime)
       nodeVal = qh01Val
       if (this.entrustOrTaskFlag) {
@@ -154,8 +154,8 @@ export default {
       let result = []
       let qh02Val = Number(abilityInfo[qh02Index].minValue) // 最低温度
       let qh06Val = Number(abilityInfo[qh06Index].minValue) // 降温速率
-      let addMin = (nodeVal - qh02Val) / qh06Val
-      let lowTime = moment(nodeTime).add(addMin, 'm').format('x')
+      let addMin = Math.abs(((nodeVal - qh02Val) / qh06Val) * 60)
+      let lowTime = moment(nodeTime).add(addMin, 's').format('x')
       nodeTime = parseInt(lowTime)
       nodeVal = qh02Val
 

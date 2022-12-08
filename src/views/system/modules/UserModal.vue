@@ -62,8 +62,8 @@
 </template>
 
 <script>
-import {reduceRight, isArray} from 'lodash'
-import {addUser, editUser, duplicateCheck} from '@/api/api'
+import {isArray, reduceRight} from 'lodash'
+import {addUser, duplicateCheck, editUser} from '@/api/api'
 import moment from 'moment'
 
 export default {
@@ -149,6 +149,25 @@ export default {
                 },
               ],
             },
+          },
+          {
+            title: '试验类型',
+            key: 'testType',
+            formType: 'select',
+            allowClear: true,
+            placeholder: '请选择试验类型',
+            options: [
+              {
+                title: '气候',
+                key: '1',
+                value: '1',
+              },
+              {
+                title: '力学',
+                key: '2',
+                value: '2',
+              },
+            ]
           },
           {
             title: '用户类型',

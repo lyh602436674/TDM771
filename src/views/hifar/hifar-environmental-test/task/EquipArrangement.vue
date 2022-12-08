@@ -66,7 +66,6 @@
                 <h-card fixed style="width: 100%">
                   <a-tabs v-model="basickey" style="height: 100%;">
                     <a-tab-pane :key="1" style="display: flex" tab="基本信息">
-                      <!-- 基本信息 -->
                       <!-- 图片 -->
                       <div class="ea-equip-image">
                         <img v-if="equipDetail.imgUrl" :src="equipDetail.imgUrl" alt=""/>
@@ -217,7 +216,6 @@
                   </h-vex-table>
                 </h-card>
               </div>
-            <!--            <a-empty v-else description="请在左侧选择设备"/>-->
           </div>
         </div>
       </h-card>
@@ -290,7 +288,6 @@ export default {
   },
   data() {
     return {
-      cuttonKey: '',
       moment,
       treeSpinning: false,
       selectedKeys: [],
@@ -848,21 +845,6 @@ export default {
   display: none;
 }
 
-.h-icon-stop {
-  color: #fff;
-  cursor: pointer;
-  width: 21px;
-  height: 21px;
-  border-radius: 3px;
-  background-color: #ff6600;
-  text-align: center;
-  line-height: 21px;
-}
-
-.h-finsh {
-  background-color: rgb(116, 223, 63);
-}
-
 .h-icon-tree {
   margin-left: 20px;
   font-size: 20px;
@@ -874,4 +856,12 @@ export default {
   width: 10px;
   height: 10px;
 }
+</style>
+<style lang="less" scoped>
+/deep/ .h-edit-tree {
+ .ant-tree-node-content-wrapper {
+    width: 100% !important;
+  }
+}
+
 </style>

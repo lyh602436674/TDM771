@@ -17,22 +17,6 @@
         <p>{{ item.createUserName }}</p>
       </a-timeline-item>
     </a-timeline>
-    <!-- 电梯层 -->
-<!--    <a-anchor :target-offset="targetOffset" class="test-Base-anchor" :get-current-anchor="getCurrentAnchor">
-      <a-anchor-link href="#basicInfo" title="基本信息" />
-      <a-anchor-link href="#projectInfo" title="项目信息" />
-      <a-anchor-link href="#testInfo" title="试验信息" />
-      <a-anchor-link href="#testBeforCheck" title="试前检查" />
-      <a-anchor-link href="#testInCheck" title="试中检查" />
-      <a-anchor-link href="#testAfterCheck" title="试后检查" />
-      <a-anchor-link href="#testData" title="试验数据">
-        <a-anchor-link href="#imageForm" title="图片" />
-        <a-anchor-link href="#curveForm" title="曲线" />
-        <a-anchor-link href="#atlasForm" title="图谱" />
-        <a-anchor-link href="#attachForm" title="附件" />
-        <a-anchor-link href="#videoForm" title="视频" />
-      </a-anchor-link>
-    </a-anchor>-->
   </div>
 </template>
 

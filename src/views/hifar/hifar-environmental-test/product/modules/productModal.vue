@@ -83,6 +83,9 @@ export default {
           treeData: this.treeData,
           showSearch: true,
           treeNodeFilterProp: "title",
+          validate: {
+            rules: [{required: true, message: "请选择分类"},],
+          },
           change: (selectedKey, title) => {
 
           }

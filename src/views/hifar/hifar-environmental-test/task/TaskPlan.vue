@@ -52,7 +52,7 @@
               <template slot="content">
 
                 <div>
-                  <a-badge color="#2f54eb" text="未分配"/>
+                  <a-badge color="#2f54eb" text="已发布"/>
                 </div>
                 <div>
                   <a-badge color="#f56c6c" text="超期"/>
@@ -93,7 +93,7 @@
               :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect }"
             >
               <template slot="status" slot-scope="text, record">
-                <a-badge v-if="record.status == 1" color="geekblue" text="未分配"/>
+                <a-badge v-if="record.status == 1" color="geekblue" text="已发布"/>
                 <a-badge v-else-if="record.status == 10" color="green" text="已分配"/>
                 <a-badge v-else-if="record.status == 15" color="cyan" text="执行中"/>
                 <a-badge v-else-if="record.status == 20" color="volcano" text="已终止"/>
@@ -209,7 +209,7 @@ export default {
           formType: 'select',
           options: [
             {
-              title: '未分配',
+              title: '已发布',
               key: '1',
               value: '1',
             },
@@ -775,4 +775,6 @@ export default {
   width: 10px;
   height: 10px;
 }
+
 </style>
+

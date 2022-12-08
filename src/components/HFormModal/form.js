@@ -282,6 +282,7 @@ export default {
               allowClear: com.allowClear || true,
               filterTreeNode: com.filterTreeNode,
               treeNodeFilterProp: com.treeNodeFilterProp,
+              defaultValue:com.defaultValue,
             },
             style: com.style,
             on: {

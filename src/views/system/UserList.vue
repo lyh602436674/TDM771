@@ -209,6 +209,23 @@ export default {
             },
           ],
         },
+        {
+          title: '试验类型',
+          key: 'c_testType_1',
+          formType: 'select',
+          options: [
+            {
+              title: '气候',
+              key: '1',
+              value: '1',
+            },
+            {
+              title: '力学',
+              key: '2',
+              value: '2',
+            },
+          ],
+        },
       ],
       recycleBinVisible: false,
       columns: [

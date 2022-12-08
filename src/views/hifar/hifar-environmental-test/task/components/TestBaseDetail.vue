@@ -8,7 +8,6 @@
 -->
 <template>
   <div style="height: 100%">
-    <!-- 基本信息 -->
     <a-tabs v-model="activeTab" size="small" type="card" @change="handleTabsChange">
       <a-tab-pane
         v-for="(item, index) in entrustInfo"
@@ -36,62 +35,136 @@
     </template>
     <template v-else>
       <!-- 基本信息 -->
-      <div :style="{ marginTop: top ? top : '50px' }">
+      <div id="basicInfo" :style="{ marginTop: top ? top : '50px' }">
         <detail-base-info :detailDataObj="entrustInfoItem"></detail-base-info>
       </div>
-      <!--      样品信息-->
+      <!--      试件信息-->
       <piece-detail-template
+        id="piece"
+        class="mg-t-20"
+        title="试件信息"
         :entrustType="detailData.entrustInfo && detailData.entrustInfo.length && detailData.entrustInfo[0].entrustType"
         :dataSource="detailData.testPieceInfo"/>
       <!-- 项目信息 -->
-      <template v-for="(item,index) in projectInfo">
+      <div v-for="(item,index) in projectInfo" id="project">
         <project-detail-template
+          class="mg-t-20"
           :key="index"
           :model="item"
           :title="'项目信息' + '(' + item.entrustCode + ')'"></project-detail-template>
-      </template>
-      <!-- 试验信息 -->
+      </div>
+      <!-- 实施过程 -->
       <h-desc
-        id="testInfo"
-        ref="testInfo"
+        id="processForm"
+        :data="detailData"
         lableWidth="110px"
-        style="margin-top: 20px; margin-bottom: 20px"
-        title="试验信息">
+        class="mg-t-20"
+        title="实施过程">
         <h-desc-item label="试验设备">{{ detailData.equipName + '-' + detailData.equipModel || '--' }}</h-desc-item>
         <h-desc-item label="设备速率">{{ detailData.testRate || '--' }}</h-desc-item>
         <h-desc-item label="负责人">{{ detailData.chargeUserName || '--' }}</h-desc-item>
+        <h-desc-item label="入场时间">{{
+            detailData.approachTime && detailData.approachTime != 0
+              ? moment(parseInt(detailData.approachTime)).format('YYYY-MM-DD HH:mm:ss')
+              : '--'
+          }}
+        </h-desc-item>
+        <h-desc-item label="离场时间">{{
+            detailData.departureTime && detailData.departureTime != 0
+              ? moment(parseInt(detailData.departureTime)).format('YYYY-MM-DD HH:mm:ss')
+              : '--'
+          }}
+        </h-desc-item>
         <h-desc-item label="开始时间">{{
-          detailData.realStartTime && detailData.realStartTime != 0
-            ? moment(parseInt(detailData.realStartTime)).format('YYYY-MM-DD HH:mm:ss')
-            : '--'
-        }}
+            detailData.realStartTime && detailData.realStartTime != 0
+              ? moment(parseInt(detailData.realStartTime)).format('YYYY-MM-DD HH:mm:ss')
+              : '--'
+          }}
         </h-desc-item>
         <h-desc-item label="结束时间">{{
-          detailData.realEndTime && detailData.realEndTime != 0
-            ? moment(parseInt(detailData.realEndTime)).format('YYYY-MM-DD HH:mm:ss')
-            : '--'
-        }}
+            detailData.realEndTime && detailData.realEndTime != 0
+              ? moment(parseInt(detailData.realEndTime)).format('YYYY-MM-DD HH:mm:ss')
+              : '--'
+          }}
         </h-desc-item>
-        <h-desc-item label="试验部门">{{ projectInfo.workName || '--' }}</h-desc-item>
+        <h-desc-item label="温度(°C)">{{ detailData.temperature || '--' }}</h-desc-item>
+        <h-desc-item label="湿度(RH)">{{ detailData.humidity || '--' }}</h-desc-item>
+        <h-desc-item label="自检">{{ detailData.selfInspection || '--' }}</h-desc-item>
+        <h-desc-item label="互检">{{ detailData.mutualInspection || '--' }}</h-desc-item>
         <h-desc-item :span="3" label="参试人员">
-          {{ testPersonInfo.length > 0 ? testPersonInfo.join(',') : '--' }}
+          {{ testPersonInfo.length ? testPersonInfo.join(',') : '--' }}
         </h-desc-item>
         <h-desc-item :span="3" label="测试设备">
-          {{ testEquipInfo.length > 0 ? testEquipInfo.join(',') : '--' }}
+          {{ testEquipInfo.length ? testEquipInfo.join(',') : '--' }}
         </h-desc-item>
-        <h-desc-item :span="3" label="试验结果">{{ detailData.processDesc || '--' }}</h-desc-item>
+        <h-desc-item :span="3" label="实施过程">{{ detailData.remarks || '--' }}</h-desc-item>
+      </h-desc>
+      <!-- 安装、控制方式 -->
+      <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>
+        <h-card :bordered='false' style='width: 100%'>
+          <a-table
+            :columns='installControlColumns'
+            :dataSource='installControlTable'
+            :pagination='false'
+            bordered
+            rowKey='id'
+            size='small'
+            style="width: 100%;"
+          >
+            <div slot="expandedRowRender" slot-scope="record,index">
+              <a-table
+                :columns='sensorColumns'
+                :dataSource='record.testSensorInfo'
+                :pagination='false'
+                bordered
+                rowKey='id'
+                size='small'
+                style="width: 100%;"
+              >
+              </a-table>
+            </div>
+          </a-table>
+        </h-card>
+      </h-desc>
+      <!-- 试验设备开关机记录 -->
+      <h-desc id="switchRecording" class="mg-t-20" title='试验设备开关机记录'>
+        <h-card :bordered='false' style='width: 100%'>
+          <a-table
+            :columns='switchRecordingColumns'
+            :dataSource='switchRecordingTable'
+            :pagination='false'
+            bordered
+            rowKey='id'
+            size='small'
+            style="width: 100%;"
+          >
+          </a-table>
+        </h-card>
+      </h-desc>
+      <!-- 巡检记录 -->
+      <h-desc id="siteInspection" class="mg-t-20" title='巡检记录'>
+        <h-card :bordered='false' style='width: 100%'>
+          <a-table
+            :columns='siteInspectionColumns'
+            :dataSource='siteInspectionTable'
+            :pagination='false'
+            bordered
+            rowKey='id'
+            size='small'
+            style="width: 100%;"
+          ></a-table>
+        </h-card>
       </h-desc>
       <!-- 图片图谱 -->
-      <h-desc id="testData" ref="testData" title="图片图谱">
+      <h-desc class="mg-t-20" id="picture" ref="testData" title="图片图谱">
         <h-upload-file style="width: 100%" v-model="pictureData" isWriteRemarks :isEdit="false"></h-upload-file>
       </h-desc>
       <!-- 试前检查 -->
       <h-desc
-        id="testBeforCheck"
-        ref="testBeforCheck"
+        id="testBeforeCheck"
         :bordered="false"
         lableWidth="110px"
-        style="margin-top: 20px; margin-bottom: 20px"
+        class="mg-t-20"
         title="试前检查">
         <h-vex-table
           ref="beforeCheckInfo"
@@ -111,10 +184,9 @@
       <!-- 试中检查 -->
       <h-desc
         id="testInCheck"
-        ref="testInCheck"
         :bordered="false"
         lableWidth="110px"
-        style="margin-top: 20px; margin-bottom: 20px"
+        class="mg-t-20"
         title="试中检查">
         <h-vex-table
           ref="inCheckInfo"
@@ -134,10 +206,9 @@
       <!-- 试后检查 -->
       <h-desc
         id="testAfterCheck"
-        ref="testAfterCheck"
         :bordered="false"
         lableWidth="110px"
-        style="margin-top: 20px; margin-bottom: 20px"
+        class="mg-t-20"
         title="试后检查">
         <h-vex-table
           ref="afterCheckInfo"
@@ -155,7 +226,7 @@
         </h-vex-table>
       </h-desc>
       <!-- 试验数据 -->
-      <h-desc id="testData" ref="testData" title="试验数据">
+      <h-desc class="mg-t-20" id="testData" title="试验数据">
         <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
           <h-desc id="attachForm" :bordered="false">
             <h-form
@@ -170,15 +241,15 @@
           </h-desc>
         </div>
       </h-desc>
-
     </template>
     <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
+    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import { downloadFile, getFileAccessHttpUrl, postAction } from '@api/manage'
+import {downloadFile, getFileAccessHttpUrl, postAction} from '@api/manage'
 import mixin from '@/views/hifar/mixin.js'
 import AbnormalRecordTable
   from '@/views/hifar/hifar-environmental-test/task/modules/components/detail/AbnormalRecordTable'
@@ -189,16 +260,18 @@ import TestEntrustReviewPdf from '@views/hifar/hifar-environmental-test/task/mod
 import DetailBaseInfo from '@views/hifar/hifar-environmental-test/entrustment/components/DetailBaseInfo';
 import PieceDetailTemplate from '@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate';
 import ProjectDetailTemplate from '@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate';
+import HfElevatorLayer from "@comp/HfElevatorLayer";
 
 export default {
   components: {
     ProjectDetailTemplate,
     PieceDetailTemplate,
     TestEntrustReviewPdf,
-AbnormalRecordTable,
-TerminationRecordTable,
-TestReportInfo,
-DetailBaseInfo
+    AbnormalRecordTable,
+    TerminationRecordTable,
+    TestReportInfo,
+    DetailBaseInfo,
+    HfElevatorLayer
   },
   mixins: [mixin],
   props: {
@@ -222,6 +295,60 @@ DetailBaseInfo
   data() {
     return {
       moment,
+      layerColumns: [
+        {
+          title: "基本信息",
+          id: "basicInfo"
+        },
+        {
+          title: "试件信息",
+          id: "piece"
+        },
+        {
+          title: "项目信息",
+          id: "project"
+        },
+        {
+          title: "实施过程",
+          id: "processForm"
+        },
+        {
+          title: "安装控制方式",
+          id: "installControl"
+        },
+        {
+          title: "试验设备开关机记录",
+          id: "switchRecording"
+        },
+        {
+          title: "巡检记录",
+          id: "siteInspection"
+        },
+        // {
+        //   title: "振动工装",
+        //   id: "toolsProduct"
+        // },
+        {
+          title: "图片图谱",
+          id: "picture"
+        },
+        {
+          title: "试前检查",
+          id: "testBeforeCheck"
+        },
+        {
+          title: "试中检查",
+          id: "testInCheck"
+        },
+        {
+          title: "试后检查",
+          id: "testAfterCheck"
+        },
+        {
+          title: "试验数据",
+          id: "testData"
+        },
+      ],
       activeTab: 0,
       checkId: '',
       url: {
@@ -235,12 +362,253 @@ DetailBaseInfo
       projectInfo: [],
       testEquipInfo: [],
       testPersonInfo: [],
-      entrustInfo: [{ flag: false }],
+      entrustInfo: [{flag: false}],
       entrustInfoItem: {},
       title: '',
       model_attach: {},
       model_video: {},
       visible: false,
+      installControlTable: [],
+      sensorColumns: [
+        {
+          title: '设备名称',
+          dataIndex: 'equipName',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '序号',
+          dataIndex: 'equipIndex',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '内部名称',
+          dataIndex: 'innerName',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '计量有效期',
+          dataIndex: 'checkValid',
+          align: 'center',
+          customRender: (t, record) => {
+            return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
+          }
+        },
+        {
+          title: '备注',
+          maxWidth: 150,
+          ellipsis: true,
+          align: 'center',
+          dataIndex: 'remarks',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '位置',
+          dataIndex: 'locationName',
+          align: 'center',
+          width: 150,
+        },
+        {
+          title: '用途',
+          dataIndex: 'usePurposeName',
+          align: 'center',
+          width: 150,
+        },
+      ],
+      installControlColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return parseInt(index) + 1
+          }
+        },
+        {
+          title: '安装方式',
+          dataIndex: 'installMethodName',
+          align: 'center',
+          width: 150,
+        },
+        {
+          title: '试验方向',
+          dataIndex: 'directionName',
+          align: 'center',
+          width: 250,
+        },
+        {
+          title: '几台/次',
+          dataIndex: 'installNum',
+          align: 'center',
+          width: 150,
+          scopedSlots: {customRender: 'installNum'},
+        },
+        {
+          title: '控制方式',
+          dataIndex: 'controlMethod',
+          align: 'center',
+          width: 100,
+        },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          align: 'center',
+        },
+      ],
+      switchRecordingTable: [],
+      switchRecordingColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return parseInt(index) + 1
+          }
+        },
+        {
+          title: '试验开始时间',
+          dataIndex: 'testStartTime',
+          align: 'center',
+          width: 200,
+          customRender: (t, row, index) => {
+            return this.momentFormatFun(t, 'YYYY-MM-DD HH:mm:ss') || '--'
+          }
+        },
+        {
+          title: '试验结束时间',
+          dataIndex: 'testEndTime',
+          align: 'center',
+          width: 200,
+          customRender: (t, row, index) => {
+            return this.momentFormatFun(t, 'YYYY-MM-DD HH:mm:ss') || '--'
+          }
+        },
+        {
+          title: '耗时',
+          dataIndex: 'useTime',
+          align: 'center',
+          width: 100,
+        },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '值班人员',
+          dataIndex: 'personName',
+          align: 'center',
+          width: 220,
+          customRender: (t, row) => {
+            let {personName, personSignTime} = row
+            return personName && personSignTime ? personName + ' ' + this.momentFormatFun(personSignTime, 'YYYY-MM-DD HH:mm:ss') : ''
+          }
+        },
+      ],
+      siteInspectionColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return parseInt(index) + 1
+          }
+        },
+        {
+          title: '试验方向',
+          dataIndex: 'testDirection',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '向次',
+          dataIndex: 'directionNum',
+          align: 'center',
+          width: 100,
+          customRender: (t, row, index) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '日期时间',
+          dataIndex: 'inspectionTime',
+          align: 'center',
+          width: 210,
+          customRender: (t, row) => {
+            return this.momentFormatFun(t, 'YYYY-MM-DD HH:mm:ss') || '--'
+          }
+        },
+        {
+          title: '温度设定值(℃)',
+          dataIndex: 'setUpValue',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '温度实测值(℃)',
+          dataIndex: 'measuredValue',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '运行状态',
+          dataIndex: 'runStatus_dictText',
+          align: 'center',
+          width: 120,
+          customRender: (t, row, index) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '操作人',
+          dataIndex: 'operationPerson',
+          align: 'center',
+          width: 220,
+          customRender: (t, row) => {
+            let {operationPerson, operationTime} = row
+            return operationPerson && operationTime ? operationPerson + ' ' + this.momentFormatFun(operationTime, 'YYYY-MM-DD HH:mm:ss') : ''
+
+          }
+        },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          align: 'center',
+          ellipsis: true,
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+      ],
+      siteInspectionTable: [],
       columns: [
         {
           title: '检查项名称',
@@ -367,6 +735,9 @@ DetailBaseInfo
     }
   },
   methods: {
+    momentFormatFun(value, format) {
+      return value && value !== '0' && moment(+value).format(format) || null
+    },
     handleDownload(filePath, fileName) {
       let fileAccessUrl = getFileAccessHttpUrl(filePath)
       downloadFile(fileAccessUrl, fileName)
@@ -514,6 +885,9 @@ DetailBaseInfo
   position: initial !important;
 }
 
+.mg-t-20 {
+  margin-top: 20px !important;
+}
 ///deep/ .ant-tabs-bar {
 //  margin: 0;
 //}

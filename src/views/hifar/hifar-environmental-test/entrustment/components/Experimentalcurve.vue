@@ -25,16 +25,14 @@ export default {
         this.darChart(record)
       })
     },
-    momentFormat(value, arr = []) {
-      let result = ''
-      for (let i = 0; i < arr.length; i++) {
-        if (['hours', 'minutes', 'seconds'].includes(arr[i])) {
-          let resItem = moment.duration(value).get(arr[i])
-          let formatResItem = resItem < 10 ? ('0' + resItem) : resItem
-          result += i < arr.length - 1 ? formatResItem + ':' : formatResItem
-        }
-      }
-      return result
+    momentFormat(value) {
+      let hours = Math.floor(value / 1000 / 60 / 60)
+      hours = hours < 10 ? '0' + hours : hours
+      let minutes = Math.floor(value / 1000 / 60) % 60
+      minutes = minutes < 10 ? '0' + minutes : minutes
+      let seconds = Math.floor((value / 1000) % 60)
+      seconds = seconds < 10 ? '0' + seconds : seconds
+      return `${hours}:${minutes}:${seconds}`
     },
     darChart(record) {
       let chart = this.$echarts.init(document.getElementById('Charts'));
@@ -46,7 +44,7 @@ export default {
           trigger: 'axis',
           formatter: function (params) {
             params = params[0]
-            return params.seriesName + '：' + params.value[1] + '  时长：' + this.momentFormat(params.value[0], ['hours', 'minutes', 'seconds'])
+            return params.seriesName + '：' + params.value[1] + '  时长：' + this.momentFormat(params.value[0])
           }.bind(this),
           axisPointer: {
             animation: false
@@ -69,7 +67,7 @@ export default {
           },
           axisLabel: {
             formatter: function (value, index) {
-              return this.momentFormat(value, ['hours', 'minutes'])
+              return this.momentFormat(value)
             }.bind(this),
             color: '#1B2232',
             rotate: 45,

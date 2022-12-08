@@ -113,6 +113,12 @@ export default {
           },
         },
         {
+          title: '设备IP',
+          span: 12,
+          formType: 'input',
+          key: 'cameraIp',
+        },
+        {
           title: '',
           key: 'equipTypeName',
           formType: 'input',

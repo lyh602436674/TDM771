@@ -36,9 +36,7 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <span slot="reportType" slot-scope="text, record">
-          <a @click="handleDetailCode(record)">
-            {{ text === 'cover' ? '封面' : text === 'report' ? '报告' : '--' }}
-          </a>
+          <a @click="handleEdit(record)">{{ text || '--' }}</a>
         </span>
         <span slot="action" slot-scope="text, record">
           <a-icon
@@ -47,14 +45,6 @@
             class="primary-text"
             style="cursor: pointer"
             @click="() => handleEdit(record)"
-          />
-          <a-divider type="vertical" />
-          <a-icon
-            type="eye"
-            title="详情"
-            class="primary-text"
-            style="cursor: pointer"
-            @click="() => editDictItem(record)"
           />
           <a-divider type="vertical" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -69,7 +59,6 @@
           </a-popconfirm>
         </span>
       </h-vex-table>
-      <data-temp-detail ref="dataTempDetail" :detail="detailData" :config="formData"></data-temp-detail>
       <temp-add-modal ref="TempAddModal" @change="searchQuery"></temp-add-modal>
     </h-card>
     <h-file-import ref="HFileImport" @change="searchQuery(true)" @downloadExcel="downloadChange" />
@@ -78,15 +67,12 @@
 
 <script>
 import moment from 'moment'
-import mixin from '@/views/hifar/mixin.js'
-import { getAction, downloadFile, postAction } from '@/api/manage'
-import dataTempDetail from './modules/dataTempDetail.vue'
+import {downloadFile, postAction} from '@/api/manage'
 import TempAddModal from './modules/TempAddModal.vue'
 
 export default {
   name: 'dataTempList',
   components: {
-    dataTempDetail,
     TempAddModal,
   },
   provide() {
@@ -94,13 +80,10 @@ export default {
       getContainer: () => this.$refs.pageWrapper,
     }
   },
-  mixins: [mixin],
   data() {
     return {
       moment,
-      templateInfo: {},
       selectedRowKeys: [],
-      detailData: {},
       paramsData: {
         groupCode: 'report',
         importCode:'HfResTemplateImport'
@@ -109,7 +92,6 @@ export default {
         let data = {
           ...this.queryParam,
           ...params,
-          groupCode: 'report',
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
@@ -119,36 +101,6 @@ export default {
       },
       // 查询条件
       queryParam: {},
-      formData: [
-        {
-          title: '模板名称',
-          key: 'name',
-          formType: 'input',
-          span: 2,
-          validate: {
-            rules: [{ required: true, message: '请输入模板名称', trigger: 'blur' }],
-          },
-        },
-        {
-          title: '模版分组',
-          key: 'groupCode',
-          formType: 'input',
-          span: 2,
-          hidden: true,
-        },
-        {
-          title: '备注',
-          key: 'remarks',
-          formType: 'textarea',
-          span: 2,
-        },
-        {
-          title: '附件',
-          key: 'attachIds',
-          span: 2,
-          component: <h-upload-file v-decorator={['attachIds', { initialValue: [] }]} />,
-        },
-      ],
       searchBar: [
         {
           title: '模板名称',
@@ -158,30 +110,16 @@ export default {
         {
           title: '模版分类',
           key: 'c_reportType_1',
-          formType: 'select',
-          options: [
-            {
-              title: '封面',
-              key: 'cover',
-              value: 'cover',
-            },
-            {
-              title: '报告',
-              key: 'report',
-              value: 'report',
-            },
-          ],
+          formType: 'dict',
+          dictCode: "report_template_classify",
         },
       ],
       // 表头
       columns: [
         {
           title: '模板分类',
-          dataIndex: 'reportType',
-          // customRender: (text, record) => {
-          //   return text == 'cover' ? '封面' : text == 'report' ? '报告' : '--'
-          // },
-          scopedSlots: { customRender: 'reportType' },
+          dataIndex: 'reportType_dictText',
+          scopedSlots: {customRender: 'reportType'},
         },
         {
           title: '模板名称',
@@ -231,11 +169,6 @@ export default {
       },
     }
   },
-  computed: {
-    hasSelected() {
-      return this.selectedRowKeys.length > 0
-    },
-  },
   methods: {
     searchQuery() {
       this.queryParam.groupCode = 'report'
@@ -275,7 +208,7 @@ export default {
           },
         })
       } else {
-        this.openNotificationWithIcon('error', '删除提示', '请至少选择一项')
+        this.$message.warning('请至少选择一条数据')
       }
     },
     onSelectChange(selectedRowKeys) {
@@ -292,14 +225,6 @@ export default {
       let title = '添加'
       let groupCode = 'report'
       this.$refs.TempAddModal.show(record, title, groupCode)
-    },
-    // 详情
-    editDictItem(record) {
-      this.detailData = record
-      this.$refs.dataTempDetail.visible = true
-    },
-    handleDetailCode(record) {
-      this.editDictItem(record)
     },
     // 导出
     async handleExportXls(name, model) {

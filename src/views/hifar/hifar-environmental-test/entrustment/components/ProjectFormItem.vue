@@ -491,7 +491,7 @@ export default {
       hours = hours < 10 ? '0' + hours : hours
       let minutes = Math.floor(value / 1000 / 60) % 60
       minutes = minutes < 10 ? '0' + minutes : minutes
-      let seconds = Math.floor(value % 60)
+      let seconds = Math.floor((value / 1000) % 60)
       seconds = seconds < 10 ? '0' + seconds : seconds
       return `${hours}:${minutes}:${seconds}`
     },

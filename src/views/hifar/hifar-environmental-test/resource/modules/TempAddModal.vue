@@ -1,11 +1,3 @@
-<!--
- * @Author: 赵峰
- * @Date: 2021-08-31 11:50:30
- * @LastEditTime: 2021-11-24 12:03:17
- * @LastEditors: 赵峰
- * @Descripttion: 模板新增-编辑
- * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\resource\modules\TempAddModal.vue
--->
 <template>
   <h-modal
     :title="title"
@@ -30,7 +22,8 @@
 
 <script>
 import moment from 'moment'
-import { downloadFile, postAction, getFileAccessHttpUrl } from '@/api/manage'
+import {downloadFile, getFileAccessHttpUrl, postAction} from '@/api/manage'
+
 export default {
   components: {},
   inject: {
@@ -45,320 +38,96 @@ export default {
       confirmLoading: false,
       drawerWidth: 1000,
       model: {},
-      title: '添加',
+      title: '新增',
       url: {
         add: '/HfResTemplateBusiness/add',
         edit: '/HfResTemplateBusiness/modifyById',
         detailById: '/HfResTemplateBusiness/queryById'
       },
-      formData: [],
-      formBackUpData: [
-        // 报告模板--模板分类 --封面
-        [
-          {
-            key: 'id',
-            formType: 'input',
-            hidden: true
+      formData: [
+        {
+          key: 'id',
+          formType: 'input',
+          hidden: true
+        },
+        {
+          title: '模版分类',
+          key: 'reportType',
+          formType: 'dict',
+          dictCode: "report_template_classify",
+          change: (v) => {
           },
-          {
-            title: '模版分类',
-            key: 'reportType',
-            formType: 'select',
-            options: [
-              {
-                title: '封面',
-                key: 'cover',
-                value: 'cover'
-              },
-              {
-                title: '报告',
-                key: 'report',
-                value: 'report'
-              }
-            ],
-            change: (v) => {
-              this.changeType(v)
-            },
-            validate: {
-              rules: [{ required: true, message: '请选择模版分类' }]
-            }
-          },
-          {
-            title: '模板名称',
-            key: 'name',
-            formType: 'input',
-            validate: {
-              rules: [{ required: true, message: '请输入模板名称' }]
-            }
-          },
-          {
-            title: '模版分组',
-            key: 'groupCode',
-            formType: 'input',
-            hidden: true
-          },
-          {
-            title: '备注',
-            key: 'remarks',
-            formType: 'textarea'
-          },
-          {
-            title: '附件',
-            key: 'attachIds',
-            component: (
-              <h-upload-file
-                accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                multiple={true}
-                v-decorator={['attachIds', { initialValue: [] }]}
-              />
-            )
+          validate: {
+            rules: [{required: true, message: '请选择模版分类'}]
           }
-        ],
-        // 报告模板--模板分类 --报告
-        [
-          {
-            key: 'id',
-            formType: 'input',
-            hidden: true
-          },
-          {
-            title: '模版分类',
-            key: 'reportType',
-            formType: 'select',
-            options: [
-              {
-                title: '封面',
-                key: 'cover',
-                value: 'cover'
-              },
-              {
-                title: '报告',
-                key: 'report',
-                value: 'report'
-              }
-            ],
-            change: (v) => {
-              this.changeType(v)
-            },
-            validate: {
-              rules: [{ required: true, message: '请选择模版分类' }]
-            }
-          },
-          {
-            title: '模板名称',
-            key: 'name',
-            formType: 'input',
-            validate: {
-              rules: [{ required: true, message: '请输入模板名称' }]
-            }
-          },
-          {
-            title: '模版分组',
-            key: 'groupCode',
-            formType: 'input',
-            hidden: true
-          },
-          {
-            title: '类型',
-            key: 'type',
-            formType: 'select',
-            options: [
-              {
-                title: '内部',
-                key: '1',
-                value: '1'
-              },
-              {
-                title: '外部',
-                key: '2',
-                value: '2'
-              }
-            ],
-            change: (v) => {
-              this.changeType(v)
-            },
-            validate: {
-              rules: [{ required: true, message: '请选择模版类型' }]
-            }
-          },
-          {
-            title: '试验类型',
-            key: 'testType',
-            formType: 'select',
-            options: [
-              {
-                title: '力学',
-                key: '1',
-                value: '1'
-              },
-              {
-                title: '气候',
-                key: '2',
-                value: '2'
-              }
-            ],
-            change: (v) => {
-              this.changeType(v)
-            },
-            validate: {
-              rules: [{ required: true, message: '请选择试验类型' }]
-            }
-          },
-          {
-            title: '类名',
-            key: 'className',
-            formType: 'input'
-          },
-          {
-            title: '备注',
-            key: 'remarks',
-            formType: 'textarea'
-          },
-          {
-            title: '附件',
-            key: 'attachIds',
-            component: (
-              <h-upload-file
-                accept="application/xml,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                multiple={true}
-                v-decorator={['attachIds', { initialValue: [] }]}
-              />
-            )
+        },
+        {
+          title: '模板名称',
+          key: 'name',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入模板名称'}]
           }
-        ],
-        [
-          {
-            key: 'id',
-            formType: 'input',
-            hidden: true
-          },
-          {
-            title: '模板名称',
-            key: 'name',
-            formType: 'input',
-            validate: {
-              rules: [{ required: true, message: '请输入模板名称' }]
-            }
-          },
-          {
-            title: '模版分组',
-            key: 'groupCode',
-            formType: 'input',
-            hidden: true
-          },
-          {
-            title: '类型',
-            key: 'type',
-            formType: 'select',
-            options: [
-              {
-                title: '内部',
-                key: '1',
-                value: '1'
-              },
-              {
-                title: '外部',
-                key: '2',
-                value: '2'
-              }
-            ],
-            change: (v) => {
-              // this.changeType(v)
-            },
-            validate: {
-              rules: [{ required: true, message: '请选择模版类型' }]
-            }
-          },
-          {
-            title: '试验类型',
-            key: 'testType',
-            formType: 'select',
-            options: [
-              {
-                title: '力学',
-                key: '1',
-                value: '1'
-              },
-              {
-                title: '气候',
-                key: '2',
-                value: '2'
-              }
-            ],
-            change: (v) => {
-              // this.changeType(v)
-            },
-            validate: {
-              rules: [{ required: true, message: '请选择试验类型' }]
-            }
-          },
-          {
-            title: '类名',
-            key: 'className',
-            formType: 'input'
-          },
-          {
-            title: '备注',
-            key: 'remarks',
-            formType: 'textarea'
-          },
-          {
-            title: '附件',
-            key: 'attachIds',
-            component: <h-upload-file v-decorator={['attachIds', { initialValue: [] }]} />
-          }
-        ]
-      ]
+        },
+        {
+          title: '模版分组',
+          key: 'groupCode',
+          formType: 'input',
+          hidden: true
+        },
+        {
+          title: '备注',
+          key: 'remarks',
+          formType: 'textarea'
+        },
+        {
+          title: '附件',
+          key: 'attachIds',
+          component: (
+            <h-upload-file
+              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              multiple={true}
+              v-decorator={['attachIds', {initialValue: []}]}
+            />
+          )
+        }
+      ],
     }
   },
   methods: {
-    show(record, title, groupCode) {
+    show(record, title) {
       this.visible = true
       this.title = title
-      this.groupCode = groupCode
-      if (groupCode == 'report') {
-        this.formData = this.formBackUpData[0]
-      } else {
-        this.formData = this.formBackUpData[2]
-      }
       if (record.id) {
         this.loadDetail(record.id)
-      } else {
-        this.editor(record)
       }
     },
     loadDetail(id) {
       postAction(this.url.detailById, { id: id }).then((res) => {
         if (res.code === 200) {
-          this.editor(res.data)
+          let obj = Object.assign({}, res.data)
+          let attachInfo = obj.attachInfo
+          let fileArr = []
+          if (attachInfo && attachInfo.length > 0) {
+            attachInfo.forEach((item) => {
+              fileArr.push({
+                fileId: item.id,
+                size: item.fileSize,
+                status: item.status === 9 ? 'success' : 'exception',
+                url: item.filePath,
+                name: item.fileName,
+                uuid: item.id,
+                percent: 100,
+                uploadTime: item.createTime,
+                secretLevel: item.secretLevel,
+                type: item.viewType === 2 ? 'image/jpeg' : 'text/plain'
+              })
+            })
+          }
+          obj.attachIds = fileArr || []
+          this.model = obj
         }
       })
-    },
-    editor(record) {
-      let obj = Object.assign({}, record)
-      let attachInfo = obj.attachInfo
-      let fileArr = []
-      if (attachInfo && attachInfo.length > 0) {
-        attachInfo.forEach((item) => {
-          fileArr.push({
-            fileId: item.id,
-            size: item.fileSize,
-            status: item.status == 9 ? 'success' : 'exception',
-            url: item.filePath,
-            name: item.fileName,
-            uuid: item.id,
-            percent: 100,
-            uploadTime: item.createTime,
-            secretLevel: item.secretLevel,
-            type: item.viewType == 2 ? 'image/jpeg' : 'text/plain'
-          })
-        })
-      }
-      obj.attachIds = fileArr || []
-      if (!obj.id) {
-        obj.reportType = 'cover'
-      }
-      this.model = obj
     },
     handleClickSubmit() {
       this.$refs.TempForm.validateForm()
@@ -366,10 +135,9 @@ export default {
     // 提交
     submitHandle(values) {
       if (this.confirmLoading) return
-      this.confirmLoading = false
+      this.confirmLoading = true
       let params = {
         ...values,
-        groupCode: this.groupCode
       }
       let url = null
       let attachIds = []
@@ -391,25 +159,17 @@ export default {
           this.$emit('change', true)
           this.handleCancel()
         }
+      }).finally(() => {
+        this.confirmLoading = false
       })
     },
-    handleCancel(e) {
+    handleCancel() {
       this.visible = false
-      this.model = {}
     },
     handleDownload(filePath, fileName) {
       let fileAccessUrl = getFileAccessHttpUrl(filePath)
       downloadFile(fileAccessUrl, fileName)
     },
-    changeType(v) {
-      console.log(v)
-      this.model = Object.assign({}, this.model, { reportType: v })
-      if (v == 'cover') {
-        this.formData = this.formBackUpData[0]
-      } else {
-        this.formData = this.formBackUpData[1]
-      }
-    }
   }
 }
 </script>

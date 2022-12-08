@@ -23,19 +23,22 @@
           {{ detailData.equipUse_dictText || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="设备类型">
-          {{ detailData.equipTypeCode_dictText ? detailData.equipTypeCode_dictText : '--' }}
+          {{ detailData.equipTypeCode_dictText || '--' }}
+        </a-descriptions-item>
+        <a-descriptions-item label="设备IP">
+          {{ detailData.cameraIp || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="内部名称">
-          {{ detailData.innerName ? detailData.innerName : '--' }}
+          {{ detailData.innerName || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="资产编号">
-          {{ detailData.assetsCode ? detailData.assetsCode : '--' }}
+          {{ detailData.assetsCode || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="出厂编号">
-          {{ detailData.leaveCode ? detailData.leaveCode : '--' }}
+          {{ detailData.leaveCode || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="生产厂家">
-          {{ detailData.factoryName ? detailData.factoryName : '--' }}
+          {{ detailData.factoryName || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="购买日期">
           {{
@@ -45,22 +48,22 @@
           }}
         </a-descriptions-item>
         <a-descriptions-item label="负责人">
-          {{ detailData.managerName ? detailData.managerName : '--' }}
+          {{ detailData.managerName || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="设备型号">
-          {{ detailData.equipModel ? detailData.equipModel : '--' }}
+          {{ detailData.equipModel || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="设备状态">
           {{ detailData.status_dictText || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="使用部门">
-          {{ detailData.userDeptName ? detailData.userDeptName : '--' }}
+          {{ detailData.userDeptName || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="设备能力">
-          {{ detailData.equipBaseProjectNames ? detailData.equipBaseProjectNames : '--' }}
+          {{ detailData.equipBaseProjectNames || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="检定编号">
-          {{ detailData.checkCode ? detailData.checkCode : '--' }}
+          {{ detailData.checkCode || '--' }}
         </a-descriptions-item>
         <a-descriptions-item label="计量有效期">
           {{
@@ -70,7 +73,7 @@
           }}
         </a-descriptions-item>
         <a-descriptions-item label="计量周期">
-          {{ detailData.checkPeriod ? detailData.checkPeriod : '--' }}
+          {{ detailData.checkPeriod || '--' }}
           {{
             detailData.checkUnit == 1 ? '日' : detailData.checkUnit == 2 ? '月' : detailData.checkUnit == 3 ? '年' : ''
           }}

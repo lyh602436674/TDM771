@@ -179,6 +179,7 @@ import {postAction} from "@api/manage";
 import ProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProductAddModal";
 import HistoryProjectModal from "@views/hifar/hifar-environmental-test/entrustment/modules/HistoryProjectModal";
 import HfElevatorLayer from '@/components/HfElevatorLayer'
+import {randomUUID} from "@/utils/util";
 
 export default {
   name: "EntrustmentInnerModal",
@@ -333,7 +334,7 @@ export default {
           formType: 'dict',
           dictCode: 'hf_entrust_priority',
           validate: {
-            rules: [{required: true, message: '请选择试验性质'}]
+            rules: [{required: true, message: '请选择优先级'}]
           },
         },
         {
@@ -636,11 +637,14 @@ export default {
       let result = []
       for (let i = 0; i < values.length; i++) {
         let v = values[i]
+        let getZero = v.pieceStartNo && v.pieceStartNo[0] === '0' && v.pieceStartNo.substring(0, v.pieceStartNo.lastIndexOf('0') + 1) || ''
         for (let j = 0; j < +v.pieceNum; j++) {
           result.push({
             ...v,
+            productId: v.id,
+            id: randomUUID(),
             pieceNum: 1,
-            pieceNo: v.piecePrefix ? v.piecePrefix + (+v.pieceStartNo + j) : v.pieceStartNo ? +v.pieceStartNo + j : ''
+            pieceNo: v.piecePrefix ? v.piecePrefix + getZero + (+v.pieceStartNo + j) : v.pieceStartNo ? +v.pieceStartNo + j : ''
           })
         }
       }

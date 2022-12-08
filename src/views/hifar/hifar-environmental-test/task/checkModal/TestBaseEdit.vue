@@ -1405,7 +1405,7 @@ export default {
         },
         {
           title: '位置',
-          dataIndex: 'position',
+          dataIndex: 'locationCode',
           align: 'center',
           width: 150,
           customRender: (t, row, index) => {
@@ -1414,12 +1414,13 @@ export default {
                 placeholder: '请选择位置',
                 allowClear: true,
                 dictCode: "sensing_equipment_location",
-                value: row.position,
+                value: row.locationCode,
               },
               style: {width: "100%"},
               on: {
                 change: (v, option) => {
-                  row.position = v
+                  row.locationCode = v
+                  row.locationName = option.title
                 }
               },
             })
@@ -1427,7 +1428,7 @@ export default {
         },
         {
           title: '用途',
-          dataIndex: 'purpose',
+          dataIndex: 'usePurposeCode',
           align: 'center',
           width: 150,
           customRender: (t, row, index) => {
@@ -1436,12 +1437,13 @@ export default {
                 placeholder: '请选择用途',
                 allowClear: true,
                 dictCode: "sensing_equipment_purpose",
-                value: row.purpose,
+                value: row.usePurposeCode,
               },
               style: {width: "100%"},
               on: {
                 change: (v, option) => {
-                  row.purpose = v
+                  row.usePurposeCode = v
+                  row.usePurposeName = option.title
                 }
               },
             })

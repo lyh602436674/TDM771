@@ -297,6 +297,7 @@ export default {
     },
     onTreeSelect(selectedKeys, event) {
       this.selectedTreeKeys = selectedKeys
+      this.refresh()
     },
     formChange(values) {
       this.$emit('callback', values)
@@ -340,6 +341,7 @@ export default {
       let data = {
         ...params,
         ...this.queryParams,
+        c_classifyId_1: this.selectedTreeKeys.toString(),
       }
       postAction(this.url.list, data).then((res) => {
         if (res.code === 200) {

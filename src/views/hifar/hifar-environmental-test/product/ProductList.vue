@@ -173,6 +173,11 @@ export default {
           scopedSlots: {customRender: 'productAlias'}
         },
         {
+          title: '产品名称',
+          dataIndex: 'productName',
+          align: 'left',
+        },
+        {
           title: '产品型号',
           align: 'left',
           dataIndex: 'productModel'
