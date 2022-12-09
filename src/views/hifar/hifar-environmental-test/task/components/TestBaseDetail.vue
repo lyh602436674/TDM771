@@ -155,8 +155,22 @@
           ></a-table>
         </h-card>
       </h-desc>
+      <h-desc id="toolsProduct" class="mg-t-20" title='振动工装'>
+        <h-card :bordered='false' style='width: 100%'>
+          <div slot='content'>
+            <a-table
+              :columns='toolsProductColumns'
+              :dataSource='toolsProductData'
+              :pagination='false'
+              bordered
+              rowKey='id'
+              size='small'
+            ></a-table>
+          </div>
+        </h-card>
+      </h-desc>
       <!-- 图片图谱 -->
-      <h-desc class="mg-t-20" id="picture" ref="testData" title="图片图谱">
+      <h-desc id="picture" class="mg-t-20" title="图片图谱">
         <h-upload-file style="width: 100%" v-model="pictureData" isWriteRemarks :isEdit="false"></h-upload-file>
       </h-desc>
       <!-- 试前检查 -->
@@ -237,7 +251,7 @@
               style="width: 100%"/>
           </h-desc>
           <h-desc id="videoForm" :bordered="false">
-            <h-form ref="videoForm" v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
+            <h-form v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
           </h-desc>
         </div>
       </h-desc>
@@ -317,17 +331,17 @@ export default {
           id: "installControl"
         },
         {
-          title: "试验设备开关机记录",
+          title: "开关机记录",
           id: "switchRecording"
         },
         {
           title: "巡检记录",
           id: "siteInspection"
         },
-        // {
-        //   title: "振动工装",
-        //   id: "toolsProduct"
-        // },
+        {
+          title: "振动工装",
+          id: "toolsProduct"
+        },
         {
           title: "图片图谱",
           id: "picture"
@@ -609,6 +623,74 @@ export default {
         },
       ],
       siteInspectionTable: [],
+      toolsProductColumns: [
+        {
+          title: '工装编号',
+          dataIndex: 'toolsCode',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '工装名称',
+          dataIndex: 'toolsName',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '工装规格',
+          dataIndex: 'toolsSize',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '在库状态',
+          dataIndex: 'larbaryStatus_dictText',
+          align: 'center',
+          customRender: (text) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '存放地点',
+          dataIndex: 'location',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '责任部门',
+          dataIndex: 'deptName',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '设备状态',
+          dataIndex: 'toolsStatus_dictText',
+          align: 'center',
+          width: 120,
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '工装分类',
+          align: 'center',
+          dataIndex: 'classify_dictText',
+          customRender: (text) => {
+            return text || '--'
+          }
+        },
+      ],
+      toolsProductData: [],
       columns: [
         {
           title: '检查项名称',
@@ -698,7 +780,6 @@ export default {
               isEdit={false}
               v-decorator={['attachIds', { initialValue: [] }]}
               customParams={{ refType: 'test_attach', refId: this.checkId }}
-              on-delete={this.handleDelete}
             />
           )
         }
@@ -714,7 +795,6 @@ export default {
               isEdit={false}
               v-decorator={['attachIds', { initialValue: [] }]}
               customParams={{ refType: 'test_video', refId: this.checkId }}
-              on-delete={this.handleDelete}
             />
           )
         }
@@ -774,42 +854,51 @@ export default {
           this.testEquipInfo = testEquipInfo
           this.testPersonInfo = testPersonInfo
           this.entrustInfoItem = entrustInfoArr[0]
+          // 巡检记录
+          this.siteInspectionInfo = data.siteInspectionInfo
+          // 设备开关机记录
+          this.switchRecordingTable = data.switchOnOffInfo
+          // 安装、控制方式 + 传感器
+          this.installControlTable = data.insertMethodInfo
+          // 振动工装
+          this.toolsProductData = data.testToolsProductInfo
           let entrustInfo = entrustInfoArr
           if (this.showExceptionAndEnd) {
             entrustInfo.push(
-              { title: '报告信息', flag: true, type: 'report' },
-              { title: '异常记录', flag: true, type: 'exception' },
-              { title: '终止记录', flag: true, type: 'end' }
+              {title: '报告信息', flag: true, type: 'report'},
+              {title: '异常记录', flag: true, type: 'exception'},
+              {title: '终止记录', flag: true, type: 'end'}
             )
           }
           this.entrustInfo = entrustInfo
         }
       })
     },
+    dataFormat(arr) {
+      return arr.map(item => {
+        return {
+          ...item,
+          fileId: item.id,
+          size: item.fileSize,
+          status: item.status === 9 ? 'success' : 'exception',
+          url: item.filePath,
+          name: item.fileName,
+          uuid: item.id,
+          percent: 100,
+          uploadTime: item.createTime,
+          secretLevel: item.secretLevel,
+          type: item.viewType === 2 ? 'image/jpeg' : 'text/plain',
+        }
+      })
+    },
     // 图片
     loadImgData() {
-      postAction(this.url.attachList, { refType: 'test_picture', refId: this.checkId }).then((res) => {
+      postAction(this.url.attachList, {refType: 'test_picture', refId: this.checkId}).then((res) => {
         if (res.code === 200) {
-          const { data } = res
-          let fileArr = []
+          const {data} = res
           if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                remarks: item.remarks,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain'
-              })
-            })
+            this.pictureData = this.dataFormat(data)
           }
-          this.pictureData = fileArr
         }
       })
     },
@@ -821,20 +910,7 @@ export default {
           let fileArr = []
           let obj = {}
           if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain'
-              })
-            })
+            fileArr = this.dataFormat(data)
           }
           obj.attachIds = fileArr
           this.model_attach = obj
@@ -849,34 +925,13 @@ export default {
           let fileArr = []
           let obj = {}
           if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain'
-              })
-            })
+            fileArr = this.dataFormat(data)
           }
           obj.attachIds = fileArr
           this.model_video = obj
         }
       })
     },
-    // 图片删除
-    handleDelete(file, fileList) {
-      postAction(this.url.delete, { id: file.fileId }).then(res => {
-        if (res.code === 200) {
-          this.$message.success('删除成功')
-        }
-      })
-    }
   }
 }
 </script>
