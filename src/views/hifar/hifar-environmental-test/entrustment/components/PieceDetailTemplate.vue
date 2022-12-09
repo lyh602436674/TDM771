@@ -27,7 +27,7 @@ export default {
   data() {
     return {
       moment,
-      columns:[
+      columns: [
         {
           title: '#',
           dataIndex: '',
@@ -35,7 +35,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           },
         },
         {

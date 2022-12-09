@@ -26,11 +26,12 @@ export default {
     autoCollectImage() {
       if (this.loading) return
       this.loading = true
+      let {equipId, pieceId, pieceNo, productName} = this.propsData
       let params = {
-        equipId: this.propsData.equipId,
-        pieceId: this.propsData.pieceId || randomUUID(),
-        pieceNo: this.propsData.pieceNo,
-        productName: this.propsData.productName,
+        equipId,
+        pieceId: pieceId || randomUUID(),
+        pieceNo,
+        productName,
       }
       postAction(this.url.collectImage, params).then(res => {
         if (res.code === 200) {
@@ -75,13 +76,36 @@ export default {
         [
           imgList,
           this.isEdit ? this.renderImgUpload(h) : '',
-          this.isEdit ? <div style={{width: this.width + 'px', height: this.height + 'px'}} class={"h-upload-com"}
-                             onClick={this.autoCollectImage}>
-            <a-icon style={{fontSize: '34px',}} type={this.loading ? 'loading' : 'video-camera'}/>
-            <span style={{color: "#bfbfbf"}}>{'自动采集'}</span>
-          </div> : ''
+          this.isEdit ? this.renderAutoCollect(h) : ''
         ]
       )
+    },
+    renderAutoCollect(h) {
+      return h('div', {
+        class: "h-upload-com",
+        style: {
+          height: isNumber(this.height) ? this.height + 'px' : isString(this.height) ? this.height : 'auto',
+          width: isNumber(this.width) ? this.width + 'px' : isString(this.width) ? this.width : 'auto',
+          marginBottom: "10px"
+        },
+        on: {
+          click: this.autoCollectImage
+        }
+      }, [
+        h('a-icon', {
+          props: {
+            type: this.loading ? 'loading' : 'video-camera'
+          },
+          style: {
+            fontSize: '34px',
+          }
+        }),
+        h('span', {
+          style: {
+            color: "#bfbfbf"
+          }
+        }, "自动采集")
+      ])
     },
     renderImgUpload(h) {
       let dom = h('div', {
@@ -101,7 +125,6 @@ export default {
           },
           style: {
             fontSize: '34px',
-
           }
         }),
         h('span', {
@@ -119,7 +142,6 @@ export default {
           dom = null
         }
       }
-
       return dom
     },
     renderImageLoader(h) {
@@ -148,9 +170,10 @@ export default {
                 click: this.clickUpload
               }
             }, '点击上传') : null,
-          <a-button style={{marginLeft: '10px'}} icon={this.loading ? 'loading' : 'video-camera'} size="small"
-                    type={ "ghost-primary"}
-                    onClick={this.autoCollectImage}>{'自动采集'}</a-button>
+          this.isEdit ?
+            <a-button style={{marginLeft: '10px'}} icon={this.loading ? 'loading' : 'video-camera'} size="small"
+                      type={"ghost-primary"}
+                      onClick={this.autoCollectImage}>{'自动采集'}</a-button> : null
         ])
       } else {
         dom = this.renderImgList(h)

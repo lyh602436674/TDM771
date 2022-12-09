@@ -11,10 +11,28 @@
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     <div style="height: 100%; overflow: auto; padding: 0 20px">
       <h-desc :bordered="false" title="图片">
-        <h-form ref="imageForm" v-model="model_image" :column="1" :formData="imageData" style="width: 100%"/>
+        <h-upload-img-collect
+          v-model="modelImage"
+          :customParams="{refType: 'hf_env_test_piece_img', refId,}"
+          :isEdit="isEdit"
+          :max="100"
+          style="width: 100%;"
+          :multiple="true"
+          :propsData="propsData"
+          accept="image/png,image/gif,image/jpg,image/jpeg"
+          @delete="handleDelete"
+          @success="loadImgData"
+        />
       </h-desc>
       <h-desc :bordered="false" title="视频">
-        <h-form ref="videoForm" v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
+        <h-upload-file-collect
+          v-model="modelVideo"
+          :customParams="{refType: 'hf_env_test_piece', refId}"
+          :isEdit="isEdit"
+          :propsData="propsData"
+          style="width: 100%;"
+          @delete="handleDelete"
+        />
       </h-desc>
     </div>
   </h-modal>
@@ -36,45 +54,31 @@ export default {
       default: () => document.body
     }
   },
+  props: {
+    isEdit: {
+      type: Boolean,
+      default: true,
+    }
+  },
+  computed: {
+    propsData() {
+      return {
+        equipId: this.equipId,
+        pieceId: this.record.id,
+        pieceNo: this.record.pieceNo,
+        productName: this.record.productName,
+      }
+    },
+  },
   data() {
     return {
       moment,
       visible: false,
       refId: "",
-      model_image: {},
-      model_video: {},
-      imageData: [
-        {
-          title: '图片',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-img-collect
-              multiple={true}
-              max={100}
-              customParams={{refType: 'hf_env_test_piece_img', refId: this.refId}}
-              accept="image/png,image/gif,image/jpg,image/jpeg"
-              v-decorator={['attachIds', {initialValue: []}]}
-              on-delete={this.handleDelete}
-              onSuccess={this.loadImgData}
-            />
-          ),
-        }
-      ],
-      videoData: [
-        {
-          title: '视频',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-file-collect
-              v-decorator={['attachIds', {initialValue: []}]}
-              customParams={{refType: 'hf_env_test_piece', refId: this.refId}}
-              on-delete={this.handleDelete}
-            />
-          ),
-        },
-      ],
+      equipId: "",
+      modelVideo: [],
+      modelImage: [],
+      record: {},
       popoverVisible: false,
       url: {
         delete: '/MinioBusiness/logicRemoveById',
@@ -88,20 +92,8 @@ export default {
     show(record, equipId) {
       this.visible = true
       this.refId = record.id
-      this.imageData[0].component.componentOptions.propsData.customParams.refId = record.id
-      this.videoData[0].component.componentOptions.propsData.customParams.refId = record.id
-      this.videoData[0].component.componentOptions.propsData.propsData = {
-        equipId: equipId,
-        pieceId: record.id,
-        pieceNo: record.pieceNo,
-        productName: record.productName,
-      }
-      this.imageData[0].component.componentOptions.propsData.propsData = {
-        equipId: equipId,
-        pieceId: record.id,
-        pieceNo: record.pieceNo,
-        productName: record.productName,
-      }
+      this.record = record
+      this.equipId = equipId
       this.loadImgData()
       this.loadVideoData()
     },
@@ -113,13 +105,9 @@ export default {
       postAction(this.url.attachList, {refType: 'hf_env_test_piece_img', refId: this.refId}).then((res) => {
         if (res.code === 200) {
           const {data} = res
-          let fileArr = []
-          let obj = {}
           if (data && data.length) {
-            fileArr = this.dataFormat(data)
+            this.modelImage = this.dataFormat(data)
           }
-          obj.attachIds = fileArr
-          this.model_image = obj
         }
       })
     },
@@ -127,13 +115,9 @@ export default {
       postAction(this.url.attachList, {refType: 'hf_env_test_piece', refId: this.refId}).then((res) => {
         if (res.code === 200) {
           const {data} = res
-          let fileArr = []
-          let obj = {}
           if (data && data.length) {
-            fileArr = this.dataFormat(data)
+            this.modelVideo = this.dataFormat(data)
           }
-          obj.attachIds = fileArr
-          this.model_video = obj
         }
       })
     },
@@ -154,10 +138,7 @@ export default {
           uuid: item.id,
           percent: 100,
           uploadTime: item.createTime,
-          secretLevel: item.secretLevel,
           type: item.viewType === 2 ? 'image/jpeg' : 'text/plain',
-          replaceStatus: item.replaceStatus,
-          rowSort: item.rowSort
         }
       })
     },

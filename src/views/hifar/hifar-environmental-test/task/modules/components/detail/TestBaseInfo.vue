@@ -134,7 +134,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           },
         },
         {
@@ -204,7 +204,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           },
         },
         {
@@ -244,7 +244,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           },
         },
         {
@@ -313,7 +313,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           },
         },
         {
@@ -367,7 +367,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           },
         },
         { title: '参试人员岗位', dataIndex: 'testPostName' },
@@ -381,7 +381,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {title: '设备编号', dataIndex: 'equipCode'},

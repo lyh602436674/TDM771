@@ -39,12 +39,11 @@
         <detail-base-info :detailDataObj="entrustInfoItem"></detail-base-info>
       </div>
       <!--      试件信息-->
-      <piece-detail-template
+      <test-piece-detail
         id="piece"
         class="mg-t-20"
         title="试件信息"
-        :entrustType="detailData.entrustInfo && detailData.entrustInfo.length && detailData.entrustInfo[0].entrustType"
-        :dataSource="detailData.testPieceInfo"/>
+        :dataSource="testPieceInfo"/>
       <!-- 项目信息 -->
       <div v-for="(item,index) in projectInfo" id="project">
         <project-detail-template
@@ -272,14 +271,14 @@ import TerminationRecordTable
 import TestReportInfo from '@views/hifar/hifar-environmental-test/task/components/TestReportInfo'
 import TestEntrustReviewPdf from '@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf';
 import DetailBaseInfo from '@views/hifar/hifar-environmental-test/entrustment/components/DetailBaseInfo';
-import PieceDetailTemplate from '@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate';
 import ProjectDetailTemplate from '@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate';
 import HfElevatorLayer from "@comp/HfElevatorLayer";
+import TestPieceDetail from "@views/hifar/hifar-environmental-test/task/components/TestPieceDetail";
 
 export default {
   components: {
     ProjectDetailTemplate,
-    PieceDetailTemplate,
+    TestPieceDetail,
     TestEntrustReviewPdf,
     AbnormalRecordTable,
     TerminationRecordTable,
@@ -373,6 +372,7 @@ export default {
         delete: '/MinioBusiness/logicRemoveById'
       },
       detailData: {},
+      testPieceInfo: [],
       projectInfo: [],
       testEquipInfo: [],
       testPersonInfo: [],
@@ -447,7 +447,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {
@@ -490,7 +490,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {
@@ -544,7 +544,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {
@@ -851,6 +851,8 @@ export default {
               testPersonInfo.push(res)
             })
           }
+          // 试件信息
+          this.testPieceInfo = data.testPieceInfo
           this.testEquipInfo = testEquipInfo
           this.testPersonInfo = testPersonInfo
           this.entrustInfoItem = entrustInfoArr[0]

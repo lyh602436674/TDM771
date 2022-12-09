@@ -40,6 +40,17 @@ import {postAction} from '@/api/manage'
 import SysUserSelect from '@/views/components/SysUserSelect'
 import ProjectAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal";
 
+const validatorIp = function (rule, value, callback) {
+  const exp = /^((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))(\.((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))){3}$/
+  if (!value) {
+    callback()
+  }
+  if (exp.test(value)) {
+    callback()
+  } else {
+    callback('请输入正确格式的ip地址')
+  }
+}
 export default {
   components: {
     SysUserSelect, ProjectAddModal
@@ -117,6 +128,9 @@ export default {
           span: 12,
           formType: 'input',
           key: 'cameraIp',
+          validate: {
+            rules: [{required: false, validator: validatorIp}],
+          },
         },
         {
           title: '',

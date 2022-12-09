@@ -429,7 +429,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {
@@ -575,7 +575,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {
@@ -695,7 +695,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {
@@ -1181,7 +1181,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {
@@ -1273,7 +1273,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {title: '参试人员岗位', dataIndex: 'testPostName'},
@@ -1295,7 +1295,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           }
         },
         {title: '设备编号', dataIndex: 'equipCode'},
@@ -1761,10 +1761,10 @@ export default {
           })
           this.equipData = model.testEquipInfo.length ? model.testEquipInfo : this.selectedTreeRows
           this.toolsProductData = model.testToolsProductInfo
-          model.realStartTime = model.realStartTime && model.realStartTime !== '0' ? moment(+(model.realStartTime)) : null
-          model.realEndTime = model.realEndTime && model.realEndTime !== '0' ? moment(+(model.realEndTime)) : null
-          model.approachTime = model.approachTime && model.approachTime !== '0' ? moment(+(model.approachTime)) : null
-          model.departureTime = model.departureTime && model.departureTime !== '0' ? moment(+(model.departureTime)) : null
+          model.realStartTime = model.realStartTime && model.realStartTime !== '0' ? moment(+model.realStartTime) : null
+          model.realEndTime = model.realEndTime && model.realEndTime !== '0' ? moment(+model.realEndTime) : null
+          model.approachTime = model.approachTime && model.approachTime !== '0' ? moment(+model.approachTime) : null
+          model.departureTime = model.departureTime && model.departureTime !== '0' ? moment(+model.departureTime) : null
           this.model = model
         }
       })
@@ -1773,7 +1773,7 @@ export default {
       this.$refs.productHandleSelectModal.show()
       this.productList.queryParams.projectPieceInfo = []
       this.productTable.forEach((item) => {
-        this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
+        this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.productId})
       })
     },
     switchRecordingDelete(index) {
@@ -1793,7 +1793,6 @@ export default {
     },
     productCallback(value) {
       this.productTable = this.productTable.concat(value)
-      console.log(this.productTable, 'productTable')
     },
     personAdd() {
       this.$refs.PostionModal.show(this.personArr, '选择参试人员')

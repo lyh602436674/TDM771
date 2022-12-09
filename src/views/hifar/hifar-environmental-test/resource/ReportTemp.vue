@@ -85,7 +85,6 @@ export default {
       moment,
       selectedRowKeys: [],
       paramsData: {
-        groupCode: 'report',
         importCode:'HfResTemplateImport'
       },
       getLoadData: (params) => {
@@ -171,7 +170,6 @@ export default {
   },
   methods: {
     searchQuery() {
-      this.queryParam.groupCode = 'report'
       this.$refs.custTable.refresh(true)
       this.selectedRowKeys = []
     },
@@ -217,20 +215,17 @@ export default {
     // 编辑
     handleEdit(record) {
       let title = '编辑'
-      let groupCode = 'report'
-      this.$refs.TempAddModal.show(record, title, groupCode)
+      this.$refs.TempAddModal.show(record, title)
     },
     handleAdd() {
       let record = {}
       let title = '添加'
-      let groupCode = 'report'
-      this.$refs.TempAddModal.show(record, title, groupCode)
+      this.$refs.TempAddModal.show(record, title)
     },
     // 导出
     async handleExportXls(name, model) {
       let data = {
         ...this.queryParam,
-        groupCode: 'report',
         ids: this.selectedRowKeys.join(','),
         ...model,
       }

@@ -3,7 +3,7 @@
  * @Date: 2021-06-01 10:46:33
  * @LastEditTime: 2021-06-11 17:54:31
  * @LastEditors: 陈乾龙
- * @Description: 
+ * @Description:
  * @FilePath: \hifar-vue\ant-design-jeecg-vue\src\views\hifar\sys\tools\fileManage\FileManageList.vue
 -->
 <template>
@@ -79,7 +79,7 @@ export default {
           width: 60,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           },
         },
         {

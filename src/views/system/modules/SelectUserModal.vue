@@ -81,7 +81,7 @@ export default {
           width: 50,
           align: 'center',
           customRender: function (t, r, index) {
-            return parseInt(index) + 1
+            return index + 1
           },
         },
         {

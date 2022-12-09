@@ -48,7 +48,7 @@
             width: 120,
             align: "center",
             customRender: function (t, r, index) {
-              return parseInt(index) + 1;
+              return index + 1;
             }
           },
           {

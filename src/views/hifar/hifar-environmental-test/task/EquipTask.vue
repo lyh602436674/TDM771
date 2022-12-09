@@ -322,8 +322,7 @@ export default {
             container.removeChild(tooltip)
           })
           .click(function () {
-            let top = '10px'
-            that.$refs.taskDetail.show(task, top)
+            that.$refs.taskDetail.show(task, null,'10px')
           })
       })
     },
