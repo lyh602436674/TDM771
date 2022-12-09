@@ -102,14 +102,12 @@ export default {
       selectedRowKeys: [],
       detailData: {},
       paramsData: {
-        groupCode: 'report',
         importCode:'HfResTemplateImport'
       },
       getLoadData: (params) => {
         let data = {
           ...this.queryParam,
           ...params,
-          groupCode: 'report',
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
@@ -321,7 +319,6 @@ export default {
     async handleExportXls(name, model) {
       let data = {
         ...this.queryParam,
-        groupCode: 'report',
         ids: this.selectedRowKeys.join(','),
         ...model,
       }

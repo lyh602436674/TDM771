@@ -81,7 +81,7 @@ export default {
       },
       selectedRowKeys: [],
       loadData: (params) => {
-        return postAction(this.url.list, {...params, groupCode: 'report',}).then(res => {
+        return postAction(this.url.list, {...params}).then(res => {
           if (res.code === 200) {
             return res.data
           }
