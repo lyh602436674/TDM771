@@ -43,37 +43,41 @@
         </h-edit-tree>
       </template>
       <div slot="right" style="background: #fff; height: 100%">
-        <work-list-detail ref="WorkListDetail" :ids="ids" :post-id="selectedKeys.toString()" :type='type'
-                          @change="selectPersonChange"></work-list-detail>
+        <work-list-detail
+          ref="WorkListDetail"
+          :ids="ids"
+          :post-id="selectedKeys.toString()"
+          :type="type"
+          @change="selectPersonChange"></work-list-detail>
       </div>
     </r-l-layout>
   </h-modal>
 </template>
 
 <script>
-import {postAction} from '@/api/manage'
+import { postAction } from '@/api/manage'
 import HEditTree from '@/views/components/HEditTree.js'
 import WorkListDetail from './components/WorkListDetail'
 
 export default {
   inject: {
     getContainer: {
-      default: () => document.body,
-    },
+      default: () => document.body
+    }
   },
-  props:{
-    type:{
-      type:String,
-      default:'checkbox'
+  props: {
+    type: {
+      type: String,
+      default: 'checkbox'
     },
-    title:{
-      type:String,
-      default:''
-    },
+    title: {
+      type: String,
+      default: ''
+    }
   },
   components: {
     HEditTree,
-    WorkListDetail,
+    WorkListDetail
   },
 
   data() {
@@ -84,30 +88,30 @@ export default {
       replaceFields: {
         children: 'children',
         title: 'postName',
-        key: 'id',
+        key: 'id'
       },
       url: {
         list: '/OrgPostBusiness/listAll',
-        del: '/OrgPostBusiness/logicRemoveById',
+        del: '/OrgPostBusiness/logicRemoveById'
       },
       treeSearchParams: {},
       treeFormData: [
         {
           title: '分类名称',
           key: 'classifyName',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '项目名称',
           key: 'unitName',
-          formType: 'input',
-        },
+          formType: 'input'
+        }
       ],
       treeData: [], // 左侧的树的数据
       selectedKeys: [], // 左侧树的已选中key
       selectedRows: [],
       selectedPersonRows: [],
-      ids: null,
+      ids: null
     }
   },
   methods: {
@@ -135,20 +139,21 @@ export default {
       this.selectedRows = selectedRows
     },
     async getWorkCenterTree() {
+      console.log('treeSearchParams', this.treeSearchParams)
       let params = {
-        ...this.treeSearchParams,
+        ...this.treeSearchParams
       }
       let res = await postAction(this.url.list, params)
       if (res.code === 200) {
         this.treeData = res.data.map((item) => {
           item.scopedSlots = {
-            title: 'customTitle',
+            title: 'customTitle'
           }
           item.title = item.postName
           item.children = []
           return item
         })
-        this.selectedRows = []
+        this.selectedRows = [this.treeData[0]]
         this.selectedKeys = [this.treeData[0].id]
       }
     },
@@ -156,10 +161,10 @@ export default {
       this.selectedPersonRows = arrVal
     },
     handleSubmit() {
-      this.$emit('change', this.selectedPersonRows)
+      this.$emit('change', this.selectedPersonRows, this.selectedRows)
       this.handleCancel()
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
