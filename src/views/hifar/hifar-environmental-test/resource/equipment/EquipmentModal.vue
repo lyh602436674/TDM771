@@ -30,15 +30,15 @@
         @change="submit"
       ></h-form>
     </h-card>
-    <project-add-modal ref='projectAddModal' @change='projectModalCallback'></project-add-modal>
+    <project-add-modal ref="projectAddModal" @change="projectModalCallback"></project-add-modal>
   </h-modal>
 </template>
 
 <script>
 import moment from 'moment'
-import {postAction} from '@/api/manage'
+import { postAction } from '@/api/manage'
 import SysUserSelect from '@/views/components/SysUserSelect'
-import ProjectAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal";
+import ProjectAddModal from '@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal';
 
 const validatorIp = function (rule, value, callback) {
   const exp = /^((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))(\.((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))){3}$/
@@ -57,8 +57,8 @@ export default {
   },
   inject: {
     getContainer: {
-      default: () => document.body,
-    },
+      default: () => document.body
+    }
   },
   data() {
     return {
@@ -70,7 +70,7 @@ export default {
       confirmLoading: false,
       url: {
         add: '/HfResEquipBusiness/add',
-        edit: '/HfResEquipBusiness/modifyById',
+        edit: '/HfResEquipBusiness/modifyById'
       },
       formData: [
         {
@@ -78,7 +78,7 @@ export default {
           key: 'id',
           formType: 'input',
           span: 12,
-          hidden: true,
+          hidden: true
         },
         {
           title: '设备名称 ',
@@ -86,8 +86,8 @@ export default {
           key: 'equipName',
           span: 12,
           validate: {
-            rules: [{required: true, message: '请输入设备名称'}],
-          },
+            rules: [{ required: true, message: '请输入设备名称' }]
+          }
         },
         {
           title: '设备编号',
@@ -95,8 +95,8 @@ export default {
           key: 'equipCode',
           span: 12,
           validate: {
-            rules: [{required: true, message: '请输入设备编号'}],
-          },
+            rules: [{ required: true, message: '请输入设备编号' }]
+          }
         },
         {
           title: '设备用途',
@@ -106,8 +106,8 @@ export default {
           span: 12,
           dictCode: 'hf_res_equip_use',
           validate: {
-            rules: [{required: true, message: '请选择设备用途'}],
-          },
+            rules: [{ required: true, message: '请选择设备用途' }]
+          }
         },
         {
           title: '设备类型',
@@ -117,76 +117,67 @@ export default {
           dictCode: 'hf_res_equip_type',
           span: 12,
           validate: {
-            rules: [{required: true, message: '请选择设备类型'}],
+            rules: [{ required: true, message: '请选择设备类型' }]
           },
           change: (val, option) => {
-            this.$refs.equipmentForm.form.setFieldsValue({equipTypeName: option.title})
-          },
-        },
-        {
-          title: '设备IP',
-          span: 12,
-          formType: 'input',
-          key: 'cameraIp',
-          validate: {
-            rules: [{required: false, validator: validatorIp}],
-          },
+            this.$refs.equipmentForm.form.setFieldsValue({ equipTypeName: option.title })
+          }
         },
         {
           title: '',
           key: 'equipTypeName',
           formType: 'input',
           span: 12,
-          hidden: true,
+          hidden: true
         },
         {
           title: '内部名称',
           formType: 'input',
           span: 12,
-          key: 'innerName',
+          key: 'innerName'
         },
         {
           title: '资产编号',
           formType: 'input',
           span: 12,
-          key: 'assetsCode',
+          key: 'assetsCode'
         },
         {
           title: '出厂编号',
           formType: 'input',
           span: 12,
-          key: 'leaveCode',
+          key: 'leaveCode'
         },
         {
           title: '生产厂家',
           formType: 'input',
           span: 12,
-          key: 'factoryName',
+          key: 'factoryName'
         },
         {
           title: '购买日期',
           formType: 'datePick',
           span: 12,
-          key: 'buyTime',
+          key: 'buyTime'
         },
         {
           title: '负责人',
           key: 'managerId',
           span: 12,
-          component: <sys-user-select v-decorator={['managerId']} v-on:change={this.managerChange}></sys-user-select>,
+          component: <sys-user-select v-decorator={['managerId']} v-on:change={this.managerChange}></sys-user-select>
         },
         {
           title: '',
           key: 'managerName',
           formType: 'input',
           span: 12,
-          hidden: true,
+          hidden: true
         },
         {
           title: '设备型号',
           formType: 'input',
           span: 12,
-          key: 'equipModel',
+          key: 'equipModel'
         },
         {
           title: '设备状态',
@@ -195,14 +186,14 @@ export default {
           dictCode: 'status_dict',
           span: 12,
           validate: {
-            rules: [{required: true, message: '请选择设备状态'}],
-          },
+            rules: [{ required: true, message: '请选择设备状态' }]
+          }
         },
         {
           title: '计量有效期',
           formType: 'datePick',
           key: 'checkValid',
-          span: 12,
+          span: 12
         },
         {
           title: '计量周期',
@@ -215,10 +206,10 @@ export default {
             rules: [
               {
                 required: false,
-                validator: this.validateCheckPeriod,
-              },
-            ],
-          },
+                validator: this.validateCheckPeriod
+              }
+            ]
+          }
         },
         {
           title: '使用部门',
@@ -227,16 +218,16 @@ export default {
           component: (
             <h-depart-select
               placeholder="请选择使用部门"
-              v-decorator={['userDeptId', {initialValue: undefined}]}
+              v-decorator={['userDeptId', { initialValue: undefined }]}
               v-on:change={this.userDeptChange}
             />
-          ),
+          )
         },
         {
           title: '设备能力',
           key: 'equipBaseProjectNames',
           span: 12,
-          formType: "input",
+          formType: 'input',
           readOnly: true,
           click: () => {
             this.$refs.projectAddModal.visible = true
@@ -248,7 +239,7 @@ export default {
         },
         {
           key: 'equipBaseProjectIds',
-          formType: "input",
+          formType: 'input',
           hidden: true
         },
         {
@@ -258,7 +249,7 @@ export default {
           type: 'number',
           span: 6,
           addonAfter: '%',
-          validate: {rules: [{required: false, validator: this.validateCoordinate}]},
+          validate: { rules: [{ required: false, validator: this.validateCoordinate }] }
         },
         {
           title: 'Y坐标',
@@ -267,7 +258,26 @@ export default {
           span: 6,
           type: 'number',
           addonAfter: '%',
-          validate: {rules: [{required: false, validator: this.validateCoordinate}]},
+          validate: { rules: [{ required: false, validator: this.validateCoordinate }] }
+        },
+        {
+          title: '摄像头IP',
+          span: 12,
+          formType: 'input',
+          key: 'cameraIp',
+          validate: {
+            rules: [{ required: false, validator: validatorIp }]
+          }
+        },
+        {
+          title: '放置地点',
+          formType: 'dict',
+          key: 'address',
+          dictCode: 'hf_res_equip_address',
+          span: 12,
+          validate: {
+            rules: [{ required: true, message: '请选择设备状态' }]
+          }
         },
         {
           title: '排序',
@@ -275,26 +285,26 @@ export default {
           formType: 'input',
           span: 12,
           type: 'number',
-          validate: {rules: [{required: true, message: "请输入排序(值越小越靠前)"}]},
+          validate: { rules: [{ required: true, message: '请输入排序(值越小越靠前)' }] }
         },
         {
           title: '',
           key: 'userDeptName',
           formType: 'input',
           span: 12,
-          hidden: true,
+          hidden: true
         },
         {
           title: '技术参数',
           formType: 'textarea',
           key: 'technology',
-          span: 24,
+          span: 24
         },
         {
           title: '备注',
           formType: 'textarea',
           key: 'remarks',
-          span: 24,
+          span: 24
         },
         {
           title: '设备图片',
@@ -304,17 +314,17 @@ export default {
             <h-upload-img
               multiple={false}
               accept="image/png,image/gif,image/jpg,image/jpeg"
-              v-decorator={['imgUrl', {initialValue: []}]}
+              v-decorator={['imgUrl', { initialValue: [] }]}
             />
-          ),
+          )
         },
         {
           title: '附件',
           key: 'attachIds',
           span: 24,
-          component: <h-upload-file multiple={true} v-decorator={['attachIds', {initialValue: []}]}/>,
-        },
-      ],
+          component: <h-upload-file multiple={true} v-decorator={['attachIds', { initialValue: [] }]}/>
+        }
+      ]
     }
   },
 
@@ -341,7 +351,7 @@ export default {
       if (imgInfo) {
         imgArr.push({
           fileId: obj.id,
-          url: obj.imgUrl,
+          url: obj.imgUrl
         })
       }
       if (attachInfo && attachInfo.length > 0) {
@@ -356,12 +366,12 @@ export default {
             percent: 100,
             uploadTime: item.createTime,
             secretLevel: item.secretLevel,
-            type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
+            type: item.viewType == 2 ? 'image/jpeg' : 'text/plain'
           })
         })
       }
-      obj.imgUrl = imgArr ? imgArr : []
-      obj.attachIds = fileArr ? fileArr : []
+      obj.imgUrl = imgArr || []
+      obj.attachIds = fileArr || []
       obj.userDeptId = obj.userDeptId ? obj.userDeptId : undefined
       obj.buyTime = obj.buyTime && obj.buyTime != 0 && obj.buyTime > 0 ? moment(parseInt(obj.buyTime)) : ''
       obj.checkValid = obj.checkValid && obj.checkValid != 0 && obj.checkValid > 0 ? moment(parseInt(obj.checkValid)) : ''
@@ -373,7 +383,7 @@ export default {
       this.equipentInfo = {}
     },
     userDeptChange(val, options) {
-      this.$refs.equipmentForm.form.setFieldsValue({userDeptName: options.deptName})
+      this.$refs.equipmentForm.form.setFieldsValue({ userDeptName: options.deptName })
     },
     handleClickSubmit() {
       this.$refs.equipmentForm.validateForm()
@@ -386,7 +396,7 @@ export default {
       let img_url = ''
       let params = {
         ...value,
-        checkUnit: 1,
+        checkUnit: 1
       }
       let attachIdsArr = params.attachIds
       let imgUrlArr = params.imgUrl
@@ -416,7 +426,7 @@ export default {
       })
     },
     managerChange(val, option) {
-      this.$refs.equipmentForm.form.setFieldsValue({managerName: option.idName})
+      this.$refs.equipmentForm.form.setFieldsValue({ managerName: option.idName })
     },
     validateCheckPeriod(rule, value, callback) {
       if (!value) {
@@ -440,8 +450,8 @@ export default {
           callback()
         }
       }
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang='less' scoped>
