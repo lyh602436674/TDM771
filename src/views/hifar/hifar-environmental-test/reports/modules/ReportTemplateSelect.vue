@@ -38,10 +38,8 @@ export default {
       columns: [
         {
           title: '模板分类',
-          dataIndex: 'reportType',
-          customRender: (text, record) => {
-            return text === 'cover' ? '封面' : text === 'report' ? '报告' : '--'
-          },
+          dataIndex: 'reportType_dictText',
+          align: 'left',
         },
         {
           title: '模板名称',
