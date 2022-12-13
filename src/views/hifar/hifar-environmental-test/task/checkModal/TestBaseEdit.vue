@@ -8,46 +8,46 @@
 -->
 <template>
   <h-modal
-    :getContainer='getContainer'
+    :getContainer="getContainer"
     :title="'试验编辑(' + records.testCode + ')'"
-    :visible='visible'
+    :visible="visible"
     destroyOnClose
     fullScreen
     inner
-    @cancel='handleCancel'
+    @cancel="handleCancel"
   >
-    <div slot='footer' class='footer'>
-      <a-button style='margin-right: 8px' type='ghost-danger' @click='handleCancel'> 关闭
+    <div slot="footer" class="footer">
+      <a-button style="margin-right: 8px" type="ghost-danger" @click="handleCancel"> 关闭
       </a-button>
-      <a-button :loading="submitLoading" type='primary' @click='handleSave'>保存</a-button>
+      <a-button :loading="submitLoading" type="primary" @click="handleSave">保存</a-button>
     </div>
     <div style="width:100%;display:flex;">
       <div style="flex:1">
-        <h-desc id="product" title='试件信息'>
-          <h-card :bordered='false' style='width: 100%'>
-            <template slot='table-operator'>
-              <a-button icon='plus' size='small' type='primary' @click='productAdd'>
+        <h-desc id="product" title="试件信息">
+          <h-card :bordered="false" style="width: 100%">
+            <template slot="table-operator">
+              <a-button icon="plus" size="small" type="primary" @click="productAdd">
                 添加
               </a-button>
             </template>
             <a-table
-              :columns='testProductColumns'
-              :dataSource='productTable'
-              :pagination='false'
+              :columns="testProductColumns"
+              :dataSource="productTable"
+              :pagination="false"
               bordered
-              rowKey='id'
-              size='small'
+              rowKey="id"
+              size="small"
               style="width: 100%;"
             >
-              <template #action='text, record,index'>
-                <a-popconfirm title='确定删除吗?' @confirm='() => productHandleDelete(index)'>
+              <template #action="text, record,index">
+                <a-popconfirm title="确定删除吗?" @confirm="() => productHandleDelete(index)">
                   <a-icon
-                    class='primary-text'
-                    style='cursor: pointer'
-                    theme='twoTone'
-                    title='删除'
-                    two-tone-color='#ff4d4f'
-                    type='delete'
+                    class="primary-text"
+                    style="cursor: pointer"
+                    theme="twoTone"
+                    title="删除"
+                    two-tone-color="#ff4d4f"
+                    type="delete"
                   />
                 </a-popconfirm>
               </template>
@@ -55,101 +55,105 @@
           </h-card>
         </h-desc>
         <!-- 实施过程 -->
-        <h-desc id="processForm" class="mg-t-20" title='实施过程'>
-          <h-card :bordered='false' style='width: 100%'>
+        <h-desc id="processForm" class="mg-t-20" title="实施过程">
+          <h-card :bordered="false" style="width: 100%">
             <h-form
-              ref='carryOutProcessForm'
-              v-model='model'
-              :column='2'
-              :formData='formData'
-              style='width: 100%'
+              ref="carryOutProcessForm"
+              v-model="model"
+              :column="2"
+              :formData="formData"
+              style="width: 100%"
             />
           </h-card>
         </h-desc>
         <!-- 安装、控制方式 -->
-        <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>
-          <h-card :bordered='false' style='width: 100%'>
-            <template slot='table-operator'>
-              <a-button icon='plus' size='small' type='primary' @click='installControlAdd'>
+        <h-desc id="installControl" class="mg-t-20" title="安装、控制方式">
+          <h-card :bordered="false" style="width: 100%">
+            <template slot="table-operator">
+              <a-button icon="plus" size="small" type="primary" @click="installControlAdd">
                 添加
               </a-button>
             </template>
             <a-table
-              :columns='installControlColumns'
-              :dataSource='installControlTable'
-              :pagination='false'
+              :columns="installControlColumns"
+              :dataSource="installControlTable"
+              :pagination="false"
               bordered
-              rowKey='id'
-              size='small'
+              rowKey="id"
+              size="small"
               style="width: 100%;"
             >
               <div slot="expandedRowRender" slot-scope="record,index">
                 <a-table
-                  :columns='sensorColumns'
-                  :dataSource='record.testSensorInfo'
-                  :pagination='false'
+                  :columns="sensorColumns"
+                  :dataSource="record.testSensorInfo"
+                  :pagination="false"
                   bordered
-                  rowKey='id'
-                  size='small'
+                  rowKey="id"
+                  size="small"
                   style="width: 100%;"
                 >
-                  <template #action='text, record,subIndex'>
-                    <a-popconfirm title='确定删除吗?' @confirm='() => testSensorHandleDelete(index,subIndex)'>
+                  <template #action="text, record,subIndex">
+                    <a-popconfirm title="确定删除吗?" @confirm="() => testSensorHandleDelete(index,subIndex)">
                       <a-icon
-                        class='primary-text'
-                        style='cursor: pointer'
-                        theme='twoTone'
-                        title='删除'
-                        two-tone-color='#ff4d4f'
-                        type='delete'
+                        class="primary-text"
+                        style="cursor: pointer"
+                        theme="twoTone"
+                        title="删除"
+                        two-tone-color="#ff4d4f"
+                        type="delete"
                       />
                     </a-popconfirm>
                   </template>
                 </a-table>
               </div>
-              <template #action='text, record,index'>
-                <a-popconfirm title='确定删除吗?' @confirm='() => installControlHandleDelete(index)'>
+              <template #action="text, record,index">
+                <a-popconfirm title="确定删除吗?" @confirm="() => installControlHandleDelete(index)">
                   <a-icon
-                    class='primary-text'
-                    style='cursor: pointer'
-                    theme='twoTone'
-                    title='删除'
-                    two-tone-color='#ff4d4f'
-                    type='delete'
+                    class="primary-text"
+                    style="cursor: pointer"
+                    theme="twoTone"
+                    title="删除"
+                    two-tone-color="#ff4d4f"
+                    type="delete"
                   />
                 </a-popconfirm>
-                <a-icon class='primary-text' style='cursor: pointer;margin-left: 10px' title="添加传感器"
-                        type="plus" @click='sensorAdd(record,index)'/>
+                <a-icon
+                  class="primary-text"
+                  style="cursor: pointer;margin-left: 10px"
+                  title="添加传感器"
+                  type="plus"
+                  @click="sensorAdd(record,index)" />
               </template>
             </a-table>
           </h-card>
         </h-desc>
         <!-- 试验设备开关机记录 -->
-        <h-desc id="switchRecording" class="mg-t-20" title='试验设备开关机记录'>
-          <h-card :bordered='false' style='width: 100%'>
-            <template slot='table-operator'>
-              <a-button icon='plus' size='small' type='primary' @click='switchRecordingAdd'>
+        <h-desc id="switchRecording" class="mg-t-20" title="试验设备开关机记录">
+          <h-card :bordered="false" style="width: 100%">
+            <template slot="table-operator">
+              <a-button icon="plus" size="small" type="primary" @click="switchRecordingAdd">
                 添加
               </a-button>
             </template>
             <a-table
-              :columns='switchRecordingColumns'
-              :dataSource='switchRecordingTable'
-              :pagination='false'
+              :columns="switchRecordingColumns"
+              :dataSource="switchRecordingTable"
+              :pagination="false"
               bordered
-              rowKey='id'
-              size='small'
+              rowKey="id"
+              size="small"
               style="width: 100%;"
             >
-              <template #action='text, record,index'>
-                <a-popconfirm title='确定删除吗?' @confirm='() => switchRecordingDelete(index)'>
+              <template #action="text, record,index">
+                <a-popconfirm title="确定删除吗?" @confirm="() => switchRecordingDelete(index)">
                   <a-icon
-                    class='primary-text'
-                    style='cursor: pointer'
-                    theme='twoTone'
-                    title='删除'
-                    two-tone-color='#ff4d4f'
-                    type='delete'
+                    class="primary-text"
+                    style="cursor: pointer"
+                    theme="twoTone"
+                    title="删除"
+                    two-tone-color="#ff4d4f"
+                    type="delete"
                   />
                 </a-popconfirm>
               </template>
@@ -157,31 +161,31 @@
           </h-card>
         </h-desc>
         <!--巡检记录-->
-        <h-desc id="siteInspection" class="mg-t-20" title='巡检记录'>
-          <h-card :bordered='false' style='width: 100%'>
-            <template slot='table-operator'>
-              <a-button icon='plus' size='small' type='primary' @click='siteInspectionAdd'>
+        <h-desc id="siteInspection" class="mg-t-20" title="巡检记录">
+          <h-card :bordered="false" style="width: 100%">
+            <template slot="table-operator">
+              <a-button icon="plus" size="small" type="primary" @click="siteInspectionAdd">
                 添加
               </a-button>
             </template>
             <a-table
-              :columns='siteInspectionColumns'
-              :dataSource='siteInspectionTable'
-              :pagination='false'
+              :columns="siteInspectionColumns"
+              :dataSource="siteInspectionTable"
+              :pagination="false"
               bordered
-              rowKey='id'
-              size='small'
+              rowKey="id"
+              size="small"
               style="width: 100%;"
             >
-              <template #action='text, record,index'>
-                <a-popconfirm title='确定删除吗?' @confirm='() => siteInspectionDelete(index)'>
+              <template #action="text, record,index">
+                <a-popconfirm title="确定删除吗?" @confirm="() => siteInspectionDelete(index)">
                   <a-icon
-                    class='primary-text'
-                    style='cursor: pointer'
-                    theme='twoTone'
-                    title='删除'
-                    two-tone-color='#ff4d4f'
-                    type='delete'
+                    class="primary-text"
+                    style="cursor: pointer"
+                    theme="twoTone"
+                    title="删除"
+                    two-tone-color="#ff4d4f"
+                    type="delete"
                   />
                 </a-popconfirm>
               </template>
@@ -189,32 +193,32 @@
           </h-card>
         </h-desc>
         <!-- 参试人员 -->
-        <h-desc id="person" class="mg-t-20" title='参试人员'>
-          <h-card :bordered='false' style='width: 100%'>
-            <template slot='table-operator'>
-              <a-button icon='plus' size='small' type='primary' @click='personAdd'>
+        <h-desc id="person" class="mg-t-20" title="参试人员">
+          <h-card :bordered="false" style="width: 100%">
+            <template slot="table-operator">
+              <a-button icon="plus" size="small" type="primary" @click="personAdd">
                 添加
               </a-button>
             </template>
-            <div slot='content'>
+            <div slot="content">
               <a-table
-                ref='personTable'
-                :columns='personColumns'
-                :dataSource='personArr'
-                :pagination='false'
-                :rowKey='(record) => record.testUserId'
+                ref="personTable"
+                :columns="personColumns"
+                :dataSource="personArr"
+                :pagination="false"
+                :rowKey="(record) => record.testUserId"
                 bordered
-                size='small'
+                size="small"
               >
-                <template #action='text, record,index'>
-                  <a-popconfirm title='确定删除吗?' @confirm='() => personHandleDelete(index)'>
+                <template #action="text, record,index">
+                  <a-popconfirm title="确定删除吗?" @confirm="() => personHandleDelete(index)">
                     <a-icon
-                      class='primary-text'
-                      style='cursor: pointer'
-                      theme='twoTone'
-                      title='删除'
-                      two-tone-color='#ff4d4f'
-                      type='delete'
+                      class="primary-text"
+                      style="cursor: pointer"
+                      theme="twoTone"
+                      title="删除"
+                      two-tone-color="#ff4d4f"
+                      type="delete"
                     />
                   </a-popconfirm>
                 </template>
@@ -223,31 +227,31 @@
           </h-card>
         </h-desc>
         <!-- 测试设备 -->
-        <h-desc id="testEquip" class="mg-t-20" title='测试设备'>
-          <h-card :bordered='false' style='width: 100%'>
-            <template slot='table-operator'>
-              <a-button icon='plus' size='small' type='primary' @click='equipAdd'>
+        <h-desc id="testEquip" class="mg-t-20" title="测试设备">
+          <h-card :bordered="false" style="width: 100%">
+            <template slot="table-operator">
+              <a-button icon="plus" size="small" type="primary" @click="equipAdd">
                 添加
               </a-button>
             </template>
-            <div slot='content'>
+            <div slot="content">
               <a-table
-                :columns='testEquipColumns'
-                :dataSource='equipData'
-                :pagination='false'
+                :columns="testEquipColumns"
+                :dataSource="equipData"
+                :pagination="false"
                 bordered
-                rowKey='id'
-                size='small'
+                rowKey="id"
+                size="small"
               >
-                <template #action='text, record,index'>
-                  <a-popconfirm title='确定删除吗?' @confirm='() => equipHandleDelete(index)'>
+                <template #action="text, record,index">
+                  <a-popconfirm title="确定删除吗?" @confirm="() => equipHandleDelete(index)">
                     <a-icon
-                      class='primary-text'
-                      style='cursor: pointer'
-                      theme='twoTone'
-                      title='删除'
-                      two-tone-color='#ff4d4f'
-                      type='delete'
+                      class="primary-text"
+                      style="cursor: pointer"
+                      theme="twoTone"
+                      title="删除"
+                      two-tone-color="#ff4d4f"
+                      type="delete"
                     />
                   </a-popconfirm>
                 </template>
@@ -255,31 +259,31 @@
             </div>
           </h-card>
         </h-desc>
-        <h-desc id="toolsProduct" class="mg-t-20" title='振动工装'>
-          <h-card :bordered='false' style='width: 100%'>
-            <template slot='table-operator'>
-              <a-button icon='plus' size='small' type='primary' @click='toolsProductAdd'>
+        <h-desc id="toolsProduct" class="mg-t-20" title="振动工装">
+          <h-card :bordered="false" style="width: 100%">
+            <template slot="table-operator">
+              <a-button icon="plus" size="small" type="primary" @click="toolsProductAdd">
                 添加
               </a-button>
             </template>
-            <div slot='content'>
+            <div slot="content">
               <a-table
-                :columns='toolsProductColumns'
-                :dataSource='toolsProductData'
-                :pagination='false'
+                :columns="toolsProductColumns"
+                :dataSource="toolsProductData"
+                :pagination="false"
                 bordered
-                rowKey='id'
-                size='small'
+                rowKey="id"
+                size="small"
               >
-                <template #action='text, record,index'>
-                  <a-popconfirm title='确定删除吗?' @confirm='() => toolsProductHandleDelete(index)'>
+                <template #action="text, record,index">
+                  <a-popconfirm title="确定删除吗?" @confirm="() => toolsProductHandleDelete(index)">
                     <a-icon
-                      class='primary-text'
-                      style='cursor: pointer'
-                      theme='twoTone'
-                      title='删除'
-                      two-tone-color='#ff4d4f'
-                      type='delete'
+                      class="primary-text"
+                      style="cursor: pointer"
+                      theme="twoTone"
+                      title="删除"
+                      two-tone-color="#ff4d4f"
+                      type="delete"
                     />
                   </a-popconfirm>
                 </template>
@@ -287,73 +291,77 @@
             </div>
           </h-card>
         </h-desc>
-        <h-desc id="picture" class="mg-t-20" title='图片图谱'>
-          <h-upload-file v-model="pictureData" :customParams="pictureCustomParams"
-                         accept="image/png,image/gif,image/jpg,image/jpeg"
-                         isWriteRemarks style="width: 100%" @delete="handleDeleteImg"></h-upload-file>
+        <h-desc id="picture" class="mg-t-20" title="图片图谱">
+          <h-upload-file
+            v-model="pictureData"
+            :customParams="pictureCustomParams"
+            accept="image/png,image/gif,image/jpg,image/jpeg"
+            isWriteRemarks
+            style="width: 100%"
+            @delete="handleDeleteImg"></h-upload-file>
         </h-desc>
       </div>
       <div style="width: 60px;"></div>
     </div>
     <!-- 试件信息 -->
     <handle-select-modal
-      ref='productHandleSelectModal'
-      :columns='addProductColumns'
-      :data-url='productList'
+      ref="productHandleSelectModal"
+      :columns="addProductColumns"
+      :data-url="productList"
       :title="'添加试件信息'"
-      type='product'
-      @callback='productCallback'
+      type="product"
+      @callback="productCallback"
     />
     <handle-select-modal
-      ref='equipHandleSelectModal'
-      :columns='addEquipColumns'
-      :data-url='equipList'
+      ref="equipHandleSelectModal"
+      :columns="addEquipColumns"
+      :data-url="equipList"
       :title="'添加测试设备'"
-      type='equip'
+      type="equip"
       :searchData="equipSearchData"
-      @callback='equipCallback'
+      @callback="equipCallback"
     />
     <handle-select-modal
-      ref='sensorHandleSelectModal'
-      :columns='addSensorColumns'
-      :data-url='sensorList'
+      ref="sensorHandleSelectModal"
+      :columns="addSensorColumns"
+      :data-url="sensorList"
       :title="'添加传感器'"
-      type='sensor'
+      type="sensor"
       :searchData="equipSearchData"
-      @callback='sensorCallback'
+      @callback="sensorCallback"
     />
     <handle-select-modal
-      ref='toolsProductHandleSelectModal'
-      :columns='addToolsProductColumns'
-      :data-url='toolsProductList'
+      ref="toolsProductHandleSelectModal"
+      :columns="addToolsProductColumns"
+      :data-url="toolsProductList"
       :title="'添加振动工装'"
-      type='toolsProduct'
+      type="toolsProduct"
       :searchData="toolSearchBar"
-      @callback='toolsProductCallback'
+      @callback="toolsProductCallback"
     />
-    <postion-modal ref='PostionModal' :title="'添加参试人员'" @change='selectPersonHandle'/>
+    <postion-modal ref="PostionModal" :title="'添加参试人员'" @change="selectPersonHandle" />
     <check-ensure-modal ref="checkEnsureModal"></check-ensure-modal>
-    <product-file-modal @close="getTestDetail(testId)" ref='productFileModal'></product-file-modal>
+    <product-file-modal @close="getTestDetail(testId)" ref="productFileModal"></product-file-modal>
     <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </h-modal>
 </template>
 
 <script>
 import moment from 'moment'
-import {cloneDeep} from 'lodash'
-import {postAction} from '@/api/manage'
+import { cloneDeep } from 'lodash'
+import { postAction } from '@/api/manage'
 import HandleSelectModal from '../modules/components/HandleSelectModal.vue'
 import PostionModal from '../modules/PostionModal'
-import {randomUUID, recursive} from "@/utils/util";
+import { randomUUID, recursive } from '@/utils/util'
 import CheckEnsureModal from '../modules/components/CheckEnsureModal'
-import ProductFileModal from "@views/hifar/hifar-environmental-test/task/modules/ProductFileModal";
+import ProductFileModal from '@views/hifar/hifar-environmental-test/task/modules/ProductFileModal'
 import HfElevatorLayer from '@/components/HfElevatorLayer'
 
 export default {
   inject: {
     getContainer: {
       default: () => document.body
-    },
+    }
   },
   props: {
     records: {
@@ -378,48 +386,48 @@ export default {
     return {
       layerColumns: [
         {
-          title: "试件信息",
-          id: "product"
+          title: '试件信息',
+          id: 'product'
         },
         {
-          title: "实施过程",
-          id: "processForm"
+          title: '实施过程',
+          id: 'processForm'
         },
         {
-          title: "安装控制方式",
-          id: "installControl"
+          title: '安装控制方式',
+          id: 'installControl'
         },
         {
-          title: "试验设备开关机记录",
-          id: "switchRecording"
+          title: '试验设备开关机记录',
+          id: 'switchRecording'
         },
         {
-          title: "巡检记录",
-          id: "siteInspection"
+          title: '巡检记录',
+          id: 'siteInspection'
         },
         {
-          title: "参试人员",
-          id: "person"
+          title: '参试人员',
+          id: 'person'
         },
         {
-          title: "测试设备",
-          id: "testEquip"
+          title: '测试设备',
+          id: 'testEquip'
         },
         {
-          title: "振动工装",
-          id: "toolsProduct"
+          title: '振动工装',
+          id: 'toolsProduct'
         },
         {
-          title: "图片图谱",
-          id: "picture"
-        },
+          title: '图片图谱',
+          id: 'picture'
+        }
       ],
       moment,
-      productStatusOptions: [{key: '1', value: '1', label: '完好'}, {key: '2', value: '2', label: '损坏'}],
+      productStatusOptions: [{ key: '1', value: '1', label: '完好' }, { key: '2', value: '2', label: '损坏' }],
       siteRunningStatus: [
-        {key: '1', value: '1', label: '正常'},
-        {key: '2', value: '2', label: '异常'},
-        {key: '3', value: '3', label: '未知'}
+        { key: '1', value: '1', label: '正常' },
+        { key: '2', value: '2', label: '异常' },
+        { key: '3', value: '3', label: '未知' }
       ],
       switchRecordingColumns: [
         {
@@ -443,9 +451,9 @@ export default {
                 placeholder: '请选择试验开始时间',
                 format: 'YYYY-MM-DD HH:mm:ss',
                 showTime: true,
-                value: row.testStartTime,
+                value: row.testStartTime
               },
-              style: {width: '100%'},
+              style: { width: '100%' },
               on: {
                 change: (val) => {
                   this.$set(row, 'testStartTime', val)
@@ -475,9 +483,9 @@ export default {
                 placeholder: '请选择试验结束时间',
                 format: 'YYYY-MM-DD HH:mm:ss',
                 showTime: true,
-                value: row.testEndTime,
+                value: row.testEndTime
               },
-              style: {width: '100%'},
+              style: { width: '100%' },
               on: {
                 change: (val) => {
                   this.$set(row, 'testEndTime', val)
@@ -500,7 +508,7 @@ export default {
           title: '耗时',
           dataIndex: 'useTime',
           align: 'center',
-          width: 100,
+          width: 100
         },
         {
           title: '备注',
@@ -510,10 +518,10 @@ export default {
             return this.$createElement('a-textarea', {
               props: {
                 placeholder: '请输入备注',
-                autoSize: {minRows: 1},
-                value: row.remarks,
+                autoSize: { minRows: 1 },
+                value: row.remarks
               },
-              style: {width: '100%'},
+              style: { width: '100%' },
               on: {
                 change: (e) => {
                   row.remarks = e.target.value
@@ -528,7 +536,7 @@ export default {
           align: 'center',
           width: 220,
           customRender: (t, row) => {
-            let {personName, personSignTime} = row
+            let { personName, personSignTime } = row
             return this.$createElement('a-input', {
               props: {
                 readOnly: true,
@@ -543,7 +551,7 @@ export default {
                     }
                     postAction('/BaseUserBusiness/sign', loginParams).then(res => {
                       if (res.code === 200) {
-                        let {data} = res
+                        let { data } = res
                         this.$set(row, 'personName', data.idName)
                         this.$set(row, 'personId', data.id)
                         this.$set(row, 'personSignTime', moment().valueOf())
@@ -561,7 +569,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: {customRender: 'action'},
+          scopedSlots: { customRender: 'action' },
           width: 60,
           align: 'center'
         }
@@ -588,16 +596,16 @@ export default {
               props: {
                 placeholder: '请选择安装方式',
                 allowClear: true,
-                dictCode: "install_control_method",
-                value: row.installMethodCode,
+                dictCode: 'install_control_method',
+                value: row.installMethodCode
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (v, option) => {
                   row.installMethodCode = v
                   row.installMethodName = option.title
                 }
-              },
+              }
             })
           }
         },
@@ -618,15 +626,15 @@ export default {
                 dropdownStyle: {
                   maxHeight: '300px'
                 },
-                value: row.directionId ? row.directionId.split(',') : [],
+                value: row.directionId ? row.directionId.split(',') : []
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (v, option) => {
                   this.$set(row, 'directionId', v.toString())
                   this.$set(row, 'directionName', option.toString())
                 }
-              },
+              }
             })
           }
         },
@@ -635,27 +643,27 @@ export default {
           dataIndex: 'installNum',
           align: 'center',
           width: 150,
-          scopedSlots: {customRender: 'installNum'},
+          scopedSlots: { customRender: 'installNum' },
           customRender: (t, row, index) => {
             return this.$createElement('a-input', {
               props: {
                 placeholder: '请输入几台/次',
                 allowClear: true,
-                value: row.installNum,
+                value: row.installNum
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (e) => {
                   row.installNum = e.target.value
                 }
-              },
+              }
             })
           }
         },
         {
           title: '控制方式',
           dataIndex: 'controlMethod',
-          align: 'center',
+          align: 'center'
         },
         {
           title: '备注',
@@ -666,10 +674,10 @@ export default {
             return this.$createElement('a-textarea', {
               props: {
                 placeholder: '请输入备注',
-                autoSize: {minRows: 1},
-                value: row.remarks,
+                autoSize: { minRows: 1 },
+                value: row.remarks
               },
-              style: {width: '100%'},
+              style: { width: '100%' },
               on: {
                 change: (e) => {
                   row.remarks = e.target.value
@@ -681,7 +689,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: {customRender: 'action'},
+          scopedSlots: { customRender: 'action' },
           width: 60,
           align: 'center'
         }
@@ -715,15 +723,15 @@ export default {
                 dropdownStyle: {
                   maxHeight: '300px'
                 },
-                value: row.testDirectionId ? row.testDirectionId.split(',') : [],
+                value: row.testDirectionId ? row.testDirectionId.split(',') : []
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (v, option) => {
                   this.$set(row, 'testDirectionId', v.toString())
                   this.$set(row, 'testDirection', option.toString())
                 }
-              },
+              }
             })
           }
         },
@@ -737,14 +745,14 @@ export default {
               props: {
                 placeholder: '请输入向次',
                 allowClear: true,
-                value: row.directionNum,
+                value: row.directionNum
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (e) => {
                   row.directionNum = e.target.value
                 }
-              },
+              }
             })
           }
         },
@@ -759,9 +767,9 @@ export default {
                 placeholder: '请选择日期时间',
                 format: 'YYYY-MM-DD HH:mm:ss',
                 showTime: true,
-                value: row.inspectionTime,
+                value: row.inspectionTime
               },
-              style: {width: '100%'},
+              style: { width: '100%' },
               on: {
                 change: (val) => {
                   this.$set(row, 'inspectionTime', val)
@@ -780,14 +788,14 @@ export default {
               props: {
                 placeholder: '请输入温度设定值(℃)',
                 allowClear: true,
-                value: row.setUpValue,
+                value: row.setUpValue
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (value) => {
                   this.$set(row, 'setUpValue', value)
                 }
-              },
+              }
             })
           }
         },
@@ -801,14 +809,14 @@ export default {
               props: {
                 placeholder: '请输入温度实测值(℃)',
                 allowClear: true,
-                value: row.measuredValue,
+                value: row.measuredValue
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (value) => {
                   this.$set(row, 'measuredValue', value)
                 }
-              },
+              }
             })
           }
         },
@@ -823,14 +831,14 @@ export default {
                 placeholder: '请选择运行状态',
                 allowClear: true,
                 options: this.siteRunningStatus,
-                value: row.runStatus,
+                value: row.runStatus
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (value) => {
                   row.runStatus = value
                 }
-              },
+              }
             })
           }
         },
@@ -840,7 +848,7 @@ export default {
           align: 'center',
           width: 220,
           customRender: (t, row) => {
-            let {operationPerson, operationTime} = row
+            let { operationPerson, operationTime } = row
             return this.$createElement('a-input', {
               props: {
                 readOnly: true,
@@ -855,7 +863,7 @@ export default {
                     }
                     postAction('/BaseUserBusiness/sign', loginParams).then(res => {
                       if (res.code === 200) {
-                        let {data} = res
+                        let { data } = res
                         this.$set(row, 'operationPerson', data.idName)
                         this.$set(row, 'operationPersonId', data.id)
                         this.$set(row, 'operationTime', moment().valueOf())
@@ -879,10 +887,10 @@ export default {
             return this.$createElement('a-textarea', {
               props: {
                 placeholder: '请输入备注',
-                autoSize: {minRows: 1},
-                value: row.remarks,
+                autoSize: { minRows: 1 },
+                value: row.remarks
               },
-              style: {width: '100%'},
+              style: { width: '100%' },
               on: {
                 change: (e) => {
                   row.remarks = e.target.value
@@ -890,7 +898,7 @@ export default {
               }
             })
           }
-        },
+        }
       ],
       siteInspectionTable: [],
       // 试验方向下拉树数据
@@ -909,35 +917,35 @@ export default {
         testPerson: '/HfResEnvTestPersonBusiness/listAll',
         attachList: '/MinioBusiness/listByRefId',
         deleteImg: '/MinioBusiness/logicRemoveById',
-        listTree: '/HfResTestDirection/listTree',
+        listTree: '/HfResTestDirection/listTree'
       },
       equipSearchData: [
         {
           title: '设备编号',
           formType: 'input',
-          key: 'c_equipCode_7',
+          key: 'c_equipCode_7'
         },
         {
           title: '设备名称 ',
           formType: 'input',
-          key: 'c_equipName_7',
+          key: 'c_equipName_7'
         },
         {
           title: '设备类型',
           formType: 'dict',
           key: 'c_equipTypeCode_1',
-          dictCode: 'hf_res_equip_type',
+          dictCode: 'hf_res_equip_type'
         },
         {
           title: '设备型号',
           formType: 'input',
-          key: 'c_equipModel_7',
+          key: 'c_equipModel_7'
         },
         {
           title: '资产编号',
           formType: 'input',
-          key: 'c_assetsCode_7',
-        },],
+          key: 'c_assetsCode_7'
+        }],
       toolSearchBar: [
         {
           title: '工装编号',
@@ -997,37 +1005,37 @@ export default {
         {
           title: '入场时间',
           key: 'approachTime',
-          validate: {rules: [{required: false, validator: this.validateStartTime}]},
+          validate: { rules: [{ required: false, validator: this.validateStartTime }] },
           component: (
             <h-time-select
-              v-decorator={['approachTime', {rules: [{required: false, message: '请选择入场时间'}]}]}
+              v-decorator={['approachTime', { rules: [{ required: false, message: '请选择入场时间' }] }]}
             />
           )
         },
         {
           title: '离场时间',
           key: 'departureTime',
-          validate: {rules: [{required: false, validator: this.validateEndTime}]},
+          validate: { rules: [{ required: false, validator: this.validateEndTime }] },
           component: (
-            <h-time-select v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
+            <h-time-select v-decorator={['departureTime', { rules: [{ required: false, message: '请选择离场时间' }] }]} />
           )
         },
         {
           title: '开始时间',
           key: 'realStartTime',
-          validate: {rules: [{required: false, validator: this.validateStartTime}]},
+          validate: { rules: [{ required: false, validator: this.validateStartTime }] },
           component: (
             <h-time-select
-              v-decorator={['realStartTime', {rules: [{required: false, message: '请选择开始时间'}]}]}
+              v-decorator={['realStartTime', { rules: [{ required: false, message: '请选择开始时间' }] }]}
             />
           )
         },
         {
           title: '结束时间',
           key: 'realEndTime',
-          validate: {rules: [{required: false, validator: this.validateEndTime}]},
+          validate: { rules: [{ required: false, validator: this.validateEndTime }] },
           component: (
-            <h-time-select v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
+            <h-time-select v-decorator={['realEndTime', { rules: [{ required: false, message: '请选择结束时间' }] }]} />
           )
         },
         {
@@ -1035,7 +1043,7 @@ export default {
           key: 'temperature',
           formType: 'input-number',
           style: {
-            width: '100%',
+            width: '100%'
           }
         },
         {
@@ -1043,18 +1051,18 @@ export default {
           key: 'humidity',
           formType: 'input-number',
           style: {
-            width: '100%',
+            width: '100%'
           }
         },
         {
           title: '自检',
           key: 'selfInspection',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '互检',
           key: 'mutualInspection',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '实施过程',
@@ -1068,63 +1076,63 @@ export default {
           title: '委托单号',
           dataIndex: 'entrustCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '试件单位',
           dataIndex: 'custName',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '试件编号',
           dataIndex: 'pieceCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '试件名称',
           dataIndex: 'productName',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '试件代号',
           dataIndex: 'productAlias',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '试件型号',
           dataIndex: 'productModel',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '试件规格',
           dataIndex: 'productSpec',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '试件数量',
           dataIndex: 'pieceNum',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '库存数量',
           dataIndex: 'pieceCnum',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         }
       ],
@@ -1133,21 +1141,21 @@ export default {
           title: '设备编号',
           dataIndex: 'equipCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '设备名称',
           dataIndex: 'equipName',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '设备类型',
           dataIndex: 'equipTypeName',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1161,14 +1169,14 @@ export default {
           title: '设备型号',
           dataIndex: 'equipModel',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '资产编号',
           dataIndex: 'assetsCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         }
       ],
@@ -1187,7 +1195,7 @@ export default {
         {
           title: '试件编号',
           dataIndex: 'pieceNo',
-          align: 'center',
+          align: 'center'
         },
         {
           title: '试件附件',
@@ -1212,7 +1220,7 @@ export default {
             return this.$createElement('h-select', {
               props: {
                 value: row.beforeStatus,
-                options: this.productStatusOptions,
+                options: this.productStatusOptions
               },
               on: {
                 click: (val) => {
@@ -1231,7 +1239,7 @@ export default {
             return this.$createElement('h-select', {
               props: {
                 value: row.afterStatus,
-                options: this.productStatusOptions,
+                options: this.productStatusOptions
               },
               on: {
                 click: (val) => {
@@ -1244,22 +1252,22 @@ export default {
         {
           title: '产品代号',
           dataIndex: 'productAlias',
-          align: 'center',
+          align: 'center'
         },
         {
           title: '规格大小',
           dataIndex: 'productSpec',
-          align: 'center',
+          align: 'center'
         },
         {
           title: '送试单位',
           dataIndex: 'custName',
-          align: 'center',
+          align: 'center'
         },
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: {customRender: 'action'},
+          scopedSlots: { customRender: 'action' },
           width: 60,
           align: 'center'
         }
@@ -1272,16 +1280,16 @@ export default {
           key: 'rowIndex',
           width: 60,
           align: 'center',
-          customRender: function (t, r, index) {
+          customRender: function(t, r, index) {
             return index + 1
           }
         },
-        {title: '参试人员岗位', dataIndex: 'testPostName'},
-        {title: '参试人员姓名', dataIndex: 'testUserName'},
+        { title: '参试人员岗位', dataIndex: 'testPostName' },
+        { title: '参试人员姓名', dataIndex: 'testUserName' },
         {
           title: '操作',
           key: 'action',
-          scopedSlots: {customRender: 'action'},
+          scopedSlots: { customRender: 'action' },
           width: 60,
           align: 'center'
         }
@@ -1294,12 +1302,12 @@ export default {
           key: 'rowIndex',
           width: 60,
           align: 'center',
-          customRender: function (t, r, index) {
+          customRender: function(t, r, index) {
             return index + 1
           }
         },
-        {title: '设备编号', dataIndex: 'equipCode'},
-        {title: '设备名称', dataIndex: 'equipName'},
+        { title: '设备编号', dataIndex: 'equipCode' },
+        { title: '设备名称', dataIndex: 'equipName' },
         {
           title: '计量有效期',
           dataIndex: 'checkValid',
@@ -1307,11 +1315,11 @@ export default {
             return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
           }
         },
-        {title: '设备型号', dataIndex: 'equipModel'},
+        { title: '设备型号', dataIndex: 'equipModel' },
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: {customRender: 'action'},
+          scopedSlots: { customRender: 'action' },
           width: 60,
           align: 'center'
         }
@@ -1321,14 +1329,14 @@ export default {
           title: '设备编号',
           dataIndex: 'equipCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '设备名称',
           dataIndex: 'equipName',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1342,14 +1350,14 @@ export default {
           title: '设备型号',
           dataIndex: 'equipModel',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '资产编号',
           dataIndex: 'assetsCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1357,8 +1365,8 @@ export default {
           dataIndex: 'technologyParam',
           customRender: (text) => {
             return text || '--'
-          },
-        },
+          }
+        }
       ],
       sensorColumns: [
         {
@@ -1366,7 +1374,7 @@ export default {
           dataIndex: 'equipName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1374,7 +1382,7 @@ export default {
           dataIndex: 'equipIndex',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1382,7 +1390,7 @@ export default {
           dataIndex: 'innerName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1401,7 +1409,7 @@ export default {
           dataIndex: 'remarks',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '位置',
@@ -1413,16 +1421,16 @@ export default {
               props: {
                 placeholder: '请选择位置',
                 allowClear: true,
-                dictCode: "sensing_equipment_location",
-                value: row.locationCode,
+                dictCode: 'sensing_equipment_location',
+                value: row.locationCode
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (v, option) => {
                   row.locationCode = v
                   row.locationName = option.title
                 }
-              },
+              }
             })
           }
         },
@@ -1436,23 +1444,23 @@ export default {
               props: {
                 placeholder: '请选择用途',
                 allowClear: true,
-                dictCode: "sensing_equipment_purpose",
-                value: row.usePurposeCode,
+                dictCode: 'sensing_equipment_purpose',
+                value: row.usePurposeCode
               },
-              style: {width: "100%"},
+              style: { width: '100%' },
               on: {
                 change: (v, option) => {
                   row.usePurposeCode = v
                   row.usePurposeName = option.title
                 }
-              },
+              }
             })
           }
         },
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: {customRender: 'action'},
+          scopedSlots: { customRender: 'action' },
           width: 60,
           align: 'center'
         }
@@ -1464,7 +1472,7 @@ export default {
           dataIndex: 'toolsCode',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1472,7 +1480,7 @@ export default {
           dataIndex: 'toolsName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1480,7 +1488,7 @@ export default {
           dataIndex: 'toolsSize',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1496,7 +1504,7 @@ export default {
           dataIndex: 'location',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1504,7 +1512,7 @@ export default {
           dataIndex: 'deptName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1523,7 +1531,7 @@ export default {
           customRender: (text) => {
             return text || '--'
           }
-        },
+        }
       ],
       toolsProductColumns: [
         {
@@ -1531,7 +1539,7 @@ export default {
           dataIndex: 'toolsCode',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1539,7 +1547,7 @@ export default {
           dataIndex: 'toolsName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1547,7 +1555,7 @@ export default {
           dataIndex: 'toolsSize',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1563,7 +1571,7 @@ export default {
           dataIndex: 'location',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1571,7 +1579,7 @@ export default {
           dataIndex: 'deptName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -1594,7 +1602,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: {customRender: 'action'},
+          scopedSlots: { customRender: 'action' },
           width: 60,
           align: 'center'
         }
@@ -1618,7 +1626,7 @@ export default {
       this.visible = true
       this.getTestDetail(record.id)
       this.$nextTick(() => {
-        this.productList.queryParams = {id: record.id, projectPieceInfo: []}
+        this.productList.queryParams = { id: record.id, projectPieceInfo: [] }
       })
       this.loadImgData()
       this.getTestDirectionTreeData()
@@ -1634,7 +1642,7 @@ export default {
     // 试验设备开关机记录新增行
     switchRecordingAdd() {
       this.switchRecordingTable.push({
-        id: randomUUID(),
+        id: randomUUID()
       })
     },
     // 安装控制方式新增行
@@ -1647,7 +1655,7 @@ export default {
     // 巡检记录新增行
     siteInspectionAdd() {
       this.siteInspectionTable.push({
-        id: randomUUID(),
+        id: randomUUID()
       })
     },
     // 查看试件附件
@@ -1655,9 +1663,9 @@ export default {
       this.$refs.productFileModal.show(row, this.testRecordInfo.equipId)
     },
     loadImgData() {
-      postAction(this.url.attachList, {refType: 'test_picture', refId: this.testId}).then((res) => {
+      postAction(this.url.attachList, { refType: 'test_picture', refId: this.testId }).then((res) => {
         if (res.code === 200) {
-          const {data} = res
+          const { data } = res
           let fileArr = []
           let obj = {}
           if (data && data.length > 0) {
@@ -1688,7 +1696,7 @@ export default {
     },
     // 图片删除
     handleDeleteImg(file) {
-      postAction(this.url.deleteImg, {id: file.fileId}).then(() => {
+      postAction(this.url.deleteImg, { id: file.fileId }).then(() => {
         this.$message.success('删除成功')
       })
     },
@@ -1726,7 +1734,7 @@ export default {
       }
     },
     getTestDetail(id) {
-      postAction(this.url.detail, {id: id}).then((res) => {
+      postAction(this.url.detail, { id: id }).then((res) => {
         if (res.code === 200) {
           let model = Object.assign({}, res.data)
           this.productTable = model.testPieceInfo.map(item => {
@@ -1736,19 +1744,19 @@ export default {
               afterStatus: item.afterStatus || '1'
             }
           })
-          //试验设备开关机记录
+          // 试验设备开关机记录
           this.switchRecordingTable = model.switchOnOffInfo.map(item => {
             return {
               ...item,
               testStartTime: this.momentFormatFun(item.testStartTime, 'YYYY-MM-DD HH:mm:ss'),
-              testEndTime: this.momentFormatFun(item.testEndTime, 'YYYY-MM-DD HH:mm:ss'),
+              testEndTime: this.momentFormatFun(item.testEndTime, 'YYYY-MM-DD HH:mm:ss')
             }
           })
           // 巡检记录
           this.siteInspectionTable = model.siteInspectionInfo.map(item => {
             return {
               ...item,
-              inspectionTime: this.momentFormatFun(item.inspectionTime, 'YYYY-MM-DD HH:mm:ss'),
+              inspectionTime: this.momentFormatFun(item.inspectionTime, 'YYYY-MM-DD HH:mm:ss')
             }
           })
           this.installControlTable = model.insertMethodInfo// 安装、控制方式+传感器
@@ -1757,7 +1765,7 @@ export default {
           this.projectData = model.testTaskInfo
           this.productList.queryParams.projectPieceInfo = []
           this.productTable.forEach((item) => {
-            this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
+            this.productList.queryParams.projectPieceInfo.push({ projectId: item.projectId, pieceId: item.pieceId })
           })
           this.equipData = model.testEquipInfo.length ? model.testEquipInfo : this.selectedTreeRows
           this.toolsProductData = model.testToolsProductInfo
@@ -1773,7 +1781,7 @@ export default {
       this.$refs.productHandleSelectModal.show()
       this.productList.queryParams.projectPieceInfo = []
       this.productTable.forEach((item) => {
-        this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.productId})
+        this.productList.queryParams.projectPieceInfo.push({ projectId: item.projectId, pieceId: item.productId })
       })
     },
     switchRecordingDelete(index) {
@@ -1816,7 +1824,8 @@ export default {
     personHandleDelete(index) {
       this.personArr.splice(index, 1)
     },
-    selectPersonHandle(val) {
+    selectPersonHandle(val, postVal) {
+      let [postInfo] = postVal
       let newPerson = []
       if (val.length) {
         val.forEach((item, index) => {
@@ -1825,8 +1834,9 @@ export default {
             rowId: index + 1,
             testUserId: item.id,
             testUserName: item.idName,
-            testPostId: item.postId,
-            testPostName: item.postName
+            testPostId: postInfo.id,
+            testPostName: postInfo.postName,
+            testPostCode: postInfo.postCode
           })
         })
       }
@@ -1847,7 +1857,7 @@ export default {
     // 保存
     handleSave() {
       this.submitLoading = true
-      const {$refs: {carryOutProcessForm}} = this
+      const { $refs: { carryOutProcessForm } } = this
       const carryOutProcess_form = new Promise((resolve, reject) => {
         carryOutProcessForm.form.validateFieldsAndScroll((err, values) => {
           if (err) {
@@ -1865,33 +1875,33 @@ export default {
           approachTime: record.approachTime ? record.approachTime.valueOf() : '',
           realEndTime: record.realEndTime ? record.realEndTime.valueOf() : '',
           departureTime: record.departureTime ? record.departureTime.valueOf() : '',
-          remarks: record.remarks, //备注
-          temperature: record.temperature, //温度(°C)
-          humidity: record.humidity, //湿度(RH)
-          selfInspection: record.selfInspection, //自检
-          mutualInspection: record.mutualInspection, //互检
-          personArr: this.personArr, //参试人员集合
-          testEquipArr: this.equipData, //测试设备集合
-          pieceArr: this.productTable, //被试件(试件)集合
+          remarks: record.remarks, // 备注
+          temperature: record.temperature, // 温度(°C)
+          humidity: record.humidity, // 湿度(RH)
+          selfInspection: record.selfInspection, // 自检
+          mutualInspection: record.mutualInspection, // 互检
+          personArr: this.personArr, // 参试人员集合
+          testEquipArr: this.equipData, // 测试设备集合
+          pieceArr: this.productTable, // 被试件(试件)集合
           testToolsProductArr: this.toolsProductData,
           pictureData: this.pictureData, // 图片图谱
-          //试验设备开关机记录
+          // 试验设备开关机记录
           switchOnOffArr: this.switchRecordingTable.map(item => {
             return {
               ...item,
               testStartTime: moment(item.testStartTime).valueOf(),
-              testEndTime: moment(item.testEndTime).valueOf(),
+              testEndTime: moment(item.testEndTime).valueOf()
             }
           }),
           // 巡检记录
           siteInspectionArr: this.siteInspectionTable.map(item => {
             return {
               ...item,
-              inspectionTime: moment(item.inspectionTime).valueOf(),
+              inspectionTime: moment(item.inspectionTime).valueOf()
             }
           }),
           // 安装、控制方式 + 传感器
-          insertMethodArr: this.installControlTable,
+          insertMethodArr: this.installControlTable
         }
         postAction(this.url.save, params).then((res) => {
           if (res.code === 200) {

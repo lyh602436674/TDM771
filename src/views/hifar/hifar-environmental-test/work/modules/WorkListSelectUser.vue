@@ -54,40 +54,47 @@ export default {
           dataIndex: 'idName',
           customRender: (text) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '性别',
           dataIndex: 'sex',
           customRender: (text) => {
             return text == 1 ? '男' : text == 2 ? '女' : '保密'
-          },
+          }
+        },
+        {
+          title: '部门名称',
+          dataIndex: 'deptName',
+          customRender: (text) => {
+            return text || '--'
+          }
         },
         {
           title: '电话',
           dataIndex: 'mobile',
           customRender: (text) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '座机',
           dataIndex: 'telephone',
           customRender: (text) => {
             return text || '--'
-          },
-        },
+          }
+        }
       ],
       url: {
         list: '/OrgPostUserBusiness/listPageUserByNotPostId',
-        add: '/OrgPostUserBusiness/addPostUsers',
-      },
+        add: '/OrgPostUserBusiness/addPostUsers'
+      }
     }
   },
   computed: {
     postId() {
       return this.postId()
-    },
+    }
   },
   methods: {
     show() {
@@ -113,7 +120,7 @@ export default {
       this.loading = true
       let params = {
         postId: this.postId(),
-        userIds: this.selectedRowKeys.join(','),
+        userIds: this.selectedRowKeys.join(',')
       }
       postAction(this.url.add, params)
         .then((res) => {
@@ -131,15 +138,15 @@ export default {
       let data = {
         ...params,
         ...this.queryParams,
-        postId: this.postId(),
+        postId: this.postId()
       }
       return postAction(this.url.list, data).then((res) => {
         if (res.code === 200) {
           return res.data
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 

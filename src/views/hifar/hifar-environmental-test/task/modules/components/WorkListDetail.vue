@@ -41,21 +41,21 @@
 </template>
 
 <script>
-import {getAction} from '@/api/manage'
+import { getAction } from '@/api/manage'
 
 export default {
   props: {
     ids: {
       type: String,
-      default: '',
+      default: ''
     },
     postId: {
       type: String,
-      default: '',
+      default: ''
     },
     type: {
       type: String,
-      default: 'checkbox',
+      default: 'checkbox'
     }
   },
   watch: {
@@ -65,12 +65,12 @@ export default {
           this.refresh(true)
         })
       }
-    },
+    }
   },
   data() {
     return {
       url: {
-        list: '/OrgPostUserBusiness/listPageUserByPostId',
+        list: '/OrgPostUserBusiness/listPageUserByPostId'
       },
       queryParams: {},
       dataType: 'user',
@@ -78,7 +78,7 @@ export default {
         {
           title: '姓名',
           key: 'c_idName_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '性别',
@@ -88,62 +88,62 @@ export default {
             {
               title: '男',
               key: '1',
-              value: '1',
+              value: '1'
             },
             {
               title: '女',
               key: '2',
-              value: '2',
+              value: '2'
             },
             {
               title: '保密',
               key: '0',
-              value: '0',
-            },
-          ],
+              value: '0'
+            }
+          ]
         },
         {
           title: '电话',
           key: 'c_mobile_7',
-          formType: 'input',
-        },
+          formType: 'input'
+        }
       ],
       columns: [
         {
           title: '姓名',
           dataIndex: 'idName',
           scopedSlots: {
-            customRender: 'idName',
-          },
+            customRender: 'idName'
+          }
         },
         {
           title: '性别',
           dataIndex: 'sex',
           customRender: (text) => {
             return text == 1 ? '男' : text == 2 ? '女' : '保密'
-          },
+          }
         },
         {
-          title: '岗位名称',
-          dataIndex: 'postName',
+          title: '部门名称',
+          dataIndex: 'deptName',
           customRender: (text) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '电话',
           dataIndex: 'mobile',
           customRender: (text) => {
             return text || '--'
-          },
-        },
+          }
+        }
       ],
       loadData: (params) => {
         let data = {
           ...params,
           ...this.queryParams,
           postId: this.postId,
-          c_id_99: this.ids,
+          c_id_99: this.ids
         }
         return getAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
@@ -151,7 +151,7 @@ export default {
           }
         })
       },
-      selectedRowKeys: [],
+      selectedRowKeys: []
     }
   },
   methods: {
@@ -168,8 +168,8 @@ export default {
     onSelect(selectedRowKeys, selectedRow) {
       this.selectedRowKeys = selectedRowKeys
       this.$emit('change', selectedRow)
-    },
-  },
+    }
+  }
 }
 </script>
 

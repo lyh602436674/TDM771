@@ -56,11 +56,11 @@ import WorkListSelectUser from './WorkListSelectUser.vue'
 import mixin from '@/views/hifar/mixin.js'
 export default {
   components: { WorkListSelectUser },
-  mixins:[mixin],
+  mixins: [mixin],
   inject: {
     selectedRows: {
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
   provide() {
     return {
@@ -83,7 +83,7 @@ export default {
         {
           title: '姓名',
           key: 'c_idName_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '性别',
@@ -93,54 +93,54 @@ export default {
             {
               title: '男',
               key: '1',
-              value: '1',
+              value: '1'
             },
             {
               title: '女',
               key: '2',
-              value: '2',
+              value: '2'
             },
             {
               title: '保密',
               key: '0',
-              value: '0',
-            },
-          ],
+              value: '0'
+            }
+          ]
         },
         {
           title: '电话',
           key: 'c_mobile_7',
-          formType: 'input',
-        },
+          formType: 'input'
+        }
       ],
       columns: [
         {
           title: '姓名',
           dataIndex: 'idName',
           scopedSlots: {
-            customRender: 'idName',
-          },
+            customRender: 'idName'
+          }
         },
         {
           title: '性别',
           dataIndex: 'sex',
           customRender: (text) => {
             return text == 1 ? '男' : text == 2 ? '女' : '保密'
-          },
+          }
         },
         {
-          title: '岗位名称',
-          dataIndex: 'postName',
+          title: '部门名称',
+          dataIndex: 'deptName',
           customRender: (text) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '电话',
           dataIndex: 'mobile',
           customRender: (text) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '操作',
@@ -149,15 +149,15 @@ export default {
           align: 'center',
           fixed: 'right',
           scopedSlots: {
-            customRender: 'actions',
-          },
-        },
+            customRender: 'actions'
+          }
+        }
       ],
       loadData: (params) => {
         let data = {
           ...params,
           ...this.queryParams,
-          postId: this.postionDetail.id,
+          postId: this.postionDetail.id
         }
         this.postId = this.postionDetail.id
         return getAction(this.url.list, data).then((res) => {
@@ -166,18 +166,18 @@ export default {
           }
         })
       },
-      selectedRowKeys: [],
+      selectedRowKeys: []
     }
   },
   computed: {
     postionDetail() {
       return this.selectedRows()[0] || {}
-    },
+    }
   },
   watch: {
     postionDetail() {
       this.refresh(true)
-    },
+    }
   },
   methods: {
     handleSearch(v) {
@@ -199,22 +199,22 @@ export default {
       this.selectedRowKeys = selectedRowKeys
     },
     handleDelBatch() {
-      if(this.selectedRowKeys.length){
+      if (this.selectedRowKeys.length) {
       this.$confirm({
         title: '确认删除？',
         content: '删除后可以重新点击添加用户重新添加，确认删除？',
         onOk: () => {
           this.handleDelete(this.selectedRowKeys.join(','))
-        },
+        }
       })
-      }else{
-        this.openNotificationWithIcon('error','删除提示', '请至少选择一项')
+      } else {
+        this.openNotificationWithIcon('error', '删除提示', '请至少选择一项')
       }
     },
     handleDelete(id) {
       let params = {
         postId: this.postionDetail.id,
-        userIds: id,
+        userIds: id
       }
       postAction(this.url.del, params).then((res) => {
         if (res.code === 200) {
@@ -222,8 +222,8 @@ export default {
           this.refresh(true)
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 
