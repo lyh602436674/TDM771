@@ -45,10 +45,6 @@ import { getAction } from '@/api/manage'
 
 export default {
   props: {
-    ids: {
-      type: String,
-      default: ''
-    },
     postId: {
       type: String,
       default: ''
@@ -143,7 +139,6 @@ export default {
           ...params,
           ...this.queryParams,
           postId: this.postId,
-          c_id_99: this.ids
         }
         return getAction(this.url.list, data).then((res) => {
           if (res.code === 200) {

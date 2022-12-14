@@ -93,9 +93,9 @@
         <h-desc-item :span="3" label="参试人员">
           {{ testPersonInfo.length ? testPersonInfo.join(',') : '--' }}
         </h-desc-item>
-        <h-desc-item :span="3" label="测试设备">
-          {{ testEquipInfo.length ? testEquipInfo.join(',') : '--' }}
-        </h-desc-item>
+<!--        <h-desc-item :span="3" label="测试设备">-->
+<!--          {{ testEquipInfo.length ? testEquipInfo.join(',') : '&#45;&#45;' }}-->
+<!--        </h-desc-item>-->
         <h-desc-item :span="3" label="实施过程">{{ detailData.remarks || '--' }}</h-desc-item>
       </h-desc>
       <!-- 安装、控制方式 -->
@@ -847,7 +847,7 @@ export default {
           }
           if (testPersonInfoArr.length) {
             testPersonInfoArr.forEach((item) => {
-              let res = item.testUserName ? (item.testUserName + (item.testPostName ? +'(' + item.testPostName + ')' : '')) : '--'
+              let res = item.testUserName ? (item.testUserName + (item.testPostName ? '(' + item.testPostName + ')' : '')) : '--'
               testPersonInfo.push(res)
             })
           }

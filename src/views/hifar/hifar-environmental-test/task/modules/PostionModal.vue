@@ -45,7 +45,6 @@
       <div slot="right" style="background: #fff; height: 100%">
         <work-list-detail
           ref="WorkListDetail"
-          :ids="ids"
           :post-id="selectedKeys.toString()"
           :type="type"
           @change="selectPersonChange"></work-list-detail>
@@ -55,7 +54,7 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import HEditTree from '@/views/components/HEditTree.js'
 import WorkListDetail from './components/WorkListDetail'
 
@@ -111,19 +110,11 @@ export default {
       selectedKeys: [], // 左侧树的已选中key
       selectedRows: [],
       selectedPersonRows: [],
-      ids: null
     }
   },
   methods: {
     show(record) {
       this.visible = true
-      let ids = []
-      if (record.length) {
-        record.forEach((item) => {
-          ids.push(item.testUserId)
-        })
-      }
-      this.ids = ids.length > 0 ? ids.join(',') : ''
       this.getWorkCenterTree()
     },
     handleCancel() {
@@ -139,7 +130,6 @@ export default {
       this.selectedRows = selectedRows
     },
     async getWorkCenterTree() {
-      console.log('treeSearchParams', this.treeSearchParams)
       let params = {
         ...this.treeSearchParams
       }
@@ -155,6 +145,7 @@ export default {
         })
         this.selectedRows = [this.treeData[0]]
         this.selectedKeys = [this.treeData[0].id]
+        this.$refs.WorkListDetail.refresh()
       }
     },
     selectPersonChange(arrVal) {

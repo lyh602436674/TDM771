@@ -58,7 +58,6 @@
 import { getAction } from '@/api/manage'
 import { isString, isArray, isFunction } from 'lodash'
 export default {
-  // inject: ['centerId'],
   props: {
     placeholder: {
       type: String,
@@ -186,7 +185,6 @@ export default {
       let data = {
         ...params,
         ...this.queryParams,
-        // centerId: this.centerId(),
       }
       return getAction(this.url, data).then((res) => {
         if (res.code === 200) {

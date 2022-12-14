@@ -7,16 +7,18 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\entrustment\components\EntrustDetail.vue
 -->
 <template>
-  <div class="detail-containter">
+  <div>
     <!-- 委托信息 -->
-    <detail-base-info :detailDataObj="detailData"></detail-base-info>
+    <detail-base-info id="entrust" :detailDataObj="detailData"></detail-base-info>
     <!--样品信息-->
-    <piece-detail-template :dataSource="detailData.pieceInfo"/>
+    <piece-detail-template id="product" :dataSource="detailData.pieceInfo"/>
     <!-- 项目信息 -->
     <detail-project-info
+      id="project"
       :projectInfoArr="detailData && detailData.projectInfo ? detailData.projectInfo : []"
       style="margin-top: 15px"
     ></detail-project-info>
+    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </div>
 </template>
 
@@ -24,12 +26,14 @@
 import DetailBaseInfo from './DetailBaseInfo.vue'
 import DetailProjectInfo from './DetailProjectInfo.vue'
 import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
+import HfElevatorLayer from "@comp/HfElevatorLayer";
 
 export default {
   components: {
     PieceDetailTemplate,
     DetailBaseInfo,
     DetailProjectInfo,
+    HfElevatorLayer
   },
   props: {
     detailData: {
@@ -38,11 +42,49 @@ export default {
       },
     },
   },
+  watch: {
+    detailData: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        if (val && Object.keys(val).length) {
+          this.buildLayer(val.projectInfo)
+        }
+      }
+    }
+  },
   data() {
-    return {}
+    return {
+      layerColumns: [],
+    }
   },
 
-  methods: {},
+  methods: {
+    buildLayer(column) {
+      let defaultLayer = [
+        {
+          title: "委托信息",
+          id: "entrust"
+        },
+        {
+          title: "产品信息",
+          id: "product"
+        },
+        {
+          title: "项目信息",
+          id: "project"
+        },
+      ]
+      this.layerColumns = []
+      column && column.length && column.forEach((item, index) => {
+        defaultLayer.push({
+          title: item.unitName || item.testName,
+          id: 'projectItem' + index
+        })
+      })
+      this.layerColumns = defaultLayer
+    },
+  },
 }
 </script>
 <style lang='less' scoped>

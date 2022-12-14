@@ -22,7 +22,8 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@api/manage'
+import {postAction} from '@api/manage'
+
 export default {
   components: {},
   props: {
@@ -99,7 +100,7 @@ export default {
         case 'forceEndRefuse':
           return 'red'
         case 'forceEnd':
-          return '#108ee9'
+          return '#f5222d'
         case 'finish':
           return '#108ee9'
         case 'remove':

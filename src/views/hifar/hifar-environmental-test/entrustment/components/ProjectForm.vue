@@ -13,11 +13,11 @@
           <project-form-item ref="projectFormItem" :index="index" :entrustType="entrustType"
                              :pieceTableData="pieceTableData" :project="item"></project-form-item>
         </div>
-        <div class="panel-custom-item-right">
+        <div class="panel-custom-item-top-right">
           <a-button
             icon="delete"
             size="small"
-            style="width: 32px; height: 32px; margin-top: 10px"
+            style="width: 32px; height: 32px"
             type="danger"
             @click="deleteProjectHandle(item, index)"
           ></a-button>
@@ -137,6 +137,7 @@ export default {
                 projectFormValue.attachIds = attachIds;
                 projectFormValue.abilityRequire = tabItemTableAllData;
                 projectFormValue.curveUrl = that.curveUrl;
+                projectFormValue.testEquip = that.equipData
                 projectResult.push(projectFormValue)
               }
             })
@@ -148,6 +149,7 @@ export default {
             projectFormValue.attachIds = projectFormValue.attachIds.map(item => item.fileId).toString()
             projectFormValue.abilityRequire = tabItemTableAllData
             projectFormValue.curveUrl = that.curveUrl
+            projectFormValue.testEquip = that.equipData
             projectResult.push(projectFormValue)
           }
         }
@@ -169,28 +171,22 @@ export default {
   overflow: hidden;
 
   .panel-custom-item {
-    display: flex;
     margin-bottom: 10px;
+    position: relative;
+    width: calc(100% - 45px);
 
     .panel-custom-item-left {
-      width: 98%;
+      width: 100%;
       min-height: 226px;
       border: 1px solid #e8e8e8;
-      padding: 0 20px 20px;
-
-      .collapseStyle {
-        width: 93%;
-        margin-left: 6%;
-        font-size: 12px;
-        margin-bottom: 18px;
-      }
+      padding: 0 40px 20px 20px;
     }
 
-    .panel-custom-item-right {
-      padding-left: 5px;
-      display: flex;
-      align-items: center;
-      flex-direction: column;
+    .panel-custom-item-top-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 99;
     }
   }
 }
