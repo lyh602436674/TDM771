@@ -15,7 +15,7 @@
       style="margin-top: 18px; margin-left: 15px"
     >
     </h-form>
-    <h-collapse :activeKey="1" :forceRender="false" class="collapseStyle" title="试验条件结构化">
+    <h-collapse :activeKey="1" class="collapseStyle" title="试验条件结构化">
       <div slot="extraBox" v-if="filterUnitCode(model.unitCode)">
         <a-button size="small" type="primary" @click.stop="previewEcharts"> 预览</a-button>
       </div>
@@ -44,8 +44,45 @@
         </template>
       </div>
     </h-collapse>
+    <h-collapse :activeKey="1" class="collapseStyle" style="margin-top:10px" title="测试设备">
+      <div slot="extraBox">
+        <a-button size="small" type="primary" @click.stop="equipAdd"> 添加</a-button>
+      </div>
+      <div slot="content">
+        <a-table
+          :columns="equipColumns"
+          :dataSource="equipData"
+          :pagination="false"
+          bordered
+          rowKey="id"
+          size="small"
+        >
+          <template #action="text, record,index">
+            <a-popconfirm title="确定删除吗?" @confirm="() => equipHandleDelete(index)">
+              <a-icon
+                class="primary-text"
+                style="cursor: pointer"
+                theme="twoTone"
+                title="删除"
+                two-tone-color="#ff4d4f"
+                type="delete"
+              />
+            </a-popconfirm>
+          </template>
+        </a-table>
+      </div>
+    </h-collapse>
     <point-list ref="PointList" @change="pointSelectChange"></point-list>
     <experimental-curve-modal ref="ExperimentalCurveModal" @change="curveUrlChange"></experimental-curve-modal>
+    <handle-select-modal
+      ref="equipHandleSelectModal"
+      :columns="addEquipColumns"
+      :data-url="equipList"
+      :searchData="equipSearchData"
+      :title="'添加测试设备'"
+      type="equip"
+      @callback="equipCallback"
+    />
     <div id='echarts-result' style='display: none;width: 1000px;height: 500px;'></div>
   </div>
 </template>
@@ -64,10 +101,17 @@ import sortable from 'sortablejs'
 import {randomUUID} from "@/utils/util";
 import {filterDictTextByCache} from '@comp/_util/JDictSelectUtil'
 import SysUserSelect from '@/views/components/SysUserSelect'
+import HandleSelectModal from "@views/hifar/hifar-environmental-test/task/modules/components/HandleSelectModal";
 
 export default {
   components: {
-    NewSampleListModal, MethodSelectModal, TestConditionTabItem, ExperimentalCurveModal, PointList, SysUserSelect
+    NewSampleListModal,
+    MethodSelectModal,
+    TestConditionTabItem,
+    ExperimentalCurveModal,
+    PointList,
+    SysUserSelect,
+    HandleSelectModal
   },
   mixins: [drawCurveMixin, entrustmentMixins],
   props: {
@@ -98,9 +142,8 @@ export default {
           let filterUnitCodeFlag = this.filterUnitCode(obj.unitCode)
           obj.unitId = obj.unitId ? obj.unitId : obj.id
           obj.testName = obj.unitName
-          let fileList = []
-          obj.fileInfo && obj.fileInfo.length && obj.fileInfo.forEach(item => {
-            fileList.push({
+          obj.attachIds = obj.fileInfo && obj.fileInfo.length && obj.fileInfo.map(item => {
+            return {
               fileId: item.id,
               size: item.fileSize,
               status: item.status === 9 ? 'success' : 'exception',
@@ -112,9 +155,9 @@ export default {
               secretLevel: item.secretLevel,
               type: item.viewType === 2 ? 'image/jpeg' : 'text/plain',
               replaceStatus: item.replaceStatus
-            })
-          })
-          obj.attachIds = fileList || []
+            }
+          }) || []
+          this.equipData = obj.testEquipInfo
           if (obj.abilityRequire && obj.abilityRequire.length) {
             obj.abilityRequire.forEach((item, index) => {
               item.closable = index !== 0 && index !== 1
@@ -188,6 +231,112 @@ export default {
     return {
       moment,
       model: {},
+      equipColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return index + 1
+          }
+        },
+        {title: '设备编号', dataIndex: 'equipCode'},
+        {title: '设备名称', dataIndex: 'equipName'},
+        {
+          title: '计量有效期',
+          dataIndex: 'checkValid',
+          customRender: (t, record) => {
+            return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
+          }
+        },
+        {title: '设备型号', dataIndex: 'equipModel'},
+        {
+          title: '操作',
+          dataIndex: 'action',
+          scopedSlots: {customRender: 'action'},
+          width: 60,
+          align: 'center'
+        }
+      ],
+      addEquipColumns: [
+        {
+          title: '设备编号',
+          dataIndex: 'equipCode',
+          customRender: (t) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '设备名称',
+          dataIndex: 'equipName',
+          customRender: (t) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '设备类型',
+          dataIndex: 'equipTypeName',
+          customRender: (t) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '计量有效期',
+          dataIndex: 'checkValid',
+          customRender: (t, record) => {
+            return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
+          }
+        },
+        {
+          title: '设备型号',
+          dataIndex: 'equipModel',
+          customRender: (t) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '资产编号',
+          dataIndex: 'assetsCode',
+          customRender: (t) => {
+            return t || '--'
+          }
+        }
+      ],
+      equipSearchData: [
+        {
+          title: '设备编号',
+          formType: 'input',
+          key: 'c_equipCode_7'
+        },
+        {
+          title: '设备名称 ',
+          formType: 'input',
+          key: 'c_equipName_7'
+        },
+        {
+          title: '设备类型',
+          formType: 'dict',
+          key: 'c_equipTypeCode_1',
+          dictCode: 'hf_res_equip_type'
+        },
+        {
+          title: '设备型号',
+          formType: 'input',
+          key: 'c_equipModel_7'
+        },
+        {
+          title: '资产编号',
+          formType: 'input',
+          key: 'c_assetsCode_7'
+        }
+      ],
+      equipList: {
+        list: '/HfResEquipBusiness/listPage',
+        queryParams: {}
+      },
+      equipData: [],
       tabsActiveKey: 0,
       testConditionData: [
         {
@@ -485,6 +634,17 @@ export default {
       setTimeout(() => {
         this.$refs.ExperimentalCurveModal.open(obj)
       }, 0)
+    },
+    equipAdd() {
+      this.$refs.equipHandleSelectModal.show(this.equipData)
+    },
+    equipCallback(value) {
+      this.equipData = this.equipData.concat(value.map(item => {
+        return {equipId: item.id, ...item}
+      }))
+    },
+    equipHandleDelete(index) {
+      this.equipData.splice(index, 1)
     },
     momentFormat(value) {
       let hours = Math.floor(value / 1000 / 60 / 60)

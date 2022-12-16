@@ -32,18 +32,12 @@ export default {
   components: {
     PhemismUserSelect,
   },
-  // provide() {
-  //   return {
-  //     centerId: () => this.centerId
-  //   }
-  // },
   data() {
     return {
       visible: false,
       submitLoading: false,
       model: {},
       name: '',
-      centerId: 'hello',
       errorMessage: null,
       formData: [
         {
@@ -193,7 +187,6 @@ export default {
     show(record) {
       this.model = Object.assign({}, record)
       this.visible = true
-      // this.centerId = record.workId
     },
     handleCancel() {
       this.visible = false
@@ -243,10 +236,10 @@ export default {
             this.handleCancel()
           }
         } else {
-
+          this.submitLoading = false
         }
       }).finally(() => {
-
+        this.submitLoading = false
       })
     },
   },

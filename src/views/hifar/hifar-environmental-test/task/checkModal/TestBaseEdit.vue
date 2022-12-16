@@ -348,11 +348,11 @@
 
 <script>
 import moment from 'moment'
-import { cloneDeep } from 'lodash'
-import { postAction } from '@/api/manage'
+import {cloneDeep} from 'lodash'
+import {postAction} from '@/api/manage'
 import HandleSelectModal from '../modules/components/HandleSelectModal.vue'
 import PostionModal from '../modules/PostionModal'
-import { randomUUID, recursive } from '@/utils/util'
+import {randomUUID, recursive} from '@/utils/util'
 import CheckEnsureModal from '../modules/components/CheckEnsureModal'
 import ProductFileModal from '@views/hifar/hifar-environmental-test/task/modules/ProductFileModal'
 import HfElevatorLayer from '@/components/HfElevatorLayer'
@@ -630,9 +630,28 @@ export default {
               },
               style: { width: '100%' },
               on: {
-                change: (v, option) => {
-                  this.$set(row, 'directionId', v.toString())
-                  this.$set(row, 'directionName', option.toString())
+                change: (v, option, extra) => {
+                  if (extra.triggerNode && extra.triggerNode.isLeaf === false) {
+                    let {preValue} = extra
+                    let getId = extra.triggerNode.dataRef.children.map(_ => _.id)
+                    let getName = extra.triggerNode.dataRef.children.map(_ => _.title)
+                    let directionId = row.directionId ? row.directionId.split(',').concat(getId) : getId
+                    let directionName = row.directionName ? row.directionName.split(',').concat(getName) : getName
+                    if (preValue && preValue.length) {
+                      for (let j = 0; j < preValue.length; j++) {
+                        if (v.includes(preValue[j].value)) {
+                          let index = directionId.indexOf(preValue[j].value)
+                          directionId.splice(index, 1)
+                          directionName.splice(index, 1)
+                        }
+                      }
+                    }
+                    this.$set(row, 'directionId', directionId.toString())
+                    this.$set(row, 'directionName', directionName.toString())
+                  } else {
+                    this.$set(row, 'directionId', v.toString())
+                    this.$set(row, 'directionName', option.toString())
+                  }
                 }
               }
             })
@@ -727,9 +746,28 @@ export default {
               },
               style: { width: '100%' },
               on: {
-                change: (v, option) => {
-                  this.$set(row, 'testDirectionId', v.toString())
-                  this.$set(row, 'testDirection', option.toString())
+                change: (v, option, extra) => {
+                  if (extra.triggerNode && extra.triggerNode.isLeaf === false) {
+                    let {preValue} = extra
+                    let getId = extra.triggerNode.dataRef.children.map(_ => _.id)
+                    let getName = extra.triggerNode.dataRef.children.map(_ => _.title)
+                    let directionId = row.testDirectionId ? row.testDirectionId.split(',').concat(getId) : getId
+                    let directionName = row.testDirection ? row.testDirection.split(',').concat(getName) : getName
+                    if (preValue && preValue.length) {
+                      for (let j = 0; j < preValue.length; j++) {
+                        if (v.includes(preValue[j].value)) {
+                          let index = directionId.indexOf(preValue[j].value)
+                          directionId.splice(index, 1)
+                          directionName.splice(index, 1)
+                        }
+                      }
+                    }
+                    this.$set(row, 'testDirectionId', directionId.toString())
+                    this.$set(row, 'testDirection', directionName.toString())
+                  } else {
+                    this.$set(row, 'testDirectionId', v.toString())
+                    this.$set(row, 'testDirection', option.toString())
+                  }
                 }
               }
             })
@@ -945,7 +983,8 @@ export default {
           title: '资产编号',
           formType: 'input',
           key: 'c_assetsCode_7'
-        }],
+        }
+      ],
       toolSearchBar: [
         {
           title: '工装编号',
@@ -1882,7 +1921,14 @@ export default {
           mutualInspection: record.mutualInspection, // 互检
           personArr: this.personArr, // 参试人员集合
           testEquipArr: this.equipData, // 测试设备集合
-          pieceArr: this.productTable, // 被试件(试件)集合
+          pieceArr: this.productTable.map(item => {
+            return {
+              ...item,
+              attachIds: item.attachInfo.map(item => item.id).toString(),
+              imgAttachIds: item.imgAttachInfo.map(item => item.id).toString(),
+            }
+          }),
+          // 被试件(试件)集合
           testToolsProductArr: this.toolsProductData,
           pictureData: this.pictureData, // 图片图谱
           // 试验设备开关机记录

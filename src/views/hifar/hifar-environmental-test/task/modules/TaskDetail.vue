@@ -7,10 +7,10 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\task\modules\TaskDetail.vue
 -->
 <template>
-  <div>
     <h-modal
       :fullScreen="fullScreen"
       :getContainer="getContainer"
+      destroyOnClose
       :visible="visible"
       title="委托任务详情"
       width="90%"
@@ -21,16 +21,17 @@
       </div>
       <a-spin :spinning="spinning">
         <div class="task-detail-wrapper">
-          <div class="task-info">
+          <div id="entrust" class="task-info">
             <detail-base-info :detailDataObj="model.entrustData" :attachInfo="model.attachInfo"></detail-base-info>
           </div>
-          <div class="piece-info">
+          <div id="product" class="piece-info">
             <piece-detail-template :dataSource="pieceInfo"
                                    :entrust-type="model.entrustData && model.entrustData.entrustType || 1 "/>
           </div>
-          <div class="piece-info">
+          <div id="project" class="piece-info">
             <h-desc :bordered="false" size="small" title="项目信息">
-              <h-card v-for="(item, index) in projectInfo" :key="index" style="margin-bottom: 10px">
+              <h-card v-for="(item, index) in projectInfo" :id="'projectItem' + index" :key="index"
+                      style="margin-bottom: 10px">
                 <div slot="title">{{ item.unitName }}</div>
                 <template slot="content">
                   <project-detail-template :model="item" title=""></project-detail-template>
@@ -38,7 +39,7 @@
               </h-card>
             </h-desc>
           </div>
-          <div class="equip-info">
+          <div id="testInfo" class="test-info">
             <h-desc title="试验信息">
               <a-table
                 :columns="equipColumns"
@@ -64,10 +65,10 @@
       <div slot="footer">
         <a-button type="ghost-danger" @click="handleCancel">关闭</a-button>
       </div>
+      <pieces-record ref="piecesRecord"/>
+      <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
+      <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
     </h-modal>
-    <pieces-record ref="piecesRecord"/>
-    <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
-  </div>
 </template>
 
 <script>
@@ -79,6 +80,7 @@ import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/mod
 import DetailBaseInfo from "@views/hifar/hifar-environmental-test/entrustment/components/DetailBaseInfo";
 import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
 import ProjectDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate";
+import HfElevatorLayer from "@comp/HfElevatorLayer";
 
 export default {
   mixins: [mixin],
@@ -97,7 +99,8 @@ export default {
   components: {
     ProjectDetailTemplate,
     PieceDetailTemplate,
-    PiecesRecord, TestEntrustReviewPdf, DetailBaseInfo
+    PiecesRecord, TestEntrustReviewPdf, DetailBaseInfo,
+    HfElevatorLayer
   },
   data() {
     return {
@@ -110,6 +113,7 @@ export default {
       pieceInfo: [],
       equipTestInfo: [],
       projectInfo: [],
+      layerColumns: [],
       url: {
         detail: '/HfEnvTaskBusiness/queryById',
       },
@@ -178,6 +182,7 @@ export default {
           this.pieceInfo = res.data.pieceInfo || []
           this.equipTestInfo = res.data.equipTestInfo || []
           this.projectInfo = res.data.projectInfo || []
+          this.buildLayer(this.projectInfo)
         }
       }).finally(() => {
         this.spinning = false
@@ -193,6 +198,36 @@ export default {
     fullScreenHandle() {
       this.fullScreen = !this.fullScreen
     },
+    buildLayer(column) {
+      let defaultLayer = [
+        {
+          title: "基本信息",
+          id: "entrust"
+        },
+        {
+          title: "产品信息",
+          id: "product"
+        },
+        {
+          title: "项目信息",
+          id: "project"
+        },
+      ]
+      let otherLayer = [
+        {
+          title: "试验信息",
+          id: "testInfo"
+        },
+      ]
+      this.layerColumns = []
+      column && column.length && column.forEach((item, index) => {
+        defaultLayer.push({
+          title: item.unitName || item.testName,
+          id: 'projectItem' + index
+        })
+      })
+      this.layerColumns = defaultLayer.concat(otherLayer)
+    },
   },
 }
 </script>
@@ -205,7 +240,7 @@ export default {
 
   .task-info,
   .piece-info,
-  .equip-info {
+  .test-info {
     margin-bottom: 10px;
 
     .ant-card-body {

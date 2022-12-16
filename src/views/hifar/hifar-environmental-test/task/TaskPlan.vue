@@ -169,16 +169,12 @@ export default {
   provide() {
     return {
       getContainer: () => this.$refs.taskPlan,
-      centerId: () => {
-        return this.centerId
-      },
     }
   },
   components: {HPie, TaskArrangement, TaskDetail, WorkCenterDetailModal, TestInfoListModal, TaskForceEndModal,},
   data() {
     return {
       collapse: true,
-      centerId: null,
       queryParams: {
         type: 'month',
       },
@@ -616,7 +612,6 @@ export default {
     },
 
     showTaskArrangement(record) {
-      this.centerId = record.workId
       this.$refs.taskArrangement.show(record)
     },
     handleShowTaskArrangement() {
@@ -630,9 +625,6 @@ export default {
           this.$message.error('所选任务的试验项目必须为同一类试验项目')
           return
         }
-        // if (+task.status !== 1) {
-        //   return this.$message.error('委托单号' + task.entrustCode + '任务不可再分配')
-        // }
       }
       let record = Object.assign({}, this.selectedRows[0])
       record.id = this.selectedRowKeys.join(',')
@@ -654,9 +646,6 @@ export default {
       this.collapse = !this.collapse
     },
     handleReload() {
-      this.queryParams = {
-        type: this.queryParams.type,
-      }
       this.refresh(true)
     },
   },

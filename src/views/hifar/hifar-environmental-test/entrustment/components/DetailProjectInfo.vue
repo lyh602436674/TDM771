@@ -6,7 +6,7 @@
 -->
 <template>
   <h-desc :bordered="false" size="small" title="项目信息">
-    <h-card v-for="(item, index) in projectInfo" :key="index" style="margin-bottom: 10px">
+    <h-card v-for="(item, index) in projectInfo" :id="'projectItem' + index" :key="index" style="margin-bottom: 10px">
       <div slot="title">{{ item.unitName }}</div>
       <template slot="content">
         <project-detail-template :model="item" title=""></project-detail-template>
