@@ -3,8 +3,12 @@
     <vxe-table ref='workTable'
                :data='tableData'
                @cell-click="handleCellClick"
+               @menu-click="handleMenuClick"
+               :mouse-config="{selected: true}"
                height="100%"
+               :loading="tableLoading"
                size="medium"
+               :menu-config="tableEdit ? menuConfig : {}"
                autoResize round border stripe
                :edit-config="{
                   trigger: 'click',
@@ -17,7 +21,7 @@
         <div slot='default' slot-scope='{row, rowIndex}'>
           <div style="display: flex;width: 100%;justify-content: center">
             <div class="time" style="padding:0 5px">
-              {{ moment(+row.dutyTime).format('YYYY-MM-DD') }}
+              {{ row.dutyTime && moment(+row.dutyTime).format('YYYY-MM-DD') || '--' }}
             </div>
             <div class="week" style="padding:0 5px">{{ row.week }}</div>
           </div>
@@ -120,6 +124,7 @@
 
 <script>
 import moment from "moment";
+import {isObject, isEmpty, cloneDeep} from 'lodash'
 
 export default {
   name: "userTable",
@@ -133,6 +138,10 @@ export default {
       default: () => []
     },
     tableEdit: {
+      type: Boolean,
+      default: false
+    },
+    tableLoading: {
       type: Boolean,
       default: false
     },
@@ -170,6 +179,52 @@ export default {
     return {
       moment,
       localTableData: [],
+      copyRecord: {},
+      dataConfig: [
+        ['proNameId', 'proName', 'proPhone'],
+        ['practicalNameId', 'practicalName', 'practicalPhone'],
+        ['proNameId2', 'proName2', 'proPhone2'],
+        ['practicalNameId2', 'practicalName2', 'practicalPhone2'],
+      ],
+      menuConfig: {
+        visibleMethod: ({type, options, column, row}) => {
+          if (type !== 'body') return false
+          options.forEach(list => {
+            list.forEach(item => {
+              if (['dutyTime'].includes(column.property)) {
+                item.disabled = true
+                item.visible = false
+              } else {
+                item.disabled = false
+                item.visible = true
+              }
+              if (['pasteCell', 'pasteRow'].includes(item.code)) {
+                item.disabled = !Object.keys(this.copyRecord).length
+              }
+              if (['copyCell', 'clearCell'].includes(item.code)) {
+                item.disabled = !row[column.property]
+              }
+            })
+          })
+          return true
+        },
+        body: {
+          options: [
+            [
+              {code: 'copyCell', name: "复制此单元格",},
+              {code: 'copyRow', name: "复制整行"},
+            ],
+            [
+              {code: 'clearCell', name: "清除此单元格"},
+              {code: 'clearRow', name: "清除整行"},
+            ],
+            [
+              {code: 'pasteCell', name: "粘贴此单元格"},
+              {code: 'pasteRow', name: "粘贴整行"},
+            ]
+          ],
+        },
+      },
     }
   },
   methods: {
@@ -185,12 +240,58 @@ export default {
     handleCellClick({row, rowIndex, column}) {
 
     },
+    handleMenuClick({menu, row, column, rowIndex}) {
+      switch (menu.code) {
+        case "copyCell":
+          this.copyRecord = {}
+          this.dataConfig.forEach(item => {
+            if (item.includes(column.property)) {
+              item.forEach(v => {
+                this.copyRecord[v] = row[v]
+              })
+            }
+          })
+          break;
+        case "copyRow":
+          this.copyRecord = {}
+          this.dataConfig.flat().forEach(item => {
+            this.copyRecord[item] = row[item]
+          })
+          break;
+        case 'clearCell':
+          this.dataConfig.forEach(item => {
+            if (item.includes(column.property)) {
+              item.forEach(v => {
+                this.tableData[rowIndex][v] = ''
+              })
+            }
+          })
+          break
+        case 'clearRow':
+          this.dataConfig.flat().forEach(item => {
+            this.tableData[rowIndex][item] = ''
+          })
+          break
+        case 'pasteCell':
+          if (this.copyRecord.hasOwnProperty(column.property)) {
+            let tableData = cloneDeep(this.tableData)
+            tableData[rowIndex] = {...tableData[rowIndex], ...this.copyRecord}
+            this.$refs.workTable.loadData(tableData)
+            this.$emit('change', this.tableDataName, tableData)
+          }
+          break;
+        case 'pasteRow':
+          let tableData = cloneDeep(this.tableData)
+          tableData[rowIndex] = {...tableData[rowIndex], ...this.copyRecord}
+          this.$refs.workTable.loadData(tableData)
+          this.$emit('change', this.tableDataName, tableData)
+      }
+    },
     filterOption(input, option) {
       return (
         option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
       );
-    }
-    ,
+    },
   }
 }
 </script>

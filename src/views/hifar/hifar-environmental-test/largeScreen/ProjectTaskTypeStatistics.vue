@@ -14,8 +14,9 @@
 </template>
 
 <script>
-import { getAction } from '@/api/manage'
-import { fontSize } from './chartsFontSizeToRem'
+import {getAction} from '@/api/manage'
+import {fontSize} from './chartsFontSizeToRem'
+
 export default {
   name: 'ProjectTaskTypeStatistics',
   description: '项目任务类别统计页面',
@@ -71,6 +72,7 @@ export default {
               z: 10,
             },
             yAxis: {
+              minInterval: 1,
               axisLine: {
                 show: true,
                 lineStyle: {

@@ -69,6 +69,7 @@ export default {
               },
             },
             yAxis: {
+              minInterval: 1,
               axisLine: {
                 show: true,
                 lineStyle: {
