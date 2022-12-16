@@ -42,6 +42,9 @@
         <span slot="status" slot-scope="text, record">
           <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
         </span>
+        <template slot="downloadNum" slot-scope="text,record">
+          <a @click="downloadRecord(record)">查看下载记录</a>
+        </template>
         <div slot="action" slot-scope="text, record">
           <a-icon
             class="primary-text"
@@ -91,10 +94,10 @@
                   <a-icon class="primary-text" style="cursor: pointer" title="下载" type="download"/>
                   <a-menu slot="overlay">
                     <a-menu-item>
-                      <span @click="handleDownload(record.filePath, record.reportCode,'.docx')">下载word</span>
+                      <span @click="handleDownload(record.id,'docx')">下载word</span>
                     </a-menu-item>
                     <a-menu-item>
-                      <span @click="handleDownload(record.pdfPath, record.reportCode,'.pdf')">下载pdf</span>
+                      <span @click="handleDownload(record.id,'pdf')">下载pdf</span>
                     </a-menu-item>
                   </a-menu>
                 </a-dropdown>
@@ -111,6 +114,7 @@
     </h-card>
     <ReportMakeListsModal ref="ReportMakeListsModal" @change="addReportchange"></ReportMakeListsModal>
     <report-detail-modal ref="ReportDetailModal"></report-detail-modal>
+    <report-download-record ref="reportDownloadRecord"/>
   </div>
 </template>
 
@@ -123,6 +127,8 @@ import ReportMakeListsModal from './modules/ReportMakeListsModal.vue'
 import ReportDetailModal from './modules/ReportDetailModal'
 import {ACCESS_TOKEN, TENANT_ID} from '@/store/mutation-types'
 import Vue from 'vue'
+import {getAction} from "../../../../api/manage";
+import ReportDownloadRecord from "./components/ReportDownloadRecord";
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -135,6 +141,7 @@ export default {
   components: {
     ReportMakeListsModal,
     ReportDetailModal,
+    ReportDownloadRecord
   },
   data() {
     return {
@@ -148,6 +155,7 @@ export default {
         makeReport: '/HfEnvReportBusiness/generateReport',
         static: '/HfEnvReportBusiness/countNotGenerated',
         autoFileUrl: '/HfEnvReportBusiness/authUpload',
+        download:'/HfEnvReportBusiness/download'
       },
       reportNum: 0,
       selectedRowKeys: [],
@@ -296,6 +304,12 @@ export default {
           },
         },
         {
+          title: '查看下载记录 ',
+          align: 'center',
+          dataIndex: 'downloadNum',
+          scopedSlots: {customRender: 'downloadNum'},
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           fixed: 'right',
@@ -338,6 +352,9 @@ export default {
     this.loadReportNum()
   },
   methods: {
+    downloadRecord(record){
+      this.$refs.reportDownloadRecord.show(record.id)
+    },
     addReportchange() {
       this.refresh(true)
     },
@@ -359,8 +376,16 @@ export default {
       })
       console.log(this.selectedRows)
     },
-    handleDownload(filePath, fileName, fileType) {
-      downloadFile(filePath, fileName + fileType)
+    handleDownload(id,fileType) {
+      getAction(this.url.download,{id:id,type:fileType}).then(res=>{
+        if (res.code===200){
+          let filePath = res.data.url;
+          let fileName = res.data.fileName;
+          downloadFile(filePath, fileName)
+        }else {
+          this.$message.error("下载失败!")
+        }
+      })
     },
     loadReportNum() {
       postAction(this.url.static, {}).then((res) => {
