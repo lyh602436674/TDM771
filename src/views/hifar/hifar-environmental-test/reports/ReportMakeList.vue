@@ -102,6 +102,10 @@
                   </a-menu>
                 </a-dropdown>
             </span>
+            <span>
+               <a-divider  type="vertical"/>
+               <a-icon class="primary-text" style="cursor: pointer" title="推送" type="cloud-sync" @click="pushIntranet(record)"/>
+            </span>
           </template>
           <span v-if="record.status == 1 || record.status == 30 || record.status == 50" v-has="'report:delete'">
             <a-divider v-if="record.status == 30 || record.status == 50" style="color: #409eff" type="vertical"/>
@@ -155,7 +159,8 @@ export default {
         makeReport: '/HfEnvReportBusiness/generateReport',
         static: '/HfEnvReportBusiness/countNotGenerated',
         autoFileUrl: '/HfEnvReportBusiness/authUpload',
-        download:'/HfEnvReportBusiness/download'
+        download:'/HfEnvReportBusiness/download',
+        pushIntranet:'/ReportPushApiBusiness/pushIntranet'
       },
       reportNum: 0,
       selectedRowKeys: [],
@@ -352,6 +357,18 @@ export default {
     this.loadReportNum()
   },
   methods: {
+    /**
+     * 推送内网
+     */
+    pushIntranet(record) {
+      postAction(this.url.pushIntranet,{id:record.id}).then(res=>{
+        if (res.code===200){
+          this.$message.success("推送成功!")
+        }else {
+          this.$message.error(res.msg);
+        }
+      })
+    },
     downloadRecord(record){
       this.$refs.reportDownloadRecord.show(record.id)
     },
