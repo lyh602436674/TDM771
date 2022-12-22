@@ -25,9 +25,6 @@
         <a-descriptions-item label="设备类型">
           {{ detailData.equipTypeCode_dictText || '--' }}
         </a-descriptions-item>
-        <a-descriptions-item label="设备IP">
-          {{ detailData.cameraIp || '--' }}
-        </a-descriptions-item>
         <a-descriptions-item label="内部名称">
           {{ detailData.innerName || '--' }}
         </a-descriptions-item>
@@ -78,6 +75,12 @@
             detailData.checkUnit == 1 ? '日' : detailData.checkUnit == 2 ? '月' : detailData.checkUnit == 3 ? '年' : ''
           }}
         </a-descriptions-item>
+        <a-descriptions-item label="摄像头IP">
+          {{ detailData.cameraIp || '--' }}
+        </a-descriptions-item>
+        <a-descriptions-item label="放置地点">
+          {{ detailData.address_dictText || '--' }}
+        </a-descriptions-item>
         <a-descriptions-item label="技术参数">
           <a-textarea v-model="detailData.technology" readOnly/>
         </a-descriptions-item>
@@ -98,7 +101,11 @@
       </div>
       <div v-for="(item, index) in detailData.attachInfo" :key="index" class="url-list">
         <span>{{ index + 1 }}、{{ item.fileName }}</span>
-        <a-button icon="download" size="small" type="primary" @click="handleDownload(item.filePath, item.fileName)"
+        <a-button
+          icon="download"
+          size="small"
+          type="primary"
+          @click="handleDownload(item.filePath, item.fileName)"
         >下载
         </a-button
         >
@@ -111,7 +118,7 @@
 <script>
 import moment from 'moment'
 import mixin from '@/views/hifar/mixin.js'
-import {downloadFile, getFileAccessHttpUrl} from '@/api/manage'
+import { downloadFile, getFileAccessHttpUrl } from '@/api/manage'
 
 export default {
   mixins: [mixin],
@@ -120,28 +127,28 @@ export default {
     detailData: {
       type: Object,
       default: () => {
-      },
-    },
+      }
+    }
   },
   watch: {
     detailData: {
       immediate: true,
       handler(val) {
         this.detailData = val
-      },
-    },
+      }
+    }
   },
   data() {
     return {
-      moment,
+      moment
     }
   },
   methods: {
     handleDownload(filePath, fileName) {
       let fileAccessUrl = getFileAccessHttpUrl(filePath)
       downloadFile(fileAccessUrl, fileName)
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang='less' scoped>
