@@ -14,7 +14,21 @@ export default {
     }
   },
   filters: {
-    //报告状态
+    // mes报告推送状态
+    mesPushStatusFilter(status) {
+      let s = Number(status)
+      switch (s) {
+        case 1:
+          return '未知';
+        case 2:
+          return '成功';
+        case 3:
+          return '失败';
+        default:
+          return '未知';
+      }
+    },
+    // 报告状态
     reportStatusFilter(status) {
       let s = Number(status)
       switch (s) {
@@ -36,6 +50,23 @@ export default {
           return '批准驳回';
         case 99:
           return '已删除';
+      }
+    },
+    /**
+     * mes推送报告状态
+     * @param status
+     */
+    mesPushStatusColorFilter(status) {
+      let s = Number(status)
+      switch (s) {
+        case 1:
+          return '#4C4E50';
+        case 2:
+          return 'green';
+        case 3:
+          return 'red';
+        default:
+          return '#4C4E50';
       }
     },
     reportStatusColorFilter(status) {
@@ -63,7 +94,7 @@ export default {
           return 'red';
       }
     },
-    //报告流转状态
+    // 报告流转状态
     reportFlowStatusFilter(status) {
       let s = Number(status)
       switch (s) {
@@ -118,7 +149,7 @@ export default {
       this.$notification[type]({
         duration: 2,
         message: title,
-        description: desc,
+        description: desc
       })
     },
     reportStatusColorFilterMethods(status) {
@@ -168,6 +199,6 @@ export default {
         case 99:
           return '已删除';
       }
-    },
+    }
   }
 }
