@@ -76,10 +76,11 @@
                   :data="testSearchBar"
                   :showToggleButton="false"
                   size="small"
-                  @change="() => handleSearch('testBefore')"
+                  @change="handleSearch('testBefore')"
                 />
                 <template slot="table-operator">
-                  <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(1)">
+                  <a-button icon="plus" size="small" type="ghost-primary"
+                            @click="handleShowAddModal(1,url.testTemplateNotEquipList)">
                     添加试前模板
                   </a-button>
                   <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(1)"> 批量删除</a-button>
@@ -88,7 +89,7 @@
                   ref="testBefore"
                   slot="content"
                   :columns="testColumns"
-                  :data="testBeforeLoadData"
+                  :data="(params) => loadTemplateData(params,1)"
                   :rowKey="(record) => record.id"
                   :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
                   :scroll="{ x: true }"
@@ -103,13 +104,13 @@
                   <template slot="actions" slot-scope="text, record">
               <span v-if="record.isDefault == 2">
                 <a-tooltip title="设置成默认">
-                  <h-icon class="primary-text" type="icon-moren" @click="() => handleSetTestDefault(record, 1)"/>
+                  <h-icon class="primary-text" type="icon-moren" @click="handleSetTestDefault(record, 1)"/>
                 </a-tooltip>
                 <a-divider type="vertical"/>
               </span>
                     <a-tooltip title="删除">
                       <h-icon class="danger-text" type="icon-shanchu"
-                              @click="() => handleTemplateDelete(record.id, 1)"/>
+                              @click="handleTemplateDelete(record.id, 1)"/>
                     </a-tooltip>
                   </template>
                 </h-vex-table>
@@ -123,10 +124,11 @@
                   :data="testSearchBar"
                   :showToggleButton="false"
                   size="small"
-                  @change="() => handleSearch('testHalfway')"
+                  @change="handleSearch('testHalfway')"
                 />
                 <template slot="table-operator">
-                  <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(2)">
+                  <a-button icon="plus" size="small" type="ghost-primary"
+                            @click="handleShowAddModal(2,url.testTemplateNotEquipList)">
                     添加试中模板
                   </a-button>
                   <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(2)"> 批量删除</a-button>
@@ -135,7 +137,7 @@
                   ref="testHalfway"
                   slot="content"
                   :columns="testColumns"
-                  :data="testHalfwayLoadData"
+                  :data="(params) => loadTemplateData(params,2)"
                   :rowKey="(record) => record.id"
                   :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
                   :scroll="{ x: true }"
@@ -150,13 +152,13 @@
                   <template slot="actions" slot-scope="text, record">
               <span v-if="record.isDefault == 2">
                 <a-tooltip title="设置成默认">
-                  <h-icon class="primary-text" type="icon-moren" @click="() => handleSetTestDefault(record, 2)"/>
+                  <h-icon class="primary-text" type="icon-moren" @click="handleSetTestDefault(record, 2)"/>
                 </a-tooltip>
                 <a-divider type="vertical"/>
               </span>
                     <a-tooltip title="删除">
                       <h-icon class="danger-text" type="icon-shanchu"
-                              @click="() => handleTemplateDelete(record.id, 2)"/>
+                              @click="handleTemplateDelete(record.id, 2)"/>
                     </a-tooltip>
                   </template>
                 </h-vex-table>
@@ -170,10 +172,11 @@
                   :data="testSearchBar"
                   :showToggleButton="false"
                   size="small"
-                  @change="() => handleSearch('testAfter')"
+                  @change="handleSearch('testAfter')"
                 />
                 <template slot="table-operator">
-                  <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(3)">
+                  <a-button icon="plus" size="small" type="ghost-primary"
+                            @click="handleShowAddModal(3,url.testTemplateNotEquipList)">
                     添加试后模板
                   </a-button>
                   <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(3)"> 批量删除</a-button>
@@ -182,7 +185,7 @@
                   ref="testAfter"
                   slot="content"
                   :columns="testColumns"
-                  :data="testAfterLoadData"
+                  :data="(params) => loadTemplateData(params,3)"
                   :rowKey="(record) => record.id"
                   :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
                   :scroll="{ x: true }"
@@ -197,13 +200,61 @@
                   <template slot="actions" slot-scope="text, record">
               <span v-if="record.isDefault == 2">
                 <a-tooltip title="设置成默认">
-                  <h-icon class="primary-text" type="icon-moren" @click="() => handleSetTestDefault(record, 3)"/>
+                  <h-icon class="primary-text" type="icon-moren" @click="handleSetTestDefault(record, 3)"/>
                 </a-tooltip>
                 <a-divider type="vertical"/>
               </span>
                     <a-tooltip title="删除">
                       <h-icon class="danger-text" type="icon-shanchu"
-                              @click="() => handleTemplateDelete(record.id, 3)"/>
+                              @click="handleTemplateDelete(record.id, 3)"/>
+                    </a-tooltip>
+                  </template>
+                </h-vex-table>
+              </h-card>
+            </a-tab-pane>
+            <a-tab-pane :key="7" style="height: 100%" tab="巡检模板">
+              <h-card :title="title + ' 巡检模板'" fixed>
+                <h-search
+                  slot="search-form"
+                  v-model="testParams"
+                  :data="testSearchBar"
+                  :showToggleButton="false"
+                  size="small"
+                  @change="handleSearch('testAfter')"
+                />
+                <template slot="table-operator">
+                  <a-button icon="plus" size="small" type="ghost-primary"
+                            @click="handleShowAddModal(4, url.obtainTemplate)">
+                    添加巡检模板
+                  </a-button>
+                  <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(4)"> 批量删除</a-button>
+                </template>
+                <h-vex-table
+                  ref="pollingTable"
+                  slot="content"
+                  :columns="testColumns"
+                  :data="(params) => loadTemplateData(params,4)"
+                  :rowKey="(record) => record.id"
+                  :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+                  :scroll="{ x: true }"
+                  fixed
+                >
+                  <template slot="checkName" slot-scope="text, record">
+                    {{ text }}
+                    <a-tooltip v-if="record.isDefault == 1" title="默认模板">
+                      <h-icon class="primary-text" type="icon-moren"/>
+                    </a-tooltip>
+                  </template>
+                  <template slot="actions" slot-scope="text, record">
+              <span v-if="record.isDefault == 2">
+                <a-tooltip title="设置成默认">
+                  <h-icon class="primary-text" type="icon-moren" @click="handleSetTestDefault(record, 4)"/>
+                </a-tooltip>
+                <a-divider type="vertical"/>
+              </span>
+                    <a-tooltip title="删除">
+                      <h-icon class="danger-text" type="icon-shanchu"
+                              @click="handleTemplateDelete(record.id, 4)"/>
                     </a-tooltip>
                   </template>
                 </h-vex-table>
@@ -299,44 +350,15 @@ export default {
         value: 'id',
         key: 'id'
       },
-      testBeforeLoadData: (params) => {
+      loadTemplateData: (params, checkType) => {
         let data = {
           ...params,
           ...this.testParams,
           equipId: this.id,
-          checkType: 1
+          checkType
         }
         return postAction(this.url.testEquipList, data).then((res) => {
           if (res.code === 200) {
-            this.testBeforeTemplateReady = true
-            return res.data
-          }
-        })
-      },
-      testAfterLoadData: (params) => {
-        let data = {
-          ...params,
-          ...this.testParams,
-          equipId: this.id,
-          checkType: 3
-        }
-        return postAction(this.url.testEquipList, data).then((res) => {
-          if (res.code === 200) {
-            this.testAfterTemplateReady = true
-            return res.data
-          }
-        })
-      },
-      testHalfwayLoadData: (params) => {
-        let data = {
-          ...params,
-          ...this.testParams,
-          equipId: this.id,
-          checkType: 2
-        }
-        return postAction(this.url.testEquipList, data).then((res) => {
-          if (res.code === 200) {
-            this.testHalfwayTemplateReady = true
             return res.data
           }
         })
@@ -645,7 +667,8 @@ export default {
         testTemplateAdd: '/HfPrjEquipCheckBusiness/add',
         testTemplateDel: '/HfPrjEquipCheckBusiness/removeByEquipId',
         testTemplateSetDefault: '/HfPrjEquipCheckBusiness/setIsDefault',
-        testTemplateNotEquipList: '/HfPrjEquipCheckBusiness/listPageNotByEquipId'
+        testTemplateNotEquipList: '/HfPrjEquipCheckBusiness/listPageNotByEquipId',
+        obtainTemplate: '/HfPrjEquipCheckBusiness/obtainTemplate'
       }
     }
   },
@@ -654,8 +677,6 @@ export default {
   },
   methods: {
     editChange({insertRecords, removeRecords, updateRecords}) {
-      console.log("insertRecords", insertRecords)
-      console.log("removeRecords", removeRecords)
       if (removeRecords.length > 0) {
         let ids = removeRecords.map(item => item.id).join(",")
         postAction(this.url.batchDeleteTagamendment, {ids}).then(res => {
@@ -672,8 +693,6 @@ export default {
           }
         })
       }
-
-      console.log("updateRecords", updateRecords)
     },
     handleAddAmendment() {
       // 添加修正参数
@@ -711,8 +730,6 @@ export default {
       this.$refs.hSelectModal.show()
     },
     async handleTemplateAdd(selectedRowKeys) {
-
-      console.log('selectedRowKeys', selectedRowKeys)
       if (!selectedRowKeys || !selectedRowKeys.length) {
         this.$message.warning('请选择添加的模板')
         return
@@ -724,7 +741,6 @@ export default {
       }
       let url = null
       let ids = selectedRowKeys.join(',')
-      console.log('hello', this.activeTab)
       let ref = ''
       switch (this.activeTab) {
         // 试前模板
@@ -753,18 +769,23 @@ export default {
           params.checkIds = ids
           ref = 'testAfter'
           break
+        // 巡检模板
+        case 7:
+          url = this.url.testTemplateAdd
+          params.checkType = 4
+          params.checkIds = ids
+          ref = 'pollingTable'
+          break
       }
-      postAction(url, params)
-        .then((res) => {
-          if (res.code === 200) {
-            this.$message.success('添加成功')
-            this.$refs.hSelectModal.handleCancel()
-            this.$refs[ref].refresh(true)
-          }
-        })
-        .finally((res) => {
-          this.$refs.hSelectModal.confirmLoading = false
-        })
+      postAction(url, params).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('添加成功')
+          this.$refs.hSelectModal.handleCancel()
+          this.$refs[ref].refresh(true)
+        }
+      }).finally(() => {
+        this.$refs.hSelectModal.confirmLoading = false
+      })
     },
     handleSearch(tab) {
       this.$refs[tab].refresh(true)
@@ -826,7 +847,7 @@ export default {
       })
     },
     // 展示各类选项的添加弹窗
-    handleShowAddModal(checkType) {
+    handleShowAddModal(checkType, url) {
       let searchBar = []
       let columns = [
         {
@@ -853,7 +874,7 @@ export default {
       this.$refs.hSelectModal.title = title
       this.$refs.hSelectModal.columns = columns
       this.$refs.hSelectModal.dataId = this.id
-      this.$refs.hSelectModal.url = this.url.testTemplateNotEquipList
+      this.$refs.hSelectModal.url = url
       this.$refs.hSelectModal.searchBar = searchBar
       this.$refs.hSelectModal.show()
     },
@@ -892,6 +913,9 @@ export default {
           break
         case 6:
           this.$refs.testAfter.refresh(true)
+          break
+        case 7:
+          this.$refs.pollingTable.refresh(true)
           break
       }
     },
@@ -933,8 +957,6 @@ export default {
     // 选择了左侧的目录树
     onTreeNodeSelect(selectedKeys, event) {
       this.selectedKeys = selectedKeys[0] ? selectedKeys : this.selectedKeys
-      // console.log("this.selectedKeys==========",this.selectedKeys);
-      // console.log("selectedKeys=========",selectedKeys);
       this.id = selectedKeys[0]
       this.title = event.node.dataRef.title
       let selectedTreeRows = []
@@ -947,10 +969,9 @@ export default {
       // this.show(1, this.id)
     },
     handleAddCondition(record) {
-      console.log('record', record)
-      if (record.dataType == 'number') {
+      if (record.dataType === 'number') {
         this.$refs.editorPointModal.show(record)
-      } else if (record.dataType == 'dateTime') {
+      } else if (record.dataType === 'dateTime') {
         this.$refs.DateTimeModal.show(record)
       } else {
         this.$refs.StringModal.show(record)
@@ -965,17 +986,6 @@ export default {
     },
     handleAddEquipment() {
       this.$refs.equipmentModal.add()
-    },
-    handleDeleteEquip(ids) {
-      postAction(this.url.deleteEquip, {id: ids}).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('删除设备成功')
-          if (this.selectedKeys.includes(ids)) {
-            this.selectedKeys = []
-          }
-          this.getEquipmentTree()
-        }
-      })
     },
     handleSubmitPoint(val) {
       postAction(this.url.editPoint, val).then((res) => {

@@ -276,7 +276,7 @@ export default {
           dictCode: 'hf_res_equip_address',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请选择设备状态' }]
+            rules: [{ required: true, message: '请选择放置地点' }]
           }
         },
         {

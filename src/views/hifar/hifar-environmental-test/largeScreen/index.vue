@@ -1,7 +1,7 @@
 <template>
   <div ref="largeScreenPage" class="largeScreenPage">
     <header>
-      724所试验室综合看板
+      771环境试验室综合看板
       <span
         id="localtime"
         style="
@@ -30,6 +30,7 @@
           :bgImg="bgImg"
           @equipItemEnter="equipItemEnter"
           @equipItemOut="equipItemOut"
+          @dragSwitch="dragSwitchChange"
           ref="equipLocationDistribute"
         ></equip-location-distribute>
         <equip-detail-list ref="equipDetailList"></equip-detail-list>
@@ -46,7 +47,7 @@
         @mouseleave="equipStatusDetailMouseOut"
         @mouseover="equipStatusDetailMouseEnter"
         @equipItemMove="equipStatusDetailMouseMove"
-        v-if="detailVisible"
+        v-if="detailVisible && dragSwitch === '2'"
         :style="detailStyle"
       >
         <div v-for="(item, index) in equipItemInfo" :key="index + 'info'" class="equipStatus-detail-item">
@@ -77,8 +78,8 @@ export default {
       default: '设备状态',
     },
     bgImg: {
-      type: String,
-      default: require('./image/main.png'),
+      type: Array,
+      default: () => [require('./image/main.png')],
     },
   },
   components: {
@@ -100,6 +101,7 @@ export default {
         left: 0,
         top: 0,
       },
+      dragSwitch: '2',
       isFullscreen: false,
       currentTime: '',
       setIntervalTime: null,
@@ -131,29 +133,13 @@ export default {
 
   },
   beforeRouteEnter(to, from, next) {
-    next((vm)=>{
-      vm.init()
-      vm.showLocale(new Date())
-      getAction('/SysSwitchBusiness/queryByItemKeyPrefix', {itemKey: 'setInterval'}).then((result) => {
-        if (result.code === 200) {
-          result.data.map((item) => {
-            if (item.itemKey === 'setIntervalTime4k') {
-              vm.setIntervalTime = setInterval(() => {
-                vm.init()
-              }, +item.itemValue * 1000)
-            }
-          })
-        }
-      })
-      vm.currentTimeInterval = setInterval(() => {
-        vm.showLocale(new Date())
-      }, 1000)
+    next((vm) => {
+      vm.installed()
     })
   },
   beforeRouteLeave(to, from, next) {
     //页面离开后关闭定时器
-    clearInterval(this.setIntervalTime)
-    clearInterval(this.currentTimeInterval)
+    this.destroyed()
     next()
   },
   // deactivated() {
@@ -165,6 +151,31 @@ export default {
   //   clearInterval(this.currentTimeInterval)
   // },
   methods: {
+    dragSwitchChange(val) {
+      this.dragSwitch = val
+    },
+    pageDestroyed() {
+      clearInterval(this.setIntervalTime)
+      clearInterval(this.currentTimeInterval)
+    },
+    pageInstalled() {
+      this.init()
+      this.showLocale(new Date())
+      getAction('/SysSwitchBusiness/queryByItemKeyPrefix', {itemKey: 'setInterval'}).then((result) => {
+        if (result.code === 200) {
+          result.data.map((item) => {
+            if (item.itemKey === 'setIntervalTime4k') {
+              this.setIntervalTime = setInterval(() => {
+                this.init()
+              }, +item.itemValue * 1000)
+            }
+          })
+        }
+      })
+      this.currentTimeInterval = setInterval(() => {
+        this.showLocale(new Date())
+      }, 1000)
+    },
     init() {
       this.$refs.equipUsageRate.initCharts()
       this.$refs.equipStandingBookStatus.initCharts()

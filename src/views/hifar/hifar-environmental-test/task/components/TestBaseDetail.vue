@@ -141,19 +141,19 @@
         </h-card>
       </h-desc>
       <!-- 巡检记录 -->
-      <h-desc id="siteInspection" class="mg-t-20" title='巡检记录'>
-        <h-card :bordered='false' style='width: 100%'>
-          <a-table
-            :columns='siteInspectionColumns'
-            :dataSource='siteInspectionTable'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-            style="width: 100%;"
-          ></a-table>
-        </h-card>
-      </h-desc>
+      <!--      <h-desc id="siteInspection" class="mg-t-20" title='巡检记录'>-->
+      <!--        <h-card :bordered='false' style='width: 100%'>-->
+      <!--          <a-table-->
+      <!--            :columns='siteInspectionColumns'-->
+      <!--            :dataSource='siteInspectionTable'-->
+      <!--            :pagination='false'-->
+      <!--            bordered-->
+      <!--            rowKey='id'-->
+      <!--            size='small'-->
+      <!--            style="width: 100%;"-->
+      <!--          ></a-table>-->
+      <!--        </h-card>-->
+      <!--      </h-desc>-->
       <h-desc id="toolsProduct" class="mg-t-20" title='振动工装'>
         <h-card :bordered='false' style='width: 100%'>
           <div slot='content'>
@@ -333,10 +333,10 @@ export default {
           title: "开关机记录",
           id: "switchRecording"
         },
-        {
-          title: "巡检记录",
-          id: "siteInspection"
-        },
+        // {
+        //   title: "巡检记录",
+        //   id: "siteInspection"
+        // },
         {
           title: "振动工装",
           id: "toolsProduct"
@@ -857,7 +857,7 @@ export default {
           this.testPersonInfo = testPersonInfo
           this.entrustInfoItem = entrustInfoArr[0]
           // 巡检记录
-          this.siteInspectionInfo = data.siteInspectionInfo
+          // this.siteInspectionInfo = data.siteInspectionInfo
           // 设备开关机记录
           this.switchRecordingTable = data.switchOnOffInfo
           // 安装、控制方式 + 传感器

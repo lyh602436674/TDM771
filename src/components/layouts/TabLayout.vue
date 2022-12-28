@@ -26,7 +26,8 @@
             <a-icon type="vertical-left" />
           </a-tag>
           <!-- 非首页，可全屏 -->
-          <a-tag v-if="activePage != '/home'" style="cursor: pointer" @click="handleFullScreen">
+          <a-tag v-if="!['/largeScreenTY','/largeScreenKG','/home'].includes(activePage)" style="cursor: pointer"
+                 @click="handleFullScreen">
             <a-icon type="fullscreen"></a-icon>
           </a-tag>
         </div>
@@ -74,10 +75,11 @@
 <script>
 import GlobalLayout from '@/components/page/GlobalLayout'
 import Contextmenu from '@/components/menu/Contextmenu'
-import { mixin, mixinDevice } from '@/utils/mixin.js'
-const indexKey = '/home'
+import {mixin, mixinDevice} from '@/utils/mixin.js'
 import Vue from 'vue'
-import { CACHE_INCLUDED_ROUTES } from '@/store/mutation-types'
+import {CACHE_INCLUDED_ROUTES} from '@/store/mutation-types'
+
+const indexKey = '/home'
 
 export default {
   name: 'TabLayout',

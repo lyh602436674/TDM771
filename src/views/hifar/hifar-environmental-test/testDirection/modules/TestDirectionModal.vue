@@ -87,7 +87,7 @@ export default {
     show(record, type) {
       this.title = type + '分类'
       this.visible = true
-      this.model = record || {}
+      this.model = Object.assign({}, record, {pid: record.pid !== '0' ? record.pid : undefined})
       this.getTreeData()
     },
     recursive(arr) {

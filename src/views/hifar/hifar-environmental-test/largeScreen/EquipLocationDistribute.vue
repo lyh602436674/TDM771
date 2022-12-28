@@ -9,13 +9,13 @@
 <template>
   <div class="equipLocationDistribute">
     <div class="title">
-      <span>{{ title }}</span>
+<!--      <span>{{ title }}</span>-->
       <div class="equipRunningStatus">
         <div v-for="(item, index) in equipRunningStatus" :key="index + '-info'" class="equipRunningStatus-item">
+          <!--          @mouseenter="equipStatusItemEnter(item)"
+                      @mouseout="equipStatusItemOut(item)"-->
           <div
             class="status"
-            @mouseenter="equipStatusItemEnter(item)"
-            @mouseout="equipStatusItemOut(item)"
             :style="{ backgroundImage: 'url(' + equipStatusImage[item.status - 1] + ')' }"
           ></div>
           <div class="text">{{ item.title }}</div>
@@ -23,49 +23,65 @@
       </div>
     </div>
     <div class="content" ref="content">
-      <div
-        class="equipImage"
-        ref="equipImage"
-        @contextmenu="switchContextmenu"
-        :style="{ backgroundImage: 'url(' + bgImg + ')' }"
-      >
-        <div class="dragSwitch" v-has="'largeScreen:change'" v-if="visible" :style="switchStyle">
-          <span class="change">设备位置修改</span>
-          <h-switch
-            checkedTxt="启用"
-            uncheckedTxt="禁用"
-            v-model="dragSwitch"
-            :defaultChecked="false"
-            :options="['1', '2']"
-            @change="dragSwitchChange"
-          />
+      <div ref="equipImage" class="equipImage-wrapper">
+        <div v-if="visible" v-has="'largeScreen:change'" :style="switchStyle" class="dragSwitch">
+          <div>
+            <span class="change">设备位置修改</span>
+            <h-switch
+              v-model="dragSwitch"
+              :defaultChecked="false"
+              :options="['1', '2']"
+              checkedTxt="启用"
+              uncheckedTxt="禁用"
+              @change="dragSwitchChange"
+            />
+          </div>
+          <div style="margin-top:10px">
+            <span class="change">自动轮播</span>
+            <h-switch
+              v-model="autoplaySwitch"
+              :defaultChecked="false"
+              :options="['1', '2']"
+              checkedTxt="启用"
+              uncheckedTxt="禁用"
+              @change="autoplaySwitchChange"
+            />
+          </div>
         </div>
-        <transition-group tag="div">
-          <template v-for="(item, index) in equipStatusData">
-            <div
-              class="equipStatus-item"
-              v-show="item.showFlag"
-              :key="index + '-item'"
-              :style="{
-                left: item.coordinateX + '%',
-                top: item.coordinateY + '%',
-                backgroundImage: 'url(' + equipStatusImage[item.status - 1] + ')',
-              }"
-              @click="equipItemClick(item)"
-              ref="equipItem"
-              @mousedown="(e) => equipItemDrag(e, item, index)"
-              @mouseenter="(e) => equipItemEnter(e, item, index)"
-              @mouseout="(e) => equipItemOut(e)"
-            ></div>
-          </template>
-        </transition-group>
+        <h-carousel :autoplay="autoplay" :autoplaySpeed="5000" effect="fade">
+          <div
+            v-for="(_item, _index) in bgImg"
+            :key="_index"
+            :style="{ backgroundImage: 'url(' + _item.img + ')' }"
+            class="equipImage"
+            @contextmenu="switchContextmenu"
+          >
+            <template v-for="(item, index) in equipStatusData.filter(_eq => _eq.address === _item.key )">
+              <div
+                :key="index + '-item'"
+                ref="equipItem"
+                :style="{
+                      left: item.coordinateX + '%',
+                      top: item.coordinateY + '%',
+                      backgroundImage: 'url(' + equipStatusImage[item.status - 1] + ')',
+                    }"
+                class="equipStatus-item"
+                @click="equipItemClick(item)"
+                @mousedown="(e) => equipItemDrag(e, item, index)"
+                @mouseenter="(e) => equipItemEnter(e, item, index)"
+                @mouseout="(e) => equipItemOut(e)"
+              ></div>
+            </template>
+          </div>
+        </h-carousel>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getAction, postAction } from '@api/manage'
+import {getAction, postAction} from '@api/manage'
+
 export default {
   name: 'EquipLocationDistribute',
   description: '设备位置分布页面',
@@ -75,23 +91,25 @@ export default {
       default: '',
     },
     bgImg: {
-      type: String,
-      default: '',
+      type: Array,
+      default: [],
     },
   },
   data() {
     return {
-      equipStatusImage: [require('./image/running.png'),require('./image/warning.png'),  require('./image/error.png')],
+      autoplay: false,
+      equipStatusImage: [require('./image/running.png'), require('./image/warning.png'), require('./image/error.png')],
       equipRunningStatus: [
-        { title: '运行', status: '1' },
-        { title: '检修', status: '3' },
-        { title: '待机', status: '2' },
+        {title: '运行', status: '1'},
+        {title: '检修', status: '3'},
+        {title: '待机', status: '2'},
       ],
       url: {
         getEquipStatus: '/HfBulletinBoardBusiness/getEquipStatus',
         modifyEquipXYById: '/HfBulletinBoardBusiness/modifyEquipXYById',
       },
       dragSwitch: '2',
+      autoplaySwitch: '2',
       visible: false,
       switchStyle: {
         left: 0,
@@ -108,6 +126,16 @@ export default {
     }
   },
   methods: {
+    autoplaySwitchChange(val,e) {
+      e.stopPropagation()
+      this.autoplaySwitch = val
+      setTimeout(() => {
+        this.visible = false
+      }, 300)
+      if (val === '1') {
+        this.autoplay = true
+      }
+    },
     equipStatusItemEnter(v) {
       this.equipStatusData.map((item) => {
         if (item.status !== v.status) {
@@ -124,15 +152,15 @@ export default {
       getAction(this.url.getEquipStatus).then((res) => {
         if (res.code === 200) {
           //这里只要设备状态为1，2，3的
-          this.equipStatusData = res.data.filter((item) => +item.status < 4)
-          this.equipStatusData.map((item) => (item.showFlag = true))
+          let address = ['1', '2', '3', '4', '5', '6']
+          this.equipStatusData = res.data.filter((item) => +item.status < 4 && address.includes(item.address))
         }
       })
     },
     switchContextmenu(e) {
       e.preventDefault()
       this.switchStyle.left =
-        e.clientX - document.getElementsByTagName('aside')[0].offsetWidth - this.$refs.equipImage.offsetLeft + 'px'
+        e.clientX - (this.isFullscreen ? 0 : document.getElementsByTagName('aside')[0].offsetWidth) - this.$refs.equipImage.offsetLeft + 'px'
       this.switchStyle.top = e.clientY - 90 - this.$refs.equipImage.offsetTop + 'px'
       this.visible = true
     },
@@ -146,6 +174,7 @@ export default {
     dragSwitchChange(val, e) {
       e.stopPropagation()
       this.dragSwitch = val
+      this.$emit('dragSwitch', val)
       setTimeout(() => {
         this.visible = false
       }, 300)
@@ -196,7 +225,6 @@ export default {
           this.$refs.equipImage.onmousemove = null
           this.$refs.equipImage.onmouseup = null
           this.dragFlag = false
-          console.log(this.$refs.equipItem[index].offsetLeft, 'left')
           let params = {
             id: item.id,
             coordinateX: ((this.$refs.equipItem[index].offsetLeft / this.$refs.equipImage.offsetWidth) * 100).toFixed(
@@ -228,7 +256,6 @@ export default {
   },
 }
 </script>
-
 <style scoped lang="less">
 .equipLocationDistribute {
   .title {
@@ -237,8 +264,10 @@ export default {
     color: #00f6ff;
     font-size: 0.1rem;
     padding: 0.052rem 0;
-    background: url('./image/bottom_line.png') bottom no-repeat;
+    height: 0.25rem;
+    //background: url('./image/bottom_line.png') bottom no-repeat;
     position: relative;
+
     .equipRunningStatus {
       position: absolute;
       top: 50%;
@@ -246,6 +275,7 @@ export default {
       display: flex;
       justify-content: space-between;
       transform: translate(0, -50%);
+
       &-item {
         display: flex;
         align-items: center;
@@ -271,13 +301,33 @@ export default {
     width: 100%;
     height: calc(100% - 0.252rem);
     padding: 0.05rem 0.2rem;
-    /deep/.equipImage {
+
+    /deep/ .ant-carousel {
+      height: 100%;
+
+      .slick-slider {
+        height: 100%;
+
+        .slick-list {
+          height: 100%;
+
+          .slick-track {
+            height: 100%;
+
+            .slick-slide > div {
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+
+    .equipImage-wrapper {
       width: 100%;
       height: 100%;
-      background-size: 100% 100%;
-      background-position: center center;
-      overflow: hidden;
       position: relative;
+      overflow: hidden;
+
       .dragSwitch {
         position: absolute;
         background-color: #fff;
@@ -316,6 +366,16 @@ export default {
           }
         }
       }
+    }
+
+    .equipImage {
+      width: 100%;
+      height: 100%;
+      background-size: 100% 100%;
+      background-position: center center;
+      overflow: hidden;
+      position: relative;
+
 
       .equipStatus-item {
         position: absolute;

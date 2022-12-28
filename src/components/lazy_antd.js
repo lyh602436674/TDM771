@@ -2,82 +2,126 @@
  * 按需加载antd组件
  */
 import Vue from 'vue'
-import { isString, isObject, isFunction } from 'lodash'
+import {isFunction} from 'lodash'
 
 // base library
 import {
-    Anchor,
-    Calendar,
-    ConfigProvider,
-    Collapse,
-    Layout,
-    Input,
-    InputNumber,
-    Button,
-    Switch,
-    Radio,
-    Checkbox,
-    Select,
-    Card,
-    Form,
-    Row,
-    Col,
-    Modal,
-    Table,
-    Tabs,
-    Icon,
-    Badge,
-    Popover,
-    Dropdown,
-    List,
-    Avatar,
-    Breadcrumb,
-    Steps,
-    Spin,
-    Menu,
-    Drawer,
-    Tooltip,
-    Alert,
-    Tag,
-    Divider,
-    DatePicker,
-    TimePicker,
-    Upload,
-    Progress,
-    Skeleton,
-    Popconfirm,
-    PageHeader,
-    Result,
-    Statistic,
-    Descriptions,
-    message,
-    notification,
-    Empty,
-    Tree,
-    TreeSelect,
-    Carousel,
-    Pagination,
-    FormModel,
-    Cascader,
-    Slider,
-    Transfer,
-    Rate,
-    Space,
-    version,
-    Timeline
+  Alert,
+  Anchor,
+  Avatar,
+  Badge,
+  Breadcrumb,
+  Button,
+  Calendar,
+  Card,
+  Carousel,
+  Cascader,
+  Checkbox,
+  Col,
+  Collapse,
+  ConfigProvider,
+  DatePicker,
+  Descriptions,
+  Divider,
+  Drawer,
+  Dropdown,
+  Empty,
+  Form,
+  FormModel,
+  Icon,
+  Input,
+  InputNumber,
+  Layout,
+  List,
+  Menu,
+  message,
+  Modal,
+  notification,
+  PageHeader,
+  Pagination,
+  Popconfirm,
+  Popover,
+  Progress,
+  Radio,
+  Rate,
+  Result,
+  Row,
+  Select,
+  Skeleton,
+  Slider,
+  Space,
+  Spin,
+  Statistic,
+  Steps,
+  Switch,
+  Table,
+  Tabs,
+  Tag,
+  Timeline,
+  TimePicker,
+  Tooltip,
+  Transfer,
+  Tree,
+  TreeSelect,
+  Upload,
+  version
 } from 'ant-design-vue'
 // 图片预览
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
+// 自定义指令
+import {drag, resize} from "./directive"
+// 自定义组件
+import {RLLayout} from '@/components/layouts'
+import HIcon from './HIcon/icon.js'
+import HTag from './StatusTag/StatusTag'
+import HDescriptions from "./HDetail/HDescriptions.js"
+import HDetail from './HDetail/HDetail'
+import HInput from "./HInput"
+import HSelect from './HSelect'
+import HRangePicker from './HDate/HRangePicker'
+import HDate from './HDate/HDate'
+import HTimeSelect from './HTimeSelect'
+import HCard from './HCard'
+import HTable from './table'
+import HModal from './HModal'
+import HUpload, {HUploadFile, HUploadImg} from './HUpload'
+import HDrawer from './HDrawer'
+import HVexTable from './HVexTable'
+import HRadio from './HRadio'
+import HSwitch from './HSwitch'
+import HTabs from './HTabs/HTabs'
+import HEllipsis from './HEllipsis/HEllipsis'
+import HFileImport from './HFileImport'
+import HCollapse from './HCollapse'
+import HEditor from './HEditor'
+import HEditTable from './HEditTable'
+// 自定义组合组件
+import HSearch from './HSearch'
+import HFormModal from './HFormModal'
+import HForm from './HFormModal/form'
+import HDesc from './HDesc'
+import HDescItem from './HDesc/indexItem'
+import HCarousel from './HCarousel/HCarousel'
+// 自定义业务组件
+import HDepartSelect from './HiFar/HDepartSelect'
+import HDictSelect from './HDictSelect/HDictSelect'
+import HFileSecretLevelSelect from './HDictSelect/HFileSecretLevelSelect'
+import HPageViewModal from './HPageViewModal'
+// 其他插件
+import 'xe-utils'
+import VxeTable from 'vxe-table'
+import 'vxe-table/lib/index.css'
+
 Vue.use(Viewer)
 Viewer.setDefaults({
-    Options: {
-        'inline': true,
-        'button': true,
-        'navbar': true,
-        'title': true,
-        'toolbar': true,
-        'tooltip': true,
+  Options: {
+    'inline': true,
+    'button': true,
+    'navbar': true,
+    'title': true,
+    'toolbar': true,
+    'tooltip': true,
         'movable': true,
         'zoomable': true,
         'rotatable': true,
@@ -173,44 +217,10 @@ Vue.prototype.$info = Modal.info
 Vue.prototype.$success = Modal.success
 Vue.prototype.$error = Modal.error
 Vue.prototype.$warning = Modal.warning
-// 自定义指令
-import { drag, resize } from "./directive"
 Vue.use(drag)
 Vue.use(resize)
 
-// 自定义组件
-import { RLLayout } from '@/components/layouts'
-import HIcon from './HIcon/icon.js'
-import HTag from './StatusTag/StatusTag'
-import HDescriptions from "./HDetail/HDescriptions.js"
-import HDetail from './HDetail/HDetail'
-import HInput from "./HInput"
-import HSelect from './HSelect'
-import HRangePicker from './HDate/HRangePicker'
-import HDate from './HDate/HDate'
-import HTimeSelect from './HTimeSelect'
-import HCard from './HCard'
-import HTable from './table'
-import HModal from './HModal'
-import HUpload from './HUpload'
-import HDrawer from './HDrawer'
-import HVexTable from './HVexTable'
-import HRadio from './HRadio'
-import HSwitch from './HSwitch'
-import HTabs from './HTabs/HTabs'
-import HEllipsis from './HEllipsis/HEllipsis'
-import HFileImport from './HFileImport'
-import HCollapse from './HCollapse'
-import HEditor from './HEditor'
-import HEditTable from './HEditTable'
-import { HUploadImg, HUploadFile } from './HUpload'
-// 自定义组合组件
-import HSearch from './HSearch'
-import HFormModal from './HFormModal'
-import HForm from './HFormModal/form'
-import HDesc from './HDesc'
-import HDescItem from './HDesc/indexItem'
-
+Vue.component('HCarousel', HCarousel)
 Vue.component('HTable', HTable)
 Vue.component("HIcon", HIcon)
 Vue.component("HTag", HTag)
@@ -246,21 +256,12 @@ Vue.component('HUploadImg', HUploadImg)
 Vue.component('HUploadFile', HUploadFile)
 
 
-// 自定义业务组件
-import HDepartSelect from './HiFar/HDepartSelect'
-import HDictSelect from './HDictSelect/HDictSelect'
-import HFileSecretLevelSelect from './HDictSelect/HFileSecretLevelSelect'
-import HPageViewModal from './HPageViewModal'
 Vue.component("HDepartSelect", HDepartSelect)
 Vue.component("HFileSecretLevelSelect", HFileSecretLevelSelect)
 Vue.component("HDictSelect", HDictSelect)
 Vue.component("HPageViewModal", HPageViewModal)
 
 
-// 其他插件
-import 'xe-utils'
-import VxeTable from 'vxe-table'
-import 'vxe-table/lib/index.css'
 VxeTable.renderer.add('edit', {
     autoselect: true,
     renderEdit(h, renderOpts, argums) {

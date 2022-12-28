@@ -100,7 +100,6 @@ export default {
     },
   },
   data() {
-    console.log(this.value, this.options)
     if (this.value == this.options[0]) {
       var checked = true
     } else {

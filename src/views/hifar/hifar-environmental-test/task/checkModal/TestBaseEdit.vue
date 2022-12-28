@@ -161,37 +161,37 @@
           </h-card>
         </h-desc>
         <!--巡检记录-->
-        <h-desc id="siteInspection" class="mg-t-20" title="巡检记录">
-          <h-card :bordered="false" style="width: 100%">
-            <template slot="table-operator">
-              <a-button icon="plus" size="small" type="primary" @click="siteInspectionAdd">
-                添加
-              </a-button>
-            </template>
-            <a-table
-              :columns="siteInspectionColumns"
-              :dataSource="siteInspectionTable"
-              :pagination="false"
-              bordered
-              rowKey="id"
-              size="small"
-              style="width: 100%;"
-            >
-              <template #action="text, record,index">
-                <a-popconfirm title="确定删除吗?" @confirm="() => siteInspectionDelete(index)">
-                  <a-icon
-                    class="primary-text"
-                    style="cursor: pointer"
-                    theme="twoTone"
-                    title="删除"
-                    two-tone-color="#ff4d4f"
-                    type="delete"
-                  />
-                </a-popconfirm>
-              </template>
-            </a-table>
-          </h-card>
-        </h-desc>
+<!--        <h-desc id="siteInspection" class="mg-t-20" title="巡检记录">-->
+<!--          <h-card :bordered="false" style="width: 100%">-->
+<!--            <template slot="table-operator">-->
+<!--              <a-button icon="plus" size="small" type="primary" @click="siteInspectionAdd">-->
+<!--                添加-->
+<!--              </a-button>-->
+<!--            </template>-->
+<!--            <a-table-->
+<!--              :columns="siteInspectionColumns"-->
+<!--              :dataSource="siteInspectionTable"-->
+<!--              :pagination="false"-->
+<!--              bordered-->
+<!--              rowKey="id"-->
+<!--              size="small"-->
+<!--              style="width: 100%;"-->
+<!--            >-->
+<!--              <template #action="text, record,index">-->
+<!--                <a-popconfirm title="确定删除吗?" @confirm="() => siteInspectionDelete(index)">-->
+<!--                  <a-icon-->
+<!--                    class="primary-text"-->
+<!--                    style="cursor: pointer"-->
+<!--                    theme="twoTone"-->
+<!--                    title="删除"-->
+<!--                    two-tone-color="#ff4d4f"-->
+<!--                    type="delete"-->
+<!--                  />-->
+<!--                </a-popconfirm>-->
+<!--              </template>-->
+<!--            </a-table>-->
+<!--          </h-card>-->
+<!--        </h-desc>-->
         <!-- 参试人员 -->
         <h-desc id="person" class="mg-t-20" title="参试人员">
           <h-card :bordered="false" style="width: 100%">
@@ -401,10 +401,10 @@ export default {
           title: '试验设备开关机记录',
           id: 'switchRecording'
         },
-        {
-          title: '巡检记录',
-          id: 'siteInspection'
-        },
+        // {
+        //   title: '巡检记录',
+        //   id: 'siteInspection'
+        // },
         {
           title: '参试人员',
           id: 'person'
@@ -1792,12 +1792,12 @@ export default {
             }
           })
           // 巡检记录
-          this.siteInspectionTable = model.siteInspectionInfo.map(item => {
-            return {
-              ...item,
-              inspectionTime: this.momentFormatFun(item.inspectionTime, 'YYYY-MM-DD HH:mm:ss')
-            }
-          })
+          // this.siteInspectionTable = model.siteInspectionInfo.map(item => {
+          //   return {
+          //     ...item,
+          //     inspectionTime: this.momentFormatFun(item.inspectionTime, 'YYYY-MM-DD HH:mm:ss')
+          //   }
+          // })
           this.installControlTable = model.insertMethodInfo// 安装、控制方式+传感器
           this.personArr = model.testPersonInfo
           this.testTaskData = model.testTaskInfo
@@ -1940,12 +1940,12 @@ export default {
             }
           }),
           // 巡检记录
-          siteInspectionArr: this.siteInspectionTable.map(item => {
-            return {
-              ...item,
-              inspectionTime: moment(item.inspectionTime).valueOf()
-            }
-          }),
+          // siteInspectionArr: this.siteInspectionTable.map(item => {
+          //   return {
+          //     ...item,
+          //     inspectionTime: moment(item.inspectionTime).valueOf()
+          //   }
+          // }),
           // 安装、控制方式 + 传感器
           insertMethodArr: this.installControlTable
         }
