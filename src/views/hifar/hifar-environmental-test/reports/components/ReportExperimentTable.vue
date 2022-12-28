@@ -159,6 +159,7 @@ export default {
         let data = {
           ...this.queryParam,
           ...params,
+          c_reportType_1: '1'
         }
         return postAction(this.url.productTable, data).then((res) => {
           if (res.code === 200) {
