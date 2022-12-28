@@ -35,6 +35,7 @@ export default {
       confirmLoading: false,
       tableHeight: '100%',
       dataIdParam:'unitId',
+      selectType:'checkbox',
       // table请求接口
       url: '',
       // 项目Id
@@ -146,7 +147,7 @@ export default {
               columnTitle: '#',
               selectedRowKeys: this.selectedRowKeys,
               onSelect: this.handleOnSelect,
-              type: 'checkbox'
+              type: this.selectType
             }
           },
           on: {

@@ -224,7 +224,7 @@
                 />
                 <template slot="table-operator">
                   <a-button icon="plus" size="small" type="ghost-primary"
-                            @click="handleShowAddModal(4, url.obtainTemplate)">
+                            @click="handleShowAddModal(4, url.obtainTemplate,'radio')">
                     添加巡检模板
                   </a-button>
                   <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(4)"> 批量删除</a-button>
@@ -847,7 +847,7 @@ export default {
       })
     },
     // 展示各类选项的添加弹窗
-    handleShowAddModal(checkType, url) {
+    handleShowAddModal(checkType, url, selectType) {
       let searchBar = []
       let columns = [
         {
@@ -875,6 +875,7 @@ export default {
       this.$refs.hSelectModal.columns = columns
       this.$refs.hSelectModal.dataId = this.id
       this.$refs.hSelectModal.url = url
+      this.$refs.hSelectModal.selectType = selectType || 'checkbox'
       this.$refs.hSelectModal.searchBar = searchBar
       this.$refs.hSelectModal.show()
     },
