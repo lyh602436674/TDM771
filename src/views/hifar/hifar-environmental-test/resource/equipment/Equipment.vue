@@ -20,16 +20,27 @@
       <vxe-toolbar ref="envEquipmentOperator" custom>
         <div slot="buttons">
           <a-button v-has="'device:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd">添加</a-button>
-          <a-button v-has="'device:privice'" icon="download" size="small" type="ghost-warning"
-                    @click="handleExportXls('设备信息')">
+          <a-button
+            icon="edit"
+            size="small"
+            type="ghost-primary"
+            @click="handleImportEditExcel">
+            批量修改
+          </a-button>
+          <a-button
+            v-has="'device:privice'"
+            icon="download"
+            size="small"
+            type="ghost-warning"
+            @click="handleExportXls('设备信息')">
             导出
           </a-button>
           <a-button v-has="'device:import'" icon="import" size="small" type="ghost-success" @click="handleImportExcel">
             导入
           </a-button>
-            <a-button v-has="'device:delete'" icon="delete" size="small" type="danger" @click="batchDel">
-              批量删除
-            </a-button>
+          <a-button v-has="'device:delete'" icon="delete" size="small" type="danger" @click="batchDel">
+            批量删除
+          </a-button>
         </div>
       </vxe-toolbar>
     </div>
@@ -76,12 +87,12 @@
         {{
           record.checkPeriod
             ? record.checkUnit == 1
-            ? '日'
-            : record.checkUnit == 2
-              ? '月'
-              : record.checkUnit == 3
-                ? '年'
-                : ''
+              ? '日'
+              : record.checkUnit == 2
+                ? '月'
+                : record.checkUnit == 3
+                  ? '年'
+                  : ''
             : ''
         }}
       </span>
@@ -127,12 +138,13 @@
     <equipment-detail ref="detailModal"></equipment-detail>
     <equipment-modal ref="equipmentModal" @change="refresh(true)"></equipment-modal>
     <h-file-import ref="HFileImport" @change="refresh(true)" @downloadExcel="downloadChange"/>
+    <h-file-import ref="HFileEditImport" @change="refresh(true)" @downloadExcel="downloadEditChange" />
   </h-card>
 </template>
 <script>
 import moment from 'moment'
 import mixin from '@/views/hifar/mixin.js'
-import {downloadFile, postAction} from '@/api/manage'
+import { downloadFile, postAction } from '@/api/manage'
 import EquipmentDetail from './EquipmentDetail.vue'
 import EquipmentModal from './EquipmentModal.vue'
 import HistoryTemperature from './components/historyTemperature'
@@ -141,11 +153,11 @@ export default {
   props: {
     expiryTime: {
       type: String,
-      default: '',
-    },
+      default: ''
+    }
   },
   mixins: [mixin],
-  components: {HistoryTemperature, EquipmentDetail, EquipmentModal},
+  components: { HistoryTemperature, EquipmentDetail, EquipmentModal },
   data() {
     return {
       moment,
@@ -153,7 +165,9 @@ export default {
         list: '/HfResEquipBusiness/listPage',
         delete: '/HfResEquipBusiness/logicRemoveById',
         importExcelUrl: 'HfResEquipImport/importExcel',
-        export: '/HfResEquipExport/exportExcel',
+        importEditExcel: 'HfResEquipImport/importEditExcel',
+        exportEditTemplate: '/HfResEquipImport/exportEditTemplate',
+        export: '/HfResEquipExport/exportExcel'
       },
       queryParam: {},
       selectedRowKeys: [],
@@ -162,40 +176,40 @@ export default {
         {
           title: '设备编号',
           formType: 'input',
-          key: 'c_equipCode_7',
+          key: 'c_equipCode_7'
         },
         {
           title: '设备名称 ',
           formType: 'input',
-          key: 'c_equipName_7',
+          key: 'c_equipName_7'
         },
         {
           title: '设备用途',
           key: 'c_equipUse_1',
           formType: 'dict',
-          dictCode: 'hf_res_equip_use',
+          dictCode: 'hf_res_equip_use'
         },
         {
           title: '设备类型',
           formType: 'dict',
           key: 'c_equipTypeCode_1',
-          dictCode: 'hf_res_equip_type',
+          dictCode: 'hf_res_equip_type'
         },
         {
           title: '内部名称',
           formType: 'input',
-          key: 'c_innerName_7',
+          key: 'c_innerName_7'
         },
         {
           title: '设备型号',
           formType: 'input',
-          key: 'c_equipModel_7',
+          key: 'c_equipModel_7'
         },
         {
           title: '资产编号',
           formType: 'input',
-          key: 'c_assetsCode_7',
-        },
+          key: 'c_assetsCode_7'
+        }
       ],
       // 表头
       columns: [
@@ -205,7 +219,7 @@ export default {
           ellipsis: true,
           width: 120,
           dataIndex: 'equipCode',
-          scopedSlots: {customRender: 'equipCode'},
+          scopedSlots: { customRender: 'equipCode' }
         },
         {
           title: '设备名称 ',
@@ -215,14 +229,14 @@ export default {
           dataIndex: 'equipName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '设备用途',
           align: 'left',
           ellipsis: true,
           minWidth: 80,
-          dataIndex: 'equipUse_dictText',
+          dataIndex: 'equipUse_dictText'
         },
         {
           title: '设备类型',
@@ -232,7 +246,7 @@ export default {
           dataIndex: 'equipTypeCode_dictText',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '计量有效期',
@@ -240,7 +254,7 @@ export default {
           ellipsis: true,
           width: 160,
           dataIndex: 'checkValid',
-          scopedSlots: {customRender: 'checkValid'},
+          scopedSlots: { customRender: 'checkValid' }
         },
         {
           title: '计量周期',
@@ -248,7 +262,7 @@ export default {
           ellipsis: true,
           width: 120,
           dataIndex: 'checkPeriod',
-          scopedSlots: {customRender: 'checkPeriod'},
+          scopedSlots: { customRender: 'checkPeriod' }
         },
         {
           title: '内部名称',
@@ -258,7 +272,7 @@ export default {
           dataIndex: 'innerName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '设备型号',
@@ -268,7 +282,7 @@ export default {
           dataIndex: 'equipModel',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '资产编号',
@@ -278,7 +292,7 @@ export default {
           dataIndex: 'assetsCode',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '购买日期',
@@ -286,7 +300,7 @@ export default {
           ellipsis: true,
           width: 120,
           dataIndex: 'buyTime',
-          scopedSlots: {customRender: 'buyTime'},
+          scopedSlots: { customRender: 'buyTime' }
         },
         {
           title: '出厂编号',
@@ -296,7 +310,7 @@ export default {
           dataIndex: 'leaveCode',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '生产厂家',
@@ -306,7 +320,7 @@ export default {
           dataIndex: 'factoryName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '责任人',
@@ -316,7 +330,7 @@ export default {
           dataIndex: 'managerName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '技术参数',
@@ -326,20 +340,20 @@ export default {
           dataIndex: 'technology',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '状态',
           align: 'left',
           ellipsis: true,
           width: 120,
-          dataIndex: 'status_dictText',
+          dataIndex: 'status_dictText'
         },
         {
           title: '排序',
           align: 'left',
           width: 80,
-          dataIndex: 'rowSort',
+          dataIndex: 'rowSort'
         },
         {
           title: '备注',
@@ -349,7 +363,7 @@ export default {
           dataIndex: 'remarks',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '操作',
@@ -357,14 +371,14 @@ export default {
           align: 'center',
           fixed: 'right',
           width: 150,
-          scopedSlots: {customRender: 'action'},
-        },
+          scopedSlots: { customRender: 'action' }
+        }
       ],
       deviceInfoLoadData: (params) => {
         let data = {
           ...this.queryParam,
           ...params,
-          searchType: this.expiryTime,
+          searchType: this.expiryTime
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
@@ -373,7 +387,7 @@ export default {
             return res.data
           }
         })
-      },
+      }
     }
   },
   watch: {
@@ -381,13 +395,13 @@ export default {
       immediate: true,
       handler(val) {
         this.expiryTime = val
-      },
-    },
+      }
+    }
   },
   computed: {
     hasSelected() {
       return this.selectedRowKeys.length > 0
-    },
+    }
   },
   created() {
     this.$nextTick(() => {
@@ -401,7 +415,7 @@ export default {
     },
     // 单个删除
     handleDelete(id) {
-      postAction(this.url.delete, {id: id}).then((res) => {
+      postAction(this.url.delete, { id: id }).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh()
@@ -418,7 +432,7 @@ export default {
           title: '确认删除',
           content: '删除后不可恢复，确认删除？',
           onOk: function () {
-            postAction(_this.url.delete, {id: _this.selectedRowKeys.join()}).then((res) => {
+            postAction(_this.url.delete, { id: _this.selectedRowKeys.join() }).then((res) => {
               if (res.code === 200) {
                 _this.$message.success('删除成功')
                 _this.refresh()
@@ -428,7 +442,7 @@ export default {
                 _this.$message.warning(res.msg)
               }
             })
-          },
+          }
         })
       } else {
         this.openNotificationWithIcon('error', '删除提示', '请至少选择一项')
@@ -464,25 +478,39 @@ export default {
       let data = {
         ...this.queryParam,
         ...model,
-        ids: this.selectedRowKeys.join(','),
+        ids: this.selectedRowKeys.join(',')
       }
       let url = this.url.export
       let params = data
       let fileName = name + '.xls'
       await downloadFile(url, fileName, params)
     },
+    handleImportEditExcel() {
+      let type = '设备信息'
+      let { importEditExcel } = this.url
+      let record = {
+        importCode: 'HfResEquipEditExport'
+      }
+      this.$refs.HFileEditImport.show(type, importEditExcel, record)
+    },
     // 导入
     handleImportExcel() {
       let type = '设备信息'
-      let {importExcelUrl} = this.url
+      let { importExcelUrl } = this.url
       let record = {
         importCode: 'HfResEquipExport'
       }
       this.$refs.HFileImport.show(type, importExcelUrl, record)
     },
     downloadChange() {
-      this.handleExportXls('设备信息', {type: 'template'})
+      this.handleExportXls('设备信息', { type: 'template' })
     },
-  },
+    async downloadEditChange() {
+      let url = this.url.exportEditTemplate
+      let params = {}
+      let fileName = '设备台账计量有效修改模板.xls'
+      await downloadFile(url, fileName, params)
+    }
+  }
 }
 </script>
