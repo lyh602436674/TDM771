@@ -1262,7 +1262,7 @@ export default {
                 options: this.productStatusOptions
               },
               on: {
-                click: (val) => {
+                change: (val) => {
                   this.$set(row, 'beforeStatus', val)
                 }
               }
@@ -1281,7 +1281,7 @@ export default {
                 options: this.productStatusOptions
               },
               on: {
-                click: (val) => {
+                change: (val) => {
                   this.$set(row, 'afterStatus', val)
                 }
               }

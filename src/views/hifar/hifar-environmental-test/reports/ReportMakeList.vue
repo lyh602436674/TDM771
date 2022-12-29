@@ -88,7 +88,8 @@
             </a-upload>
             <a-divider style="color: #409eff" type="vertical"/>
           </span>
-          <span v-if="record.status == 3 || record.status == 30 || record.status == 50 && !isIntranet">
+          <template v-if="!isIntranet">
+             <span v-if="record.status == 3 || record.status == 30 || record.status == 50 ">
             <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
               <h-icon
                 v-if="record.isExternalManage != 1"
@@ -115,33 +116,37 @@
               style="color: #409eff"
               type="vertical"/>
           </span>
-          <template v-if="record.status >= 3">
-            <span v-has="'report:download'">
-              <a-dropdown>
-                <a-icon class="primary-text" style="cursor: pointer" title="下载" type="download"/>
-                <a-menu slot="overlay">
-                  <a-menu-item>
-                    <span @click="handleDownload(record.id,'docx')">下载word</span>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <span @click="handleDownload(record.id,'pdf')">下载pdf</span>
-                  </a-menu-item>
-                </a-menu>
-              </a-dropdown>
-            </span>
-            <span>
+            <template v-if="record.status >= 3">
+              <span v-has="'report:download'">
+                <a-dropdown>
+                  <a-icon class="primary-text" style="cursor: pointer" title="下载" type="download"/>
+                  <a-menu slot="overlay">
+                    <a-menu-item>
+                      <span @click="handleDownload(record.id,'docx')">下载word</span>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <span @click="handleDownload(record.id,'pdf')">下载pdf</span>
+                    </a-menu-item>
+                  </a-menu>
+                </a-dropdown>
+              </span>
+              <span>
               <a-divider type="vertical"/>
-              <a-icon class="primary-text" style="cursor: pointer" title="推送至内网" type="cloud-sync" @click="pushIntranet(record)"/>
+              <a-icon class="primary-text" style="cursor: pointer" title="推送至内网" type="cloud-sync"
+                      @click="pushIntranet(record)"/>
               <a-divider type="vertical"/>
-              <a-icon class="primary-text" style="cursor: pointer" title="推送至MES" type="cloud-sync" @click="pushMes(record)"/>
-            </span>
-          </template>
-          <span v-if="record.status == 1 || record.status == 30 || record.status == 50 && !isIntranet" v-has="'report:delete'">
+              <a-icon class="primary-text" style="cursor: pointer" title="推送至MES" type="cloud-sync"
+                      @click="pushMes(record)"/>
+              </span>
+            </template>
+            <span v-if="record.status == 1 || record.status == 30 || record.status == 50 " v-has="'report:delete'">
             <a-divider v-if="record.status == 30 || record.status == 50" style="color: #409eff" type="vertical"/>
             <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
               <a-icon class="danger-text" style="cursor: pointer" title="删除" type="delete"/>
             </a-popconfirm>
           </span>
+          </template>
+
         </div>
       </h-vex-table>
     </h-card>
@@ -153,14 +158,14 @@
 
 <script>
 import moment from 'moment'
-import { downloadFile, postAction } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import mixin from './mixin'
 import * as WebCtrl from '@/plugins/webOffice'
 import ReportMakeListsModal from './modules/ReportMakeListsModal.vue'
 import ReportDetailModal from './modules/ReportDetailModal'
-import { ACCESS_TOKEN, TENANT_ID } from '@/store/mutation-types'
+import {ACCESS_TOKEN, TENANT_ID} from '@/store/mutation-types'
 import Vue from 'vue'
-import { getAction } from '@api/manage';
+import {getAction} from '@api/manage';
 import ReportDownloadRecord from './components/ReportDownloadRecord';
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
@@ -368,7 +373,6 @@ export default {
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
             this.isIntranet = res.ext.isIntranet
-            this.$message.info('isIntranet' + this.isIntranet)
             return res.data
           }
         })
