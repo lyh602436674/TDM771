@@ -50,7 +50,7 @@
       <a-table
         slot='content'
         :columns="equipColumns"
-        :dataSource="model.testEquipInfo"
+        :dataSource="model.testEquipInfo || []"
         :pagination="false"
         bordered
         rowKey="id"

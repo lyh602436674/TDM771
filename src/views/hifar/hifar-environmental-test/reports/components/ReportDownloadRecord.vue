@@ -1,6 +1,6 @@
 <template>
   <h-modal
-    title=""
+    title="下载记录"
     inner
     fullScreen
     destroyOnClose

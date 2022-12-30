@@ -22,6 +22,7 @@
     <abnormal-record-table
       ref="AbnormalRecordTable"
       :records="records"
+      :isReadOnly="isReadOnly"
       style="padding-top: 8px;"
     ></abnormal-record-table>
   </h-modal>
@@ -29,6 +30,7 @@
 
 <script>
 import AbnormalRecordTable from './components/detail/AbnormalRecordTable'
+
 export default {
   inject: {
     getContainer: {
@@ -43,6 +45,12 @@ export default {
       title: '',
       visible: false,
       records: [],
+    }
+  },
+  props: {
+    isReadOnly: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {

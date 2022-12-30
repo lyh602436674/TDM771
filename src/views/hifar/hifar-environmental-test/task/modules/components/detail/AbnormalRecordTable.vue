@@ -80,44 +80,9 @@ export default {
       },
     },
   },
-  data() {
-    return {
-      queryParams: {},
-      searchForm: [
-        {
-          title: '处理状态',
-          key: 'c_dealStatus_7',
-          formType: 'select',
-          options: [
-            {
-              title: '未处理',
-              key: '1',
-              value: '1',
-            },
-            /*          {
-                        title: '处理中',
-                        key: '2',
-                        value: '2',
-                      },*/
-            {
-              title: '已处理',
-              key: '3',
-              value: '3',
-            },
-          ],
-        },
-        {
-          title: '记录人',
-          key: 'c_recordUserName_7',
-          formType: 'input',
-        },
-        {
-          title: '处理人',
-          key: 'c_dealUserName_7',
-          formType: 'input',
-        },
-      ],
-      columns: [
+  computed: {
+    columns() {
+      return [
         {
           title: '异常类型',
           dataIndex: 'exceptionType',
@@ -158,10 +123,50 @@ export default {
           dataIndex: 'action',
           align: 'center',
           fixed: 'right',
+          hidden: !this.isReadOnly,
           width: 80,
           scopedSlots: {
             customRender: 'actions',
           },
+        },
+      ]
+    },
+  },
+  data() {
+    return {
+      queryParams: {},
+      searchForm: [
+        {
+          title: '处理状态',
+          key: 'c_dealStatus_7',
+          formType: 'select',
+          options: [
+            {
+              title: '未处理',
+              key: '1',
+              value: '1',
+            },
+            /*          {
+                        title: '处理中',
+                        key: '2',
+                        value: '2',
+                      },*/
+            {
+              title: '已处理',
+              key: '3',
+              value: '3',
+            },
+          ],
+        },
+        {
+          title: '记录人',
+          key: 'c_recordUserName_7',
+          formType: 'input',
+        },
+        {
+          title: '处理人',
+          key: 'c_dealUserName_7',
+          formType: 'input',
         },
       ],
       loadData: (params) => {

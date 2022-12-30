@@ -246,12 +246,12 @@
                     </a-tooltip>
                   </template>
                   <template slot="actions" slot-scope="text, record">
-              <span v-if="record.isDefault == 2">
-                <a-tooltip title="设置成默认">
-                  <h-icon class="primary-text" type="icon-moren" @click="handleSetTestDefault(record, 4)"/>
-                </a-tooltip>
-                <a-divider type="vertical"/>
-              </span>
+                    <span v-if="record.isDefault == 2">
+                      <a-tooltip title="设置成默认">
+                        <h-icon class="primary-text" type="icon-moren" @click="handleSetTestDefault(record, 4)"/>
+                      </a-tooltip>
+                      <a-divider type="vertical"/>
+                    </span>
                     <a-tooltip title="删除">
                       <h-icon class="danger-text" type="icon-shanchu"
                               @click="handleTemplateDelete(record.id, 4)"/>

@@ -168,6 +168,22 @@
                         <a-badge v-else-if="text == 50" color="grey" text="已完成"/>
                       </div>
                     </template>
+                    <template #archiveRecord="text,record">
+                      <a-space style="cursor: pointer">
+                        <a-icon class="primary-text" title="查看" type="eye"
+                                @click="handleReviewPdf('巡检记录',record.pdfPathXh)"></a-icon>
+                        <a-icon class="primary-text" title="在线编辑" type="edit"
+                                @click="webOfficeEdit(record.docxPathXh)"></a-icon>
+                      </a-space>
+                    </template>
+                    <template #embodiment="text,record">
+                      <a-space style="cursor: pointer">
+                        <a-icon class="primary-text" title="查看" type="eye"
+                                @click="handleReviewPdf('实施方案',record.pdfPathSs)"></a-icon>
+                        <a-icon class="primary-text" title="在线编辑" type="edit"
+                                @click="webOfficeEdit(record.docxPathSs)"></a-icon>
+                      </a-space>
+                    </template>
                     <a-space slot="actions" slot-scope="text, record">
                       <!-- 开始 -->
                       <a-tooltip v-if="[1, 30, 40, 50, 25].includes(+record.status)" title="开始">
@@ -235,6 +251,7 @@
       <equip-basic-line-modal ref="EquipBasicLineModal"
                               :selectRowId="selectedRow"
                               :selectedRow="selectedRow"></equip-basic-line-modal>
+      <test-entrust-review-pdf ref="reviewPdf" :title="reviewPdfTitle"/>
     </div>
   </r-l-layout>
 </template>
@@ -258,8 +275,11 @@ import EquipBasicBar from './modules/components/equipBasicEcharts/EquipBasicBar.
 import EquipBasicLine from './modules/components/equipBasicEcharts/EquipBasicLine.vue'
 import equipBasicVibration from './modules/EquipBasicVibration.vue'
 import EquipBasicLineModal from "@views/hifar/hifar-environmental-test/task/modules/EquipBasicLineModal";
+import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
+import {ACCESS_TOKEN} from "@/store/mutation-types";
+import * as WebCtrl from "@/plugins/webOffice";
 // import {isHiddenColumns} from "@/utils/hasPermission";
-
+let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
   mixins: [mixin],
   provide() {
@@ -285,6 +305,7 @@ export default {
     EquipBasicBar,
     EquipBasicLine,
     equipBasicVibration,
+    TestEntrustReviewPdf
   },
   data() {
     return {
@@ -294,6 +315,7 @@ export default {
       selectedRows: [],
       queryParams: {},
       selectedKey: [],
+      reviewPdfTitle: '',
       validFlag: '',
       selectedRow: [],
       equipQuery: {
@@ -498,12 +520,12 @@ export default {
           title: '状态',
           dataIndex: 'status',
           scopedSlots: {customRender: 'status'},
-          minWidth: 140,
+          width: 100,
         },
         {
           title: '送试单位',
           dataIndex: 'custNames',
-          minWidth: 100,
+          minWidth: 150,
         },
         {
           title: '产品名称',
@@ -540,9 +562,23 @@ export default {
         {
           title: '异常数量',
           dataIndex: 'exceptionNum',
-          minWidth: '100',
+          width: 80,
           align: 'center',
           scopedSlots: {customRender: 'exceptionNum'},
+        },
+        {
+          title: '巡检记录',
+          align: 'center',
+          width: 80,
+          dataIndex: 'archiveRecord',
+          scopedSlots: {customRender: 'archiveRecord'}
+        },
+        {
+          title: '实施方案',
+          align: 'center',
+          width: 80,
+          dataIndex: 'embodiment',
+          scopedSlots: {customRender: 'embodiment'}
         },
         {
           title: '期望开始时间',
@@ -615,6 +651,16 @@ export default {
     this.loadLeftTree()
   },
   methods: {
+    handleReviewPdf(title, path) {
+      this.reviewPdfTitle = title
+      this.$refs.reviewPdf.show(path)
+    },
+    webOfficeEdit(fileUrl) {
+      let fileUrlAuth = fileUrl.split('?')[1]
+      fileUrl = fileUrl.split('?')[0]
+      let token = this.$ls.get(ACCESS_TOKEN)
+      WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+    },
     handleEnlargement(record, extendRecord) {
       this.$refs.EquipBasicLineModal.open(record, extendRecord)
     },

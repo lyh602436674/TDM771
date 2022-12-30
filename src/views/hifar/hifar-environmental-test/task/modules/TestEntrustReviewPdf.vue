@@ -12,7 +12,7 @@
     destroyOnClose
     fullScreen
     inner
-    title="委托单预览"
+    :title="title"
     @cancel="handleCancel"
   >
     <template slot="footer">
@@ -45,6 +45,12 @@ export default {
     return {
       visible: false,
       reportPath: "",
+    }
+  },
+  props: {
+    title: {
+      type: String,
+      default: "委托单预览"
     }
   },
   methods: {
