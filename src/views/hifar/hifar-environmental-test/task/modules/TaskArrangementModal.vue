@@ -22,10 +22,10 @@
               <a-radio-button value="custom">自定义</a-radio-button>
             </a-radio-group>
             <a-range-picker
-              v-if="queryType == 'custom'"
+              v-if="queryType === 'custom'"
               v-model="queryTime"
               :allowClear="false"
-              :ranges="{ 当天: [moment(), moment()], 当月: [moment(), moment().endOf('month')] }"
+              :ranges="{ '当天': [moment(), moment()], '当月': [moment().startOf('month'), moment().endOf('month')],'当年': [moment().startOf('year'), moment().endOf('year')] }"
               size="small"
               style="margin-right: 5px; width: 200px"
               @change="handleDatePickerChange"

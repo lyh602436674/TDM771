@@ -1,7 +1,7 @@
 <template>
   <div ref="testArchive" class="testArchive">
     <h-card fixed>
-      <template slot="title"> 历史报告</template>
+      <template slot="title"> 试验归档</template>
       <h-search slot="search-form" v-model="queryParams" :data="searchForm" size="default" @change="refresh(true)"/>
       <template slot="table-operator">
         <a-button
