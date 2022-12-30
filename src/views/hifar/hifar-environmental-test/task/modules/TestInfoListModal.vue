@@ -59,7 +59,8 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
+
 export default {
   inject: ['getContainer'],
   data() {
@@ -271,8 +272,12 @@ export default {
      */
     handleRelease(id) {
       postAction(this.url.release, { id }).then((res) => {
-        if (res.code == 200) {
-          this.$message.success('操作成功')
+        if (res.code === 200) {
+          if (res.msg) {
+            this.$message.success(res.msg)
+          } else {
+            this.$message.success('操作成功')
+          }
           this.refresh()
         } else {
           this.$message.success('发布失败')
