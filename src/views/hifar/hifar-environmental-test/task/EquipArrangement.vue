@@ -174,6 +174,9 @@
                                 @click="handleReviewPdf('巡检记录',record.pdfPathXh)"></a-icon>
                         <a-icon class="primary-text" title="在线编辑" type="edit"
                                 @click="webOfficeEdit(record.docxPathXh)"></a-icon>
+                        <a :href="record.docxPathXh" title="下载word">
+                          <a-icon class="primary-text" type="download"></a-icon>
+                        </a>
                       </a-space>
                     </template>
                     <template #embodiment="text,record">
@@ -182,6 +185,9 @@
                                 @click="handleReviewPdf('实施方案',record.pdfPathSs)"></a-icon>
                         <a-icon class="primary-text" title="在线编辑" type="edit"
                                 @click="webOfficeEdit(record.docxPathSs)"></a-icon>
+                        <a :href="record.docxPathSs" title="下载word">
+                          <a-icon class="primary-text" type="download"></a-icon>
+                        </a>
                       </a-space>
                     </template>
                     <a-space slot="actions" slot-scope="text, record">

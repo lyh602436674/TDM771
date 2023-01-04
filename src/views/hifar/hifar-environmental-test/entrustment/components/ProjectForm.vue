@@ -103,7 +103,7 @@ export default {
           let that = this.$refs.projectFormItem[i]
           let projectForm = that.$refs['projectInfoForm' + [i]]
           // 判断是否是 结构化条件 试验项目（根据项目编码判断）
-          let filterUnitCodeFlag = this.filterUnitCode(formInfoDataList[i].unitCode)
+          let filterUnitCodeFlag = this.filterUnitCode(formInfoDataList[i].classifyName)
           if (filterUnitCodeFlag) {
             that.resultEcharts()
           }

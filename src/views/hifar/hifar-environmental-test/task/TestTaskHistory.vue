@@ -11,22 +11,9 @@
     <h-card fixed title="试验查询">
       <h-search v-model="queryParams" slot="search-form" :data="searchForm" @change="refresh"/>
       <div slot="table-operator" style="border-top: 5px">
-            <a-button size="small" type="ghost-warning" icon="download" @click="handleExportXls('试验查询信息')">
-              导出
-            </a-button>
-        <!--        暂时隐藏掉-->
-        <!--        <a-button-->
-        <!--          v-for="(item, index) in operatorButtons"-->
-        <!--          :key="item.key"-->
-        <!--          :size="item.size"-->
-        <!--          :type="item.type"-->
-        <!--          :v-has="item.has"-->
-        <!--          @click="() => item.click(item, index)"-->
-        <!--        >-->
-        <!--          <a-icon v-if="item.icon.indexOf('icon-') === -1" :type="item.icon"></a-icon>-->
-        <!--          <h-icon v-else :type="item.icon"/>-->
-        <!--          {{ item.title }}-->
-        <!--        </a-button>-->
+        <a-button size="small" type="ghost-warning" icon="download" @click="handleExportXls('试验查询信息')">
+          导出
+        </a-button>
       </div>
       <h-vex-table ref="taskHistoryTable" slot="content" :columns="columns" :data="loadData" :rowSelection='{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }'>
         <a slot="testCode" slot-scope="text, record" @click="() => handleShowDetail(record)">
@@ -40,6 +27,28 @@
           <a-badge v-else-if="text == 40" color="red" text="终止"/>
           <a-badge v-else-if="text == 50" color="grey" text="已完成"/>
           <a-badge v-else-if="text == 60" color="grey" text="已出报告"/>
+        </template>
+        <template #archiveRecord="text,record">
+          <a-space style="cursor: pointer">
+            <a-icon class="primary-text" title="查看" type="eye"
+                    @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
+            <a-icon class="primary-text" title="在线编辑" type="edit"
+                    @click="webOfficeEdit(record.docxPathXh)"/>
+            <a :href="record.docxPathXh" title="下载word">
+              <a-icon class="primary-text" type="download"/>
+            </a>
+          </a-space>
+        </template>
+        <template #embodiment="text,record">
+          <a-space style="cursor: pointer">
+            <a-icon class="primary-text" title="查看" type="eye"
+                    @click="handleReviewPdf('实施方案',record.pdfPathSs)"/>
+            <a-icon class="primary-text" title="在线编辑" type="edit"
+                    @click="webOfficeEdit(record.docxPathSs)"/>
+            <a :href="record.docxPathSs" title="下载word">
+              <a-icon class="primary-text" type="download"/>
+            </a>
+          </a-space>
         </template>
         <template slot="actions" slot-scope="text, record">
           <a-tooltip title="查看">
@@ -55,6 +64,7 @@
     <test-check-modal ref="testCheckModal"/>
     <test-base-edit ref="TestBaseEdit" :records="records" :selectedTreeRows="selectedRows"
                     @change="refreshEquipTaskList"/>
+    <test-entrust-review-pdf ref="reviewPdf" :title="reviewPdfTitle"/>
   </div>
 </template>
 
@@ -66,7 +76,11 @@ import TestCheckModal from "@views/hifar/hifar-environmental-test/task/checkModa
 import TestBaseEdit from "@views/hifar/hifar-environmental-test/task/checkModal/TestBaseEdit";
 import testDataAddModal from "@views/hifar/hifar-environmental-test/task/modules/TestDataAddModal";
 import TaskAbnormalModal from "@views/hifar/hifar-environmental-test/task/checkModal/TaskAbnormalModal";
+import {ACCESS_TOKEN} from "@/store/mutation-types";
+import * as WebCtrl from "@/plugins/webOffice";
+import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
 
+let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
   provide() {
     return {
@@ -74,105 +88,13 @@ export default {
     }
   },
   components: {
-    TestTaskBaseInfoModal,TestCheckModal,TestBaseEdit,testDataAddModal,TaskAbnormalModal
+    TestTaskBaseInfoModal, TestCheckModal, TestBaseEdit, testDataAddModal, TaskAbnormalModal, TestEntrustReviewPdf
   },
   data() {
     return {
+      reviewPdfTitle: '',
       queryParams: {},
       records: {},
-      operatorButtons:[
-        {
-          title: '试前检查',
-          key: '0',
-          size: 'small',
-          type: 'default',
-          has: 'ArrangeMent:boforTest',
-          icon: 'icon-jianchaqianzhunbei',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.testCheckModal.show(this.selectedRows[0], '试前', 'before')
-            }
-          },
-        },
-        {
-          title: '试中检查',
-          key: '1',
-          size: 'small',
-          type: 'default',
-          has: 'ArrangeMent:intest',
-          icon: 'icon-jianchazhong',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.testCheckModal.show(this.selectedRows[0], '试中', 'testMiddle')
-            }
-          },
-        },
-        {
-          title: '试后检查',
-          key: '2',
-          size: 'small',
-          type: 'default',
-          has: 'ArrangeMent:afterTest',
-          icon: 'icon-shiyanhouguanli',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.testCheckModal.show(this.selectedRows[0], '试后', 'after')
-            }
-          },
-        },
-        {
-          title: '试验结果',
-          key: '3',
-          size: 'small',
-          has: 'ArrangeMent:edit',
-          icon: 'icon-tianxie',
-          type: 'default',
-          click: (item, index) => {
-            if (this.selectedRows.length === 0) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.records = this.selectedRows[0]
-              this.$refs.TestBaseEdit.show(this.selectedRows[0])
-            }
-          },
-        },
-        {
-          title: '试验数据',
-          key: '4',
-          size: 'small',
-          has: 'ArrangeMent:dataTest',
-          icon: 'icon-shiyanshuju',
-          type: 'default',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.testDataAddModal.show(this.selectedRows[0])
-            }
-          },
-        },
-        {
-          title: '异常记录',
-          key: '5',
-          size: 'small',
-          has: 'ArrangeMent:errRecord',
-          icon: 'icon-gantanhao',
-          type: 'default',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              this.$refs.taskAbnormalModal.show('error', this.selectedRows[0])
-            }
-          },
-        },
-      ],
       selectedRowKeys: [],
       selectedRows: [],
       searchForm: [
@@ -341,6 +263,20 @@ export default {
           minWidth: 150,
         },
         {
+          title: '巡检记录',
+          align: 'center',
+          width: 80,
+          dataIndex: 'archiveRecord',
+          scopedSlots: {customRender: 'archiveRecord'}
+        },
+        {
+          title: '实施方案',
+          align: 'center',
+          width: 80,
+          dataIndex: 'embodiment',
+          scopedSlots: {customRender: 'embodiment'}
+        },
+        {
           title: '期望开始时间',
           dataIndex: 'predictStartTime',
           customRender: (time) => {
@@ -405,6 +341,16 @@ export default {
     }
   },
   methods: {
+    handleReviewPdf(title, path) {
+      this.reviewPdfTitle = title
+      this.$refs.reviewPdf.show(path)
+    },
+    webOfficeEdit(fileUrl) {
+      let fileUrlAuth = fileUrl.split('?')[1]
+      fileUrl = fileUrl.split('?')[0]
+      let token = this.$ls.get(ACCESS_TOKEN)
+      WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+    },
     refresh(bool = false) {
       this.$refs.taskHistoryTable.refresh(bool)
     },
@@ -414,7 +360,7 @@ export default {
       this.selectedRows = []
     },
     handleShowDetail(record) {
-      this.$refs.TaskDetailModal.show(record, '1','10px')
+      this.$refs.TaskDetailModal.show(record, '1', '10px')
     },
     async handleExportXls(name, model) {
       let data = {
@@ -430,9 +376,6 @@ export default {
     onSelect(selectedRowKeys, selectedRows){
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
-      this.operatorButtons.map((item, index) => {
-        item.type = 'primary'
-      })
     }
   },
 }

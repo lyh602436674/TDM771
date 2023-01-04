@@ -16,11 +16,11 @@
     >
     </h-form>
     <h-collapse :activeKey="1" class="collapseStyle" title="试验条件结构化">
-      <div slot="extraBox" v-if="filterUnitCode(model.unitCode)">
+      <div v-if="filterUnitCode(model.classifyName)" slot="extraBox">
         <a-button size="small" type="primary" @click.stop="previewEcharts"> 预览</a-button>
       </div>
       <div slot="content">
-        <template v-if="filterUnitCode(model.unitCode)">
+        <template v-if="filterUnitCode(model.classifyName)">
           <a-tabs id="drag-tab" v-model="tabsActiveKey" hideAdd type="editable-card" @edit="onEdit">
             <template v-for="(item,itemIndex) in model.abilityRequire">
               <a-tab-pane :key="itemIndex" :closable="item.closable"
@@ -89,7 +89,7 @@
 
 <script>
 import moment from 'moment'
-import {cloneDeep, isObject} from 'lodash'
+import {cloneDeep, isArray, isObject} from 'lodash'
 import PointList from './PointList'
 import NewSampleListModal from '@/views/hifar/hifar-environmental-test/entrustment/components/NewSampleListModal'
 import MethodSelectModal from '@/views/hifar/hifar-environmental-test/components/MethodSelectModal'
@@ -139,7 +139,7 @@ export default {
       handler(val) {
         if (isObject(val) && Object.keys(val).length) {
           let obj = Object.assign({}, val)
-          let filterUnitCodeFlag = this.filterUnitCode(obj.unitCode)
+          let filterUnitCodeFlag = this.filterUnitCode(obj.classifyName)
           obj.unitId = obj.unitId ? obj.unitId : obj.id
           obj.testName = obj.unitName
           obj.attachIds = obj.fileInfo && obj.fileInfo.length && obj.fileInfo.map(item => {
@@ -157,7 +157,7 @@ export default {
               replaceStatus: item.replaceStatus
             }
           }) || []
-          this.equipData = obj.testEquipInfo
+          this.equipData = obj.testEquipInfo && isArray(obj.testEquipInfo) || []
           if (obj.abilityRequire && obj.abilityRequire.length) {
             obj.abilityRequire.forEach((item, index) => {
               item.closable = index !== 0 && index !== 1
@@ -737,7 +737,7 @@ export default {
       this.selectBeforeProjectIndex = projectIndex
       this.selectBeforeItemIndex = itemIndex
       let testConditionTab = this.$refs.testConditionTabItem
-      let filterUnitCodeFlag = this.filterUnitCode(this.project.unitCode)
+      let filterUnitCodeFlag = this.filterUnitCode(this.project.classifyName)
       let $projectTable
       if (filterUnitCodeFlag) {
         $projectTable = testConditionTab[itemIndex].$refs['pointTable' + [projectIndex] + [itemIndex]]

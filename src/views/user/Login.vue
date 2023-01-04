@@ -25,46 +25,60 @@
       <img class="bg" src="~@/assets/login_image/login_bg_2.png" alt="" />
       <img class="dot" src="~@/assets/login_image/login_dot_1.png" alt="" />
       <div ref="loginForm" class="login_form">
-        <div class="form_title">
-          <span>{{ loginWelcome }}</span>
+        <div class="loginTab">
+          <div v-for="(item,index) in tabsData" :key="index" :class="['tab-item',activeKey === index ? 'active':'']"
+               @click="loginTabChange(index)">
+            <h-icon :type="item.icon"/>
+            {{ item.title }}
+          </div>
         </div>
-        <a-form :form="form" class="user-layout-login" ref="formLogin" id="formLogin">
-          <a-form-item>
-            <a-input
-              size="large"
-              v-decorator="['username', validatorRules.username, { validator: this.handleUsernameOrEmail }]"
-              type="text"
-              placeholder="请输入帐户名"
-            >
-              <a-icon slot="prefix" type="user" :style="{ color: 'rgba(0,0,0,.25)' }" />
-            </a-input>
-          </a-form-item>
-          <a-form-item>
-            <a-input
-              v-decorator="['password', validatorRules.password]"
-              size="large"
-              type="password"
-              autocomplete="false"
-              placeholder="请输入密码"
-            >
-              <a-icon slot="prefix" type="lock" :style="{ color: 'rgba(0,0,0,.25)' }" />
-            </a-input>
-          </a-form-item>
+        <div class="login_form_content">
+          <div v-if="activeKey === 0" class="idLogin">
+            <div class="form_title">
+              <span>{{ loginWelcome }}</span>
+            </div>
+            <a-form id="formLogin" ref="formLogin" :form="form" class="user-layout-login">
+              <a-form-item>
+                <a-input
+                  v-decorator="['username', validatorRules.username, { validator: this.handleUsernameOrEmail }]"
+                  placeholder="请输入帐户名"
+                  size="large"
+                  type="text"
+                >
+                  <a-icon slot="prefix" :style="{ color: 'rgba(0,0,0,.25)' }" type="user"/>
+                </a-input>
+              </a-form-item>
+              <a-form-item>
+                <a-input
+                  v-decorator="['password', validatorRules.password]"
+                  autocomplete="false"
+                  placeholder="请输入密码"
+                  size="large"
+                  type="password"
+                >
+                  <a-icon slot="prefix" :style="{ color: 'rgba(0,0,0,.25)' }" type="lock"/>
+                </a-input>
+              </a-form-item>
 
-          <a-form-item style="margin-top: 24px">
-            <a-button
-              size="large"
-              type="primary"
-              htmlType="submit"
-              class="login-button"
-              :loading="loginBtn"
-              @click.stop.prevent="handleSubmit"
-              :disabled="loginBtn"
-            >
-              确定
-            </a-button>
-          </a-form-item>
-        </a-form>
+              <a-form-item style="margin-top: 24px">
+                <a-button
+                  :disabled="loginBtn"
+                  :loading="loginBtn"
+                  class="login-button"
+                  htmlType="submit"
+                  size="large"
+                  type="primary"
+                  @click.stop.prevent="handleSubmit"
+                >
+                  确定
+                </a-button>
+              </a-form-item>
+            </a-form>
+          </div>
+          <div v-if="activeKey === 1" class="fingerprint">
+            <img alt="" src="~@/assets/zhiwen.jpg">
+          </div>
+        </div>
         <login-select-tenant ref="loginSelect" @success="loginSelectOk"></login-select-tenant>
       </div>
     </div>
@@ -78,14 +92,13 @@ if (process.env.NODE_ENV != 'production') {
   password = '123456'
   account = 'admin'
 }
-import { mapActions, mapState } from 'vuex'
-import { timeFix } from '@/utils/util'
+import {mapActions, mapState} from 'vuex'
 import Vue from 'vue'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { postAction, getAction } from '@/api/manage'
+import {ACCESS_TOKEN} from '@/store/mutation-types'
 import ThirdLogin from './third/ThirdLogin'
 import LoginSelectTenant from './LoginSelectTenant'
 import 'particles.js'
+
 const particlesJSON = require('./particles.json')
 export default {
   components: {
@@ -94,6 +107,11 @@ export default {
   },
   data() {
     return {
+      tabsData: [
+        {title: "账号密码登录", icon: "icon-zhanghaoquanxianguanli"},
+        {title: "指纹登录", icon: "icon-fingerprint"},
+      ],
+      activeKey: 0,
       loginBtn: false,
       // login type: 0 email, 1 username, 2 telephone
       loginType: 0,
@@ -178,17 +196,20 @@ export default {
     handleTabClick(key) {
       this.customActiveKey = key
     },
+    loginTabChange(index) {
+      this.activeKey = index
+    },
     handleSubmit() {
       let loginParams = {}
       this.loginBtn = true
-      this.form.validateFields(['username', 'password'], { force: true }, async (err, values) => {
+      this.form.validateFields(['username', 'password'], {force: true}, async (err, values) => {
         if (!err) {
           loginParams.userCode = values.username
           loginParams.pwd = values.password
           let response = await this.Login(loginParams).finally(() => {
             this.loginBtn = false
           })
-          if (response.code == 200) {
+          if (response.code === 200) {
             this.$refs.loginSelect.show(response.data)
           } else {
             this.requestFailed(response)
@@ -283,8 +304,12 @@ export default {
   width: 100%;
   height: 100%;
 }
+
+@layoutLoginWidth: 300px;
+
 .user-layout-login {
-  width: 300px;
+  width: @layoutLoginWidth;
+
   label {
     font-size: 14px;
   }
@@ -330,14 +355,16 @@ export default {
   }
 }
 .form_title {
-  margin: 30px 0;
+  margin: 0 0 30px 0;
   display: flex;
   align-items: center;
   justify-content: center;
+
   img {
     width: 25px;
     height: 26px;
   }
+
   span {
     font-size: 22px;
     font-family: Microsoft YaHei;
@@ -376,9 +403,51 @@ export default {
   transform: translate(-50%, -50%);
   left: 0;
   top: 50%;
-  padding: 40px;
   box-shadow: 0 0 13px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
+
+  @tabHeight: 60px;
+
+  .fingerprint {
+    width: @layoutLoginWidth;
+
+    img {
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .login_form_content {
+    min-height: 340px;
+    padding: 40px;
+  }
+
+  .loginTab {
+    display: flex;
+    height: @tabHeight;
+    font-size: 18px;
+    cursor: pointer;
+
+    .tab-item {
+      width: 50%;
+      text-align: center;
+      line-height: @tabHeight;
+      border-bottom: 1px solid #d9d9d9;
+      border-right: 1px solid #d9d9d9;
+
+      &:last-child {
+        border-right: none;
+      }
+    }
+
+    .active {
+      border-bottom: none;
+      color: #fff;
+      background-color: #0E6EE5;
+    }
+
+
+  }
 }
 .login_left {
   flex-grow: 1;
