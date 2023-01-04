@@ -1,7 +1,7 @@
 <template>
   <div ref="testArchive" class="testArchive">
     <h-card fixed>
-      <template slot="title"> 试验归档</template>
+      <template slot="title">试验归档</template>
       <h-search slot="search-form" v-model="queryParams" :data="searchForm" size="default" @change="refresh(true)"/>
       <template slot="table-operator">
         <a-button
@@ -33,11 +33,15 @@
         :data="loadData"
         :rowSelection="{ selectedRowKeys, onSelect: onSelect }"
       >
-        <template #taskNo="text, record">
+        <template #taskno="text, record">
           <a @click="handleDetail(record)">{{ text }}</a>
         </template>
-        <template #exceptionNum="text, record">
-          <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
+        <template #exceptioncnt="text, record">
+          <a v-if="text" @click="handleAbnormalDetail(record)">{{ text }}</a>
+          <span v-else>0</span>
+        </template>
+        <template #taskstate="text, record">
+          <a-tag :color="taskStatusColor[text - 1]">{{ taskStatus[text] }}</a-tag>
         </template>
         <template #archiveRecord="text,record">
           <a-space style="cursor: pointer">
@@ -94,8 +98,10 @@ export default {
     return {
       moment,
       url: {
-        list: '/HfEnvHistoryBusiness/listPage',
+        list: '/HfEnvHistoryTestBusiness/listPage',
       },
+      taskStatus: {1: '未发布', 2: '执行中', 3: '已完成', 4: '强制终止'},
+      taskStatusColor: ['lightgrey', 'green', 'blue', 'red'],
       queryParams: {},
       selectedRowKeys: [],
       selectedRows: [],
@@ -122,7 +128,7 @@ export default {
         },
         {
           title: '任务编号',
-          key: 'c_taskNos_7',
+          key: 'c_taskno_7',
           formType: 'input'
         },
         {
@@ -185,35 +191,8 @@ export default {
           ]
         },
         {
-          title: '移交状态',
-          key: 'c_sendstatus_1',
-          formType: 'select',
-          options: [
-            {
-              title: '已移交',
-              key: 0,
-              value: 0
-            },
-            {
-              title: '待移交',
-              key: 1,
-              value: 1
-            },
-            {
-              title: '已作废',
-              key: 2,
-              value: 2
-            }
-          ]
-        },
-        {
-          title: '领用人',
-          key: 'c_receiveCode_7',
-          formType: 'input'
-        },
-        {
           title: '委托编号',
-          key: 'c_applynos_7',
+          key: 'c_applyno_7',
           formType: 'input'
         }
       ],
@@ -222,27 +201,27 @@ export default {
           title: '任务编号',
           align: 'left',
           width: 140,
-          dataIndex: 'taskNo',
-          scopedSlots: {customRender: 'taskNo'}
+          dataIndex: 'taskno',
+          scopedSlots: {customRender: 'taskno'}
         },
         {
           title: '任务状态',
           align: 'center',
-          dataIndex: 'status',
+          dataIndex: 'taskstate',
           minWidth: 100,
-          scopedSlots: {customRender: 'status'}
+          scopedSlots: {customRender: 'taskstate'}
         },
         {
           title: '异常数量',
           align: 'center',
-          minWidth: 100,
-          dataIndex: 'exceptionNum',
-          scopedSlots: {customRender: 'exceptionNum'}
+          minWidth: 80,
+          dataIndex: 'exceptioncnt',
+          scopedSlots: {customRender: 'exceptioncnt'}
         },
         {
           title: '终止记录',
           align: 'center',
-          minWidth: 100,
+          minWidth: 80,
           dataIndex: 'forceEndNum',
           scopedSlots: {customRender: 'forceEndNum'}
         },
@@ -250,7 +229,7 @@ export default {
           title: '设备内部名称',
           align: 'center',
           minWidth: 200,
-          dataIndex: 'innerName',
+          dataIndex: 'devicealias',
           customRender: (text, record) => {
             return text || '--'
           }
@@ -258,16 +237,7 @@ export default {
         {
           title: '委托单号',
           align: 'center',
-          dataIndex: 'entrustNo',
-          minWidth: 120,
-          customRender: (text, record) => {
-            return text || '--';
-          }
-        },
-        {
-          title: '运行单号',
-          align: 'center',
-          dataIndex: 'entrustCode',
+          dataIndex: 'applyno',
           minWidth: 120,
           customRender: (text, record) => {
             return text || '--';
@@ -276,7 +246,7 @@ export default {
         {
           title: '试验项目',
           align: 'center',
-          dataIndex: 'unitName',
+          dataIndex: 'projectName',
           minWidth: 150,
           customRender: (text, record) => {
             return text || '--';
@@ -285,7 +255,7 @@ export default {
         {
           title: '工序编号',
           align: 'center',
-          dataIndex: 'processNo',
+          dataIndex: 'processno',
           minWidth: 120,
           customRender: (text, record) => {
             return text || '--';
@@ -304,7 +274,7 @@ export default {
           title: '试件数量',
           align: 'center',
           dataIndex: 'piececount',
-          minWidth: 100,
+          minWidth: 80,
           customRender: (text, record) => {
             return text || '--'
           }
@@ -312,8 +282,8 @@ export default {
         {
           title: '产品编号',
           align: 'center',
-          dataIndex: 'pieceNo',
-          minWidth: 100,
+          dataIndex: 'productnos',
+          minWidth: 150,
           customRender: (text, record) => {
             return text || '--'
           }
@@ -321,44 +291,44 @@ export default {
         {
           title: '预计开始时间',
           align: 'center',
-          dataIndex: 'predictStartTime',
+          dataIndex: 'estimatedstarttime',
           width: 150,
           customRender: (text, record) => {
-            return text || '--'
+            return text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
         {
           title: '预计结束时间',
           align: 'center',
-          dataIndex: 'predictEndTime',
+          dataIndex: 'estimatedendtime',
           width: 150,
           customRender: (text, record) => {
-            return text || '--'
+            return text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
         {
           title: '实际开始时间',
           align: 'center',
-          dataIndex: 'realStartTime',
+          dataIndex: 'actualstarttime',
           width: 150,
           customRender: (text, record) => {
-            return text || '--'
+            return text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
         {
           title: '实际结束时间',
           align: 'center',
-          dataIndex: 'realEndTime',
+          dataIndex: 'actualendtime',
           width: 150,
           customRender: (text, record) => {
-            return text || '--'
+            return text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
         {
           title: '创建人 ',
           align: 'center',
           minWidth: 140,
-          dataIndex: 'username',
+          dataIndex: 'createby',
           customRender: (text, record) => {
             return text || '--'
           }
@@ -366,10 +336,10 @@ export default {
         {
           title: '更新时间 ',
           align: 'center',
-          minWidth: 100,
-          dataIndex: 'updateTime',
+          minWidth: 150,
+          dataIndex: 'updatedate',
           customRender: (text, record) => {
-            return text || '--'
+            return text ? moment(text).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
         {
@@ -408,19 +378,27 @@ export default {
     }
   },
   methods: {
+    handleAbnormalDetail(record) {
+      record = {
+        ...record,
+        testNames: record.projectName,
+      }
+      this.$refs.abnormalDetailModal.show(record)
+    },
     handleDetail(record) {
       this.$refs.testTaskBaseInfoModal.show(record, '1', '20px')
     },
-    handleTestBefore(record) {
-      this.$refs.testArchiveDetail.show(record, 'before')
+    handleTestBefore() {
+      this.$refs.testArchiveDetail.show(this.selectedRows[0], 'before')
     },
-    handleTestMiddle(record) {
-      this.$refs.testArchiveDetail.show(record, 'middle')
+    handleTestMiddle() {
+      this.$refs.testArchiveDetail.show(this.selectedRows[0], 'middle')
     },
-    handleTestAfter(record) {
-      this.$refs.testArchiveDetail.show(record, 'after')
+    handleTestAfter() {
+      this.$refs.testArchiveDetail.show(this.selectedRows[0], 'after')
     },
     handleReviewPdf(title, path) {
+      if (!path) return
       this.reviewPdfTitle = title
       this.$refs.reviewPdf.show(path)
     },

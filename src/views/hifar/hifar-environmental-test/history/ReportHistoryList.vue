@@ -25,13 +25,13 @@
         :rowSelection="{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }"
       >
         <template v-slot:status="text, record">
-          <a-tag :color="statusTag[record.status]" :only-word="false">{{ record.statustext }}</a-tag>
+          <a-tag :color="statusTag[record.status]">{{ record.statustext }}</a-tag>
         </template>
         <template v-slot:downloadRecord="text, record">
           <a @click="downloadHistoryRecord(record)">查看下载记录</a>
         </template>
         <template v-slot:pushmesstate="text, record">
-          <a-tag :color="pushmesstatusTag[record.pushmesstate]" :only-word="false">{{ record.pushmesstate === '1' ? '成功' : '未知' }}</a-tag>
+          <a-tag :color="pushmesstatusTag[record.pushmesstate]">{{ record.pushmesstate === '1' ? '成功' : '未知' }}</a-tag>
         </template>
       </h-vex-table>
     </h-card>

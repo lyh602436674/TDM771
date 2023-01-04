@@ -157,7 +157,6 @@
 <script>
 import moment from 'moment'
 import {postAction} from '@api/manage'
-import mixin from '@/views/hifar/mixin.js'
 import AbnormalRecordTable
   from '@/views/hifar/hifar-environmental-test/task/modules/components/detail/AbnormalRecordTable'
 import TerminationRecordTable
@@ -240,6 +239,8 @@ export default {
       checkId: '',
       testCheckType: '',
       url: {
+        before: "/HfEnvHistoryTestBusiness/beforeDetail",
+        middle: "/HfEnvHistoryTestBusiness/inDetail",
         detail: '/HfEnvTaskTestBusiness/queryById',
         CheckInfo: '/HfEnvTaskTestBusiness/queryTestCheckItem',
         // 试验数据
@@ -334,14 +335,14 @@ export default {
     show(record, type) {
       this.visible = true
       this.testCheckType = type
-      this.loadDetailData(record.id)
+      this.loadDetailData(record.taskid)
     },
     handleCancel() {
       this.visible = false
     },
     loadDetailData(id) {
       this.checkId = id
-      postAction(this.url.detail, {id: id}).then((res) => {
+      postAction(this.url[this.testCheckType], {id: id}).then((res) => {
         if (res.code === 200) {
           const {data} = res
           this.testEquipInfo = data.testEquipInfo

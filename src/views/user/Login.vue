@@ -27,8 +27,9 @@
       <div ref="loginForm" class="login_form">
         <div class="loginTab">
           <div v-for="(item,index) in tabsData" :key="index" :class="['tab-item',activeKey === index ? 'active':'']"
-               @click="loginTabChange(index)">
-            <h-icon :type="item.icon"/>
+               :style="{width: (100 / tabsData.length) + '%'}"
+               @click="loginTabChange(item,index)">
+            <h-icon :type="item.icon" style="font-size:20px"/>
             {{ item.title }}
           </div>
         </div>
@@ -76,7 +77,8 @@
             </a-form>
           </div>
           <div v-if="activeKey === 1" class="fingerprint">
-            <img alt="" src="~@/assets/zhiwen.jpg">
+            <img src="~@/assets/zhiwen.jpg" @click="fingerprintLogin">
+            <input ref="fingerInput" v-model="fingerprintValue" type="hidden" @change="handleCapture">
           </div>
         </div>
         <login-select-tenant ref="loginSelect" @success="loginSelectOk"></login-select-tenant>
@@ -86,18 +88,20 @@
 </template>
 
 <script>
-let password = null
-let account = null
-if (process.env.NODE_ENV != 'production') {
-  password = '123456'
-  account = 'admin'
-}
+import {getAction} from "@api/manage";
 import {mapActions, mapState} from 'vuex'
 import Vue from 'vue'
 import {ACCESS_TOKEN} from '@/store/mutation-types'
 import ThirdLogin from './third/ThirdLogin'
 import LoginSelectTenant from './LoginSelectTenant'
 import 'particles.js'
+
+let password = null
+let account = null
+if (process.env.NODE_ENV != 'production') {
+  password = '123456'
+  account = 'admin'
+}
 
 const particlesJSON = require('./particles.json')
 export default {
@@ -109,8 +113,9 @@ export default {
     return {
       tabsData: [
         {title: "账号密码登录", icon: "icon-zhanghaoquanxianguanli"},
-        {title: "指纹登录", icon: "icon-fingerprint"},
+        {title: "指纹登录", icon: "icon-zhiwen", type: "fingerprint"},
       ],
+      fingerprintValue: "",
       activeKey: 0,
       loginBtn: false,
       // login type: 0 email, 1 username, 2 telephone
@@ -193,11 +198,36 @@ export default {
       }
       callback()
     },
-    handleTabClick(key) {
-      this.customActiveKey = key
+    handleCapture(e) {
+      console.log(e, 'ee')
     },
-    loginTabChange(index) {
+    fingerprintLogin() {
+      // 获取系统信息
+      getAction('http://127.0.0.1:22001/zkbioonline/info').then(res => {
+        console.log(res)
+      })
+      // 开始采集
+      // type 1表示采集登记指纹(采集同一手指3次指纹),不是1则表示采集比对指纹
+      getAction('http://127.0.0.1:22001/zkbioonline/fingerprint/beginCapture?type=1').then(res => {
+        console.log(res)
+      })
+      // 取消采集
+      getAction('http://127.0.0.1:22001/zkbioonline/fingerprint/cancelCapture').then(res => {
+        console.log(res)
+      })
+      // 获取图像
+      getAction('http://127.0.0.1:22001/zkbioonline/fingerprint/getImage').then(res => {
+        console.log(res)
+      })
+    },
+    loginTabChange(item, index) {
       this.activeKey = index
+      if (item.type === 'fingerprint') {
+        // 开始采集
+        this.$nextTick(() => {
+          this.handleCapture()
+        })
+      }
     },
     handleSubmit() {
       let loginParams = {}
@@ -429,14 +459,18 @@ export default {
     cursor: pointer;
 
     .tab-item {
-      width: 50%;
       text-align: center;
       line-height: @tabHeight;
       border-bottom: 1px solid #d9d9d9;
       border-right: 1px solid #d9d9d9;
 
+      &:first-child {
+        border-radius: 5px 0 0 0;
+      }
+
       &:last-child {
         border-right: none;
+        border-radius: 0 5px 0 0;
       }
     }
 

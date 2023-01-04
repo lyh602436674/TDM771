@@ -56,7 +56,7 @@ export default {
   methods: {
     show(record) {
       this.visible = true
-      this.title = record.testNames + '(' + record.testCode + ') - 异常记录'
+      this.title = (record.testNames ? record.testNames : '') + (record.testCode ? '(' + record.testCode + ')' : '') + '-异常记录'
       this.records = record
     },
     handleCancel() {
