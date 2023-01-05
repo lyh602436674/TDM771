@@ -16,11 +16,11 @@
     >
     </h-form>
     <h-collapse :activeKey="1" class="collapseStyle" title="试验条件结构化">
-      <div v-if="filterUnitCode(model.classifyName)" slot="extraBox">
+      <div v-if="filterUnitCode(model.classifyType)" slot="extraBox">
         <a-button size="small" type="primary" @click.stop="previewEcharts"> 预览</a-button>
       </div>
       <div slot="content">
-        <template v-if="filterUnitCode(model.classifyName)">
+        <template v-if="filterUnitCode(model.classifyType)">
           <a-tabs id="drag-tab" v-model="tabsActiveKey" hideAdd type="editable-card" @edit="onEdit">
             <template v-for="(item,itemIndex) in model.abilityRequire">
               <a-tab-pane :key="itemIndex" :closable="item.closable"
@@ -77,7 +77,7 @@
     <handle-select-modal
       ref="equipHandleSelectModal"
       :columns="addEquipColumns"
-      :data-url="equipList"
+      :data-url="equipParams"
       :searchData="equipSearchData"
       :title="'添加测试设备'"
       type="equip"
@@ -139,7 +139,7 @@ export default {
       handler(val) {
         if (isObject(val) && Object.keys(val).length) {
           let obj = Object.assign({}, val)
-          let filterUnitCodeFlag = this.filterUnitCode(obj.classifyName)
+          let filterUnitCodeFlag = this.filterUnitCode(obj.classifyType)
           obj.unitId = obj.unitId ? obj.unitId : obj.id
           obj.testName = obj.unitName
           obj.attachIds = obj.fileInfo && obj.fileInfo.length && obj.fileInfo.map(item => {
@@ -157,7 +157,7 @@ export default {
               replaceStatus: item.replaceStatus
             }
           }) || []
-          this.equipData = obj.testEquipInfo && isArray(obj.testEquipInfo) || []
+          this.equipData = obj.testEquipInfo && isArray(obj.testEquipInfo) ? obj.testEquipInfo : []
           if (obj.abilityRequire && obj.abilityRequire.length) {
             obj.abilityRequire.forEach((item, index) => {
               item.closable = index !== 0 && index !== 1
@@ -332,40 +332,27 @@ export default {
           key: 'c_assetsCode_7'
         }
       ],
-      equipList: {
+      equipParams: {
         list: '/HfResEquipBusiness/listPage',
-        queryParams: {}
+        queryParams: {},
+        dataFilter: data => {
+          return {...data, data: data.data.filter(item => +item.checkValid > moment().valueOf())}
+        }
       },
       equipData: [],
       tabsActiveKey: 0,
-      testConditionData: [
-        {
-          title: '试验条件',
-          key: 'testCondition',
-          formType: 'textarea',
-          span: 3,
-          placeholder: '请输入试验条件',
-          autoSize: {minRows: 4},
-          maxLength: 240,
-          rows: 4,
-          validate: {
-            rules: [{required: true, message: '请输入试验条件'}, {validator: validatorTestCondition}],
-          },
-        },
-        {
-          title: '附件',
-          key: 'attachIds',
-          span: 3,
-          component: (
-            <h-upload-img
-              multiple={false}
-              accept={"image/png,image/gif,image/jpg,image/jpeg"}
-              v-decorator={['attachIds', {initialValue: []}]}
-            />
-          ),
-        }
-      ],
-      formData: [
+      eChartResult: {},
+      curveUrl: '',
+      selectBeforeProjectIndex: 0,
+      selectBeforeItemIndex: 0,
+      dragFlag: true,
+      disabledShowUser: false,
+      disabledPowerUpTime: false,
+    }
+  },
+  computed: {
+    formData() {
+      return [
         {
           title: '',
           key: 'unitId',
@@ -450,19 +437,14 @@ export default {
           validate: {
             rules: [{required: true, message: '请选择最终用户'}],
           },
-        },
-        {
-          title: "是否加电",
-          key: 'isPowerUp',
-          formType: 'radio',
-          radioType: 'radioButton',
-          options: [
-            {title: '是', value: '1', key: '1'},
-            {title: '否', value: '2', key: '2'}
-          ],
-          defaultValue: '2',
-          validate: {
-            rules: [{required: true, message: '请选择是否加电'}]
+          change: (val, opt) => {
+            if (opt.title === '无') {
+              this.model.isShowUserInReport = '2'
+              this.disabledShowUser = true
+            } else {
+              this.model.isShowUserInReport = '1'
+              this.disabledShowUser = false
+            }
           }
         },
         {
@@ -474,10 +456,31 @@ export default {
             {title: '是', value: '1', key: '1'},
             {title: '否', value: '2', key: '2'}
           ],
-          defaultValue: '2',
+          disabled: this.disabledShowUser,
+          defaultValue: '1',
           validate: {
             rules: [{required: true, message: '请选择报告中是否显示最终用户'}]
           }
+        },
+        {
+          title: "是否加电",
+          key: 'isPowerUp',
+          formType: 'radio',
+          radioType: 'radioButton',
+          options: [
+            {title: '是', value: '1', key: '1'},
+            {title: '否', value: '2', key: '2'}
+          ],
+          defaultValue: '1',
+          validate: {
+            rules: [{required: true, message: '请选择是否加电'}]
+          },
+          change: (val) => {
+            this.disabledPowerUpTime = val === '2'
+            if (val === '2') {
+              this.model.powerUpTime = '4'
+            }
+          },
         },
         {
           title: '加电时间',
@@ -485,6 +488,7 @@ export default {
           formType: 'dict',
           dictCode: 'hf_powerup_time',
           placeholder: '请选择加电时间',
+          disabled: this.disabledPowerUpTime,
           validate: {
             rules: [{required: true, message: '请选择加电时间'}]
           },
@@ -541,13 +545,8 @@ export default {
             <h-upload-file v-decorator={['attachIds', {initialValue: []}]}/>
           ),
         }
-      ],
-      eChartResult: {},
-      curveUrl: '',
-      selectBeforeProjectIndex: 0,
-      selectBeforeItemIndex: 0,
-      dragFlag: true
-    }
+      ]
+    },
   },
   methods: {
     createSortable() {
@@ -636,7 +635,7 @@ export default {
       }, 0)
     },
     equipAdd() {
-      this.$refs.equipHandleSelectModal.show(this.equipData)
+      this.$refs.equipHandleSelectModal.show(this.equipData, 'equipId')
     },
     equipCallback(value) {
       this.equipData = this.equipData.concat(value.map(item => {
@@ -737,7 +736,7 @@ export default {
       this.selectBeforeProjectIndex = projectIndex
       this.selectBeforeItemIndex = itemIndex
       let testConditionTab = this.$refs.testConditionTabItem
-      let filterUnitCodeFlag = this.filterUnitCode(this.project.classifyName)
+      let filterUnitCodeFlag = this.filterUnitCode(this.project.classifyType)
       let $projectTable
       if (filterUnitCodeFlag) {
         $projectTable = testConditionTab[itemIndex].$refs['pointTable' + [projectIndex] + [itemIndex]]

@@ -41,9 +41,10 @@
 
 <script>
 import moment from 'moment'
-import { downloadFile, postAction } from '@api/manage'
+import {downloadFile, postAction} from '@api/manage'
 import mixin from '@views/hifar/hifar-environmental-test/mixin.js'
-import ReportDownloadHistoryModal from '@views/hifar/hifar-environmental-test/history/modules/ReportDownloadHistoryModal'
+import ReportDownloadHistoryModal
+  from '@views/hifar/hifar-environmental-test/history/modules/ReportDownloadHistoryModal'
 
 export default {
   provide() {
@@ -147,6 +148,11 @@ export default {
               title: '力学',
               key: 2,
               value: 2
+            },
+            {
+              title: '其他',
+              key: 3,
+              value: 3
             }
           ]
         },
@@ -285,7 +291,12 @@ export default {
           dataIndex: 'testtype',
           minWidth: 100,
           customRender: (text) => {
-            return text === '1' ? '气候' : '力学'
+            let obj = {
+              1: "气候",
+              2: "力学",
+              3: "其他",
+            }
+            return obj[text] || '--'
           }
         },
         {

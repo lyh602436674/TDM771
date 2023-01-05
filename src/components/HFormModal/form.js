@@ -81,6 +81,7 @@ export default {
   watch: {
     value: {
       immediate: true,
+      deep: true,
       handler(val) {
         this.form = null
         this.initForm(val)

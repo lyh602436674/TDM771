@@ -50,24 +50,60 @@
                 <equipment-detail ref="equipmentDetail" :equipId="selectedKeys.join('')"/>
               </div>
             </a-tab-pane>
-            <a-tab-pane :key="3" style="height: 100%" tab="修正参数">
-              <h-card :title="title + ' 修正参数'" fixed>
+            <a-tab-pane :key="2" style="height: 100%" tab="能力参数">
+              <h-card :title="title + ' 能力参数'" fixed>
+                <h-search
+                  slot="search-form"
+                  v-model="queryParams"
+                  :data="searchForm"
+                  :showToggleButton="false"
+                  size="small"
+                  @change="handleSearch('equipmentParameterTable')"/>
                 <template slot="table-operator">
-                  <a-button icon="plus" size="small" type="ghost-primary" @click="handleAddAmendment">添加参数</a-button>
+                  <a-button icon="plus" size="small" type="ghost-primary" @click="handleAdd">添加参数</a-button>
                 </template>
-                <h-edit-table
-                  ref="equipmentAmendmentParameterTable"
-                  slot="content"
-                  :autoLoad="false"
-                  :columns="amendmentColumns"
-                  :data="amendmentLoadData"
-                  :editConfig="editConfig"
-                  :editRules="editRules"
-                  uid="equipmentAmendmentParameterTable"
-                  @eidtStatus="editChange"
-                ></h-edit-table>
+                <h-vex-table
+                  ref='equipmentParameterTable'
+                  slot='content'
+                  :columns='columns'
+                  :data='loadData'
+                  :rowSelection='{ selectedRowKeys: selectedRowKeys, onChange: onSelect }'
+                  :scroll='{ x: true }'
+                  fixed
+                >
+                  <a
+                    slot='conditionType'
+                    slot-scope='text, record'
+                    @click='handleAddCondition(record)'
+                  >
+                    {{ record.conditionTypeDesc || '未设置' }}
+                  </a>
+                  <template slot='actions' slot-scope='text, record'>
+                    <a-popconfirm title='确认删除？' @confirm='() => handleDelete(record.id)'>
+                      <h-icon class='danger-text' style='cursor: pointer' type='icon-shanchu'/>
+                    </a-popconfirm>
+                  </template>
+                </h-vex-table>
               </h-card>
             </a-tab-pane>
+<!--            <a-tab-pane :key="3" style="height: 100%" tab="修正参数">-->
+<!--              <h-card :title="title + ' 修正参数'" fixed>-->
+<!--                <template slot="table-operator">-->
+<!--                  <a-button icon="plus" size="small" type="ghost-primary" @click="handleAddAmendment">添加参数</a-button>-->
+<!--                </template>-->
+<!--                <h-edit-table-->
+<!--                  ref="equipmentAmendmentParameterTable"-->
+<!--                  slot="content"-->
+<!--                  :autoLoad="false"-->
+<!--                  :columns="amendmentColumns"-->
+<!--                  :data="amendmentLoadData"-->
+<!--                  :editConfig="editConfig"-->
+<!--                  :editRules="editRules"-->
+<!--                  uid="equipmentAmendmentParameterTable"-->
+<!--                  @eidtStatus="editChange"-->
+<!--                ></h-edit-table>-->
+<!--              </h-card>-->
+<!--            </a-tab-pane>-->
             <a-tab-pane :key="4" style="height: 100%" tab="试前模板">
               <h-card :title="title + ' 试前模板'" fixed>
                 <h-search
@@ -611,7 +647,6 @@ export default {
                 class: 'danger-text',
                 on: {
                   click: () => {
-                    // this.$refs.equipmentAmendmentParameterTable.delete(params)
                     postAction(this.url.batchDeleteTagamendment, {ids: params.row.id}).then(res => {
                       if (res.code === 200) {
                         this.$message.success("删除成功")
@@ -903,6 +938,9 @@ export default {
       this.$refs.hSelectModal.handleCancel()
       let activeTab = this.activeTab
       switch (activeTab) {
+        case 2:
+          this.$refs.equipmentParameterTable.refresh(true)
+          break
         case 3:
           this.$refs.equipmentAmendmentParameterTable.refresh(true)
           break

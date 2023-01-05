@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%">
-    <a-button v-if="itemIndex !== 0 || !filterUnitCode(currentProject.classifyName)" size="small" style="margin-bottom: 5px"
+    <a-button v-if="itemIndex !== 0 || !filterUnitCode(currentProject.classifyType)" size="small" style="margin-bottom: 5px"
               type="primary" @click="handleAdd"> 新增
     </a-button>
     <vxe-table

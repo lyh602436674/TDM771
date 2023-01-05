@@ -140,7 +140,7 @@ export default {
       handler(val) {
         if (isObject(val) && Object.keys(val).length) {
           let obj = Object.assign({}, val)
-          this.filterUnitCodeFlag = this.filterUnitCode(obj.classifyName)
+          this.filterUnitCodeFlag = this.filterUnitCode(obj.classifyType)
           obj.unitId = obj.unitId ? obj.unitId : obj.id
           obj.testName = obj.unitName
           let fileList = []

@@ -63,6 +63,40 @@
           </h-vex-table>
         </h-card>
       </a-tab-pane>
+      <!--试验条件-->
+      <a-tab-pane :key="3" tab="试验条件">
+        <h-card :bordered="false" :title="title + ' 试验条件'" fixed>
+          <h-search
+            slot="search-form"
+            v-model="parameterQueryParams"
+            :data="parameterSearchBar"
+            :showToggleButton="false"
+            size="small"
+            @change="() => handleSearch('parameter')"
+          />
+          <template slot="table-operator">
+            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(3)">
+              新增参数
+            </a-button>
+            <a-button icon="delete" size="small" type="danger" @click="() => deleteBatch(3)"> 批量删除</a-button>
+          </template>
+          <h-vex-table
+            ref="parameter"
+            slot="content"
+            :columns="parameterColumns"
+            :data="parameterLoadData"
+            :rowKey="(record) => record.id"
+            :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+            :scroll="{ x: true }"
+          >
+            <template slot="actions" slot-scope="text, record">
+              <a-tooltip title="删除">
+                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(3, record.id)"/>
+              </a-tooltip>
+            </template>
+          </h-vex-table>
+        </h-card>
+      </a-tab-pane>
       <!-- 试前模板 -->
       <a-tab-pane :key="7" tab="试前模板">
         <h-card :bordered="false" :title="title + ' 试前模板'" fixed>

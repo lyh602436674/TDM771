@@ -186,12 +186,11 @@ export default {
     },
     handleSubmit() {
       let {selectedRowKeys, selectedRows} = this
-      let modelOrAlias = [{title: '型号/规格', key: 'productModel'}, {title: "图号", key: 'productAlias'}]
-      let nameModelAlias = selectedRows.map((item) => item.productName + item[modelOrAlias[[+this.entrustType - 1]].key])
-      if (Array.from(new Set(nameModelAlias)).length > 1) {
-        return this.$message.warning('只能选择相同的产品名称和' + modelOrAlias[[+this.entrustType - 1]].title)
+      let selectedProductName = selectedRows.map((item) => item.productName + item.productAlias)
+      if (Array.from(new Set(selectedProductName)).length > 1) {
+        return this.$message.warning('只能选择相同的产品名称和代号')
       }
-      if (selectedRowKeys.length > 0) {
+      if (selectedRowKeys.length) {
         this.handleCancel()
         this.triggerChange()
       } else {

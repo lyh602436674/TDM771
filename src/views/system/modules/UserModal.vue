@@ -167,6 +167,11 @@ export default {
                 key: '2',
                 value: '2',
               },
+              {
+                title: '其他',
+                key: '3',
+                value: '3'
+              }
             ]
           },
           {

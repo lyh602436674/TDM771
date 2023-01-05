@@ -10,7 +10,7 @@
   <h-modal inner :width="600" destroyOnClose :visible="visible" :title="title" @cancel="handleCancel">
     <h-form
       v-model="model"
-      ref="envTestForm"
+      ref="projectForm"
       :width="600"
       :column="1"
       :formData="formData"
@@ -26,10 +26,11 @@
 <script>
 import workCenterSelect from '../components/WorkCenterSelect'
 import pcClassifySelect from '../components/PcClassifySelect'
-import { postAction } from '@/api/manage'
-import { findIndex } from 'lodash'
+import {postAction} from '@/api/manage'
+import {findIndex} from 'lodash'
+
 export default {
-  components: { workCenterSelect, pcClassifySelect },
+  components: {workCenterSelect, pcClassifySelect},
   inject: ['groupCode'],
   data() {
     return {
@@ -52,12 +53,6 @@ export default {
             hidden: true,
           },
           {
-            title: '名称',
-            key: 'classifyName',
-            formType: 'input',
-            validate: { rules: [{ required: true, message: '请输入名称' }] },
-          },
-          {
             title: '类型',
             key: 'type',
             formType: 'select',
@@ -76,7 +71,39 @@ export default {
             change: (v) => {
               this.changeType(v)
             },
-            validate: { rules: [{ required: true, message: '请选择类型' }] },
+            validate: {rules: [{required: true, message: '请选择类型'}]},
+          },
+          {
+            title: '名称',
+            key: 'classifyType',
+            formType: 'select',
+            options: [
+              {
+                title: '气候试验',
+                key: '1',
+                value: '1',
+              },
+              {
+                title: '力学试验',
+                key: '2',
+                value: '2',
+              },
+              {
+                title: '其他',
+                key: '3',
+                value: '3',
+              },
+            ],
+            change: (v, opt) => {
+              this.$refs.projectForm.form.setFieldsValue({classifyName: opt.data.props.title})
+            },
+            validate: {rules: [{required: true, message: '请选择名称'}]},
+          },
+          {
+            title: '名称',
+            key: 'classifyName',
+            formType: 'input',
+            hidden: true,
           },
           {
             title: '工作中心',
@@ -212,7 +239,7 @@ export default {
       this.formData = formData
     },
     handleSubmit() {
-      this.$refs.envTestForm.validateForm()
+      this.$refs.projectForm.validateForm()
     },
     handleChange(values) {
       if (this.confirmLoading) return
@@ -221,7 +248,7 @@ export default {
         ...values,
       }
       let url = null
-      if (params.type == 'unit') {
+      if (params.type === 'unit') {
         if (params.id) {
           url = this.url.unitModify
         } else {
@@ -234,7 +261,7 @@ export default {
             this.handleCancel()
           }
         })
-      } else if (params.type == 'classify') {
+      } else if (params.type === 'classify') {
         if (params.id) {
           url = this.url.classifyModify
         } else {

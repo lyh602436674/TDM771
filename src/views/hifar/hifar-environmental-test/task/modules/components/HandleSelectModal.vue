@@ -85,16 +85,15 @@ export default {
     }
   },
   methods: {
-    show(record) {
+    show(record, field) {
+      // field 是指定取record中那个字段
       this.visible = true
       this.selectedRows = []
       this.selectedRowKeys = []
       if (record && record.length) {
-        let ids = []
-        record.forEach((item) => {
-          ids.push(item.id)
-        })
-        this.ids = ids
+        this.ids = record.map((item) => item[field || 'id'])
+      } else {
+        this.ids = []
       }
     },
     refresh(bool = true) {
@@ -108,13 +107,8 @@ export default {
       this.handleCancel()
     },
     tableSelectChange(selectedRowKeys, selectedRows) {
-      if (this.multiple) {
-        this.selectedRows = selectedRows
-        this.selectedRowKeys = selectedRowKeys
-      } else {
-        this.selectedRowKeys = selectedRowKeys
-        this.selectedRows = selectedRows
-      }
+      this.selectedRows = selectedRows
+      this.selectedRowKeys = selectedRowKeys
     },
     loadData(params) {
       let data = {
@@ -127,7 +121,7 @@ export default {
       return postAction(this.url.list, data)
         .then((res) => {
           if (res.code === 200) {
-            const { data } = res
+            const {data} = res
             if (this.type === 'product') {
               if (data.length) {
                 data.map((item, index) => {
@@ -135,7 +129,8 @@ export default {
                 })
               }
             }
-            return res.data
+            let {dataFilter} = this.dataUrl
+            return dataFilter ? dataFilter(data) : data
           }
         })
         .finally(() => {
