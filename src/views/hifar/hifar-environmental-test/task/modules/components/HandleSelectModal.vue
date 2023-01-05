@@ -21,13 +21,17 @@
           @change="refresh"
       />
       <h-vex-table
-          ref="vexTable"
-          :columns="columns"
-          :data="loadData"
-          :rowKey="(record) => record.id"
-          :rowSelection="{ selectedRowKeys, onSelect: tableSelectChange, type: multiple ? 'checkbox' : 'radio' }"
-          style="width: 100%"
+        ref="vexTable"
+        :checkMethod="checkMethod"
+        :columns="columns"
+        :data="loadData"
+        :rowKey="(record) => record.id"
+        :rowSelection="{ selectedRowKeys, onSelect: tableSelectChange, type: multiple ? 'checkbox' : 'radio' }"
+        style="width: 100%"
       >
+        <template v-for="item in columnsSlot" :slot="item.slot" slot-scope="text,row">
+          <span v-html="item.template(row)"></span>
+        </template>
       </h-vex-table>
     </h-card>
   </h-modal>
@@ -35,6 +39,7 @@
 
 <script>
 import {postAction} from '@/api/manage'
+import moment from 'moment'
 
 export default {
   name: 'HandleSelectModal',
@@ -42,6 +47,20 @@ export default {
     getContainer: {
       default: () => document.body,
     },
+  },
+  computed: {
+    columnsSlot() {
+      let result = []
+      for (let i = 0; i < this.columns.length; i++) {
+        if (this.columns[i].scopedSlots && this.columns[i].scopedSlots.customRender && this.columns[i].scopedSlots.template) {
+          result.push({
+            slot: this.columns[i].scopedSlots.customRender,
+            template: this.columns[i].scopedSlots.template
+          })
+        }
+      }
+      return result
+    }
   },
   props: {
     columns: {
@@ -69,9 +88,14 @@ export default {
       type: String,
       default: '',
     },
+    checkMethod: {
+      type: Function,
+      default: () => true
+    },
   },
   data() {
     return {
+      moment,
       visible: false,
       confirmLoading: false,
       loading: false,
@@ -129,8 +153,7 @@ export default {
                 })
               }
             }
-            let {dataFilter} = this.dataUrl
-            return dataFilter ? dataFilter(data) : data
+            return data
           }
         })
         .finally(() => {

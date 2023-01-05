@@ -81,6 +81,7 @@
       :searchData="equipSearchData"
       :title="'添加测试设备'"
       type="equip"
+      :checkMethod="({row})=> +row.checkValid > moment().valueOf()"
       @callback="equipCallback"
     />
     <div id='echarts-result' style='display: none;width: 1000px;height: 500px;'></div>
@@ -285,9 +286,12 @@ export default {
         {
           title: '计量有效期',
           dataIndex: 'checkValid',
-          customRender: (t, record) => {
-            return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
-          }
+          scopedSlots: {
+            customRender: '_checkValid_',
+            template: (row) => `<span style="color: ${+row.checkValid > moment().valueOf() ? '' : 'red'}">
+              ${+row.checkValid && moment(+row.checkValid).format('YYYY-MM-DD') || '--'}
+            </span>`
+          },
         },
         {
           title: '设备型号',
@@ -335,9 +339,6 @@ export default {
       equipParams: {
         list: '/HfResEquipBusiness/listPage',
         queryParams: {},
-        dataFilter: data => {
-          return {...data, data: data.data.filter(item => +item.checkValid > moment().valueOf())}
-        }
       },
       equipData: [],
       tabsActiveKey: 0,

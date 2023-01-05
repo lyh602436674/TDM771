@@ -77,8 +77,8 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
-import { isArray } from 'lodash'
+import {postAction} from '@/api/manage'
+import {isArray} from 'lodash'
 import moment from 'moment'
 
 export default {
@@ -295,7 +295,8 @@ export default {
         let data = {
           ...params,
           ...this.queryParams,
-          searchType: "all"
+          searchType: "all",
+          c_equipUse_1: "1", // 只查询试验设备
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
