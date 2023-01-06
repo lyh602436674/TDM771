@@ -14,13 +14,14 @@
                              :pieceTableData="pieceTableData" :project="item"></project-form-item>
         </div>
         <div class="panel-custom-item-top-right">
-          <a-button
-            icon="delete"
-            size="small"
-            style="width: 32px; height: 32px"
-            type="danger"
-            @click="deleteProjectHandle(item, index)"
-          ></a-button>
+          <a-popconfirm title="确定删除吗?" @confirm="() => deleteProjectHandle(item, index)">
+            <a-button
+              icon="delete"
+              size="small"
+              style="width: 32px; height: 32px"
+              type="danger"
+            ></a-button>
+          </a-popconfirm>
         </div>
       </div>
     </div>
@@ -80,10 +81,16 @@ export default {
   methods: {
     // 删除项目
     deleteProjectHandle(item, index) {
-      const {formInfoDataList} = this
-      formInfoDataList.splice(index, 1)
-      this.formInfoDataList = formInfoDataList
-      this.$emit('deleteProject')
+      this.$confirm({
+        title: '确认删除',
+        content: '是否要继续删除?',
+        onOk: () => {
+          const {formInfoDataList} = this
+          formInfoDataList.splice(index, 1)
+          this.formInfoDataList = formInfoDataList
+          this.$emit('deleteProject')
+        },
+      })
     },
     submitHandle(bool) {
       // bool 是否进行验证

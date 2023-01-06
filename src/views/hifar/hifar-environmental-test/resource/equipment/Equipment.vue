@@ -242,7 +242,7 @@ export default {
           title: '设备类型',
           align: 'left',
           ellipsis: true,
-          width: 120,
+          width: 100,
           dataIndex: 'equipTypeCode_dictText',
           customRender: (text, record) => {
             return text || '--'
@@ -252,7 +252,7 @@ export default {
           title: '计量有效期',
           align: 'left',
           ellipsis: true,
-          width: 160,
+          width: 180,
           dataIndex: 'checkValid',
           scopedSlots: { customRender: 'checkValid' }
         },
@@ -260,7 +260,7 @@ export default {
           title: '计量周期',
           align: 'left',
           ellipsis: true,
-          width: 120,
+          width: 100,
           dataIndex: 'checkPeriod',
           scopedSlots: { customRender: 'checkPeriod' }
         },

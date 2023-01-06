@@ -36,7 +36,7 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import SysUserSelect from '@/views/components/SysUserSelect'
 import ProjectAddModal from '@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal';
 
@@ -228,6 +228,7 @@ export default {
           key: 'equipBaseProjectNames',
           span: 12,
           formType: 'input',
+          placeholder: "请选择",
           readOnly: true,
           click: () => {
             this.$refs.projectAddModal.visible = true
@@ -236,6 +237,14 @@ export default {
             let equipBaseProjectIds = this.$refs.equipmentForm.form.getFieldsValue().equipBaseProjectIds
             this.$refs.projectAddModal.selectedRowKeys = equipBaseProjectIds && equipBaseProjectIds.split(',') || []
           }
+        },
+        {
+          title: '开机费',
+          key: 'startupCost',
+          formType: 'input-number',
+          span: 12,
+          min: 0,
+          style: {width: "100%"}
         },
         {
           key: 'equipBaseProjectIds',
