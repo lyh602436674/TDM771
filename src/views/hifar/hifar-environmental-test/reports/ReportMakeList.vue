@@ -18,7 +18,7 @@
         @change="refresh(true)"
       />
       <div slot="table-operator" style="border-top: 5px">
-        <a-badge :count="reportNum" style="margin-right: 10px">
+        <a-badge :count="reportNum">
           <a-button
             v-has="'report:add'"
             icon="plus"
@@ -28,11 +28,9 @@
           >添加
           </a-button>
         </a-badge>
-        <template>
-          <a-button v-has="'report:delete'" icon="delete" size="small" type="danger" @click="batchDel()">
-            批量删除
-          </a-button>
-        </template>
+        <a-button v-has="'report:delete'" icon="delete" size="small" type="danger" @click="batchDel()">
+          批量删除
+        </a-button>
       </div>
 
       <h-vex-table
@@ -90,26 +88,39 @@
           </span>
           <template v-if="!isIntranet">
              <span v-if="record.status == 3 || record.status == 30 || record.status == 50 ">
-            <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
-              <h-icon
-                v-if="record.isExternalManage != 1"
+              <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
+                <h-icon
+                  v-if="record.isExternalManage != 1"
+                  v-has="'report:submit'"
+                  style="cursor: pointer"
+                  title="提交"
+                  type="icon-tijiao"/>
+              </a-popconfirm>
+              <a-divider
+                v-if="record.filePath && record.isExternalManage != 1"
                 v-has="'report:submit'"
+                style="color: #409eff"
+                type="vertical"/>
+              <a-icon
+                v-if="record.filePath"
+                v-has="'report:edit'"
+                class="primary-text"
                 style="cursor: pointer"
-                title="提交"
-                type="icon-tijiao"/>
-            </a-popconfirm>
-            <a-divider
-              v-if="record.filePath && record.isExternalManage != 1"
-              v-has="'report:submit'"
-              style="color: #409eff"
-              type="vertical"/>
-            <a-icon
-              v-if="record.filePath"
-              v-has="'report:edit'"
-              class="primary-text"
-              style="cursor: pointer"
-              type="edit"
-              @click="handleEdit(record)"/>
+                type="edit"
+                @click="handleEdit(record)"/>
+             <a-divider style="color: #409eff" type="vertical"/>
+              <a-upload
+                :action='autoFileUrl'
+                :data='{id:record.id}'
+                :headers='tokenHeader'
+                :multiple='false'
+                :show-upload-list='false'
+                accept='.docx'
+                name='file'
+                @change='fileChange'
+              >
+              <a-icon style="cursor: pointer;color:#409EFF" title='替换' type='swap'/>
+            </a-upload>
             <a-divider
               v-if="record.isExternalManage != 1"
               v-has="'report:edit'"
@@ -118,17 +129,19 @@
           </span>
             <template v-if="record.status >= 3">
               <span v-has="'report:download'">
-                <a-dropdown>
-                  <a-icon class="primary-text" style="cursor: pointer" title="下载" type="download"/>
-                  <a-menu slot="overlay">
-                    <a-menu-item>
-                      <span @click="handleDownload(record.id,'docx')">下载word</span>
-                    </a-menu-item>
-                    <a-menu-item>
-                      <span @click="handleDownload(record.id,'pdf')">下载pdf</span>
-                    </a-menu-item>
-                  </a-menu>
-                </a-dropdown>
+                <a-icon
+                  style="cursor: pointer;color:#409EFF"
+                  title="下载docx"
+                  type="file-word"
+                  @click="handleDownload(record.id, 'docx')"
+                />
+                 <a-divider type="vertical"/>
+                <a-icon
+                  style="cursor: pointer;color:#409EFF"
+                  title="下载pdf"
+                  type="file-pdf"
+                  @click="handleDownload(record.id, 'pdf')"
+                />
               </span>
               <span>
               <a-divider type="vertical"/>
@@ -186,6 +199,7 @@ export default {
       moment,
       queryParams: {},
       isIntranet: true,
+      tableLoading: false,
       url: {
         list: '/HfEnvReportBusiness/listPage',
         delete: '/HfEnvReportBusiness/logicRemoveById',
@@ -196,7 +210,7 @@ export default {
         autoFileUrl: '/HfEnvReportBusiness/authUpload',
         download: '/HfEnvReportBusiness/download',
         pushIntranet: '/ReportPushApiBusiness/pushIntranet',
-        pushMes: '/ReportPushApiBusiness/pushReportToMes'
+        pushMes: '/ReportPushApiBusiness/pushReportToMes',
       },
       reportNum: 0,
       selectedRowKeys: [],
@@ -360,9 +374,9 @@ export default {
           title: '操作',
           dataIndex: 'action',
           fixed: 'right',
-          width: 150,
+          width: 300,
           align: 'center',
-          scopedSlots: { customRender: 'action' }
+          scopedSlots: {customRender: 'action'}
         }
       ],
       loadData: (params) => {
@@ -431,7 +445,8 @@ export default {
       this.refresh(true)
     },
     fileChange({ file }) {
-      if (file.response && file.response.code === 200) {
+      this.$refs.reportMakeTable.localLoading = true
+      if ((file.response && file.response.code === 200) || file.status === 'done') {
         this.refresh()
       }
     },

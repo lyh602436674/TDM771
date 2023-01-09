@@ -7,36 +7,32 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\resource\fee\modules\FeeListDetailModal.vue
 -->
 <template>
-  <h-modal inner :width="900" :visible="visible" :getContainer="getContainer" @cancel="handleCancel">
+  <h-modal :getContainer="getContainer" :visible="visible" fullScreen inner title="计费标准详情" @cancel="handleCancel">
     <div class="footer" slot="footer">
-      <a-button @click="handleCancel" type="ghost-danger"> 关闭 </a-button>
+      <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     </div>
-    <h-desc labelWidth="120px" size="small" style="width: 100%" title="基本信息">
-      <h-desc-item label="计费标准名称" :span="4">
-        {{ detailData.costName ? detailData.costName : '--' }}
-      </h-desc-item>
-      <h-desc-item label="备注">
-        {{ detailData.remarks ? detailData.remarks : '--' }}
-      </h-desc-item>
-    </h-desc>
-    <div class="h-descriptions-title" style="margin-top: 35px">
-      <span class="content">设备单价</span>
+    <div style="padding:20px">
+      <h-desc labelWidth="120px" size="small" style="width: 100%" title="基本信息">
+        <h-desc-item :span="4" label="计费标准名称">
+          {{ detailData.costName ? detailData.costName : '--' }}
+        </h-desc-item>
+        <h-desc-item label="备注">
+          {{ detailData.remarks ? detailData.remarks : '--' }}
+        </h-desc-item>
+      </h-desc>
+      <div class="h-descriptions-title" style="margin-top: 35px">
+        <span class="content">设备单价</span>
+      </div>
+      <a-table
+        :columns="columns"
+        :dataSource="priceData"
+        :pagination="false"
+        bordered
+        rowKey="id"
+        size="small"
+        style="width: 100%"
+      ></a-table>
     </div>
-    <vxe-table
-      border
-      show-all-overflow
-      keep-source
-      ref="priceDataTable"
-      :data="priceData"
-      :edit-config="{ key: 'id', trigger: 'click', mode: 'row', showStatus: true }"
-    >
-      <vxe-table-column type="seq" width="60"></vxe-table-column>
-      <vxe-table-column title="设备名称" field="unitName" :disabled="true"></vxe-table-column>
-      <vxe-table-column title="设备型号" field="equipModel" :disabled="true"></vxe-table-column>
-      <vxe-table-column title="速率" field="rate" :disabled="true"></vxe-table-column>
-      <vxe-table-column title="单价（元）" field="unitPrice"></vxe-table-column>
-      <vxe-table-column title="单价描述" field="remarks"></vxe-table-column>
-    </vxe-table>
   </h-modal>
 </template>
 
@@ -53,6 +49,114 @@ export default {
   },
   data() {
     return {
+      columns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return index + 1
+          }
+        },
+        {
+          title: '设备名称',
+          dataIndex: 'unitName',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '设备型号',
+          dataIndex: 'equipModel',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '资产编号',
+          dataIndex: 'assetsCode',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '速率',
+          dataIndex: 'rate',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '温度范围',
+          dataIndex: 'temperatureRange',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '湿度范围',
+          dataIndex: 'humidityRange',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '压力范围',
+          dataIndex: 'pressureRange',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '加速度范围',
+          dataIndex: 'accelerationRange',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '折扣',
+          dataIndex: 'discount',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '单价（元）',
+          dataIndex: 'unitPrice',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '开机费（元）',
+          dataIndex: 'startupCost',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '单价描述',
+          dataIndex: 'remarks',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+      ],
       title: '计费标准详情',
       visible: false,
       url: {

@@ -12,81 +12,114 @@
     inner
     :visible="visible"
     :getContainer="getContainer"
-    :width="drawerWidth"
+    fullScreen
     :confirm-loading="confirmLoading"
     @submit="handleClickSubmit"
     @cancel="handleCancel"
   >
-    <h-form
-      ref="repairRecordForm"
-      v-if="visible"
-      v-model="model"
-      :column="1"
-      :formData="formData"
-      @change="submitHandle"
-    ></h-form>
-    <h-card title="项目单价">
-      <a-button
-        size="small"
-        @click="insertEventHandle"
-        type="ghost-primary"
-        icon="plus"
-        style="margin-right: 5px; margin-bottom: 4px"
-        >新增</a-button
-      >
-      <a-button
-        v-if="hasSelected"
-        type="danger"
-        size="small"
-        icon="minus"
-        style="margin-bottom: 4px"
-        @click="handleDelete"
-      >
-        删除
-      </a-button>
-      <div class="wordRecordData">
-        <vxe-table
-          v-if="visible"
-          border
-          show-all-overflow
-          keep-source
-          ref="priceDataTable"
-          :data="priceData"
-          :max-height="400"
-          :edit-rules="validRules"
-          @checkbox-all="selectAllEvent"
-          @checkbox-change="onSelectChange"
-          :edit-config="{ key: 'id', trigger: 'click', mode: 'row', showStatus: true }"
+    <div style="padding:20px">
+      <h-form
+        v-if="visible"
+        ref="repairRecordForm"
+        v-model="model"
+        :column="2"
+        :formData="formData"
+        style="margin-top: 20px"
+        @change="submitHandle"
+      ></h-form>
+      <h-card title="设备单价">
+        <a-button
+          icon="plus"
+          size="small"
+          style="margin-right: 5px; margin-bottom: 4px"
+          type="ghost-primary"
+          @click="insertEventHandle"
+        >新增
+        </a-button
         >
-          <vxe-table-column type="checkbox" width="60"></vxe-table-column>
-          <vxe-table-column type="seq" width="60"></vxe-table-column>
-          <vxe-table-column title="设备名称" field="unitName" :disabled="true"></vxe-table-column>
-          <vxe-table-column title="设备型号" field="equipModel" :disabled="true"></vxe-table-column>
-          <vxe-table-column
-            title="速率"
-            field="rate"
-            :edit-render="{ name: '$input', props: { type: 'number', min: 0, placeholder: '请输入速率' } }"
-          ></vxe-table-column>
-          <vxe-table-column
-            title="单价（元）"
-            field="unitPrice"
-            :edit-render="{ name: '$input', props: { type: 'number', min: 0, placeholder: '请输入单价（元）' } }"
-          ></vxe-table-column>
-          <vxe-table-column
-            title="单价描述"
-            field="remarks"
-            :edit-render="{ name: '$input', props: { placeholder: '请输入单价描述' } }"
-          ></vxe-table-column>
-        </vxe-table>
-      </div>
-    </h-card>
+        <a-button
+          v-if="hasSelected"
+          icon="minus"
+          size="small"
+          style="margin-bottom: 4px"
+          type="danger"
+          @click="handleDelete"
+        >
+          删除
+        </a-button>
+        <div class="wordRecordData">
+          <vxe-table
+            ref="priceDataTable"
+            :data="priceData"
+            :edit-config="{ key: 'id', trigger: 'click', mode: 'row', showStatus: true }"
+            :edit-rules="validRules"
+            :max-height="520"
+            border
+            keep-source
+            show-all-overflow
+            @checkbox-all="selectAllEvent"
+            @checkbox-change="onSelectChange"
+          >
+            <vxe-table-column align="center" type="checkbox" width="40"></vxe-table-column>
+            <vxe-table-column align="center" type="seq" width="40"></vxe-table-column>
+            <vxe-table-column field="unitName" title="设备名称" width="160"></vxe-table-column>
+            <vxe-table-column field="equipModel" title="设备型号"></vxe-table-column>
+            <vxe-table-column field="assetsCode" title="资产编号"></vxe-table-column>
+            <vxe-table-column
+              :edit-render="{ name: 'input', placeholder: '请输入速率范围' }"
+              field="rate"
+              title="速率"
+            ></vxe-table-column>
+            <vxe-table-column
+              :edit-render="{ name: 'input', placeholder: '请输入温度范围' }"
+              field="temperatureRange"
+              title="温度范围"
+            ></vxe-table-column>
+            <vxe-table-column
+              :edit-render="{ name: 'input', placeholder: '请输入湿度范围' }"
+              field="humidityRange"
+              title="湿度范围"
+            ></vxe-table-column>
+            <vxe-table-column
+              :edit-render="{ name: 'input', placeholder: '请输入压力范围' }"
+              field="pressureRange"
+              title="压力范围"
+            ></vxe-table-column>
+            <vxe-table-column
+              :edit-render="{ name: 'input', placeholder: '请输入加速度范围' }"
+              field="accelerationRange"
+              title="加速度范围"
+            ></vxe-table-column>
+            <vxe-table-column
+              :edit-render="{ name: 'input', placeholder: '请输入折扣' }"
+              field="discount"
+              title="折扣"
+            ></vxe-table-column>
+            <vxe-table-column
+              :edit-render="{ name: '$input', props: { type: 'number', min: 0, placeholder: '请输入单价（元）' } }"
+              field="unitPrice"
+              title="单价（元）"
+            ></vxe-table-column>
+            <vxe-table-column
+              field="startupCost"
+              title="开机费（元）"
+            ></vxe-table-column>
+            <vxe-table-column
+              :edit-render="{ name: '$input', props: { placeholder: '请输入单价描述' } }"
+              field="remarks"
+              title="单价描述"
+            ></vxe-table-column>
+          </vxe-table>
+        </div>
+      </h-card>
+    </div>
     <sys-fee-list-select-modal ref="SysFeeListSelectModal" @change="feeSelectHandle"></sys-fee-list-select-modal>
   </h-modal>
 </template>
 
 <script>
 import {postAction} from '@/api/manage'
-import {isArray} from 'lodash'
+import {isArray, isNumber} from 'lodash'
 import SysFeeListSelectModal from '@/views/components/SysFeeListSelectModal'
 
 export default {
@@ -99,18 +132,82 @@ export default {
     },
   },
   data() {
+    const validatorFields = (cellValue, message, reg) => {
+      return new Promise((resolve, reject) => {
+        if (cellValue && !reg.test(cellValue)) {
+          reject(new Error(message))
+        } else {
+          resolve()
+        }
+      })
+    }
+    const regRange = /^(\d+)-([1-9]*[1-9][0-9]*)$/
+
     return {
       dataSource: [],
       visible: false,
       confirmLoading: false,
-      drawerWidth: 1000,
       model: {},
       title: '添加',
       selectedRowKeys: [],
       priceData: [],
       validRules: {
-        rate: [{ required: true, message: '速率不能为空', trigger: 'blur' }],
-        unitPrice: [{ required: true, message: '单价不能为空', trigger: 'blur' }],
+        rate: [
+          {required: false, trigger: 'blur'},
+          {
+            validator: ({cellValue}) => {
+              return validatorFields(cellValue, '请输入正确格式的速率，例：1-100', regRange)
+            }
+          }
+        ],
+        temperatureRange: [
+          {required: false, trigger: 'blur'},
+          {
+            validator: ({cellValue}) => {
+              return validatorFields(cellValue, '请输入正确格式的温度范围，例：1-100', regRange)
+            }
+          }
+        ],
+        humidityRange: [
+          {required: false, trigger: 'blur'},
+          {
+            validator: ({cellValue}) => {
+              return validatorFields(cellValue, '请输入正确格式的湿度范围，例：1-100', regRange)
+            }
+          }
+        ],
+        pressureRange: [
+          {required: false, trigger: 'blur'},
+          {
+            validator: ({cellValue}) => {
+              return validatorFields(cellValue, '请输入正确格式的压力范围，例：1-100', regRange)
+            }
+          }
+        ],
+        accelerationRange: [
+          {required: false, trigger: 'blur'},
+          {
+            validator: ({cellValue}) => {
+              return validatorFields(cellValue, '请输入正确格式的加速度范围，例：1-100', regRange)
+            }
+          }
+        ],
+        discount: [
+          {required: false, trigger: 'blur'},
+          {
+            validator: ({cellValue}) => {
+              const regMinMax = /^((\d|10)(\.\d{1,2})?)$/
+              return new Promise((resolve, reject) => {
+                if (cellValue && (!regMinMax.test(cellValue) || !isNumber(+cellValue) || cellValue < 0 || cellValue > 10)) {
+                  reject(new Error('折扣值只能在0到10范围内,并且保留两位小数'))
+                } else {
+                  resolve()
+                }
+              })
+            }
+          }
+        ],
+        unitPrice: [{required: false, message: '单价不能为空', trigger: 'blur'}],
       },
       url: {
         add: '/HfResCustCostBusiness/addCostAndPrice',
@@ -128,15 +225,18 @@ export default {
         {
           title: '计费标准名称',
           key: 'costName',
+          span: 1,
           formType: 'input',
           validate: {
-            rules: [{ required: true, message: '请输入计费标准名称', trigger: 'blur' }],
+            rules: [{required: true, message: '请输入计费标准名称', trigger: 'blur'}],
           },
         },
         {
+          span: 1,
           title: '计费标准描述',
           key: 'remarks',
           formType: 'textarea',
+          autoSize: {minRows: 1}
         },
       ],
     }
@@ -157,25 +257,17 @@ export default {
       this.editor(record)
     },
     loadUnitById(costId) {
-      let newTableData = []
       postAction(this.url.priceUnit, { costId: costId }).then((res) => {
         if (res.code === 200) {
           let record = res.data
-          if (record.length > 0) {
-            record.forEach((item) => {
-              newTableData.push({
-                costId: item.costId,
-                id: item.id,
-                unitId: item.unitId,
-                unitName: item.unitName,
-                rate: item.rate,
-                equipModel: item.equipModel,
-                unitPrice: item.unitPrice / 100,
-                remarks: item.remarks,
-              })
-            })
-          }
-          this.priceData = newTableData
+          this.priceData = record && record.length && record.map((item) => {
+            return {
+              ...item,
+              ...item.equipData[0], // 设备信息全部从equipData中拿
+              unitName: item.equipData[0].equipName,
+              remarks: item.remarks,
+            }
+          }) || []
         }
       })
     },
@@ -197,31 +289,21 @@ export default {
       $table.removeCheckboxRow()
       this.selectedRowKeys = []
       if (tableData.length > 0) {
-        let list = tableData.filter((items) => {
+        this.priceData = tableData.filter((items) => {
           if (!removeRecords.includes(items)) return items
         })
-        this.priceData = list
       }
     },
     feeSelectHandle(selectedRowKeys, selectedRows) {
-      let newTableData = []
-      let priceDataList = this.priceData
-      if (selectedRows.length > 0) {
-        selectedRows.forEach((item) => {
-          newTableData.push({
-            costId: this.model.id,
-            unitId: item.id,
-            id: '',
-            unitName: item.equipName,
-            equipModel: item.equipModel,
-            rate: '',
-            unitPrice: '',
-            remarks: '',
-          })
-        })
-      }
-      priceDataList.push(...newTableData)
-      this.priceData = priceDataList
+      this.priceData = this.priceData.concat(selectedRows && selectedRows.length && selectedRows.map((item) => {
+        return {
+          ...item,
+          unitName: item.equipName,
+          costId: this.model.id,
+          unitId: item.id,
+          id: '',
+        }
+      }) || [])
     },
     insertEventHandle() {
       let selectedRowKeys = []
@@ -245,32 +327,33 @@ export default {
       this.confirmLoading = false
       const $table = this.$refs.priceDataTable
       const errMap = await $table.validate().catch((errMap) => errMap)
-      let priceData = $table.getData()
-      let childRecord = []
+      let priceData = $table.getData() || []
       let url = null
-      let params = {
-        ...values,
-      }
-      priceData.forEach((item) => {
-        childRecord.push({
+      priceData = priceData.map((item) => {
+        return {
           costId: item.costId ? item.costId : '',
           unitId: item.unitId,
           id: item.id,
           unitName: item.unitName,
           equipModel: item.equipModel,
           rate: item.rate,
-          unitPrice: item.unitPrice * 100,
+          temperatureRange: item.temperatureRange,
+          humidityRange: item.humidityRange,
+          pressureRange: item.pressureRange,
+          accelerationRange: item.accelerationRange,
+          discount: item.discount,
+          unitPrice: item.unitPrice,
           remarks: item.remarks,
-        })
+        }
       })
-      if (params.id) {
+      if (values.id) {
         url = this.url.edit
       } else {
         url = this.url.add
       }
-      params.childRecord = childRecord ? childRecord : []
+      values.childRecord = priceData
       if (!errMap) {
-        postAction(url, params).then((res) => {
+        postAction(url, values).then((res) => {
           if (res.code === 200) {
             this.$message.success(this.title + '成功')
             this.$emit('change', true)
@@ -279,7 +362,7 @@ export default {
         })
       }
     },
-    handleCancel(e) {
+    handleCancel() {
       this.visible = false
       this.model = {}
       this.priceData = []

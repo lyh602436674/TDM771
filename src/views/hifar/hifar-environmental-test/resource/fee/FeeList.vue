@@ -39,8 +39,8 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <span slot="costName" slot-scope="text,record">
-          <a href="javascript:;" @click="handleDetailCode(record)">
-            {{ record.costName? record.costName:'--' }}
+          <a @click="handleDetailCode(record)">
+            {{ record.costName || '--' }}
           </a>
         </span>
         <span slot="action" slot-scope="text, record">
@@ -82,7 +82,7 @@
 <script>
 import moment from 'moment'
 import mixin from '@/views/hifar/mixin.js'
-import { downloadFile, postAction } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import FeeListModal from './modules/FeeListModal'
 import FeeListDetailModal from './modules/FeeListDetailModal'
 

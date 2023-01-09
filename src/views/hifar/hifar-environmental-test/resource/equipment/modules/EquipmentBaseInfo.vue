@@ -59,6 +59,9 @@
         <a-descriptions-item label="设备能力">
           {{ detailData.equipBaseProjectNames || '--' }}
         </a-descriptions-item>
+        <a-descriptions-item label="开机费">
+          {{ detailData.startupCost || '--' }}
+        </a-descriptions-item>
         <a-descriptions-item label="检定编号">
           {{ detailData.checkCode || '--' }}
         </a-descriptions-item>

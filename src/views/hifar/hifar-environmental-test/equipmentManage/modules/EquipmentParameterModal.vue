@@ -12,6 +12,7 @@
     :title="title"
     :visible="visible"
     fullScreen
+    destroyOnClose
     inner
     @cancel="handleCancel"
     @submit="handleSubmit"

@@ -167,7 +167,7 @@ export default {
           title: '设备类型',
           align: 'left',
           ellipsis: true,
-          width: 120,
+          width: 80,
           dataIndex: 'equipTypeCode_dictText',
           customRender: (text, record) => {
             return text || '--'
@@ -180,6 +180,15 @@ export default {
           width: 160,
           dataIndex: 'checkValid',
           scopedSlots: {customRender: 'checkValid'},
+        },
+        {
+          title: '开机费',
+          align: 'left',
+          width: 80,
+          dataIndex: 'startupCost',
+          customRender: text => {
+            return text || '--'
+          },
         },
         {
           title: '计量周期',
