@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import ReportExperimentTable from '../components/ReportExperimentTable'
 import ReportTemplateSelect from '@views/hifar/hifar-environmental-test/reports/modules/ReportTemplateSelect';
 
@@ -101,7 +101,7 @@ export default {
         }
         postAction('/HfEnvReportBusiness/generateReport', params).then((res) => {
           if (res.code === 200) {
-            this.$message.success('操作成功')
+            this.$message.success(res.msg)
             this.$emit('change', true)
             this.handleCancel()
           }

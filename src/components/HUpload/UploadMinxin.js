@@ -53,7 +53,7 @@ export default {
       let fileList = []
       let filesLength = files.length
       let fileTypeTxt = ''
-      if (this.accept == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      if (this.accept === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
         fileTypeTxt = '.docx'
       } else {
         fileTypeTxt = this.accept
@@ -113,6 +113,8 @@ export default {
       }
 
       this.fileList = this.fileList.concat(fileList)
+      // 抛出准备上传前的事件
+      this.$emit('beforeUpload')
       this.$refs[this.inputConfig.ref].value = ''
       console.log('文件上传列表数据', this.fileList)
       this.beforeRequestUpload()
@@ -179,7 +181,7 @@ export default {
           return obj.uuid === file.uuid
         })
         // 首先获取bucket上传权限
-        let authResult = await postAction(this.url.auth, uploadParams)
+        let authResult = await postAction(this.action || this.url.auth, uploadParams)
         if (authResult.code === 200) {
           let finishedResult = null
           switch (authResult.data.uploadStatus) {
@@ -192,8 +194,7 @@ export default {
                   status: "success",
                   percent: 100,
                   url: finishedResult.data.filePath,
-                  uploadTime: finishedResult.data.createTime,
-                  fileId: finishedResult.data.fileId,
+                  uploadTime: finishedResult.data.createTime, fileId: finishedResult.data.fileId,
                   secretLevel: this.secretLevel
                 }))
                 resolve(true)

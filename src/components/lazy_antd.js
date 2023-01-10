@@ -86,6 +86,7 @@ import HCard from './HCard'
 import HTable from './table'
 import HModal from './HModal'
 import HUpload, {HUploadFile, HUploadImg} from './HUpload'
+import HUploadFileB from './HUpload/HUploadFileB'
 import HDrawer from './HDrawer'
 import HVexTable from './HVexTable'
 import HRadio from './HRadio'
@@ -254,6 +255,7 @@ Vue.component('HEditor', HEditor)
 Vue.component('HEditTable', HEditTable)
 Vue.component('HUploadImg', HUploadImg)
 Vue.component('HUploadFile', HUploadFile)
+Vue.component('HUploadFileB', HUploadFileB)
 
 
 Vue.component("HDepartSelect", HDepartSelect)

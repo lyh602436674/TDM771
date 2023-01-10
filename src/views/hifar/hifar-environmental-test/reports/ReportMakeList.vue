@@ -53,8 +53,7 @@
         </template>
         <div slot="action" slot-scope="text, record">
           <a-icon
-            class="primary-text"
-            style="cursor: pointer"
+            class="primary-text cursor-pointer"
             title="详情"
             type="eye"
             @click="() => handleDetail(record)"
@@ -67,23 +66,20 @@
               @confirm="() => handleMakeReport(record)">
               <a-icon
                 v-has="'report:make'"
-                class="primary-text"
-                style="cursor: pointer"
+                class="primary-text cursor-pointer"
                 title="生成"
                 type="check-square"/>
             </a-popconfirm>
-            <a-upload
-              v-else
-              :action="autoFileUrl"
-              :data="{id:record.id}"
-              :headers="tokenHeader"
-              :multiple="false"
-              :show-upload-list="false"
-              name="file"
-              @change="fileChange"
+            <h-upload-file-b
+              v-model="reportFileList"
+              :customParams="{id:record.id}"
+              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              isPublic
+              @beforeUpload="$refs.reportMakeTable.localLoading = true"
+              @change="file => handleUploadCallback(file,record,true)"
             >
-              <a-icon v-has="'report:upload'" title="上传" type="upload"/>
-            </a-upload>
+              <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
+            </h-upload-file-b>
             <a-divider style="color: #409eff" type="vertical"/>
           </span>
           <template v-if="!isIntranet">
@@ -92,8 +88,8 @@
                 <h-icon
                   v-if="record.isExternalManage != 1"
                   v-has="'report:submit'"
-                  style="cursor: pointer"
                   title="提交"
+                  class="primary-text cursor-pointer"
                   type="icon-tijiao"/>
               </a-popconfirm>
               <a-divider
@@ -104,23 +100,19 @@
               <a-icon
                 v-if="record.filePath"
                 v-has="'report:edit'"
-                class="primary-text"
-                style="cursor: pointer"
+                class="primary-text cursor-pointer"
                 type="edit"
                 @click="handleEdit(record)"/>
              <a-divider style="color: #409eff" type="vertical"/>
-              <a-upload
-                :action='autoFileUrl'
-                :data='{id:record.id}'
-                :headers='tokenHeader'
-                :multiple='false'
-                :show-upload-list='false'
-                accept='.docx'
-                name='file'
-                @change='fileChange'
-              >
-              <a-icon style="cursor: pointer;color:#409EFF" title='替换' type='swap'/>
-            </a-upload>
+               <h-upload-file-b
+                 v-model="reportFileList"
+                 :customParams="{id:record.id}"
+                 accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                 isPublic
+                 @beforeUpload="$refs.reportMakeTable.localLoading = true"
+                 @change="file => handleUploadCallback(file,record)">
+                   <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+               </h-upload-file-b>
             <a-divider
               v-if="record.isExternalManage != 1"
               v-has="'report:edit'"
@@ -130,41 +122,43 @@
             <template v-if="record.status >= 3">
               <span v-has="'report:download'">
                 <a-icon
-                  style="cursor: pointer;color:#409EFF"
+                  :type="record.docxLoading ? 'loading' : 'file-pdf'"
                   title="下载docx"
-                  type="file-word"
-                  @click="handleDownload(record.id, 'docx')"
+                  class="primary-text cursor-pointer"
+                  @click="handleDownload(record, 'docx')"
                 />
-                 <a-divider type="vertical"/>
+                <a-divider type="vertical"/>
                 <a-icon
-                  style="cursor: pointer;color:#409EFF"
+                  :type="record.pdfLoading ? 'loading' : 'file-pdf'"
                   title="下载pdf"
-                  type="file-pdf"
-                  @click="handleDownload(record.id, 'pdf')"
+                  class="primary-text cursor-pointer"
+                  @click="handleDownload(record, 'pdf')"
                 />
               </span>
               <span>
               <a-divider type="vertical"/>
-              <a-icon class="primary-text" style="cursor: pointer" title="推送至内网" type="cloud-sync"
-                      @click="pushIntranet(record)"/>
+              <a-icon :type="record.intranetLoading ? 'loading' :'cloud-sync'"
+                      class="primary-text cursor-pointer"
+                      title="推送至内网"
+                      @click="handlePush(record,'intranet')"/>
               <a-divider type="vertical"/>
-              <a-icon class="primary-text" style="cursor: pointer" title="推送至MES" type="cloud-sync"
-                      @click="pushMes(record)"/>
+              <a-icon :type="record.mesLoading ? 'loading' :'cloud-sync'" class="primary-text cursor-pointer"
+                      title="推送至MES"
+                      @click="handlePush(record,'mes')"/>
               </span>
             </template>
             <span v-if="record.status == 1 || record.status == 30 || record.status == 50 " v-has="'report:delete'">
-            <a-divider v-if="record.status == 30 || record.status == 50" style="color: #409eff" type="vertical"/>
-            <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
-              <a-icon class="danger-text" style="cursor: pointer" title="删除" type="delete"/>
-            </a-popconfirm>
-          </span>
+              <a-divider v-if="record.status == 30 || record.status == 50" style="color: #409eff" type="vertical"/>
+              <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
+                <a-icon class="danger-text cursor-pointer" title="删除" type="delete"/>
+              </a-popconfirm>
+            </span>
           </template>
-
         </div>
       </h-vex-table>
     </h-card>
-    <ReportMakeListsModal ref="ReportMakeListsModal" @change="addReportchange"></ReportMakeListsModal>
-    <report-detail-modal ref="ReportDetailModal"></report-detail-modal>
+    <ReportMakeListsModal ref="ReportMakeListsModal" @change="addReportchange"/>
+    <report-detail-modal ref="ReportDetailModal"/>
     <report-download-record ref="reportDownloadRecord"/>
   </div>
 </template>
@@ -208,6 +202,7 @@ export default {
         makeReport: '/HfEnvReportBusiness/generateReport',
         static: '/HfEnvReportBusiness/countNotGenerated',
         autoFileUrl: '/HfEnvReportBusiness/authUpload',
+        autoFileUrls: '/HfEnvReportBusiness/authUploads',
         download: '/HfEnvReportBusiness/download',
         pushIntranet: '/ReportPushApiBusiness/pushIntranet',
         pushMes: '/ReportPushApiBusiness/pushReportToMes',
@@ -286,17 +281,20 @@ export default {
         {
           title: '状态',
           align: 'left',
+          width: 80,
           dataIndex: 'status',
-          scopedSlots: { customRender: 'status' }
+          scopedSlots: {customRender: 'status'}
         },
         {
           title: '试验编号',
           align: 'left',
+          width: 120,
           dataIndex: 'testCode'
         },
         {
           title: '送试单位',
           align: 'left',
+          width: 190,
           dataIndex: 'custName',
           customRender: (text, record) => {
             return text || '--'
@@ -305,6 +303,7 @@ export default {
         {
           title: '联系人',
           align: 'left',
+          width: 80,
           dataIndex: 'custLinkName',
           customRender: (text, record) => {
             return text || '--'
@@ -313,6 +312,7 @@ export default {
         {
           title: '联系方式',
           align: 'left',
+          width: 120,
           dataIndex: 'custLinkMobile',
           customRender: (text, record) => {
             return text || '--'
@@ -321,6 +321,7 @@ export default {
         {
           title: '运行单号',
           align: 'left',
+          width: 140,
           dataIndex: 'entrustCode',
           customRender: (text, record) => {
             return text || '--'
@@ -329,6 +330,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
+          width: 120,
           dataIndex: 'entrustNo',
           customRender: (text, record) => {
             return text || '--'
@@ -337,6 +339,7 @@ export default {
         {
           title: '试验项目',
           align: 'left',
+          width: 150,
           dataIndex: 'testName',
           customRender: (text, record) => {
             return text || '--'
@@ -345,6 +348,7 @@ export default {
         {
           title: '创建人 ',
           align: 'left',
+          width: 80,
           dataIndex: 'createUserName',
           customRender: (text, record) => {
             return text || '--'
@@ -353,22 +357,25 @@ export default {
         {
           title: '创建时间 ',
           align: 'left',
+          width: 140,
           dataIndex: 'createTime',
-          customRender: (text, record) => {
+          customRender: text => {
             return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm') : '--'
           }
         },
         {
           title: '查看下载记录 ',
           align: 'center',
+          width: 120,
           dataIndex: 'downloadNum',
-          scopedSlots: { customRender: 'downloadNum' }
+          scopedSlots: {customRender: 'downloadNum'}
         },
         {
           title: 'mes推送状态',
           align: 'center',
+          width: 120,
           dataIndex: 'mesPushStatus',
-          scopedSlots: { customRender: 'mesPushStatus' }
+          scopedSlots: {customRender: 'mesPushStatus'}
         },
         {
           title: '操作',
@@ -387,10 +394,21 @@ export default {
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
             this.isIntranet = res.ext.isIntranet
-            return res.data
+            return Object.assign({}, res.data, {
+              data: res.data.data.map(item => {
+                return {
+                  ...item,
+                  docxLoading: false,
+                  pdfLoading: false,
+                  intranetLoading: false,
+                  mesLoading: false,
+                }
+              })
+            })
           }
         })
-      }
+      },
+      reportFileList: [],
     }
   },
 
@@ -414,28 +432,40 @@ export default {
     this.loadReportNum()
   },
   methods: {
-    /**
-     * 推送至Mes
-     */
-    pushMes(record) {
-      postAction(this.url.pushMes, { id: record.id }).then(res => {
+    handleUploadCallback(file, record, isUpload) {
+      postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, isUpload}).then(res => {
         if (res.code === 200) {
-          this.$message.success('推送成功!')
+          this.refresh()
+          this.$message.success(isUpload ? '上传成功' : '替换成功')
         } else {
-          this.$message.error(res.msg);
+          this.$message.error(isUpload ? '上传失败' : '替换失败')
         }
+      }).finally(() => {
+        this.reportFileList = []
       })
     },
-    /**
-     * 推送内网
-     */
-    pushIntranet(record) {
-      postAction(this.url.pushIntranet, { id: record.id }).then(res => {
+
+    // 推送内网/Mes
+    handlePush(record, type) {
+      let obj = {
+        intranet: {
+          loading: 'intranetLoading',
+          url: this.url.pushIntranet
+        },
+        mes: {
+          loading: 'mesLoading',
+          url: this.url.pushMes
+        },
+      }
+      this.$set(record, obj[type].loading, true)
+      postAction(obj[type].url, {id: record.id}).then(res => {
         if (res.code === 200) {
           this.$message.success('推送成功!')
         } else {
           this.$message.error(res.msg);
         }
+      }).finally(() => {
+        this.$set(record, obj[type].loading, false)
       })
     },
     downloadRecord(record) {
@@ -456,15 +486,22 @@ export default {
       this.selectedRowKeys = []
     },
     onSelectChange(selectedRowKeys, selectedRows) {
-      console.log(selectedRows)
       this.selectedRowKeys = selectedRowKeys
       selectedRows.map((item) => {
         this.selectedRows = item
       })
-      console.log(this.selectedRows)
     },
-    handleDownload(id, fileType) {
-      getAction(this.url.download, { id: id, type: fileType }).then(res => {
+    handleDownload(record, type) {
+      let obj = {
+        docx: {
+          loading: 'docxLoading',
+        },
+        pdf: {
+          loading: 'pdfLoading',
+        },
+      }
+      this.$set(record, obj[type].loading, true)
+      getAction(this.url.download, {id: record.id, type}).then(res => {
         if (res.code === 200) {
           let filePath = res.data.url;
           let fileName = res.data.fileName;
@@ -472,6 +509,8 @@ export default {
         } else {
           this.$message.error('下载失败!')
         }
+      }).finally(() => {
+        this.$set(record, obj[type].loading, false)
       })
     },
     loadReportNum() {
@@ -552,19 +591,6 @@ export default {
         }
       })
     },
-    // 提交流程
-    handleSubmitFlow(record) {
-      postAction(this.url.submitFlow, {
-        id: record.id,
-        coverTemplateId: record.coverTemplateId,
-        reportCode: record.reportCode
-      }).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('操作成功!')
-          this.refresh(true)
-        }
-      })
-    },
     // 生成报告
     handleMakeReport(record) {
       postAction(this.url.makeReport, {
@@ -585,3 +611,8 @@ export default {
   }
 }
 </script>
+<style lang="less" scoped>
+.cursor-pointer {
+  cursor: pointer
+}
+</style>
