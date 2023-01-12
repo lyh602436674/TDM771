@@ -170,8 +170,7 @@ import mixin from './mixin'
 import * as WebCtrl from '@/plugins/webOffice'
 import ReportMakeListsModal from './modules/ReportMakeListsModal.vue'
 import ReportDetailModal from './modules/ReportDetailModal'
-import {ACCESS_TOKEN, TENANT_ID} from '@/store/mutation-types'
-import Vue from 'vue'
+import {ACCESS_TOKEN} from '@/store/mutation-types'
 import {getAction} from '@api/manage';
 import ReportDownloadRecord from './components/ReportDownloadRecord';
 
@@ -416,17 +415,6 @@ export default {
     hasSelected() {
       return this.selectedRowKeys.length > 0
     },
-    tokenHeader() {
-      let head = { 'token': Vue.ls.get(ACCESS_TOKEN) }
-      let tenantid = Vue.ls.get(TENANT_ID)
-      if (tenantid) {
-        head['tenant_id'] = tenantid
-      }
-      return head
-    },
-    autoFileUrl() {
-      return `${window._CONFIG['domianURL']}${this.url.autoFileUrl}`
-    }
   },
   created() {
     this.loadReportNum()

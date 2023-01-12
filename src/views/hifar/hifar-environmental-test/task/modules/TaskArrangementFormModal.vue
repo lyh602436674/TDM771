@@ -15,7 +15,7 @@
     @cancel="handleCancel"
   >
     <template slot="footer">
-      <a-button @click="handleCancel" type="ghost-error">关闭</a-button>
+      <a-button type="danger" @click="handleCancel">关闭</a-button>
       <a-button type="primary" @click="handleSubmit" :loading="submitLoading">确定</a-button>
     </template>
     <a-alert v-if="errorMessage" type="error" :message="errorMessage" banner/>
@@ -33,6 +33,14 @@ export default {
     PhemismUserSelect,
   },
   data() {
+    const validatorFields = (cellValue, message, reg, callback) => {
+      if (cellValue && !reg.test(cellValue)) {
+        callback(message)
+      } else {
+        callback()
+      }
+    }
+    const regRange = /^(\d+)-([1-9]*[1-9][0-9]*)$/
     return {
       visible: false,
       submitLoading: false,
@@ -112,8 +120,9 @@ export default {
         {
           title: '预计时长(h)',
           key: 'predictUseTime',
-          formType: 'input',
-          type: 'number',
+          formType: 'input-number',
+          min: 0,
+          style: {width: '100%'},
           validate: {
             rules: [
               {
@@ -126,7 +135,7 @@ export default {
             let {equipId, predictStartTime} = this.$refs.taskArrangementForm.form.getFieldsValue()
             if (!equipId) return
             let selectedEquip = find(this.equipList, (equip) => {
-              return equip.id == equipId
+              return equip.id === equipId
             })
             if (!selectedEquip) return
             let checkValid = selectedEquip.checkValid
@@ -159,11 +168,67 @@ export default {
           title: '设备速率',
           key: 'testRate',
           formType: 'input-number',
+          min: 0,
           style: {
             width: "100%"
           }
         },
-
+        {
+          title: '温度范围',
+          key: 'temperatureRange',
+          formType: 'input',
+          validate: {
+            rules: [
+              {
+                validator: (rule, value, callback) => {
+                  return validatorFields(value, '请输入正确格式的温度范围，例：1-100', regRange, callback)
+                },
+              },
+            ],
+          },
+        },
+        {
+          title: '湿度范围',
+          key: 'humidityRange',
+          formType: 'input',
+          validate: {
+            rules: [
+              {
+                validator: (rule, value, callback) => {
+                  return validatorFields(value, '请输入正确格式的湿度范围，例：1-100', regRange, callback)
+                },
+              },
+            ],
+          },
+        },
+        {
+          title: '压力范围',
+          key: 'pressureRange',
+          formType: 'input',
+          validate: {
+            rules: [
+              {
+                validator: (rule, value, callback) => {
+                  return validatorFields(value, '请输入正确格式的压力范围，例：1-100', regRange, callback)
+                },
+              },
+            ],
+          },
+        },
+        {
+          title: '加速度范围',
+          key: 'accelerationRange',
+          formType: 'input',
+          validate: {
+            rules: [
+              {
+                validator: (rule, value, callback) => {
+                  return validatorFields(value, '请输入正确格式的加速度范围，例：1-100', regRange, callback)
+                },
+              },
+            ],
+          },
+        },
         {
           title: '备注',
           key: 'remarks',

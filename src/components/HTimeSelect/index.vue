@@ -8,12 +8,12 @@
 -->
 <template>
   <div class="h-time-select">
-    <a-date-picker :value="initVal" :size="size" :disabled-date="disabledDate"
+    <a-date-picker :value="initVal" :size="size" :disabled="disabled" :disabled-date="disabledDate"
                    :allowClear='false'
                    style="margin-right: 5px; width: 56%" @change="onChange">
       <span slot="suffixIcon"></span>
     </a-date-picker>
-    <a-time-picker :value="initVal" :disabled-hours="disabledHours" :disabled-minutes="disabledMinutes"
+    <a-time-picker :value="initVal" :disabled="disabled" :disabled-hours="disabledHours" :disabled-minutes="disabledMinutes"
                    :disabled-seconds="disabledSeconds" style="width: 44%" placeholder='时间'
                    :default-open-value="moment()" :format="timeFormat"
                    @change="onTimeChange"/>
@@ -37,6 +37,10 @@ export default {
     value: {
       type: [Object, String, Number],
       // default: () => moment(),
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     },
     disabledDate: {
       type: Function,

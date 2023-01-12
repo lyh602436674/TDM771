@@ -11,12 +11,41 @@
     :getContainer="getContainer"
     :title="title"
     :visible="visible"
+    :confirmLoading="loading"
     destroyOnClose
     inner
+    width="80%"
     @cancel="handleCancel"
     @submit="handleSubmit"
   >
-    <h-form ref="taskSuspendForm" v-model="model" :column="1" :formData="formData" @change="submitForm"/>
+    <a-spin :spinning="loading">
+      <h-desc
+        :data="model"
+        lableWidth="110px"
+        style="margin: 0 0 20px 0"
+        title="适用计费准备详情">
+        <h-desc-item label="试验项目">{{ model.unitName || '--' }}</h-desc-item>
+        <h-desc-item label="试验设备">{{ model.equipName || '--' }}</h-desc-item>
+        <h-desc-item label="温度范围">{{ model.temperatureRange || '--' }}</h-desc-item>
+        <h-desc-item label="湿度">{{ model.humidityRange || '--' }}</h-desc-item>
+        <h-desc-item label="折扣">{{ model.discount || '--' }}</h-desc-item>
+        <h-desc-item label="压力">{{ model.pressureRange || '--' }}</h-desc-item>
+        <h-desc-item label="加速度">{{ model.accelerationRange || '--' }}</h-desc-item>
+        <h-desc-item label="开机费">{{ model.startupCost || '--' }}</h-desc-item>
+        <h-desc-item label="单价">{{ model.unitPrice || '--' }}</h-desc-item>
+      </h-desc>
+      <h-card class="cost-type" title="计费方式">
+        <a-radio-group v-model="radioValue" @change="handleRadioChange">
+          <a-radio style="display:block" value="1">
+            <h-form ref="taskForm1" v-model="model" :column="2" :formData="formData1"/>
+          </a-radio>
+          <a-radio style="display:block" value="2">
+            <h-form ref="taskForm2" v-model="model" :column="1" :formData="formData2"/>
+          </a-radio>
+        </a-radio-group>
+      </h-card>
+      <h-form ref="taskForm3" v-model="model" :column="1" :formData="formData3"/>
+    </a-spin>
   </h-modal>
 </template>
 
@@ -34,23 +63,103 @@ export default {
   },
   data() {
     return {
-      title: '',
+      title: '试验完成确认',
+      radioValue: '1',
       visible: false,
+      loading: false,
       model: {},
       type: null,
-      formData: [
+      formData1: [
+        {
+          title: '入场时间',
+          key: 'approachTime',
+          component: (
+            <h-time-select
+              disabled={true}
+              v-decorator={['approachTime']}
+            />
+          )
+        },
+        {
+          title: '离场时间',
+          key: 'departureTime',
+          component: (
+            <h-time-select disabled={true} v-decorator={['departureTime']}/>
+          )
+        },
+        {
+          title: '开始时间',
+          key: 'realStartTime',
+          component: (
+            <h-time-select
+              disabled={true}
+              v-decorator={['realStartTime']}
+            />
+          )
+        },
+        {
+          title: '结束时间',
+          key: 'realEndTime',
+          component: (
+            <h-time-select
+              v-decorator={
+                [
+                  'realEndTime',
+                  {
+                    rules: [{
+                      required: true,
+                      message: '请选择结束时间'
+                    }, {validator: this.validateEndTime}]
+                  }
+                ]
+              }
+              onChange={(val) => {
+                let startTime = this.$refs.taskForm1.form.getFieldsValue().realStartTime
+                let startTimeVal = startTime ? moment(startTime).valueOf() : 0
+                let endTime = val ? val.valueOf() : 0
+                let res = this.getTimeDiff(startTimeVal, endTime)
+                this.model.realUseTime = res || 0
+                if (this.radioValue === '1' && res && this.model.unitPrice && this.model.startupCost) {
+                  this.model.totalExpenses = res * this.model.unitPrice + +this.model.startupCost
+                }
+              }}
+            />
+          )
+        },
+        {
+          title: '时长',
+          key: 'realUseTime',
+          formType: 'input',
+          readOnly: true,
+          placeholder: '自动计算'
+        },
+      ],
+      formData2: [
+        {
+          title: '向次',
+          key: 'testSecondary',
+          formType: 'input-number',
+          min: 0,
+          style: {width: '100%',},
+          change: (val) => {
+            if (this.radioValue === '2' && this.model.unitPrice && this.model.startupCost) {
+              this.model.totalExpenses = val * this.model.unitPrice + +this.model.startupCost
+            }
+          }
+        },
+      ],
+      formData3: [
         {
           key: 'id',
           formType: 'input',
           hidden: true,
         },
         {
-          title: '完成时间',
-          key: 'optTime',
-          validate: {rules: [{required: true, message: '请设置试验完成时间'}]},
-          component: (
-            <h-time-select v-decorator={['optTime', {rules: [{required: true, message: '请设置试验完成时间'}]}]}/>
-          ),
+          title: '试验费用',
+          key: 'totalExpenses',
+          formType: 'input',
+          readOnly: true,
+          placeholder: '根据计费方式自动计算'
         },
         {
           title: '备注',
@@ -60,42 +169,137 @@ export default {
       ],
       url: {
         finish: '/HfEnvTaskTestBusiness/finish',
+        calcCost: "/HfEnvTaskTestBusiness/costCalculation",
       },
     }
   },
   methods: {
     show(type, record) {
-      this.model = Object.assign({}, record)
-      this.type = type
-      this.title = '完成：' + record.testNames
-      this.model.optTime = moment()
-      this.$nextTick(() => {
-        this.visible = true
+      this.loading = true
+      this.model = Object.assign({}, record, {
+        approachTime: this.dateFormat(record.approachTime),
+        departureTime: this.dateFormat(record.departureTime),
+        realStartTime: this.dateFormat(record.realStartTime),
+        realEndTime: this.dateFormat(record.realEndTime),
       })
+      this.type = type
+      this.getCalcCost(record)
+      this.visible = true
+    },
+    dateFormat(time) {
+      return time && +time !== 0 ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : undefined
+    },
+    getCalcCost(record) {
+      postAction(this.url.calcCost, {id: record.id}).then(res => {
+        if (res.code === 200) {
+          this.model = Object.assign({}, this.model, res.data)
+          this.visible = true
+        }
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    handleRadioChange(e) {
+      this.radioValue = e.target.value
+      let {unitPrice, startupCost} = this.model
+      if (this.radioValue === '1' && unitPrice && startupCost) {
+        let realStartTime = this.$refs.taskForm1.form.getFieldsValue().realStartTime
+        let startTime = realStartTime ? realStartTime.valueOf() : 0
+        let realEndTime = this.$refs.taskForm1.form.getFieldsValue().realEndTime
+        let endTime = realEndTime ? realEndTime.valueOf() : 0
+        let diff = this.getTimeDiff(startTime, endTime)
+        if (startTime && endTime) {
+          this.model.totalExpenses = diff * unitPrice + +startupCost
+        }
+      } else if (this.radioValue === '2' && unitPrice && startupCost) {
+        let testSecondary = this.$refs.taskForm2.form.getFieldsValue().testSecondary
+        if (testSecondary) {
+          this.model.totalExpenses = testSecondary * unitPrice + +startupCost
+        }
+      }
+    },
+    getTimeDiff(startTime, endTime) {
+      if (!startTime || !endTime) {
+        return 0
+      }
+      return ((endTime - startTime) / (3600 * 1000)).toFixed(1)
+    },
+    validateEndTime(rule, value, cb) {
+      let startTime = this.$refs.taskForm1.form.getFieldsValue(['realStartTime'])
+      let valStart = startTime.realStartTime
+      let val = value ? moment(value).valueOf() : ''
+      valStart = valStart ? moment(valStart).valueOf() : ''
+      if (!val) {
+        cb('请选择结束时间')
+      } else {
+        if (valStart && (val < valStart)) {
+          cb('结束时间不能小于开始时间')
+        } else {
+          cb()
+        }
+      }
     },
     handleCancel() {
       this.visible = false
     },
-    handleSubmit() {
-      this.$refs.taskSuspendForm.validateForm()
+    validateForm() {
+      return new Promise((resolve, reject) => {
+        let result = {}
+        let formArr = [this.$refs.taskForm1, this.$refs.taskForm2, this.$refs.taskForm3]
+        formArr.forEach(item => {
+          item.form.validateFieldsAndScroll((err, value) => {
+            if (!err) {
+              result = Object.assign({}, result, value)
+            }
+          })
+        })
+        resolve(result)
+      })
     },
-    submitForm(values) {
-      let params = {
-        ...values,
-      }
-      params.optTime = params.optTime.valueOf()
-      postAction(this.url.finish, params).then((res) => {
-        if (res.code === 200) {
-          this.handleCancel()
-          this.$emit('change', this.type, params)
-        } else {
-          this.$message.warning(res.msg)
+    handleSubmit() {
+      this.loading = true
+      this.validateForm().then(res => {
+        let params = {
+          ...this.model,
+          ...res,
         }
+        params.approachTime = params.approachTime.valueOf()
+        params.departureTime = params.departureTime.valueOf()
+        params.realStartTime = params.realStartTime.valueOf()
+        params.realEndTime = params.realEndTime.valueOf()
+        postAction(this.url.finish, params).then((res) => {
+          if (res.code === 200) {
+            this.handleCancel()
+            this.$emit('change', this.type, params)
+          } else {
+            this.$message.warning(res.msg)
+          }
+        }).finally(() => {
+          this.loading = false
+        })
       })
     },
   },
 }
 </script>
 
-<style>
+<style lang="less" scoped>
+
+.cost-type {
+  margin-bottom: 20px;
+  padding: 0 !important;
+
+  /deep/ .ant-radio-wrapper {
+    display: flex !important;
+    align-items: center !important;
+
+    span.ant-radio + * {
+      width: 100%;
+    }
+
+    .ant-radio {
+      margin-bottom: 24px;
+    }
+  }
+}
 </style>
