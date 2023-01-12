@@ -10,7 +10,7 @@
 <template>
   <div ref="pageWrapper" class="h-custom-layout" style="height: 100%; position: relative">
     <h-card fixed :bordered="true">
-      <template slot="title"> 报告模板 </template>
+      <template slot="title"> 模板管理 </template>
       <h-search
         v-model="queryParam"
         slot="search-form"

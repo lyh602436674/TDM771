@@ -353,7 +353,7 @@ export default {
             style: Object.assign({}, {
               lineHeight: "34px"
             }, com.style),
-          }, this.model[com.key])
+          }, com.afterAddon ? this.model[com.key] + com.afterAddon : this.model[com.key])
         case 'datePick':
           return this.renderDataPick(com)
         case 'yearPick':

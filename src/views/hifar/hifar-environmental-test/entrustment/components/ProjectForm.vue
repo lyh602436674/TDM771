@@ -81,16 +81,10 @@ export default {
   methods: {
     // 删除项目
     deleteProjectHandle(item, index) {
-      this.$confirm({
-        title: '确认删除',
-        content: '是否要继续删除?',
-        onOk: () => {
-          const {formInfoDataList} = this
-          formInfoDataList.splice(index, 1)
-          this.formInfoDataList = formInfoDataList
-          this.$emit('deleteProject')
-        },
-      })
+      const {formInfoDataList} = this
+      formInfoDataList.splice(index, 1)
+      this.formInfoDataList = formInfoDataList
+      this.$emit('deleteProject')
     },
     submitHandle(bool) {
       // bool 是否进行验证
@@ -109,13 +103,13 @@ export default {
         for (let i = 0; i < formInfoDataList.length; i++) {
           let that = this.$refs.projectFormItem[i]
           let projectForm = that.$refs['projectInfoForm' + [i]]
-          // 判断是否是 结构化条件 试验项目（根据项目编码判断）
-          let filterUnitCodeFlag = this.filterUnitCode(formInfoDataList[i].classifyType)
-          if (filterUnitCodeFlag) {
+          // 判断是否是 结构化条件 试验项目（根据项目类型判断）1：气候 2：力学 3：环境
+          let filterProjectByType = this.filterUnitCode(formInfoDataList[i].classifyType)
+          if (filterProjectByType) {
             that.resultEcharts()
           }
           let tabItemTableAllData = [];
-          if (filterUnitCodeFlag) {
+          if (filterProjectByType) {
             let testConditionTabItem = that.$refs.testConditionTabItem;
             [].forEach.call(testConditionTabItem, (item, index) => {
               let tabPanelItem = that.model.abilityRequire[index]

@@ -165,6 +165,7 @@ export default {
     },
     handleCancel() {
       this.visible = false
+      this.model = {}
     },
     handleDownload(filePath, fileName) {
       let fileAccessUrl = getFileAccessHttpUrl(filePath)

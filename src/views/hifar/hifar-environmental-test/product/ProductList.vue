@@ -66,14 +66,6 @@
                 @click='() => handleEdit(record)'
               />
               <a-divider type='vertical'/>
-              <a-icon
-                class='primary-text'
-                style='cursor: pointer'
-                title='详情'
-                type='eye'
-                @click='() => handleDetail(record)'
-              />
-              <a-divider type='vertical'/>
               <a-popconfirm title='确定删除吗?' @confirm='() => handleDelete(record.id)'>
                 <a-icon
                   class='primary-text'
@@ -149,11 +141,6 @@ export default {
           formType: 'input'
         },
         {
-          title: '产品工号',
-          key: 'c_productCode_7',
-          formType: 'input'
-        },
-        {
           title: '产品名称',
           key: 'c_productName_7',
           formType: 'input'
@@ -162,6 +149,26 @@ export default {
           title: '产品型号',
           key: 'c_productModel_7',
           formType: 'input'
+        },
+        {
+          title: '产品图号',
+          key: 'c_productChartNo_7',
+          formType: 'input'
+        },
+        {
+          title: '阶段',
+          key: 'c_productStage_7',
+          formType: 'dict',
+          dictCode: 'hf_product_stage',
+        },
+        {
+          title: '有效性',
+          key: 'c_productEffect_1',
+          formType: 'select',
+          options: [
+            {title: '正常', value: 1, key: 1},
+            {title: '停用', value: 2, key: 2}
+          ]
         },
       ],
       // 表头

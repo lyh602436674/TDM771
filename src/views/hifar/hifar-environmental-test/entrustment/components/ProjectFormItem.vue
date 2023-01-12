@@ -24,13 +24,15 @@
           <a-tabs id="drag-tab" v-model="tabsActiveKey" hideAdd type="editable-card" @edit="onEdit">
             <template v-for="(item,itemIndex) in model.abilityRequire">
               <a-tab-pane :key="itemIndex" :closable="item.closable"
-                          :tab="item.type === 'stage' ? item.title + itemIndex : item.title" forceRender>
+                          :tab="item.type === 'stage' ? item.title + (itemIndex + 1) : item.title" forceRender>
                 <test-condition-tab-item :key="itemIndex + '-only'" ref="testConditionTabItem"
                                          :itemAbilityInfo="item.abilityInfo"
+                                         :highLowTemperature="item.highLowTemperature"
                                          :itemIndex="itemIndex"
                                          :projectIndex="index"
                                          :currentProject="model"
                                          @add="handleAdd"
+                                         @temperatureChange="(val) => temperatureChange(val,item)"
                                          @delete="handleDelete"/>
               </a-tab-pane>
             </template>
@@ -99,7 +101,6 @@ import drawCurveMixin from '@/views/hifar/hifar-environmental-test/entrustment/d
 import entrustmentMixins from '@/views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins'
 import ExperimentalCurveModal from './ExperimentalCurveModal'
 import sortable from 'sortablejs'
-import {randomUUID} from "@/utils/util";
 import {filterDictTextByCache} from '@comp/_util/JDictSelectUtil'
 import SysUserSelect from '@/views/components/SysUserSelect'
 import HandleSelectModal from "@views/hifar/hifar-environmental-test/task/modules/components/HandleSelectModal";
@@ -140,7 +141,8 @@ export default {
       handler(val) {
         if (isObject(val) && Object.keys(val).length) {
           let obj = Object.assign({}, val)
-          let filterUnitCodeFlag = this.filterUnitCode(obj.classifyType)
+          let filterProjectByType = this.filterUnitCode(obj.classifyType)
+          this.filterProjectByType = filterProjectByType
           obj.unitId = obj.unitId ? obj.unitId : obj.id
           obj.testName = obj.unitName
           obj.attachIds = obj.fileInfo && obj.fileInfo.length && obj.fileInfo.map(item => {
@@ -161,25 +163,26 @@ export default {
           this.equipData = obj.testEquipInfo && isArray(obj.testEquipInfo) ? obj.testEquipInfo : []
           if (obj.abilityRequire && obj.abilityRequire.length) {
             obj.abilityRequire.forEach((item, index) => {
-              item.closable = index !== 0 && index !== 1
+              item.closable = index !== 0
             })
           } else {
-            if (filterUnitCodeFlag) {
+            if (filterProjectByType) {
               obj.abilityRequire = [
-                {
-                  title: "前置处理", type: "before", closable: false, abilityInfo: [
-                    {
-                      paramId: randomUUID(),
-                      paramName: "初始类型",
-                      minValue: "1",
-                      conditionTypeDesc: "1",
-                      dataType: "select"
-                    }
-                  ]
-                },
+                // {
+                //   title: "前置处理", type: "before", closable: false, abilityInfo: [
+                //     {
+                //       paramId: randomUUID(),
+                //       paramName: "初始类型",
+                //       minValue: "1",
+                //       conditionTypeDesc: "1",
+                //       dataType: "select"
+                //     }
+                //   ]
+                // },
                 {
                   title: "循环阶段",
                   type: "stage",
+                  highLowTemperature: "1",
                   closable: false,
                   abilityInfo: obj.abilityInfo && obj.abilityInfo.map(a => {
                     return {
@@ -203,7 +206,7 @@ export default {
             }
           }
           this.model = obj
-          if (filterUnitCodeFlag) {
+          if (filterProjectByType) {
             this.$nextTick(() => {
               this.createSortable()
             })
@@ -347,6 +350,7 @@ export default {
       selectBeforeProjectIndex: 0,
       selectBeforeItemIndex: 0,
       dragFlag: true,
+      filterProjectByType: false,
       disabledShowUser: false,
       disabledPowerUpTime: false,
     }
@@ -563,7 +567,7 @@ export default {
         })
         if (this.model.abilityRequire.length) {
           this.model.abilityRequire.map((item, index) => {
-            item.closable = index !== 0 && index !== 1;
+            item.closable = index !== 0
           })
         }
         // this.$forceUpdate()
@@ -601,7 +605,7 @@ export default {
       const currentTabItem = abilityRequire.splice(oldIndex, 1)[0]
       abilityRequire.splice(newIndex, 0, currentTabItem)
       abilityRequire.map((item, index) => {
-        item.closable = index !== 0 && index !== 1;
+        item.closable = index !== 0
       })
       setTimeout(() => {
         this.tabsActiveKey = newIndex
@@ -737,9 +741,9 @@ export default {
       this.selectBeforeProjectIndex = projectIndex
       this.selectBeforeItemIndex = itemIndex
       let testConditionTab = this.$refs.testConditionTabItem
-      let filterUnitCodeFlag = this.filterUnitCode(this.project.classifyType)
+      let filterProjectByType = this.filterUnitCode(this.project.classifyType)
       let $projectTable
-      if (filterUnitCodeFlag) {
+      if (filterProjectByType) {
         $projectTable = testConditionTab[itemIndex].$refs['pointTable' + [projectIndex] + [itemIndex]]
       } else {
         $projectTable = testConditionTab.$refs['pointTable' + [projectIndex] + [itemIndex]]
@@ -754,6 +758,9 @@ export default {
       }
       this.model.abilityRequire[itemIndex].abilityInfo = pointInfoAllData
       this.$refs.PointList.showSelectModal(this.model.abilityRequire[itemIndex])
+    },
+    temperatureChange(val, item) {
+      this.$set(item, 'highLowTemperature', val)
     },
     handleDelete(row, rowIndex, projectIndex, itemIndex) {
       this.model.abilityRequire[itemIndex].abilityInfo.splice(rowIndex, 1)
@@ -782,25 +789,24 @@ export default {
     splitByCurveType() {
       let testConditionTab = this.$refs.testConditionTabItem || [];
       let pointTableItem = [];
-      [].forEach.call(testConditionTab, (item, i) => {
-        pointTableItem.push(item.$refs['pointTable' + [this.index] + [i]].getData())
-      })
-      try {
-        this.isHighTemperature = pointTableItem[0].filter(item => item.paramName === '初始类型')[0].conditionTypeDesc === '1'
-      } catch {
-        this.isHighTemperature = true
+      if (this.filterProjectByType) {
+        [].forEach.call(testConditionTab, (item, i) => {
+          pointTableItem.push(item.$refs['pointTable' + [this.index] + [i]].getData())
+        })
+      } else {
+        pointTableItem.push(this.$refs.testConditionTabItem.$refs['pointTable' + [this.index] + 0].getData())
       }
       let drawTemperatureCurve = []
       let drawHumidityCurve = []
-      let pointTableItemExtend = cloneDeep(pointTableItem).splice(1)
-      for (let i = 0; i < pointTableItemExtend.length; i++) {
-        let item = pointTableItemExtend[i]
+      for (let i = 0; i < pointTableItem.length; i++) {
+        let item = pointTableItem[i]
         try {
           this.loopNum = item.filter(v => +v.curveType === 1 && v.paramCode === 'qh07')[0].conditionTypeDesc
         } catch {
           // return this.$message.warning(`循环阶段${i + 1}，请添加循环次数`)
           this.loopNum = 1
         }
+        this.isHighTemperature = testConditionTab[i].highLowTemperature
         drawTemperatureCurve = drawTemperatureCurve.concat(this.drawTemperatureCurve(item.filter(v => +v.curveType === 1)))
         drawHumidityCurve = drawHumidityCurve.concat(this.drawHumidityCurve(item.filter(v => +v.curveType === 2)))
       }

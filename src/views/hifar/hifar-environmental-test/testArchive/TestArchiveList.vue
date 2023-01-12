@@ -189,7 +189,7 @@ export default {
               value: 2
             },
             {
-              title: '其他',
+              title: '环境',
               key: 3,
               value: 3
             }

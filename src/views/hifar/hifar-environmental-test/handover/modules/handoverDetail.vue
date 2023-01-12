@@ -16,27 +16,29 @@
     width="70%"
     title="交接班记录详情"
   >
-    <h-desc title="基本信息" bordered size="small" :column='2' labelWidth="120px">
+    <h-desc :column='2' :data="headDetail" bordered labelWidth="120px" size="small" title="基本信息">
       <h-desc-item label="交班人"> {{ headDetail.surrenderUserName || '--' }}</h-desc-item>
       <h-desc-item label="接班人"> {{ headDetail.receiveUserName || '--' }}</h-desc-item>
       <h-desc-item label="交接时间">
         {{ moment(parseInt(headDetail.handoverTime)).format('YYYY-MM-DD HH:mm') || '--' }}
       </h-desc-item
       >
-      <h-desc-item label="环境状态"> {{ headDetail.envStatus==1? '正常':'异常' || '--' }}</h-desc-item>
-      <h-desc-item label="测试状态"> {{ headDetail.testStatus==1? '有错误':'无错误' || '--' }}</h-desc-item>
-      <h-desc-item label="工具状态"> {{ headDetail.toolStatus==1? '齐全':'缺失' || '--' }}</h-desc-item>
-      <h-desc-item label="设备状态"> {{ headDetail.deviceStatus==1? '有故障':'无故障' || '--' }}</h-desc-item>
-      <h-desc-item label="设备运行数量" span='2'> {{ headDetail.runNum || '--' }}</h-desc-item>
-      <h-desc-item label="密级" span='2'> {{ headDetail.secretLevel || '--' }}</h-desc-item>
-      <h-desc-item label="创建人" span='2'> {{ headDetail.createUserName || '--' }}</h-desc-item>
-      <h-desc-item label="创建时间" span='2'> {{ moment(parseInt(headDetail.createTime)).format('YYYY-MM-DD HH:mm') || '--'
+      <h-desc-item label="环境状态"> {{ headDetail.envStatus == 1 ? '正常' : '异常' || '--' }}</h-desc-item>
+      <h-desc-item label="测试状态"> {{ headDetail.testStatus == 1 ? '有错误' : '无错误' || '--' }}</h-desc-item>
+      <h-desc-item label="工具状态"> {{ headDetail.toolStatus == 1 ? '齐全' : '缺失' || '--' }}</h-desc-item>
+      <h-desc-item label="设备状态"> {{ headDetail.deviceStatus == 1 ? '有故障' : '无故障' || '--' }}</h-desc-item>
+      <h-desc-item label="设备运行数量"> {{ String(headDetail.runNum) || '--' }}</h-desc-item>
+<!--      <h-desc-item label="密级"> {{ headDetail.secretLevel || '&#45;&#45;' }}</h-desc-item>-->
+      <h-desc-item label="创建人"> {{ headDetail.createUserName || '--' }}</h-desc-item>
+      <h-desc-item label="创建时间"> {{
+          moment(parseInt(headDetail.createTime)).format('YYYY-MM-DD HH:mm') || '--'
         }}
       </h-desc-item>
-      <h-desc-item label="更新时间" span='2'> {{ moment(parseInt(headDetail.updateTime)).format('YYYY-MM-DD HH:mm') || '--'
+      <h-desc-item label="更新时间"> {{
+          moment(parseInt(headDetail.updateTime)).format('YYYY-MM-DD HH:mm') || '--'
         }}
       </h-desc-item>
-      <h-desc-item label="更新人" span='2'> {{ headDetail.updateUserName }}</h-desc-item>
+      <h-desc-item label="更新人"> {{ headDetail.updateUserName }}</h-desc-item>
       <h-desc-item label="备注" span='2'> {{ headDetail.remarks || '--' }}</h-desc-item>
     </h-desc>
     <!-- 执行任务总览 -->
@@ -57,20 +59,20 @@
 </template>
 
 <script>
-  import { postAction } from '@/api/manage'
-  import moment from 'moment'
+import {postAction} from '@/api/manage'
+import moment from 'moment'
 
-  export default {
-    data() {
-      return {
-        moment,
-        id:"",
-        visible: false,
-        headDetail: {},
-        url: {
-          headDetail: '/HfEnvTestHandoverRecordBusiness/queryById'
-        },
-        // 执行任务总览表格
+export default {
+  data() {
+    return {
+      moment,
+      id: "",
+      visible: false,
+      headDetail: {},
+      url: {
+        headDetail: '/HfEnvTestHandoverRecordBusiness/queryById'
+      },
+      // 执行任务总览表格
         columns: [
           {
             title: '委托单号',

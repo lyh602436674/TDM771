@@ -169,7 +169,8 @@ export default {
         {
           title: '运行设备',
           key: 'runNum',
-          formType: 'text'
+          formType: 'text',
+          afterAddon: "台"
         },
         {
           title: '备注',

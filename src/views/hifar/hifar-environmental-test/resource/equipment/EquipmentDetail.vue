@@ -24,16 +24,16 @@
         <a-tab-pane key="1" tab="设备详情">
           <equipment-base-info ref="EquipmentBaseInfo" :detailData="detailData"></equipment-base-info>
         </a-tab-pane>
-        <a-tab-pane key="2" tab="验收记录">
-          <acceptance-record-table ref="AcceptanceRecordTable" :equipId="equipId"></acceptance-record-table>
-        </a-tab-pane>
+<!--        <a-tab-pane key="2" tab="验收记录">-->
+<!--          <acceptance-record-table ref="AcceptanceRecordTable" :equipId="equipId"></acceptance-record-table>-->
+<!--        </a-tab-pane>-->
         <a-tab-pane key="3" tab="维修记录">
           <repair-records-table ref="RepairRecordsTable" :equipId="equipId"></repair-records-table>
         </a-tab-pane>
-        <a-tab-pane key="4" tab="期间核查记录">
-          <period-check-record-table ref="PeriodCheckRecordTable" :equipId="equipId"></period-check-record-table>
-        </a-tab-pane>
-        <a-tab-pane key="5" tab="检定记录"> 
+<!--        <a-tab-pane key="4" tab="期间核查记录">-->
+<!--          <period-check-record-table ref="PeriodCheckRecordTable" :equipId="equipId"></period-check-record-table>-->
+<!--        </a-tab-pane>-->
+        <a-tab-pane key="5" tab="检定记录">
           <verification-record-table ref="VerificationRecordTable" :equipId="equipId"></verification-record-table>
         </a-tab-pane>
       </h-tabs>
@@ -81,7 +81,6 @@ export default {
     },
     handleTabsChange(v) {
       this.activeKey = v
-      console.log('this.equipId', this.equipId)
     },
   },
 }

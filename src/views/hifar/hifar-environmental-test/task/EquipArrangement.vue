@@ -34,12 +34,12 @@
             @keyup.enter.native="loadLeftTree"
           />
           <div slot="title" slot-scope="record">
-          <span>
-            <h-icon v-if="record.validFlag == 0" style="font-size: 20px" type="icon-jingbaobaojing"></h-icon>
-            <h-icon v-if="record.validFlag == 1" style="font-size: 20px" type="icon-jingbaobaojing1"></h-icon>
-            <h-icon v-if="record.validFlag == 2" style="font-size: 20px" type="icon-jingbaobaojing2"></h-icon>
-            {{ record.title }}
-          </span>
+            <span>
+              <h-icon v-if="record.validFlag == 0" style="font-size: 20px" type="icon-jingbaobaojing"></h-icon>
+              <h-icon v-if="record.validFlag == 1" style="font-size: 20px" type="icon-jingbaobaojing1"></h-icon>
+              <h-icon v-if="record.validFlag == 2" style="font-size: 20px" type="icon-jingbaobaojing2"></h-icon>
+              {{ record.title }}
+            </span>
           </div>
           <div slot="addonAfter" slot-scope="record">
             <template v-if="+record.count + +record.unStart > 0">

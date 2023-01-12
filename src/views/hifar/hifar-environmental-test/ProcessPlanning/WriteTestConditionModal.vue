@@ -20,19 +20,21 @@
     </div>
     <a-spin :spinning="submitLoading">
       <div style="padding: 20px">
-        <a-button v-if="filterUnitCodeFlag" type="primary" style="margin-bottom: 10px"
+        <a-button v-if="filterProjectByType" type="primary" style="margin-bottom: 10px"
                   @click.stop="previewEcharts"> 预览
         </a-button>
-        <template v-if="filterUnitCodeFlag">
+        <template v-if="filterProjectByType">
           <a-tabs id="drag-tab" v-model="tabsActiveKey" hideAdd type="editable-card" @edit="onEdit">
             <template v-for="(item,itemIndex) in model.abilityRequire">
               <a-tab-pane :key="itemIndex" :closable="item.closable"
-                          :tab="item.type === 'stage' ? item.title + itemIndex : item.title" forceRender>
+                          :tab="item.title + (itemIndex + 1)" forceRender>
                 <test-condition-tab-item :key="itemIndex + '-only'" ref="testConditionTabItem"
                                          :itemAbilityInfo="item.abilityInfo"
+                                         :highLowTemperature="item.highLowTemperature"
                                          :itemIndex="itemIndex"
                                          :currentProject="model"
                                          @add="handleAdd"
+                                         @temperatureChange="(val) => temperatureChange(val,item)"
                                          @delete="handleDelete"/>
               </a-tab-pane>
             </template>
@@ -73,7 +75,6 @@ import drawCurveMixin from "@views/hifar/hifar-environmental-test/entrustment/dr
 import ExperimentalCurveModal
   from "@views/hifar/hifar-environmental-test/entrustment/components/ExperimentalCurveModal";
 import moment from "moment";
-import {randomUUID} from "@/utils/util";
 
 export default {
   name: "WriteTestConditionModal",
@@ -129,7 +130,7 @@ export default {
       curveUrl: '',
       index: 0,
       isPreviewFlag: false,
-      filterUnitCodeFlag: false,
+      filterProjectByType: false,
       modelExtend: {},
     }
   },
@@ -140,7 +141,7 @@ export default {
       handler(val) {
         if (isObject(val) && Object.keys(val).length) {
           let obj = Object.assign({}, val)
-          this.filterUnitCodeFlag = this.filterUnitCode(obj.classifyType)
+          this.filterProjectByType = this.filterUnitCode(obj.classifyType)
           obj.unitId = obj.unitId ? obj.unitId : obj.id
           obj.testName = obj.unitName
           let fileList = []
@@ -162,24 +163,28 @@ export default {
           obj.attachIds = fileList || []
           if (obj.abilityRequire && obj.abilityRequire.length) {
             obj.abilityRequire.forEach((item, index) => {
-              item.closable = index !== 0 && index !== 1
+              item.closable = index !== 0
             })
           } else {
-            if (this.filterUnitCodeFlag) {
+            if (this.filterProjectByType) {
               obj.abilityRequire = [
+                // {
+                //   title: "前置处理", type: "before", closable: false, abilityInfo: [
+                //     {
+                //       paramId: randomUUID(),
+                //       paramName: "初始类型",
+                //       minValue: "1",
+                //       conditionTypeDesc: "1",
+                //       dataType: "select"
+                //     }
+                //   ]
+                // },
                 {
-                  title: "前置处理", type: "before", closable: false, abilityInfo: [
-                    {
-                      paramId: randomUUID(),
-                      paramName: "初始类型",
-                      minValue: "1",
-                      conditionTypeDesc: "1",
-                      dataType: "select"
-                    }
-                  ]
-                },
-                {
-                  title: "循环阶段", type: "stage", closable: false, abilityInfo: obj.abilityInfo.map(a => {
+                  title: "循环阶段",
+                  type: "stage",
+                  highLowTemperature: "1",
+                  closable: false,
+                  abilityInfo: obj.abilityInfo.map(a => {
                     return {
                       paramId: a.abilityParamId,
                       ...a
@@ -201,7 +206,7 @@ export default {
             }
           }
           this.model = obj
-          if (this.filterUnitCodeFlag) {
+          if (this.filterProjectByType) {
             this.$nextTick(() => {
               this.createSortable()
             })
@@ -228,7 +233,7 @@ export default {
     previewEcharts() {
       this.isPreviewFlag = true
       this.splitByCurveType()
-      let {temperatureResult, humidityResult, temperatureCurveFlag, humidityCurveFlag} = this
+      let {temperatureResult, humidityResult} = this
       let obj = {temperatureResult, humidityResult}
       setTimeout(() => {
         this.$refs.ExperimentalCurveModal.open(obj)
@@ -237,28 +242,24 @@ export default {
     splitByCurveType() {
       let testConditionTab = this.$refs.testConditionTabItem;
       let pointTableItem = [];
-      if (this.filterUnitCodeFlag) {
+      if (this.filterProjectByType) {
         [].forEach.call(testConditionTab, (item, i) => {
           pointTableItem.push(item.$refs['pointTable' + [this.index] + [i]].getData())
         })
       } else {
         pointTableItem.push(this.$refs.testConditionTabItem.$refs['pointTable' + [this.index] + 0].getData())
       }
-      try {
-        this.isHighTemperature = pointTableItem[0].filter(item => item.paramName === '初始类型')[0].conditionTypeDesc === '1'
-      } catch {
-        this.isHighTemperature = true
-      }
       let drawTemperatureCurve = []
       let drawHumidityCurve = []
-      let pointTableItemExtend = cloneDeep(pointTableItem).splice(1)
-      for (let i = 0; i < pointTableItemExtend.length; i++) {
-        let item = pointTableItemExtend[i]
+      for (let i = 0; i < pointTableItem.length; i++) {
+        let item = pointTableItem[i]
         try {
           this.loopNum = item.filter(v => +v.curveType === 1 && v.paramCode === 'qh07')[0].conditionTypeDesc
         } catch {
           this.loopNum = 1
         }
+        // 获取每个页签下的类型[高温,低温,无]
+        this.isHighTemperature = testConditionTab[i].highLowTemperature
         drawTemperatureCurve = drawTemperatureCurve.concat(this.drawTemperatureCurve(item.filter(v => +v.curveType === 1)))
         drawHumidityCurve = drawHumidityCurve.concat(this.drawHumidityCurve(item.filter(v => +v.curveType === 2)))
       }
@@ -291,7 +292,7 @@ export default {
       this.selectBeforeItemIndex = itemIndex
       let testConditionTab = this.$refs.testConditionTabItem
       let $projectTable
-      if (this.filterUnitCodeFlag) {
+      if (this.filterProjectByType) {
         $projectTable = testConditionTab[itemIndex].$refs['pointTable' + [projectIndex] + [itemIndex]]
       } else {
         $projectTable = testConditionTab.$refs['pointTable' + [projectIndex] + [itemIndex]]
@@ -329,23 +330,26 @@ export default {
         })
       })
     },
+    temperatureChange(val, item) {
+      item.highLowTemperature = val
+    },
     handleDelete(row, rowIndex, projectIndex, itemIndex) {
       this.model.abilityRequire[itemIndex].abilityInfo.splice(rowIndex, 1)
     },
     createSortable() {
       try {
         let dragTab = document.getElementById('drag-tab').querySelector('.ant-tabs-nav').firstChild
-        let dom = dragTab.querySelectorAll('.ant-tabs-tab');
-        [].forEach.call(dom, ((item, index) => {
-          item.classList.remove('disabledDrag')
-          //给第一个dom添加 不可以进行拖动的类名
-          if (index === 0) {
-            item.classList.add('disabledDrag')
-          }
-        }))
+        // let dom = dragTab.querySelectorAll('.ant-tabs-tab');
+        // [].forEach.call(dom, ((item, index) => {
+        //   item.classList.remove('disabledDrag')
+        //   //给第一个dom添加 不可以进行拖动的类名
+        //   if (index === 0) {
+        //     item.classList.add('disabledDrag')
+        //   }
+        // }))
         if (this.model.abilityRequire.length > 0) {
           this.model.abilityRequire.map((item, index) => {
-            item.closable = index !== 0 && index !== 1;
+            item.closable = index !== 0;
           })
         }
         // this.$forceUpdate()
@@ -360,20 +364,20 @@ export default {
       }
     },
     dragTabMoveFun(customEvent, originalEvent) {
-      if (customEvent.related.className.includes('disabledDrag') && customEvent.related.innerText === '前置处理') {
-        if (this.dragFlag) {
-          this.$message.warning('循环阶段不能在前置处理前')
-          this.dragFlag = false
-        }
-        return false
-      }
-      if (customEvent.related.className.includes('disabledDrag') && customEvent.related.innerText === '后置处理') {
-        if (this.dragFlag) {
-          this.$message.warning('循环阶段不能在后置处理后')
-          this.dragFlag = false
-        }
-        return false
-      }
+      // if (customEvent.related.className.includes('disabledDrag') && customEvent.related.innerText === '前置处理') {
+      //   if (this.dragFlag) {
+      //     this.$message.warning('循环阶段不能在前置处理前')
+      //     this.dragFlag = false
+      //   }
+      //   return false
+      // }
+      // if (customEvent.related.className.includes('disabledDrag') && customEvent.related.innerText === '后置处理') {
+      //   if (this.dragFlag) {
+      //     this.$message.warning('循环阶段不能在后置处理后')
+      //     this.dragFlag = false
+      //   }
+      //   return false
+      // }
     },
     dragTabEndFun(customEvent) {
       let {oldIndex, newIndex, to, from, item} = customEvent
@@ -397,16 +401,14 @@ export default {
         }, 0)
       }
     },
-    momentFormat(value, arr = []) {
-      let result = ''
-      for (let i = 0; i < arr.length; i++) {
-        if (['hours', 'minutes', 'seconds'].includes(arr[i])) {
-          let resItem = moment.duration(value).get(arr[i])
-          let formatResItem = resItem < 10 ? ('0' + resItem) : resItem
-          result += i < arr.length - 1 ? formatResItem + ':' : formatResItem
-        }
-      }
-      return result
+    momentFormat(value) {
+      let hours = Math.floor(value / 1000 / 60 / 60)
+      hours = hours < 10 ? '0' + hours : hours
+      let minutes = Math.floor(value / 1000 / 60) % 60
+      minutes = minutes < 10 ? '0' + minutes : minutes
+      let seconds = Math.floor((value / 1000) % 60)
+      seconds = seconds < 10 ? '0' + seconds : seconds
+      return `${hours}:${minutes}:${seconds}`
     },
     resultEcharts() {
       this.splitByCurveType()
@@ -434,7 +436,7 @@ export default {
             },
             axisLabel: {
               formatter: function (value, index) {
-                return this.momentFormat(value, ['hours', 'minutes',]);
+                return this.momentFormat(value);
               }.bind(this),
               color: '#1B2232',
               rotate: 45,
@@ -485,12 +487,12 @@ export default {
     },
     handleSubmit() {
       let result = Object.assign({}, this.model)
-      if (this.filterUnitCodeFlag && !this.isPreviewFlag) {
+      if (this.filterProjectByType && !this.isPreviewFlag) {
         this.resultEcharts()
         result.curveUrl = this.curveUrl
       }
       let tabItemTableAllData = []
-      if (!this.filterUnitCodeFlag) {
+      if (!this.filterProjectByType) {
         tabItemTableAllData.push({
           title: '试验条件',
           type: 'default',
@@ -504,6 +506,7 @@ export default {
           tabItemTableAllData.push({
             title: tabPanelItem.title,
             type: tabPanelItem.type,
+            highLowTemperature: item.highLowTemperature,
             abilityInfo: _item_.getData()
           })
         })
@@ -511,7 +514,6 @@ export default {
       result.attachIds = result.attachIds.map(item => item.fileId).toString()
       result.abilityRequire = tabItemTableAllData
       result.curveUrl = this.curveUrl
-      console.log(result)
       postAction(this.url.save, result).then(res => {
         if (res.code === 200) {
           this.$message.success('保存成功')
@@ -522,7 +524,7 @@ export default {
     handleCancel() {
       this.visible = false
       this.isPreviewFlag = false
-      this.filterUnitCodeFlag = false
+      this.filterProjectByType = false
     },
   },
 }

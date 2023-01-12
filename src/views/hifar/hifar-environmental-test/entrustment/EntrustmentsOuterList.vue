@@ -192,7 +192,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          width: 160,
+          width: 110,
           dataIndex: 'entrustNo',
           scopedSlots: { customRender: 'entrustNo' },
           fixed: 'left'

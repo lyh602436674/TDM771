@@ -150,7 +150,7 @@ export default {
               value: 2
             },
             {
-              title: '其他',
+              title: '环境',
               key: 3,
               value: 3
             }
@@ -294,7 +294,7 @@ export default {
             let obj = {
               1: "气候",
               2: "力学",
-              3: "其他",
+              3: "环境",
             }
             return obj[text] || '--'
           }

@@ -9,13 +9,13 @@ import moment from "moment";
 export default {
   data() {
     return {
-      isHighTemperature: true,
+      isHighTemperature: null,
       loopNum: 1,
       initialTemTime: moment(0).format('x'),//温度初始时间
       initialHumTime: moment(0).format('x'),//湿度初始时间
       initialTemperature: 25, // 初始温度
       initialHumidity: 30, // 初始湿度
-      entrustOrTaskFlag:false,// 绘制曲线数据的标记，false=> 在委托单中绘制曲线，true=> 在试验任务中绘制曲线，因为两种绘制曲线的数据格式不一样
+      entrustOrTaskFlag: false,// 绘制曲线数据的标记，false=> 在工艺规划页面绘制曲线，true=> 在试验任务中绘制曲线，因为两种绘制曲线的数据格式不一样
     }
   },
   methods: {
@@ -63,9 +63,9 @@ export default {
         // let qh00Val = abilityInfo[qh00Index].minValue;
         let nodeTime = parseInt(qh00Val)
         let nodeVal = this.initialTemperature
-        if(this.entrustOrTaskFlag){
+        if (this.entrustOrTaskFlag) {
           result.push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-        }else{
+        } else {
           result.push({name: nodeTime, value: [nodeTime, nodeVal]})
         }
         // let loopNum = qh07 ? parseInt(abilityInfo[qh07Index].minValue) : 1
@@ -88,7 +88,7 @@ export default {
     },
     loopTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh02Index, qh03Index, qh04Index, qh05Index, qh06Index, qh01, qh02, qh05, qh06) {
       let result = []
-      if (this.isHighTemperature) {
+      if (this.isHighTemperature === '1') {
         if ((qh01 || qh01 === 0) && qh05) {
           let highResult = this.highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh05Index)
           result = result.concat(highResult.result)
@@ -101,7 +101,7 @@ export default {
             nodeVal = lowTreatment.nodeVal
           }
         }
-      } else {
+      } else if (this.isHighTemperature === '2') {
         if ((qh02 || qh02 === 0) && qh06) {
           let lowTreatment = this.lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh06Index)
           result = result.concat(lowTreatment.result)
@@ -114,6 +114,8 @@ export default {
             nodeVal = highResult.nodeVal
           }
         }
+      } else {
+        console.log('render error')
       }
       return {
         result: result,
@@ -138,9 +140,9 @@ export default {
         let qh03Val = parseInt(abilityInfo[qh03Index].minValue)
         let highKeepTime = moment(nodeTime).add(qh03Val, 'm').format('x')
         nodeTime = parseInt(highKeepTime)
-        if(this.entrustOrTaskFlag){
+        if (this.entrustOrTaskFlag) {
           result.push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-        }else{
+        } else {
           result.push({name: nodeTime, value: [nodeTime, nodeVal]})
         }
       }
@@ -158,7 +160,6 @@ export default {
       let lowTime = moment(nodeTime).add(addMin, 's').format('x')
       nodeTime = parseInt(lowTime)
       nodeVal = qh02Val
-
       if (this.entrustOrTaskFlag) {
         result.push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
       } else {
@@ -168,9 +169,9 @@ export default {
         let qh04Val = parseInt(abilityInfo[qh04Index].minValue)
         let lowKeepTime = moment(nodeTime).add(qh04Val, 'm').format('x')
         nodeTime = parseInt(lowKeepTime)
-        if(this.entrustOrTaskFlag){
+        if (this.entrustOrTaskFlag) {
           result.push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-        }else{
+        } else {
           result.push({name: nodeTime, value: [nodeTime, nodeVal]})
         }
       }
@@ -208,7 +209,7 @@ export default {
       // let rh07Index = abilityInfo.findIndex(i => i.paramCode === 'rh07')
       // let rh07 = rh07Index >= 0 && abilityInfo[rh07Index].minValue
 
-      flag = (rh01 || rh02) && ((rh01 && rh05) || (rh02 && rh06))
+      flag = ((rh01 || rh01 === 0) || (rh02 || rh02 === 0)) && (((rh01 || rh01 === 0) && rh05) || ((rh02 || rh02 === 0) && rh06))
       if (flag) {
         let rh00Val = this.initialHumTime
         let nodeTime = parseInt(rh00Val)
@@ -238,18 +239,18 @@ export default {
     },
     loopTreatmentHumidity(abilityInfo, nodeTime, nodeVal, rh01Index, rh02Index, rh03Index, rh04Index, rh05Index, rh06Index, rh01, rh02, rh05, rh06) {
       let result = []
-      if (rh01 && rh05) {
+      if ((rh01 || rh01 === 0) && rh05) {
         let highResult = this.highTreatmentHumidity(abilityInfo, nodeTime, nodeVal, rh01Index, rh03Index, rh05Index)
         result = result.concat(highResult.result)
         nodeTime = highResult.nodeTime
         nodeVal = highResult.nodeVal
-        if (rh02 && rh06) {
+        if ((rh02 || rh02 === 0) && rh06) {
           let lowTreatment = this.lowTreatmentHumidity(abilityInfo, nodeTime, nodeVal, rh02Index, rh04Index, rh06Index)
           result = result.concat(lowTreatment.result)
           nodeTime = lowTreatment.nodeTime
           nodeVal = lowTreatment.nodeVal
         }
-      } else if (rh02 && rh06) {
+      } else if ((rh02 || rh02 === 0) && rh06) {
         let lowTreatment = this.lowTreatmentHumidity(abilityInfo, nodeTime, nodeVal, rh02Index, rh04Index, rh06Index)
         result = result.concat(lowTreatment.result)
         nodeTime = lowTreatment.nodeTime
@@ -277,9 +278,9 @@ export default {
         let rh03Val = parseInt(abilityInfo[rh03Index].minValue)
         let highKeepTime = moment(nodeTime).add(rh03Val, 'm').format('x')
         nodeTime = parseInt(highKeepTime)
-        if(this.entrustOrTaskFlag){
+        if (this.entrustOrTaskFlag) {
           result.push(['Humidity_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-        }else{
+        } else {
           result.push({name: nodeTime, value: [nodeTime, nodeVal]})
         }
       }
@@ -305,9 +306,9 @@ export default {
         let rh04Val = parseInt(abilityInfo[rh04Index].minValue)
         let lowKeepTime = moment(nodeTime).add(rh04Val, 'm').format('x')
         nodeTime = parseInt(lowKeepTime)
-        if(this.entrustOrTaskFlag){
+        if (this.entrustOrTaskFlag) {
           result.push(['Humidity_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-        }else{
+        } else {
           result.push({name: nodeTime, value: [nodeTime, nodeVal]})
         }
       }

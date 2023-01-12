@@ -4,15 +4,15 @@
       <template slot="title"> 委托管理</template>
       <h-search slot="search-form" v-model="queryParams" :data="searchForm" size="default" @change="refresh(true)"/>
       <template slot="table-operator">
-        <a-button
-          v-has="'entrustment:dataEntry'"
-          icon="qrcode"
-          size="small"
-          type="ghost-primary"
-          @click="handleDataEntry">扫码创建
+        <!--        <a-button-->
+        <!--          v-has="'entrustment:dataEntry'"-->
+        <!--          icon="qrcode"-->
+        <!--          size="small"-->
+        <!--          type="ghost-primary"-->
+        <!--          @click="handleDataEntry">扫码创建-->
+        <!--        </a-button>-->
+        <a-button v-has="'entrustment:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 添加
         </a-button>
-          <a-button v-has="'entrustment:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 添加
-          </a-button>
         <a-button icon="download" size="small" type="ghost-warning" @click="handleExportXls('委托单信息')">
           导出
         </a-button>
@@ -200,7 +200,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          width: 160,
+          width: 110,
           dataIndex: 'entrustNo',
           scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'
@@ -384,9 +384,7 @@ export default {
       this.$refs.EntrustDataEntryModal.open()
     },
     handleAdd() {
-      let record = {}
-      let type = 'add'
-      this.$refs.EntrustmentModal.show(record, type)
+      this.$refs.EntrustmentModal.show({}, 'add')
     },
     async handleExportXls(name, model) {
       let data = {
