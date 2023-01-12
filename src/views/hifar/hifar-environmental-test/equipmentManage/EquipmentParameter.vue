@@ -108,7 +108,7 @@
               <h-card :title="title + ' 试前模板'" fixed>
                 <h-search
                   slot="search-form"
-                  v-model="testParams"
+                  v-model="testBeforeParams"
                   :data="testSearchBar"
                   :showToggleButton="false"
                   size="small"
@@ -156,7 +156,7 @@
               <h-card :title="title + ' 试中模板'" fixed>
                 <h-search
                   slot="search-form"
-                  v-model="testParams"
+                  v-model="testMidParams"
                   :data="testSearchBar"
                   :showToggleButton="false"
                   size="small"
@@ -204,7 +204,7 @@
               <h-card :title="title + ' 试后模板'" fixed>
                 <h-search
                   slot="search-form"
-                  v-model="testParams"
+                  v-model="testAfterParams"
                   :data="testSearchBar"
                   :showToggleButton="false"
                   size="small"
@@ -256,7 +256,7 @@
                   :data="testSearchBar"
                   :showToggleButton="false"
                   size="small"
-                  @change="handleSearch('testAfter')"
+                  @change="handleSearch('pollingTable')"
                 />
                 <template slot="table-operator">
                   <a-button icon="plus" size="small" type="ghost-primary"
@@ -390,6 +390,9 @@ export default {
         let data = {
           ...params,
           ...this.testParams,
+          ...this.testBeforeParams,
+          ...this.testMidParams,
+          ...this.testAfterParams,
           equipId: this.id,
           checkType
         }
@@ -399,6 +402,9 @@ export default {
           }
         })
       },
+      testBeforeParams: {},
+      testMidParams: {},
+      testAfterParams: {},
       testParams: {},
       testColumns: [
         {

@@ -11,8 +11,8 @@
     <div style='padding: 5px 15px'>
       <div class='info_containter'>
         <div class='left'>
-          <viewer :url='detailData.picurl||defaultImg' style='width:100%;height:100%'>
-            <img :src='detailData.picurl||defaultImg' alt='设备图片' class='h-upload-img-wrapper'
+          <viewer :url='detailData.picurl || defaultImg' style='width:100%;height:100%'>
+            <img :src='detailData.picurl || defaultImg' alt='设备图片' class='h-upload-img-wrapper'
                  style='width:100%;height:100%;cursor:pointer'/>
           </viewer>
         </div>
@@ -99,21 +99,6 @@ export default {
     }
   },
   name: 'ToolsProductDetail',
-  props: {
-    detailData: {
-      type: Object,
-      default: () => {
-      }
-    }
-  },
-  watch: {
-    detailData: {
-      immediate: true,
-      handler(val) {
-        this.detailData = val
-      }
-    }
-  },
   data() {
     return {
       visible: false,
@@ -135,7 +120,6 @@ export default {
     },
     handleTabsChange(v) {
       this.activeKey = v
-      console.log('this.toolsId', this.toolsId)
     }
   }
 }

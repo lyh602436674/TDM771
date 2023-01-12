@@ -31,7 +31,7 @@
       :rowKey="(record) => record.id"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
     >
-    <!-- 验收记录-验收类型-跳转详情 -->
+    <!-- 验收记录-验收方式-跳转详情 -->
       <span slot="acceptMethod" slot-scope="text,record">
           <a href="javascript:;" @click="handleDetailCode(record)">
             {{ record.acceptMethod? record.acceptMethod:'--' }}
@@ -109,7 +109,7 @@ export default {
       queryParams: {},
       searchBar: [
         {
-          title: '验收类型',
+          title: '验收方式',
           formType: 'input',
           key: 'c_acceptMethod_7',
         },
@@ -128,7 +128,7 @@ export default {
       },
       columns: [
         {
-          title: '验收类型',
+          title: '验收方式',
           align: 'left',
           dataIndex: 'acceptMethod',
           scopedSlots:{ customRender:'acceptMethod' }
@@ -240,7 +240,7 @@ export default {
     detailHandle(record) {
       this.$refs.AcceptanceRecordDetail.show(record)
     },
-    // 验收记录-验收类型-跳转详情
+    // 验收记录-验收方式-跳转详情
     handleDetailCode(record){
       this.detailHandle(record)
     },

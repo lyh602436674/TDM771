@@ -217,9 +217,9 @@ export default {
     }
   },
   created() {
-    this.$nextTick(() => {
-      this.$refs.diveceInfoTable.$refs.envEquipmentList.connect(this.$refs.envEquipmentOperator)
-    })
+    // this.$nextTick(() => {
+    //   this.$refs.diveceInfoTable.$refs.envEquipmentList.connect(this.$refs.envEquipmentOperator)
+    // })
   },
   methods: {
     refresh() {

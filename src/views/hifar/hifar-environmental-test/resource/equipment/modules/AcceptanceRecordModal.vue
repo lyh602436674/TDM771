@@ -17,70 +17,74 @@
     @submit="handleClickSubmit"
     @cancel="handleCancel"
   >
-    <h-form
-      ref="AcceptanceRecordForm"
-      v-if="visible"
-      v-model="model"
-      :width="drawerWidth - 48"
-      :formData="formData"
-      @change="submitHandle"
-    ></h-form>
-    <h-card title="验收列表">
-      <a-button
-        size="small"
-        @click="insertEvent(-1)"
-        type="ghost-primary"
-        icon="plus"
-        style="margin-right: 5px; margin-bottom: 4px"
-        >新增</a-button
-      >
-      <a-button
-        v-if="hasSelected"
-        type="danger"
-        size="small"
-        icon="minus"
-        style="margin-bottom: 4px"
-        @click="handleDelete"
-      >
-        删除
-      </a-button>
-      <vxe-table
-        border
-        show-all-overflow
-        keep-source
-        :checkbox-config="{ highlight: true }"
-        ref="AcceptanceRecordTable"
-        :data="acceptListData"
-        :edit-config="{ key: 'id', trigger: 'click', mode: 'row' }"
-        @checkbox-all="selectAllEvent"
-        @checkbox-change="onSelectChange"
-      >
-        <vxe-table-column type="checkbox" width="60"></vxe-table-column>
-        <vxe-table-column type="seq" width="60"></vxe-table-column>
-        <vxe-table-column
-          title="项目"
-          field="acceptName"
-          :edit-render="{ name: '$input', props: { placeholder: '请输入项目' } }"
-        ></vxe-table-column>
-        <vxe-table-column
-          title="情况"
-          field="acceptDesc"
-          :edit-render="{ name: '$input', props: { placeholder: '请输入情况' } }"
-        ></vxe-table-column>
-        <vxe-table-column
-          title="备注"
-          field="remarks"
-          :edit-render="{ name: '$input', props: { placeholder: '请输入备注' } }"
-        ></vxe-table-column>
-      </vxe-table>
-    </h-card>
+    <a-spin :spinning="confirmLoading">
+      <h-form
+        v-if="visible"
+        ref="AcceptanceRecordForm"
+        v-model="model"
+        :formData="formData"
+        :width="drawerWidth - 48"
+        @change="submitHandle"
+      ></h-form>
+      <h-card title="验收列表">
+        <a-button
+          icon="plus"
+          size="small"
+          style="margin-right: 5px; margin-bottom: 4px"
+          type="ghost-primary"
+          @click="insertEvent(-1)"
+        >新增
+        </a-button
+        >
+        <a-button
+          v-if="hasSelected"
+          icon="minus"
+          size="small"
+          style="margin-bottom: 4px"
+          type="danger"
+          @click="handleDelete"
+        >
+          删除
+        </a-button>
+        <vxe-table
+          ref="AcceptanceRecordTable"
+          :checkbox-config="{ highlight: true }"
+          :data="acceptListData"
+          :edit-config="{ key: 'id', trigger: 'click', mode: 'row' }"
+          border
+          keep-source
+          show-all-overflow
+          @checkbox-all="selectAllEvent"
+          @checkbox-change="onSelectChange"
+        >
+          <vxe-table-column type="checkbox" width="60"></vxe-table-column>
+          <vxe-table-column type="seq" width="60"></vxe-table-column>
+          <vxe-table-column
+            :edit-render="{ name: '$input', props: { placeholder: '请输入项目' } }"
+            field="acceptName"
+            title="项目"
+          ></vxe-table-column>
+          <vxe-table-column
+            :edit-render="{ name: '$input', props: { placeholder: '请输入情况' } }"
+            field="acceptDesc"
+            title="情况"
+          ></vxe-table-column>
+          <vxe-table-column
+            :edit-render="{ name: '$input', props: { placeholder: '请输入备注' } }"
+            field="remarks"
+            title="备注"
+          ></vxe-table-column>
+        </vxe-table>
+      </h-card>
+    </a-spin>
   </h-modal>
 </template>
 
 <script>
 import moment from 'moment'
-import { downloadFile, postAction, getFileAccessHttpUrl } from '@/api/manage'
+import {downloadFile, getFileAccessHttpUrl, postAction} from '@/api/manage'
 import SysUserSelect from '@/views/components/SysUserSelect'
+
 export default {
   inject: {
     getContainer: {
@@ -137,9 +141,9 @@ export default {
           span: 2,
           component: (
             <sys-user-select
-              v-decorator={['acceptUserId', { initialValue: undefined }]}
+              v-decorator={['acceptUserId', {initialValue: undefined}]}
               v-on:change={this.acceptUserChange}
-            ></sys-user-select>
+            />
           ),
           validate: {
             rules: [{ required: true, message: '请选择验收人' }],
@@ -175,6 +179,7 @@ export default {
   methods: {
     show(record, title) {
       this.visible = true
+      this.confirmLoading = true
       this.title = title
       if (record.id) {
         this.loadDetail(record.id)
@@ -188,6 +193,7 @@ export default {
           acceptDesc: '',
           remarks: '',
         })
+        this.confirmLoading = false
       }
     },
     loadDetail(id) {
@@ -202,21 +208,19 @@ export default {
       postAction(this.url.accessDetailById, { acceptId: id }).then((res) => {
         if (res.code === 200) {
           let record = res.data
-          let acceptList = []
-          if (record.length > 0) {
-            record.forEach((item) => {
-              acceptList.push({
-                id: item.id,
-                equipId: item.equipId,
-                acceptId: item.acceptId,
-                acceptName: item.acceptName,
-                acceptDesc: item.acceptDesc,
-                remarks: item.remarks,
-              })
-            })
-          }
-          this.acceptListData = acceptList
+          this.acceptListData = record && record.length && record.map((item) => {
+            return {
+              id: item.id,
+              equipId: item.equipId,
+              acceptId: item.acceptId,
+              acceptName: item.acceptName,
+              acceptDesc: item.acceptDesc,
+              remarks: item.remarks,
+            }
+          }) || []
         }
+      }).finally(() => {
+        this.confirmLoading = false
       })
     },
     editor(record) {

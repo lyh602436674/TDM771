@@ -117,8 +117,6 @@ export default {
         if (!err) {
           console.log("表单校验释放出去的值", values)
           this.$emit('change', values)
-        } else {
-          this.$emit('change')
         }
       })
     },

@@ -19,8 +19,9 @@
 </template>
 
 <script>
-import { getAction } from '@/api/manage'
-import { findIndex, isArray } from 'lodash'
+import {getAction} from '@/api/manage'
+import {findIndex, isArray} from 'lodash'
+
 export default {
   props: {
     value: {
@@ -108,14 +109,13 @@ export default {
     getSysUserList() {
       getAction(this.url.list).then((res) => {
         if (res.code === 200) {
-          let options = res.data.map((item) => {
+          this.options = res.data.map((item) => {
             return {
               title: item.idName,
               key: item.id,
               value: item.id,
             }
           })
-          this.options = options
           this.model = res.data
         }
       })

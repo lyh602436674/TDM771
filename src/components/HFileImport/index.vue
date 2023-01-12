@@ -69,7 +69,7 @@
             }}</span
             >条，失败<span class="danger-text"> {{ importResult.errorCount }} </span>条
           </p>
-          <a v-if="importResult.errorCount != 0" href="javascript:;" class="primary-text" @click="handleDownload">
+          <a v-if="importResult.errorCount != 0" class="primary-text" @click="handleDownload">
             点击下载查看失败数据
           </a>
         </div>
@@ -79,10 +79,11 @@
 </template>
 
 <script>
-import { postAction, downloadFile } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import moment from 'moment'
-import { isEmpty } from 'lodash'
+import {isEmpty} from 'lodash'
 import mixin from '@/views/hifar/mixin.js'
+
 export default {
   mixins: [mixin],
   inject: {
@@ -94,7 +95,7 @@ export default {
   },
   props: {
     intervalTime: {
-      type: [String, Number],
+      type: Number,
       default: 15000,
     },
   },
@@ -127,7 +128,7 @@ export default {
         this.loadData()
         this.timer = setInterval(() => {
           this.loadData()
-        }, this.intervalTime)
+        }, +this.intervalTime)
       }
     },
     handleCancel() {

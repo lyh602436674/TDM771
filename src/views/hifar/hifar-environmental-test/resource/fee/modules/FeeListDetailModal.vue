@@ -93,7 +93,7 @@ export default {
           }
         },
         {
-          title: '温度范围',
+          title: '温度范围(℃)',
           dataIndex: 'temperatureRange',
           align: 'center',
           customRender: (t, row) => {
@@ -101,7 +101,7 @@ export default {
           }
         },
         {
-          title: '湿度范围',
+          title: '湿度范围(RH)',
           dataIndex: 'humidityRange',
           align: 'center',
           customRender: (t, row) => {
@@ -109,7 +109,7 @@ export default {
           }
         },
         {
-          title: '压力范围',
+          title: '压力范围(Pa)',
           dataIndex: 'pressureRange',
           align: 'center',
           customRender: (t, row) => {
@@ -186,25 +186,17 @@ export default {
       })
     },
     loadUnitById(costId) {
-      let newTableData = []
       postAction(this.url.priceUnit, { costId: costId }).then((res) => {
         if (res.code === 200) {
           let record = res.data
-          if (record.length > 0) {
-            record.forEach((item) => {
-              newTableData.push({
-                costId: item.costId,
-                unitId: item.unitId,
-                equipModel: item.equipModel,
-                rate: item.rate,
-                id: item.id,
-                unitName: item.unitName,
-                unitPrice: item.unitPrice / 100,
-                remarks: item.remarks,
-              })
-            })
-          }
-          this.priceData = newTableData
+          this.priceData = record && record.length && record.map((item) => {
+            return {
+              ...item,
+              ...item.equipData[0], // 设备信息全部从equipData中拿
+              unitName: item.equipData[0].equipName,
+              remarks: item.remarks,
+            }
+          }) || []
         }
       })
     },

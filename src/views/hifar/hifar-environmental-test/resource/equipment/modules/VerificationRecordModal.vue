@@ -19,9 +19,7 @@
   >
     <h-form
       ref="VerificationForm"
-      v-if="visible"
       v-model="model"
-      :width="drawerWidth - 48"
       :formData="formData"
       @change="submitHandle"
     ></h-form>
@@ -30,8 +28,9 @@
 
 <script>
 import moment from 'moment'
-import { downloadFile, postAction, getFileAccessHttpUrl } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import SysUserSelect from '@/views/components/SysUserSelect'
+
 export default {
   inject: {
     getContainer: {
@@ -140,9 +139,10 @@ export default {
       })
     },
     editor(record) {
-      let obj = Object.assign({}, record)
-      obj.verifyTime = obj.verifyTime && obj.verifyTime != 0 ? moment(parseFloat(obj.verifyTime)) : ''
-      this.model = obj
+      this.model = Object.assign({}, record, {
+        verifyTime: record.verifyTime && record.verifyTime != 0 ? moment(+record.verifyTime) : ''
+      })
+      console.log(this.model,'model')
     },
     handleClickSubmit() {
       this.$refs.VerificationForm.validateForm()
@@ -150,7 +150,7 @@ export default {
     // 提交
     submitHandle(values) {
       if (this.confirmLoading) return
-      this.confirmLoading = false
+      this.confirmLoading = true
       let params = {
         ...values
       }
@@ -167,6 +167,8 @@ export default {
           this.$emit('change', true)
           this.handleCancel()
         }
+      }).finally(() => {
+        this.confirmLoading = false
       })
     },
     acceptUserChange(val, option) {
@@ -175,10 +177,6 @@ export default {
     handleCancel(e) {
       this.visible = false
       this.model = {}
-    },
-    handleDownload(filePath, fileName) {
-      let fileAccessUrl = getFileAccessHttpUrl(filePath)
-      downloadFile(fileAccessUrl, fileName)
     },
   },
 }

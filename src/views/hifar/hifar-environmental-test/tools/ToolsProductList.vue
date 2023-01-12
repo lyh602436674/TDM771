@@ -7,7 +7,7 @@
  * @FilePath: /hifar-platform-client/src/views/hifar/hifar-environmental-test/tools/ToolsProductList
 -->
 <template>
-  <h-card :bordered='true' fixed>
+  <h-card ref="pageWrapper" :bordered='true' fixed>
     <h-search
       slot='search-form'
       v-model='queryParam'
@@ -150,6 +150,11 @@ import ToolsProductBorrowListModel
 
 export default {
   name: 'ToolsProductList',
+  provide() {
+    return {
+      getContainer: () => this.$refs.pageWrapper,
+    }
+  },
   props: {
     expiryTime: {
       type: String,
@@ -177,6 +182,7 @@ export default {
         downLoadPrintQRCode: '/HfToolsProducts/downLoadPrintQRCode',
       },
       queryParam: {},
+      detailData: {},
       selectedRowKeys: [],
       searchBar: [
         {
@@ -363,9 +369,9 @@ export default {
     }
   },
   created() {
-    this.$nextTick(() => {
-      this.$refs.diveceInfoTable.$refs.envEquipmentList.connect(this.$refs.envEquipmentOperator)
-    })
+    // this.$nextTick(() => {
+    //   this.$refs.diveceInfoTable.$refs.envEquipmentList.connect(this.$refs.envEquipmentOperator)
+    // })
   },
   methods: {
     refresh() {

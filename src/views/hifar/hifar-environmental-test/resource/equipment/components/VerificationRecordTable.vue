@@ -74,9 +74,10 @@
 <script>
 import moment from 'moment'
 import mixin from '@/views/hifar/mixin.js'
-import { downloadFile, postAction } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import VerificationRecordModal from '../modules/VerificationRecordModal'
 import VerificationRecordDetail from '../modules/VerificationRecordDetail'
+
 export default {
   props: {
     equipId: {
@@ -191,7 +192,6 @@ export default {
 
     // 单个删除
     handleDelete(id) {
-      console.log(id)
       postAction(this.url.delete, { id: id }).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')

@@ -73,17 +73,17 @@
             <vxe-table-column
               :edit-render="{ name: 'input', placeholder: '请输入温度范围' }"
               field="temperatureRange"
-              title="温度范围"
+              title="温度范围(℃)"
             ></vxe-table-column>
             <vxe-table-column
               :edit-render="{ name: 'input', placeholder: '请输入湿度范围' }"
               field="humidityRange"
-              title="湿度范围"
+              title="湿度范围(RH)"
             ></vxe-table-column>
             <vxe-table-column
               :edit-render="{ name: 'input', placeholder: '请输入压力范围' }"
               field="pressureRange"
-              title="压力范围"
+              title="压力范围(Pa)"
             ></vxe-table-column>
             <vxe-table-column
               :edit-render="{ name: 'input', placeholder: '请输入加速度范围' }"
