@@ -156,7 +156,7 @@
         visible: false,
         confirmLoading: false,
         drawerWidth: 1100,
-        title: '添加',
+        title: '新增',
         validRules: {
           startTime: [{ required: true, message: '开始时间不能为空' }, { validator: startTimeValid }],
           endTime: [{ required: true, message: '结束时间不能为空' }, { validator: endTimeValid }],

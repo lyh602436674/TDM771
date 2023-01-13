@@ -19,14 +19,14 @@
     <div slot="table-operator" style="border-top: 5px">
       <vxe-toolbar ref="envEquipmentOperator" custom>
         <div slot="buttons">
-          <a-button v-has="'device:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd">添加</a-button>
-          <a-button
-            icon="edit"
-            size="small"
-            type="ghost-primary"
-            @click="handleImportEditExcel">
-            批量修改
-          </a-button>
+          <a-button v-has="'device:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd">新增</a-button>
+          <!--          <a-button-->
+          <!--            icon="edit"-->
+          <!--            size="small"-->
+          <!--            type="ghost-primary"-->
+          <!--            @click="handleImportEditExcel">-->
+          <!--            批量修改-->
+          <!--          </a-button>-->
           <a-button
             v-has="'device:privice'"
             icon="download"
@@ -144,7 +144,7 @@
 <script>
 import moment from 'moment'
 import mixin from '@/views/hifar/mixin.js'
-import { downloadFile, postAction } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import EquipmentDetail from './EquipmentDetail.vue'
 import EquipmentModal from './EquipmentModal.vue'
 import HistoryTemperature from './components/historyTemperature'
@@ -457,7 +457,7 @@ export default {
     },
     handleAdd() {
       let record = {}
-      this.$refs.equipmentModal.show(record, '添加')
+      this.$refs.equipmentModal.show(record, '新增')
     },
     // 详情
     detailHandle(record) {

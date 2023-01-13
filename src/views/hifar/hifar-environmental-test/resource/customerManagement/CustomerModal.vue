@@ -44,7 +44,7 @@ export default {
 
   data() {
     return {
-      title: '添加',
+      title: '新增',
       drawerWidth: 800,
       confirmLoading: false,
       visible: false,

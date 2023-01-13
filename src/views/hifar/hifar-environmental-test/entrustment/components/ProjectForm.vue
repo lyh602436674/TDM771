@@ -117,6 +117,7 @@ export default {
               tabItemTableAllData.push({
                 title: tabPanelItem.title,
                 type: tabPanelItem.type,
+                highLowTemperature: tabPanelItem.highLowTemperature,
                 abilityInfo: _item_.getData()
               })
             })

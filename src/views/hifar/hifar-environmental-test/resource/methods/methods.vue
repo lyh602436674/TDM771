@@ -11,7 +11,7 @@
         @change="searchQuery"
       />
       <div slot="table-operator" style="border-top: 5px">
-        <a-button v-has="'method:add'" size="small" @click="handleAdd" type="ghost-primary" icon="plus">添加</a-button>
+        <a-button v-has="'method:add'" size="small" @click="handleAdd" type="ghost-primary" icon="plus">新增</a-button>
         <a-button v-has="'method:privice'" size="small" type="ghost-warning" icon="download" @click="handleExportXls('标准管理')">导出</a-button>
 <!--        <a-button v-has="'method:import'" size="small" type="ghost-success" icon="import" @click="handleImportExcel">导入</a-button>-->
         <a-button v-has="'method:delete'" type="danger" size="small" icon="delete" @click="batchDel()">批量删除</a-button>

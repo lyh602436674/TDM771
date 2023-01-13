@@ -74,7 +74,7 @@
             </div>
             <!--新增右键点击事件,和增加添加和删除功能-->
             <a-menu slot="overlay">
-              <a-menu-item @click="handleAdd(3)" key="1"> <a-icon type="plus" /> 添加 </a-menu-item>
+              <a-menu-item @click="handleAdd(3)" key="1"> <a-icon type="plus" /> 新增 </a-menu-item>
               <a-menu-item @click="handleDelete" key="2">
                 <a href="javascript:;" class="danger-text"> <h-icon type="icon-shanchu" /> 删除 </a>
               </a-menu-item>
@@ -386,7 +386,7 @@ export default {
       postAction(this.url.addDeptUsers, params)
         .then((res) => {
           if (res.code === 200) {
-            this.$message.success('添加用户成功')
+            this.$message.success('新增用户成功')
             this.$refs.departUserSelect.handleCancel()
             this.$refs.departUser.show(this.currSelected.id)
           }

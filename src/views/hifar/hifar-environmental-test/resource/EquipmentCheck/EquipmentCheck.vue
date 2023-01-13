@@ -19,7 +19,7 @@
         @change="refresh"
       />
       <div slot="table-operator" style="border-top: 5px">
-        <a-button size="small" @click="handleAdd" type="ghost-primary" icon="plus">添加</a-button>
+        <a-button size="small" @click="handleAdd" type="ghost-primary" icon="plus">新增</a-button>
         <a-button size="small" type="ghost-warning" icon="download" @click="handleExportXls('点检模板')">导出</a-button>
         <a-upload
           size="small"

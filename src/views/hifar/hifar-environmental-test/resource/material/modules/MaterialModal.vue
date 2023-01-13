@@ -34,7 +34,7 @@ export default {
   data() {
     return {
       visible: false,
-      title: '添加',
+      title: '新增',
       moment,
       model: {},
       url: {

@@ -121,7 +121,7 @@ export default {
       confirmLoading: false,
       drawerWidth: 1200,
       isopen: false,
-      title: '添加',
+      title: '新增',
       url: {
         add: '/HfResPersonTrainRecordBusiness/addTrainRecordAndCheck',
         edit: '/HfResPersonTrainRecordBusiness/modifyTrainRecordAndCheckById',

@@ -30,11 +30,14 @@
         <a-tab-pane key="3" tab="维修记录">
           <repair-records-table ref="RepairRecordsTable" :equipId="equipId"></repair-records-table>
         </a-tab-pane>
-<!--        <a-tab-pane key="4" tab="期间核查记录">-->
-<!--          <period-check-record-table ref="PeriodCheckRecordTable" :equipId="equipId"></period-check-record-table>-->
-<!--        </a-tab-pane>-->
+        <!--        <a-tab-pane key="4" tab="期间核查记录">-->
+        <!--          <period-check-record-table ref="PeriodCheckRecordTable" :equipId="equipId"></period-check-record-table>-->
+        <!--        </a-tab-pane>-->
         <a-tab-pane key="5" tab="检定记录">
           <verification-record-table ref="VerificationRecordTable" :equipId="equipId"></verification-record-table>
+        </a-tab-pane>
+        <a-tab-pane key="6" tab="报警信息">
+          <alarm-info-table ref="AlarmInfoTable" :equipId="equipId"></alarm-info-table>
         </a-tab-pane>
       </h-tabs>
     </h-card>
@@ -42,11 +45,16 @@
 </template>
 <script>
 import moment from 'moment'
-import EquipmentBaseInfo from './modules/EquipmentBaseInfo'
-import AcceptanceRecordTable from './components/AcceptanceRecordTable'
-import RepairRecordsTable from './components/RepairRecordsTable'
-import PeriodCheckRecordTable from './components/PeriodCheckRecordTable'
-import VerificationRecordTable from './components/VerificationRecordTable'
+import EquipmentBaseInfo from '@views/hifar/hifar-environmental-test/resource/equipment/modules/EquipmentBaseInfo'
+import AcceptanceRecordTable
+  from '@views/hifar/hifar-environmental-test/resource/equipment/components/AcceptanceRecordTable'
+import RepairRecordsTable from '@views/hifar/hifar-environmental-test/resource/equipment/components/RepairRecordsTable'
+import PeriodCheckRecordTable
+  from '@views/hifar/hifar-environmental-test/resource/equipment/components/PeriodCheckRecordTable'
+import VerificationRecordTable
+  from '@views/hifar/hifar-environmental-test/resource/equipment/components/VerificationRecordTable'
+import AlarmInfoTable from "@views/hifar/hifar-environmental-test/resource/equipment/components/AlarmInfoTable";
+
 export default {
   inject: {
     getContainer: {
@@ -54,6 +62,7 @@ export default {
     },
   },
   components: {
+    AlarmInfoTable,
     EquipmentBaseInfo,
     AcceptanceRecordTable,
     RepairRecordsTable,

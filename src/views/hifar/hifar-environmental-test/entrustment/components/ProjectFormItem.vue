@@ -140,34 +140,37 @@ export default {
       immediate: true,
       handler(val) {
         if (isObject(val) && Object.keys(val).length) {
-          let obj = Object.assign({}, val)
+          let obj = Object.assign({}, val, {
+            unitId: val.unitId ? val.unitId : val.id,
+            testName: val.unitName,
+            attachIds: val.fileInfo && val.fileInfo.length && val.fileInfo.map(item => {
+              return {
+                fileId: item.id,
+                size: item.fileSize,
+                status: item.status === 9 ? 'success' : 'exception',
+                url: item.filePath,
+                name: item.fileName,
+                uuid: item.id,
+                percent: 100,
+                uploadTime: item.createTime,
+                secretLevel: item.secretLevel,
+                type: item.viewType === 2 ? 'image/jpeg' : 'text/plain',
+                replaceStatus: item.replaceStatus
+              }
+            }) || [],
+          })
           let filterProjectByType = this.filterUnitCode(obj.classifyType)
           this.filterProjectByType = filterProjectByType
-          obj.unitId = obj.unitId ? obj.unitId : obj.id
-          obj.testName = obj.unitName
-          obj.attachIds = obj.fileInfo && obj.fileInfo.length && obj.fileInfo.map(item => {
-            return {
-              fileId: item.id,
-              size: item.fileSize,
-              status: item.status === 9 ? 'success' : 'exception',
-              url: item.filePath,
-              name: item.fileName,
-              uuid: item.id,
-              percent: 100,
-              uploadTime: item.createTime,
-              secretLevel: item.secretLevel,
-              type: item.viewType === 2 ? 'image/jpeg' : 'text/plain',
-              replaceStatus: item.replaceStatus
-            }
-          }) || []
           this.equipData = obj.testEquipInfo && isArray(obj.testEquipInfo) ? obj.testEquipInfo : []
           if (obj.abilityRequire && obj.abilityRequire.length) {
             obj.abilityRequire.forEach((item, index) => {
               item.closable = index !== 0
+              item.highLowTemperature = item.highLowTemperature || "1"
             })
           } else {
             if (filterProjectByType) {
               obj.abilityRequire = [
+                // 先不删，后续可能会用上
                 // {
                 //   title: "前置处理", type: "before", closable: false, abilityInfo: [
                 //     {

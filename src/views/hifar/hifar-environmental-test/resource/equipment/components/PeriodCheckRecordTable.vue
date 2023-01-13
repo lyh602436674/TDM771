@@ -17,7 +17,7 @@
       @change="refresh(true)"
     />
     <div slot="table-operator" style="border-top: 5px">
-      <a-button size="small" @click="handleAdd" type="ghost-primary" icon="plus">添加</a-button>
+      <a-button size="small" @click="handleAdd" type="ghost-primary" icon="plus">新增</a-button>
       <a-button size="small" type="ghost-warning" icon="download" @click="handleExportXls('期间检查记录')">
         导出
       </a-button>
@@ -236,7 +236,7 @@ export default {
       let record = {
         equipId: this.equipId,
       }
-      this.$refs.PeriodCheckRecordModal.show(record, '添加')
+      this.$refs.PeriodCheckRecordModal.show(record, '新增')
     },
     handleEdit(record) {
       this.$refs.PeriodCheckRecordModal.show(record, '编辑')

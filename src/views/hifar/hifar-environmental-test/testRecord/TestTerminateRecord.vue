@@ -20,7 +20,7 @@
         @reload="handleReset"
       />
       <div slot="table-operator" style="border-top: 5px">
-        <a-button size="small" @click="handleAdd" type="ghost-primary" icon="plus">添加</a-button>
+        <a-button size="small" @click="handleAdd" type="ghost-primary" icon="plus">新增</a-button>
       </div>
       <h-vex-table
         slot="content"

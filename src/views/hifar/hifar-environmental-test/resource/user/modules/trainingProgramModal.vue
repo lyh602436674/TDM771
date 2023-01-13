@@ -47,7 +47,7 @@ export default {
       confirmLoading: false,
       drawerWidth: 800,
       isopen: false,
-      title: '添加',
+      title: '新增',
       url: {
         add: '/HfResPersonTrainPlanBusiness/add',
         edit: '/HfResPersonTrainPlanBusiness/modifyById',

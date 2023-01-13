@@ -178,7 +178,7 @@ export default {
           }
           return h('h-input', {
             props: {
-              placeholder: com.placeholder || '请输入',
+              placeholder: com.placeholder || '请输入' + com.title,
               disabled: com.disabled || false,
               type: com.type || "",
               readOnly: com.readOnly || false
@@ -219,7 +219,7 @@ export default {
         case 'input-number':
           return h('a-input-number', {
             props: {
-              placeholder: com.placeholder || '请输入',
+              placeholder: com.placeholder || '请输入' + com.title,
               disabled: com.disabled || false,
               min: com.min,
               max: com.max,
@@ -248,7 +248,7 @@ export default {
             props: {
               disabled: com.disabled,
               mode: com.multiple ? 'multiple' : 'default',
-              placeholder: com.placeholder || '请选择',
+              placeholder: com.placeholder || '请选择' + com.title,
               options: com.options,
               allowClear: com.allowClear || true
             },
@@ -275,7 +275,7 @@ export default {
               disabled: com.disabled,
               showSearch: com.showSearch || false,
               mode: com.multiple || false,
-              placeholder: com.placeholder || '请选择',
+              placeholder: com.placeholder || '请选择' + com.title,
               treeData: com.treeData,
               loadData: com.loadData,
               allowClear: com.allowClear || true,
@@ -311,7 +311,7 @@ export default {
                 this.form.setFieldsValue(data)
                 this.triggleChange()
               }
-            }} autoSize={com.autoSize} rows={com.rows} placeholder={com.placeholder || '请输入'} disabled={com.disabled}
+            }} autoSize={com.autoSize} rows={com.rows} placeholder={com.placeholder || '请输入' + com.title} disabled={com.disabled}
                         readOnly={com.readOnly} maxLength={com.maxLength}
                         style={com.style} vDecorator={[com.key, com.validate || {}]}/>
           )

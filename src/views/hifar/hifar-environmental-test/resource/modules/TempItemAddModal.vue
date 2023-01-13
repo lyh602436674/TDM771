@@ -47,7 +47,7 @@ export default {
       confirmLoading: false,
       drawerWidth: 1000,
       model: {},
-      title: '添加',
+      title: '新增',
       url: {
         add: '/HfResTemplateItemBusiness/add',
         edit: '/HfResTemplateItemBusiness/modifyById',

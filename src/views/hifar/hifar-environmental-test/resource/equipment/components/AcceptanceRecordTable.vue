@@ -17,7 +17,7 @@
       @change="refresh(true)"
     />
     <div slot="table-operator" style="border-top: 5px">
-      <a-button size="small" @click="handleAdd" type="ghost-primary" icon="plus">添加</a-button>
+      <a-button size="small" @click="handleAdd" type="ghost-primary" icon="plus">新增</a-button>
       <a-button size="small" type="ghost-warning" icon="download" @click="handleExportXls('验收记录')">导出</a-button>
       <a-button size="small" type="ghost-success" icon="import" @click="handleImportExcel">导入</a-button>
       <a-button v-if="hasSelected" type="danger" size="small" icon="delete" @click="batchDel()">批量删除</a-button>
@@ -232,7 +232,7 @@ export default {
       let record = {
         equipId: this.equipId,
       }
-      this.$refs.AcceptanceRecordModal.show(record, '添加')
+      this.$refs.AcceptanceRecordModal.show(record, '新增')
     },
     handleEdit(record) {
       this.$refs.AcceptanceRecordModal.show(record, '编辑')

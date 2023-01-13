@@ -106,7 +106,7 @@ export default {
       confirmLoading: false,
       drawerWidth: 900,
       model: {},
-      title: '添加',
+      title: '新增',
       url: {
         add: '/HfResEquipAcceptBusiness/addAcceptAndList',
         edit: '/HfResEquipAcceptBusiness/modifyAcceptAndListById',

@@ -19,7 +19,7 @@
         @change="refresh"
       />
       <div slot="table-operator" style="border-top: 5px">
-        <a-button v-has="'record:add'" size="small" @click="handleAdd" type="ghost-primary" icon="plus">添加</a-button>
+        <a-button v-has="'record:add'" size="small" @click="handleAdd" type="ghost-primary" icon="plus">新增</a-button>
         <a-button v-has="'record:privice'" size="small" type="ghost-warning" icon="download" @click="handleExportXls('培训记录')">导出</a-button>
         <a-button v-has="'record:import'" size="small" type="ghost-success" icon="import" @click="handleImportExcel">导入</a-button>
         <template>
@@ -258,7 +258,7 @@ export default {
     // 添加
     handleAdd() {
       let record = {}
-      this.$refs.trainingRecordMoal.show(record, '添加')
+      this.$refs.trainingRecordMoal.show(record, '新增')
     },
     // 编辑
     handleEdit(record) {

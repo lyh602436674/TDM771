@@ -11,7 +11,7 @@
         @change='refresh'
       />
       <div slot='table-operator' style='border-top: 5px'>
-        <a-button v-has="'testDirection:add'" icon='plus' size='small' type='ghost-primary' @click='handleAdd("")'>添加
+        <a-button v-has="'testDirection:add'" icon='plus' size='small' type='ghost-primary' @click='handleAdd("")'>新增
         </a-button>
       </div>
       <h-vex-table
@@ -203,7 +203,7 @@ export default {
     },
     // 添加
     handleAdd(record) {
-      this.$refs.testDirectionModal.show(record, '添加')
+      this.$refs.testDirectionModal.show(record, '新增')
     },
     // 编辑
     handleEdit(record) {
