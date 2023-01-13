@@ -69,7 +69,7 @@
       </span>
     </h-vex-table>
     <h-file-import ref="HFileImport" @change="refresh(true)" @downloadExcel="downloadChange"/>
-    <alarm-info-modal ref="alarmInfoModal" :equipId="equipId"></alarm-info-modal>
+    <alarm-info-modal ref="alarmInfoModal" :equipId="equipId" @change="refresh(true)"></alarm-info-modal>
   </h-card>
 </template>
 
@@ -147,10 +147,7 @@ export default {
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
-            // return res.data
-            return [
-              {contentWarning: "内容", warningTime: "166001159912", remarks: "我是备注"}
-            ]
+            return res.data
           }
         })
       },
@@ -163,13 +160,13 @@ export default {
       this.selectedRows = []
     },
     handleAdd() {
-      this.$refs.alarmInfoModal.add({}, 'add')
+      this.$refs.alarmInfoModal.show({}, 'add')
     },
     handleEdit(record) {
-      this.$refs.alarmInfoModal.add(record, 'edit')
+      this.$refs.alarmInfoModal.show(record, 'edit')
     },
     handleDetail(record) {
-      this.$refs.alarmInfoModal.detail(record)
+      this.$refs.alarmInfoModal.show(record, 'detail')
     },
     handleDelete(id) {
       postAction(this.url.delete, {id}).then((res) => {

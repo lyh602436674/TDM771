@@ -48,18 +48,24 @@ export default {
       moment,
       visible: false,
       submitLoading: false,
-      model: {
+      model: {},
+      type: 'add',
+      url: {
         add: "/HfResDeviceWarningBusiness/add",
         edit: "/HfResDeviceWarningBusiness/modifyById",
       },
-      type: 'add',
-      url: {},
       formData: [
+        {
+          formType: "input",
+          key: 'id',
+          hidden: true,
+        },
         {
           title: "报警时间",
           formType: "datePick",
           key: 'warningTime',
           showTime: true,
+          format: "YYYY-MM-DD HH:mm:ss",
           validate: {
             rules: [{required: true, message: '请选择报警时间'}],
           },
@@ -86,13 +92,8 @@ export default {
     }
   },
   methods: {
-    add(record, type) {
+    show(record, type) {
       this.type = type
-      this.model = record
-      this.visible = true
-    },
-    detail(record) {
-      this.type = 'detail'
       this.model = Object.assign(this.model, record, {
         warningTime: record.warningTime && +record.warningTime !== 0 ? moment(+record.warningTime).format('YYYY-MM-DD HH:mm:ss') : undefined
       })
@@ -102,18 +103,21 @@ export default {
       this.$refs.alarmInfoForm.validateForm()
     },
     handleSubmit(value) {
+      let params = Object.assign({}, value, {
+        warningTime: moment(value.warningTime).format('x'),
+        equipId: this.equipId
+      })
       let url = ''
-      if (value.id) {
+      if (params.id) {
         url = this.url.edit
       } else {
         url = this.url.add
       }
-      let params = Object.assign({}, value, {
-        warningTime: value.warningTime.valueOf()
-      })
-      postAction(this.url, params).then(res => {
+      postAction(url, params).then(res => {
         if (res.code === 200) {
-          this.$messages.success(this.type === 'add' ? '新增成功' : '修改成功')
+          this.$message.success(this.type === 'add' ? '新增成功' : '修改成功')
+          this.handleCancel()
+          this.$emit('change')
         } else {
           this.$message.warning(res.msg)
         }
