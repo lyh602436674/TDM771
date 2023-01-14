@@ -7,9 +7,11 @@
     :title='title'
     :confirm-loading='confirmLoading'
     @cancel='handleCancel'
-    @submit="handleCancel"
     width='70%'
   >
+    <template slot="footer">
+      <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
+    </template>
     <div class="report-download-history-list">
       <h-card fixed>
         <h-vex-table
@@ -17,7 +19,6 @@
           slot="content"
           :columns="columns"
           :data="loadData"
-          :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect }"
         />
       </h-card>
     </div>
@@ -25,7 +26,7 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 
 export default {
   inject: {
@@ -63,7 +64,7 @@ export default {
           width: 250,
           dataIndex: 'downloadDept',
           customRender: (text, record) => {
-            return text || '--'
+            return text && text !== 'null' ? text : '--'
           }
         },
         {

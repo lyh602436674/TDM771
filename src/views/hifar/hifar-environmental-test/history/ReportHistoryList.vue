@@ -411,9 +411,7 @@ export default {
       this.selectedRows = selectedRows
     },
     downloadHistoryRecord(record) {
-      this.$nextTick(() => {
-        this.$refs.reportDownloadHistoryModal.show(record.reportid)
-      })
+      this.$refs.reportDownloadHistoryModal.show(record.reportid)
     },
     downloadWordReport() {
       if (!this.selectedRowKeys.length) {

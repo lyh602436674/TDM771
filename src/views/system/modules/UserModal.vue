@@ -46,7 +46,7 @@
               {{ moment(userInfo[item.key]).format('YYYY-MM-DD') }}
             </span>
             <span v-else>
-              {{ userInfo[item.key] || '----------------' }}
+              {{ userInfo[item.key] || '--' }}
             </span>
           </a-descriptions-item>
         </h-descriptions>

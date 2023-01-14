@@ -8,7 +8,10 @@
     :visible="visible"
     @cancel="handleCancel"
   >
-    <h-card :bordered="false" >
+    <template slot="footer">
+      <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
+    </template>
+    <h-card :bordered="false">
       <h-vex-table
         slot="content"
         ref="downloadRecordTable"
@@ -25,21 +28,21 @@
 </template>
 
 <script>
-  import moment from 'moment'
-  import {postAction} from '@/api/manage'
-  import mixin from '../mixin'
+import moment from 'moment'
+import {postAction} from '@/api/manage'
+import mixin from '../mixin'
 
-  export default {
-    mixins: [mixin],
-    inject: {
-      getContainer: {
-        default: () => document.body
-      }
-    },
-    components: {},
-    watch: {},
-    data() {
-      return {
+export default {
+  mixins: [mixin],
+  inject: {
+    getContainer: {
+      default: () => document.body
+    }
+  },
+  components: {},
+  watch: {},
+  data() {
+    return {
         moment,
         queryParams: {},
         id: '',
