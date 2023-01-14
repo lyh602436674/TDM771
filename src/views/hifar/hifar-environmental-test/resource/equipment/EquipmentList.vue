@@ -34,6 +34,7 @@
 
 <script>
 import EquipmentTable from './Equipment'
+
 export default {
   provide() {
     return {
@@ -81,4 +82,9 @@ export default {
 }
 </script>
 <style lang='less' scoped>
+.h-custom-layout {
+  /deep/ .ant-tabs-content {
+    height: calc(100% - 59px) !important;
+  }
+}
 </style>

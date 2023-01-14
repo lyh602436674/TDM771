@@ -646,6 +646,7 @@ export default {
       this.collapse = !this.collapse
     },
     handleReload() {
+      this.queryParams = {}
       this.refresh(true)
     },
   },

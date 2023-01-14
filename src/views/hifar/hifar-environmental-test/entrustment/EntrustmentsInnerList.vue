@@ -137,7 +137,7 @@ export default {
         },
         {
           title: '产品代号',
-          key: 'productModel',
+          key: 'productAlias',
           formType: 'input'
         },
         {

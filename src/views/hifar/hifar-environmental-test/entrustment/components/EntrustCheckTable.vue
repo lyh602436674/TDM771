@@ -101,11 +101,6 @@ export default {
           key: "c_linkName_7",
           formType: "input",
         },
-        {
-          title: "联系方式",
-          key: "c_LinkMobile_7",
-          formType: "input",
-        },
       ],
       columns: [
         {
@@ -119,7 +114,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          width: 160,
+          width: 120,
           dataIndex: 'entrustNo',
           scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'

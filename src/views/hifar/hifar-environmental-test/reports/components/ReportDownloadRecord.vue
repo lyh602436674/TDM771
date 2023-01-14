@@ -63,7 +63,9 @@
             align: 'left',
             width: '25%',
             dataIndex: 'deptName',
-            scopedSlots: {customRender: 'status'},
+            customRender: (text, record) => {
+              return text || '--'
+            }
           },
           {
             title: '下载时间',

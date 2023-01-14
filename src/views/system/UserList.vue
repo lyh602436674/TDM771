@@ -468,15 +468,15 @@ export default {
       this.handleExportXls('用户管理', {type: 'template'})
     },
     // 导出
-    async handleExportXls(name) {
+    async handleExportXls(name, model) {
       let data = {
         ...this.queryParam,
+        ...model,
         ids: this.selectedRowKeys.join(','),
       }
       let url = this.url.export
-      let params = data
       let fileName = name + '.xls'
-      await downloadFile(url, fileName, params)
+      await downloadFile(url, fileName, data)
     },
   },
 }

@@ -178,9 +178,10 @@ export default {
       this.selectedRows = selectedRows
     },
     // 导出
-    async handleExportXls(name) {
+    async handleExportXls(name, model) {
       let data = {
         ...this.queryParams,
+        ...model,
         equipId: this.equipId,
         ids: this.selectedRowKeys.join(','),
       }
@@ -195,7 +196,7 @@ export default {
       let {importExcelUrl} = this.url
       let record = {
         equipId: this.equipId,
-        // importCode:'HfResEquipVerifyImport'
+        importCode:'HfResEquipWarningImport'
       }
       this.$refs.HFileImport.show(type, importExcelUrl, record)
     },

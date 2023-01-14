@@ -17,38 +17,33 @@
       @change="refresh"
     />
     <div slot="table-operator" style="border-top: 5px">
-      <vxe-toolbar ref="envEquipmentOperator" custom>
-        <div slot="buttons">
-          <a-button v-has="'device:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd">新增</a-button>
-          <!--          <a-button-->
-          <!--            icon="edit"-->
-          <!--            size="small"-->
-          <!--            type="ghost-primary"-->
-          <!--            @click="handleImportEditExcel">-->
-          <!--            批量修改-->
-          <!--          </a-button>-->
-          <a-button
-            v-has="'device:privice'"
-            icon="download"
-            size="small"
-            type="ghost-warning"
-            @click="handleExportXls('设备信息')">
-            导出
-          </a-button>
-          <a-button v-has="'device:import'" icon="import" size="small" type="ghost-success" @click="handleImportExcel">
-            导入
-          </a-button>
-          <a-button v-has="'device:delete'" icon="delete" size="small" type="danger" @click="batchDel">
-            批量删除
-          </a-button>
-        </div>
-      </vxe-toolbar>
+      <a-button v-has="'device:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd">新增</a-button>
+      <!--          <a-button-->
+      <!--            icon="edit"-->
+      <!--            size="small"-->
+      <!--            type="ghost-primary"-->
+      <!--            @click="handleImportEditExcel">-->
+      <!--            批量修改-->
+      <!--          </a-button>-->
+      <a-button
+        v-has="'device:privice'"
+        icon="download"
+        size="small"
+        type="ghost-warning"
+        @click="handleExportXls('设备信息')">
+        导出
+      </a-button>
+      <a-button v-has="'device:import'" icon="import" size="small" type="ghost-success" @click="handleImportExcel">
+        导入
+      </a-button>
+      <a-button v-has="'device:delete'" icon="delete" size="small" type="danger" @click="batchDel">
+        批量删除
+      </a-button>
     </div>
     <h-vex-table
       ref="diveceInfoTable"
       slot="content"
       :columns="columns"
-      :customConfig="{ storage: { visible: true, resizable: true } }"
       :data="deviceInfoLoadData"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       :rowKey="(record) => record.id"

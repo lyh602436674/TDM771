@@ -416,75 +416,52 @@ export default {
       })
     },
     downloadWordReport() {
-      if (this.selectedRowKeys.length === 0) {
-        this.$message.warning('请先选择数据')
-        return
+      if (!this.selectedRowKeys.length) {
+        return this.$message.warning('请先选择数据')
       }
-      let labNature = null;
-      let reportNoList = []
-      let reportIdList = []
-      for (let i = 0; i < this.selectedRows.length; i++) {
-        reportNoList.push(this.selectedRows[i].reportno)
-        reportIdList.push(this.selectedRows[i].id)
-        if (labNature === null) {
-          labNature = this.selectedRows[i].labnature
-        } else {
-          if (labNature !== this.selectedRows[i].labnature) {
-            this.$message.warning('请选择相同试验性质的数据')
-            return
-          }
-        }
+      if (this.validateSelectedRows('labnature')) {
+        return this.$message.warning('请选择相同试验性质的数据')
       }
-      let zipName = null;
-      if (labNature === '筛选') {
-        zipName = '筛选试验报告.zip'
-      } else {
-        zipName = '环境试验报告.zip'
-      }
+      let zipName = this.selectedRows[0].labnature === '筛选' ? '筛选试验报告.zip' : '环境试验报告.zip';
       let data = {
-        'labNature': labNature,
-        'reportNos': reportNoList.join(','),
-        'reportIds': reportIdList.join(','),
+        'labNature': this.getFieldsByReport('labnature'),
+        'reportNos': this.getFieldsByReport('reportno').toString(),
+        'reportIds': this.getFieldsByReport('id').toString(),
         'zipName': zipName,
         'type': 'word'
       }
       downloadFile(this.url.download, zipName, data)
     },
     downloadPDFReport() {
-      if (this.selectedRowKeys.length === 0) {
+      if (!this.selectedRowKeys.length) {
         this.$message.warning('请先选择数据')
         return
       }
-      let labNature = null;
-      let reportNoList = []
-      let reportIdList = []
-      for (let i = 0; i < this.selectedRows.length; i++) {
-        reportNoList.push(this.selectedRows[i].reportno)
-        reportIdList.push(this.selectedRows[i].id)
-        if (labNature === null) {
-          labNature = this.selectedRows[i].labnature
-        } else {
-          if (labNature !== this.selectedRows[i].labnature) {
-            this.$message.warning('请选择相同试验性质的数据')
-            return
-          }
-        }
+      if (this.validateSelectedRows('labnature')) {
+        return this.$message.warning('请选择相同试验性质的数据')
       }
-      let zipName = null;
-      if (labNature === '筛选') {
-        zipName = '筛选试验报告.zip'
-      } else {
-        zipName = '环境试验报告.zip'
-      }
+      let zipName = this.selectedRows[0].labnature === '筛选' ? '筛选试验报告.zip' : '环境试验报告.zip';
       let data = {
-        'labNature': labNature,
-        'reportNos': reportNoList.join(','),
-        'reportIds': reportIdList.join(','),
+        'labNature': this.getFieldsByReport('labnature'),
+        'reportNos': this.getFieldsByReport('reportno').toString(),
+        'reportIds': this.getFieldsByReport('id').toString(),
         'zipName': zipName,
-        'type': 'pdf'
+        'type': 'word'
       }
       downloadFile(this.url.download, zipName, data)
-    }
+    },
+    validateSelectedRows(field) {
+      // 校验选中的行数据类型是否一样
+      return Array.from(new Set(this.selectedRows.map(item => item[field]))).length > 1;
+    },
+    getFieldsByReport(field) {
+      if (this.selectedRows.length) {
+        return this.selectedRows.map(item => {
+          return item[field]
+        })
+      }
+      return ''
+    },
   }
 }
 </script>
