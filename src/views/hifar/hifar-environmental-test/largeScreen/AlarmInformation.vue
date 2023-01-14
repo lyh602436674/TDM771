@@ -3,14 +3,14 @@
  * @Date: 2022-03-31 11:40:37
  * @LastEditTime: 2022-04-12 14:20:37
  * @LastEditors: 雷宇航
- * @Description: 交接班记录
+ * @Description: 报警信息
  * @FilePath: \tdm200-client\tdm200-client\src\views\hifar\hifar-environmental-test\largeScreen\ShiftRecords.vue
 -->
 <template>
   <div class="shiftRecords">
-    <div class="title">交接班记录</div>
+    <div class="title">报警信息</div>
     <div class="content">
-      <h-auto-scroll :data="shiftData" class="content-wrapper" :class-option="classOption">
+      <h-auto-scroll :class-option="classOption" :data="shiftData" class="content-wrapper">
         <ul class="content-wrapper-item">
           <li v-for="(item, index) in shiftData" :key="index">
             <span>
@@ -28,9 +28,10 @@
 </template>
 
 <script>
-import { getAction } from '@api/manage'
+import {getAction} from '@api/manage'
 import moment from 'moment'
 import HAutoScroll from "@comp/HAutoScroll/HAutoScroll";
+
 export default {
   name: 'ShiftRecords',
   description: '交接班记录页面',
@@ -42,7 +43,7 @@ export default {
         singleHeight: 30,
       },
       url: {
-        list: '/LargeScreenDisplay/changeShiftsRecord',
+        list: '/HfResDeviceWarningBusiness/listPage',
       },
     }
   },
@@ -54,8 +55,8 @@ export default {
           this.shiftData = []
           response.data.forEach((item) => {
             this.shiftData.push({
-              title: item.title,
-              date: moment(+item.handoverTime).format('YYYY-MM-DD'),
+              title: item.contentWarning,
+              date: moment(+item.warningTime).format('YY-MM-DD HH:mm'),
             })
           })
         }
@@ -65,7 +66,7 @@ export default {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 .shiftRecords {
   .title {
     width: 100%;
@@ -100,12 +101,15 @@ export default {
             font-size: 0.083rem /* 32/384 */;
             color: #fff;
           }
+
           span:first-child {
             width: 7%;
           }
+
           span:nth-of-type(2) {
             width: 55%;
           }
+
           span:last-child {
             flex: 1;
             text-align: right;

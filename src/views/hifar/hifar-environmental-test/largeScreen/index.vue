@@ -37,7 +37,7 @@
       </div>
       <div class="main-right">
         <equip-warning-by-intra-day ref="equipWarningByIntraDay"></equip-warning-by-intra-day>
-        <shift-records ref="shiftRecords"></shift-records>
+        <alarm-information ref="alarmInformation"></alarm-information>
         <tasks-completed-by-thirty-days ref="tasksCompletedByThirtyDays"></tasks-completed-by-thirty-days>
       </div>
     </main>
@@ -67,7 +67,7 @@ import ProjectTaskTypeStatistics from '@views/hifar/hifar-environmental-test/lar
 import EquipLocationDistribute from '@views/hifar/hifar-environmental-test/largeScreen/EquipLocationDistribute'
 import EquipDetailList from '@views/hifar/hifar-environmental-test/largeScreen/EquipDetailList'
 import EquipWarningByIntraDay from '@views/hifar/hifar-environmental-test/largeScreen/EquipWarningByIntraDay'
-import ShiftRecords from '@views/hifar/hifar-environmental-test/largeScreen/ShiftRecords'
+import AlarmInformation from '@views/hifar/hifar-environmental-test/largeScreen/AlarmInformation'
 import TasksCompletedByThirtyDays from '@views/hifar/hifar-environmental-test/largeScreen/TasksCompletedByThirtyDays'
 
 export default {
@@ -84,7 +84,7 @@ export default {
   },
   components: {
     TasksCompletedByThirtyDays,
-    ShiftRecords,
+    AlarmInformation,
     EquipWarningByIntraDay,
     EquipDetailList,
     EquipLocationDistribute,
@@ -182,7 +182,7 @@ export default {
       this.$refs.equipLocationDistribute.getEquipStatus()
       this.$refs.projectTaskTypeStatistics.initCharts()
       this.$refs.tasksCompletedByThirtyDays.initCharts()
-      this.$refs.shiftRecords.loadData()
+      this.$refs.alarmInformation.loadData()
       this.$refs.equipDetailList.loadData()
       this.$refs.equipWarningByIntraDay.getRecordsNum()
     },

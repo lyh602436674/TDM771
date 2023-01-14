@@ -34,11 +34,6 @@
       :rowKey="(record) => record.id"
       :scroll="{ x: true }"
     >
-      <span slot="dutyUserName" slot-scope="text,record">
-        <a href="javascript:;" @click="handleDetailCode(record)">
-          {{ record.dutyUserName ? record.dutyUserName : '--' }}
-        </a>
-      </span>
       <span slot="action" slot-scope="text, record">
         <a-icon
           class="primary-text"
