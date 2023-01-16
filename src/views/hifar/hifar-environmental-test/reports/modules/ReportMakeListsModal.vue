@@ -101,9 +101,11 @@ export default {
         }
         postAction('/HfEnvReportBusiness/generateReport', params).then((res) => {
           if (res.code === 200) {
-            this.$message.success(res.msg)
+            this.$message.success(res.msg ? res.msg : '报告添加成功')
             this.$emit('change', true)
             this.handleCancel()
+          }else{
+            this.$message.warning(res.msg)
           }
         }).finally(() => {
           this.submitLoading = false

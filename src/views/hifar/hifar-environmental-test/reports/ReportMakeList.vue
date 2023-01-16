@@ -71,6 +71,7 @@
                 type="check-square"/>
             </a-popconfirm>
             <h-upload-file-b
+              v-else
               v-model="reportFileList"
               :customParams="{id:record.id}"
               accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
