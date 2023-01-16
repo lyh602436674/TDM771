@@ -91,15 +91,13 @@ export default {
           title: '开始时间',
           key: 'realStartTime',
           component: (
-            <h-time-select
-              disabled={true}
-              v-decorator={['realStartTime']}
-            />
+            <h-time-select disabled={true} v-decorator={['realStartTime']}/>
           )
         },
         {
           title: '结束时间',
           key: 'realEndTime',
+          validate: {rules: [{required: true, message: '请选择结束时间'}, {validator: this.validateEndTime}]},
           component: (
             <h-time-select
               v-decorator={
@@ -109,18 +107,22 @@ export default {
                     rules: [{
                       required: true,
                       message: '请选择结束时间'
-                    }, {validator: this.validateEndTime}]
+                    }]
                   }
                 ]
               }
               onChange={(val) => {
-                let startTime = this.$refs.taskForm1.form.getFieldsValue().realStartTime
+                let form1 = this.$refs.taskForm1.form
+                let form3 = this.$refs.taskForm3.form
+                let startTime = form1.getFieldsValue().realStartTime
                 let startTimeVal = startTime ? moment(startTime).valueOf() : 0
                 let endTime = val ? val.valueOf() : 0
                 let res = this.getTimeDiff(startTimeVal, endTime)
-                this.model.realUseTime = res || 0
+                form1.setFieldsValue({realUseTime: res || 0})
                 if (this.radioValue === '1' && res && this.model.unitPrice && this.model.startupCost) {
-                  this.model.totalExpenses = res * this.model.unitPrice + +this.model.startupCost
+                  form3.setFieldsValue({totalExpenses: res * this.model.unitPrice + +this.model.startupCost})
+                } else {
+                  form3.setFieldsValue({totalExpenses: 0})
                 }
               }}
             />
@@ -184,7 +186,6 @@ export default {
       })
       this.type = type
       this.getCalcCost(record)
-      this.visible = true
     },
     dateFormat(time) {
       return time && +time !== 0 ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : undefined
@@ -194,6 +195,11 @@ export default {
         if (res.code === 200) {
           this.model = Object.assign({}, this.model, res.data)
           this.visible = true
+          this.$nextTick(() => {
+            this.calcTotalCost()
+          })
+        } else {
+          this.$message.warning(res.msg)
         }
       }).finally(() => {
         this.loading = false
@@ -201,12 +207,15 @@ export default {
     },
     handleRadioChange(e) {
       this.radioValue = e.target.value
+      this.calcTotalCost()
+    },
+    calcTotalCost() {
       let {unitPrice, startupCost} = this.model
       if (this.radioValue === '1' && unitPrice && startupCost) {
         let realStartTime = this.$refs.taskForm1.form.getFieldsValue().realStartTime
-        let startTime = realStartTime ? realStartTime.valueOf() : 0
+        let startTime = realStartTime ? moment(realStartTime).format('x') : 0
         let realEndTime = this.$refs.taskForm1.form.getFieldsValue().realEndTime
-        let endTime = realEndTime ? realEndTime.valueOf() : 0
+        let endTime = realEndTime ? moment(realEndTime).format('x') : 0
         let diff = this.getTimeDiff(startTime, endTime)
         if (startTime && endTime) {
           this.model.totalExpenses = diff * unitPrice + +startupCost
@@ -219,7 +228,7 @@ export default {
       }
     },
     getTimeDiff(startTime, endTime) {
-      if (!startTime || !endTime) {
+      if (!startTime || !endTime || endTime <= startTime) {
         return 0
       }
       return ((endTime - startTime) / (3600 * 1000)).toFixed(1)
@@ -246,27 +255,36 @@ export default {
       return new Promise((resolve, reject) => {
         let result = {}
         let formArr = [this.$refs.taskForm1, this.$refs.taskForm2, this.$refs.taskForm3]
-        formArr.forEach(item => {
-          item.form.validateFieldsAndScroll((err, value) => {
+        let errMap = null
+        for (let i = 0; i < formArr.length; i++) {
+          let item = formArr[i].form
+          item.validateFieldsAndScroll((err, value) => {
             if (!err) {
               result = Object.assign({}, result, value)
+            } else {
+              errMap = err
             }
           })
-        })
-        resolve(result)
+          if (errMap) return
+        }
+        if (errMap) {
+          resolve(result)
+        } else {
+          reject(errMap)
+        }
       })
     },
     handleSubmit() {
-      this.loading = true
       this.validateForm().then(res => {
+        this.loading = true
         let params = {
           ...this.model,
           ...res,
         }
-        params.approachTime = params.approachTime.valueOf()
-        params.departureTime = params.departureTime.valueOf()
-        params.realStartTime = params.realStartTime.valueOf()
-        params.realEndTime = params.realEndTime.valueOf()
+        params.approachTime = params.approachTime ? moment(params.approachTime).format('x') : ''
+        params.departureTime = params.departureTime ? moment(params.departureTime).format('x') : ''
+        params.realStartTime = params.realStartTime ? moment(params.realStartTime).format('x') : ''
+        params.realEndTime = params.realEndTime ? moment(params.realEndTime).format('x') : ''
         postAction(this.url.finish, params).then((res) => {
           if (res.code === 200) {
             this.handleCancel()
@@ -277,6 +295,8 @@ export default {
         }).finally(() => {
           this.loading = false
         })
+      }).catch((err) => {
+        console.log(err)
       })
     },
   },

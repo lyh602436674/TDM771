@@ -1812,7 +1812,7 @@ export default {
           model.realEndTime = model.realEndTime && model.realEndTime !== '0' ? moment(+model.realEndTime) : null
           model.approachTime = model.approachTime && model.approachTime !== '0' ? moment(+model.approachTime) : null
           model.departureTime = model.departureTime && model.departureTime !== '0' ? moment(+model.departureTime) : null
-          this.model = model
+          this.model = cloneDeep(model)
         }
       })
     },
