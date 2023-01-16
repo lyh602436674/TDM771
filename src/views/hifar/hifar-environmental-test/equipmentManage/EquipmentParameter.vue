@@ -234,12 +234,12 @@
                     </a-tooltip>
                   </template>
                   <template slot="actions" slot-scope="text, record">
-              <span v-if="record.isDefault == 2">
-                <a-tooltip title="设置成默认">
-                  <h-icon class="primary-text" type="icon-moren" @click="handleSetTestDefault(record, 3)"/>
-                </a-tooltip>
-                <a-divider type="vertical"/>
-              </span>
+                    <span v-if="record.isDefault == 2">
+                      <a-tooltip title="设置成默认">
+                        <h-icon class="primary-text" type="icon-moren" @click="handleSetTestDefault(record, 3)"/>
+                      </a-tooltip>
+                      <a-divider type="vertical"/>
+                    </span>
                     <a-tooltip title="删除">
                       <h-icon class="danger-text" type="icon-shanchu"
                               @click="handleTemplateDelete(record.id, 3)"/>
@@ -253,7 +253,7 @@
                 <h-search
                   slot="search-form"
                   v-model="testParams"
-                  :data="testSearchBar"
+                  :data="pollingSearchBar"
                   :showToggleButton="false"
                   size="small"
                   @change="handleSearch('pollingTable')"
@@ -268,14 +268,14 @@
                 <h-vex-table
                   ref="pollingTable"
                   slot="content"
-                  :columns="testColumns"
+                  :columns="pollingColumns"
                   :data="(params) => loadTemplateData(params,4)"
                   :rowKey="(record) => record.id"
                   :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
                   :scroll="{ x: true }"
                   fixed
                 >
-                  <template slot="checkName" slot-scope="text, record">
+                  <template slot="name" slot-scope="text, record">
                     {{ text }}
                     <a-tooltip v-if="record.isDefault == 1" title="默认模板">
                       <h-icon class="primary-text" type="icon-moren"/>
@@ -364,6 +364,13 @@ export default {
           formType: 'input'
         }
       ],
+      pollingSearchBar: [
+        {
+          title: '模板名称',
+          key: 'c_name_7',
+          formType: 'input'
+        }
+      ],
       activeTab: 1,
       queryParams: {},
       equipmentTree: [],
@@ -412,6 +419,35 @@ export default {
           dataIndex: 'checkName',
           scopedSlots: {
             customRender: 'checkName'
+          }
+        },
+        {
+          title: '创建人',
+          dataIndex: 'createUserName'
+        },
+        {
+          title: '创建时间',
+          dataIndex: 'createTime',
+          customRender: (text) => {
+            return text && text != 0 ? moment(parseFloat(text)).format('YYYY-MM-DD HH:mm') : '--'
+          }
+        },
+        {
+          title: '操作',
+          width: 80,
+          fixed: 'right',
+          align: 'center',
+          scopedSlots: {
+            customRender: 'actions'
+          }
+        }
+      ],
+      pollingColumns: [
+        {
+          title: '模板名称',
+          dataIndex: 'name',
+          scopedSlots: {
+            customRender: 'name'
           }
         },
         {
