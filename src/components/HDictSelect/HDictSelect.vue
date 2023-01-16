@@ -123,11 +123,12 @@ export default {
       }
       listByDictCode(this.dictCode, null).then((res) => {
         if (res.code === 200) {
+          let result = res.data.filter(item => item.status === 1)
           let dictVal = this.$ls.get(UI_CACHE_DB_DICT_DATA)
           let dictCode = this.dictCode
-          this.dictOptions = res.data
+          this.dictOptions = result
           this.$ls.remove(UI_CACHE_DB_DICT_DATA)
-          this.$ls.set(UI_CACHE_DB_DICT_DATA, {...dictVal, [dictCode]: res.data}, 7 * 24 * 60 * 60 * 1000)
+          this.$ls.set(UI_CACHE_DB_DICT_DATA, {...dictVal, [dictCode]: result}, 7 * 24 * 60 * 60 * 1000)
           // this.filterMaxSecretLevel()
         }
       })
