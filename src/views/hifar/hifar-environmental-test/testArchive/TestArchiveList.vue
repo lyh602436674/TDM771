@@ -40,23 +40,39 @@
           <a v-if="text" @click="handleAbnormalDetail(record)">{{ text }}</a>
           <span v-else>0</span>
         </template>
+        <template #endCnt="text, record">
+          <a v-if="text" @click="handleAbnormalDetail(record)">{{ text }}</a>
+          <span v-else>0</span>
+        </template>
         <template #taskstate="text, record">
           <a-tag :color="taskStatusColor[text - 1]">{{ taskStatus[text] }}</a-tag>
         </template>
         <template #archiveRecord="text,record">
           <a-space style="cursor: pointer">
-            <a-icon class="primary-text" title="查看" type="eye"
-                    @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
-            <a-icon class="primary-text" title="在线编辑" type="edit"
-                    @click="webOfficeEdit(record.docxPathXh)"/>
+            <a-icon
+              class="primary-text"
+              title="查看"
+              type="eye"
+              @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
+            <a-icon
+              class="primary-text"
+              title="在线编辑"
+              type="edit"
+              @click="webOfficeEdit(record.docxPathXh)"/>
           </a-space>
         </template>
         <template #embodiment="text,record">
           <a-space style="cursor: pointer">
-            <a-icon class="primary-text" title="查看" type="eye"
-                    @click="handleReviewPdf('实施方案',record.pdfPathSs)"/>
-            <a-icon class="primary-text" title="在线编辑" type="edit"
-                    @click="webOfficeEdit(record.docxPathSs)"/>
+            <a-icon
+              class="primary-text"
+              title="查看"
+              type="eye"
+              @click="handleReviewPdf('实施方案',record.pdfPathSs)"/>
+            <a-icon
+              class="primary-text"
+              title="在线编辑"
+              type="edit"
+              @click="webOfficeEdit(record.docxPathSs)"/>
           </a-space>
         </template>
       </h-vex-table>
@@ -70,18 +86,18 @@
 
 <script>
 import moment from 'moment'
-import {postAction} from '@api/manage'
+import { postAction } from '@api/manage'
 import mixin from '@views/hifar/hifar-environmental-test/mixin.js'
-import AbnormalDetailModal from "@views/hifar/hifar-environmental-test/task/modules/AbnormalDetailModal";
-import {ACCESS_TOKEN} from "@/store/mutation-types";
-import * as WebCtrl from "@/plugins/webOffice";
-import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
-import TestArchiveDetail from "@views/hifar/hifar-environmental-test/testArchive/TestArchiveDetail";
-import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal";
+import AbnormalDetailModal from '@views/hifar/hifar-environmental-test/task/modules/AbnormalDetailModal';
+import { ACCESS_TOKEN } from '@/store/mutation-types';
+import * as WebCtrl from '@/plugins/webOffice';
+import TestEntrustReviewPdf from '@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf';
+import TestArchiveDetail from '@views/hifar/hifar-environmental-test/testArchive/TestArchiveDetail';
+import TestTaskBaseInfoModal from '@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal';
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
-  name: "TestArchiveList",
+  name: 'TestArchiveList',
   provide() {
     return {
       getContainer: () => this.$refs.testArchive
@@ -98,9 +114,9 @@ export default {
     return {
       moment,
       url: {
-        list: '/HfEnvHistoryTestBusiness/listPage',
+        list: '/HfEnvHistoryTestBusiness/listPage'
       },
-      taskStatus: {1: '未发布', 2: '执行中', 3: '已完成', 4: '强制终止'},
+      taskStatus: { 1: '未发布', 2: '执行中', 3: '已完成', 4: '强制终止' },
       taskStatusColor: ['lightgrey', 'green', 'blue', 'red'],
       queryParams: {},
       selectedRowKeys: [],
@@ -207,28 +223,28 @@ export default {
           align: 'left',
           width: 140,
           dataIndex: 'taskno',
-          scopedSlots: {customRender: 'taskno'}
+          scopedSlots: { customRender: 'taskno' }
         },
         {
           title: '任务状态',
           align: 'center',
           dataIndex: 'taskstate',
           minWidth: 100,
-          scopedSlots: {customRender: 'taskstate'}
+          scopedSlots: { customRender: 'taskstate' }
         },
         {
           title: '异常数量',
           align: 'center',
           minWidth: 80,
           dataIndex: 'exceptioncnt',
-          scopedSlots: {customRender: 'exceptioncnt'}
+          scopedSlots: { customRender: 'exceptioncnt' }
         },
         {
           title: '终止记录',
           align: 'center',
           minWidth: 80,
-          dataIndex: 'forceEndNum',
-          scopedSlots: {customRender: 'forceEndNum'}
+          dataIndex: 'endCnt',
+          scopedSlots: { customRender: 'endCnt' }
         },
         {
           title: '设备内部名称',
@@ -351,24 +367,24 @@ export default {
           title: '备注信息',
           align: 'center',
           dataIndex: 'remarks',
-          minWidth: 150,
+          minWidth: 150
         },
         {
           title: '巡检记录',
           align: 'center',
           width: 100,
           dataIndex: 'archiveRecord',
-          scopedSlots: {customRender: 'archiveRecord'}
+          scopedSlots: { customRender: 'archiveRecord' }
         },
         {
           title: '实施方案',
           align: 'center',
           width: 100,
           dataIndex: 'embodiment',
-          scopedSlots: {customRender: 'embodiment'}
-        },
+          scopedSlots: { customRender: 'embodiment' }
+        }
       ],
-      reviewPdfTitle: "",
+      reviewPdfTitle: '',
       loadData: (params) => {
         let data = {
           ...params,
@@ -379,14 +395,14 @@ export default {
             return res.data
           }
         })
-      },
+      }
     }
   },
   methods: {
     handleAbnormalDetail(record) {
       record = {
         ...record,
-        testNames: record.projectName,
+        testNames: record.projectName
       }
       this.$refs.abnormalDetailModal.show(record)
     },
@@ -418,7 +434,7 @@ export default {
     onSelect(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
-    },
+    }
   }
 }
 </script>
