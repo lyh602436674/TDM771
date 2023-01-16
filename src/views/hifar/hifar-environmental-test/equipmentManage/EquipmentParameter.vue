@@ -1024,7 +1024,10 @@ export default {
     },
     handleTabsChange(v) {
       this.activeTab = v
-      // this.show(v, this.id)
+      this.testParams = {}
+      this.testBeforeParams = {}
+      this.testMidParams = {}
+      this.testAfterParams = {}
       this.$nextTick(() => {
         this.refresh(true)
       })
