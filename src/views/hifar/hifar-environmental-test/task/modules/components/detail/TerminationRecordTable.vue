@@ -20,9 +20,7 @@
     <div class="termination-table" style="margin-top: 10px">
       <h-vex-table slot="content" ref="terminationRecordTable" :columns="columns" :data="loadData" style="width: 100%">
         <template slot="actions" slot-scope="text, record">
-          <a-tooltip title="查看">
-            <a-icon class="primary-text" type="eye" @click="handleShowDetail(record)" />
-          </a-tooltip>
+            <a-icon class="primary-text" title="查看" type="eye" @click="handleShowDetail(record)"/>
         </template>
       </h-vex-table>
     </div>
@@ -31,7 +29,7 @@
 </template>
 
 <script>
-import { postAction } from '@api/manage'
+import {postAction} from '@api/manage'
 import moment from 'moment'
 import TaskForceEndDetail from '../../TaskForceEndDetail'
 
@@ -43,8 +41,13 @@ export default {
   props: {
     records: {
       type: Object,
-      default: () => {},
+      default: () => {
+      },
     },
+    isReadOnly: {
+      type: Boolean,
+      default: false
+    }
   },
   watch: {
     records: {
@@ -55,17 +58,9 @@ export default {
       },
     },
   },
-  data() {
-    return {
-      queryParams: {},
-      searchForm: [
-        {
-          title: '记录人',
-          key: 'c_recordUserName_7',
-          formType: 'input',
-        },
-      ],
-      columns: [
+  computed: {
+    columns() {
+      return [
         {
           title: '记录人',
           dataIndex: 'recordUserName',
@@ -90,11 +85,25 @@ export default {
           align: 'center',
           fixed: 'right',
           width: 80,
+          hidden: !this.isReadOnly,
           scopedSlots: {
             customRender: 'actions',
           },
         },
+      ]
+    }
+  },
+  data() {
+    return {
+      queryParams: {},
+      searchForm: [
+        {
+          title: '记录人',
+          key: 'c_recordUserName_7',
+          formType: 'input',
+        },
       ],
+
       loadData: (params) => {
         let data = {
           ...params,

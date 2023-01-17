@@ -8,28 +8,29 @@
 -->
 <template>
   <h-modal
-    :title="title"
-    destroyOnClose
-    inner
-    fullScreen
     :getContainer="getContainer"
+    :title="title"
     :visible="visible"
+    destroyOnClose
+    fullScreen
+    inner
     @cancel="handleCancel"
   >
-    <div class="footer" slot="footer">
-      <a-button @click="handleCancel" type="ghost-danger"> 关闭 </a-button>
+    <div slot="footer" class="footer">
+      <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     </div>
-    <abnormal-record-table
-      ref="AbnormalRecordTable"
-      :records="records"
-      :isReadOnly="isReadOnly"
+    <termination-record-table
       style="padding-top: 8px;"
-    ></abnormal-record-table>
+      ref="TerminationRecordTable"
+      :isReadOnly="isReadOnly"
+      :records="records"
+    />
   </h-modal>
 </template>
 
 <script>
-import AbnormalRecordTable from './components/detail/AbnormalRecordTable'
+import TerminationRecordTable
+  from "@views/hifar/hifar-environmental-test/task/modules/components/detail/TerminationRecordTable";
 
 export default {
   inject: {
@@ -38,7 +39,7 @@ export default {
     },
   },
   components: {
-    AbnormalRecordTable,
+    TerminationRecordTable,
   },
   data() {
     return {
@@ -56,7 +57,7 @@ export default {
   methods: {
     show(record) {
       this.visible = true
-      this.title = (record.testNames ? record.testNames : '') + (record.testCode ? '(' + record.testCode + ')' : '') + '-异常记录'
+      this.title = (record.testNames ? record.testNames : '') + (record.testCode ? '(' + record.testCode + ')' : '') + '-终止记录'
       this.records = record
     },
     handleCancel() {

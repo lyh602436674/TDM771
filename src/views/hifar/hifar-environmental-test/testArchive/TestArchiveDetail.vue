@@ -8,7 +8,7 @@
     inner
     @cancel="handleCancel"
   >
-    <div style="height: 100%">
+    <div style="height: 100%;padding:10px 20px">
       <!-- 基本信息 -->
       <h-desc
         id="basicInfo"
@@ -17,6 +17,7 @@
         lableWidth="110px"
         title="基本信息">
         <h-desc-item label="任务编号">{{ model.equipName + '-' + model.equipModel || '--' }}</h-desc-item>
+        <h-desc-item label="记录编号">{{ model.recordNo || '--' }}</h-desc-item>
         <h-desc-item label="设备速率">{{ model.testRate || '--' }}</h-desc-item>
         <h-desc-item label="负责人">{{ model.chargeUserName || '--' }}</h-desc-item>
         <h-desc-item label="入场时间">{{
@@ -69,7 +70,6 @@
         lableWidth="110px"
         title="测试设备">
         <a-table
-          slot='content'
           :columns="equipColumns"
           :dataSource="testEquipInfo"
           :pagination="false"
@@ -82,62 +82,16 @@
 
       <!-- 试前检查 -->
       <h-desc
-        v-if="testCheckType === 'before'"
-        id="testBeforeCheck"
+        :id="checkTypeMap[testCheckType].id"
         :bordered="false"
         class="mg-t-20"
         lableWidth="110px"
-        title="试前检查">
+        :title="checkTypeMap[testCheckType].title"
+      >
         <h-vex-table
           ref="beforeCheckInfo"
           :columns="columns"
-          :data="beforeCheckInfo"
-          :pagination="false"
-          bordered
-          style="width: 100%; height: 200px"
-        >
-          <span slot="itemRes" slot-scope="text, record">
-            <h-icon v-if="record.itemRes === '2'" class="success-text" type="icon-wancheng1"/>
-            <h-icon v-else-if="record.itemRes === '3'" class="danger-text" type="icon-chacha"/>
-            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
-          </span>
-        </h-vex-table>
-      </h-desc>
-      <!-- 试中检查 -->
-      <h-desc
-        v-if="testCheckType === 'middle'"
-        id="testInCheck"
-        :bordered="false"
-        class="mg-t-20"
-        lableWidth="110px"
-        title="试中检查">
-        <h-vex-table
-          ref="inCheckInfo"
-          :columns="columns"
-          :data="inCheckInfo"
-          :pagination="false"
-          bordered
-          style="width: 100%; height: 200px"
-        >
-          <span slot="itemRes" slot-scope="text, record">
-            <h-icon v-if="record.itemRes === '2'" class="success-text" type="icon-wancheng1"/>
-            <h-icon v-else-if="record.itemRes === '3'" class="danger-text" type="icon-chacha"/>
-            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
-          </span>
-        </h-vex-table>
-      </h-desc>
-      <!-- 试后检查 -->
-      <h-desc
-        v-if="testCheckType === 'after'"
-        id="testAfterCheck"
-        :bordered="false"
-        class="mg-t-20"
-        lableWidth="110px"
-        title="试后检查">
-        <h-vex-table
-          ref="afterCheckInfo"
-          :columns="columns"
-          :data="afterCheckInfo"
+          :data="checkTableInfo"
           :pagination="false"
           bordered
           style="width: 100%; height: 200px"
@@ -184,6 +138,39 @@ export default {
       },
     },
   },
+  computed: {
+    layerColumns() {
+      return [
+        {
+          title: "基本信息",
+          id: "basicInfo"
+        },
+        {
+          title: "试件信息",
+          id: "piece"
+        },
+        {
+          title: "测试设备",
+          id: "testEquip"
+        },
+        {
+          title: "试前检查",
+          id: "testBeforeCheck",
+          hidden: this.testCheckType === 'before'
+        },
+        {
+          title: "试中检查",
+          id: "testInCheck",
+          hidden: this.testCheckType === 'middle'
+        },
+        {
+          title: "试后检查",
+          id: "testAfterCheck",
+          hidden: this.testCheckType === 'after'
+        },
+      ]
+    },
+  },
   data() {
     return {
       moment,
@@ -209,43 +196,20 @@ export default {
         },
         {title: '设备型号', dataIndex: 'equipModel'},
       ],
-      layerColumns: [
-        {
-          title: "基本信息",
-          id: "basicInfo"
-        },
-        {
-          title: "试件信息",
-          id: "piece"
-        },
-        {
-          title: "测试设备",
-          id: "testEquip"
-        },
-        {
-          title: "试前检查",
-          id: "testBeforeCheck"
-        },
-        {
-          title: "试中检查",
-          id: "testInCheck"
-        },
-        {
-          title: "试后检查",
-          id: "testAfterCheck"
-        },
-      ],
+      checkTypeMap: {
+        before: {title: "试前检查", id: "testBeforeCheck", portKey: "beforeCheckInfo"},
+        middle: {title: "试中检查", id: "testInCheck", portKey: "inCheckInfo"},
+        after: {title: "试后检查", id: "testAfterCheck", portKey: "afterCheckInfo"},
+      },
       activeTab: 0,
       checkId: '',
       testCheckType: '',
       url: {
         before: "/HfEnvHistoryTestBusiness/beforeDetail",
         middle: "/HfEnvHistoryTestBusiness/inDetail",
+        after: "/HfEnvHistoryTestBusiness/afterDetail",
         detail: '/HfEnvTaskTestBusiness/queryById',
-        CheckInfo: '/HfEnvTaskTestBusiness/queryTestCheckItem',
-        // 试验数据
-        attachList: '/MinioBusiness/listByRefId',
-        delete: '/MinioBusiness/logicRemoveById'
+        checkInfo: '/HfEnvTaskTestBusiness/queryTestCheckItem',
       },
       model: {},
       testPieceInfo: [],
@@ -305,27 +269,10 @@ export default {
           }
         }
       ],
-      // 试前检查
-      beforeCheckInfo: () => {
-        return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
+      checkTableInfo: () => {
+        return postAction(this.url.checkInfo, {id: this.checkId}).then((res) => {
           if (res.code === 200) {
-            return res.data.beforeCheckInfo
-          }
-        })
-      },
-      // 试中检查
-      inCheckInfo: () => {
-        return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
-          if (res.code === 200) {
-            return res.data.inCheckInfo
-          }
-        })
-      },
-      // 试后检查
-      afterCheckInfo: () => {
-        return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
-          if (res.code === 200) {
-            return res.data.afterCheckInfo
+            return res.data[this.checkTypeMap[this.testCheckType].portKey]
           }
         })
       },
@@ -335,14 +282,14 @@ export default {
     show(record, type) {
       this.visible = true
       this.testCheckType = type
+      this.checkId = record.taskid
       this.loadDetailData(record.taskid)
     },
     handleCancel() {
       this.visible = false
     },
     loadDetailData(id) {
-      this.checkId = id
-      postAction(this.url[this.testCheckType], {id: id}).then((res) => {
+      postAction(this.url[this.testCheckType], {id}).then((res) => {
         if (res.code === 200) {
           const {data} = res
           this.testEquipInfo = data.testEquipInfo

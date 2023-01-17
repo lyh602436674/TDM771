@@ -171,7 +171,7 @@
                     <template #archiveRecord="text,record">
                       <a-space style="cursor: pointer">
                         <a-icon class="primary-text" title="查看" type="eye"
-                                @click="handleReviewPdf('巡检记录',record.pdfPathXh)"></a-icon>
+                                @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
                         <a-icon class="primary-text" title="在线编辑" type="edit"
                                 @click="webOfficeEdit(record.docxPathXh)"></a-icon>
                         <a :href="record.docxPathXh" title="下载word">

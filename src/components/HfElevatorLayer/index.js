@@ -25,7 +25,7 @@ export default {
       deep: true,
       handler(val) {
         if (val && val.length) {
-          this.columns = val
+          this.columns = val.filter(item => item.hidden !== false)
           if (this.defaultActive) {
             this.columns.map(item => item.active = item.id === this.defaultActive)
           } else {

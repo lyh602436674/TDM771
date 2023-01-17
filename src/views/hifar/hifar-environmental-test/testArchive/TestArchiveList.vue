@@ -7,21 +7,21 @@
         <a-button
           size="small"
           type="ghost-primary"
-          @click="handleTestBefore">
+          @click="handleTestOperator('before')">
           <h-icon type="icon-jianchaqianzhunbei"/>
           试前准备
         </a-button>
         <a-button
           size="small"
           type="ghost-primary"
-          @click="handleTestMiddle">
+          @click="handleTestOperator('middle')">
           <h-icon type="icon-jianchazhong"/>
           试中操作
         </a-button>
         <a-button
           size="small"
           type="ghost-primary"
-          @click="handleTestAfter">
+          @click="handleTestOperator('after')">
           <h-icon type="icon-shiyanhouguanli"/>
           试后处理
         </a-button>
@@ -31,7 +31,7 @@
         slot="content"
         :columns="columns"
         :data="loadData"
-        :rowSelection="{ selectedRowKeys, onSelect: onSelect }"
+        :rowSelection="{ selectedRowKeys, onSelect }"
       >
         <template #taskno="text, record">
           <a @click="handleDetail(record)">{{ text }}</a>
@@ -41,7 +41,7 @@
           <span v-else>0</span>
         </template>
         <template #endCnt="text, record">
-          <a v-if="text" @click="handleAbnormalDetail(record)">{{ text }}</a>
+          <a v-if="text" @click="handleTerminationDetail(record)">{{ text }}</a>
           <span v-else>0</span>
         </template>
         <template #taskstate="text, record">
@@ -59,6 +59,9 @@
               title="在线编辑"
               type="edit"
               @click="webOfficeEdit(record.docxPathXh)"/>
+            <a :href="record.docxPathXh" title="下载word">
+              <a-icon class="primary-text" type="download"/>
+            </a>
           </a-space>
         </template>
         <template #embodiment="text,record">
@@ -73,12 +76,16 @@
               title="在线编辑"
               type="edit"
               @click="webOfficeEdit(record.docxPathSs)"/>
+            <a :href="record.docxPathSs" title="下载word">
+              <a-icon class="primary-text" type="download"/>
+            </a>
           </a-space>
         </template>
       </h-vex-table>
     </h-card>
     <test-archive-detail ref="testArchiveDetail"></test-archive-detail>
     <abnormal-detail-modal ref="abnormalDetailModal" isReadOnly/>
+    <termination-table-modal ref="terminationTableModal" isReadOnly/>
     <test-entrust-review-pdf ref="reviewPdf" :title="reviewPdfTitle"/>
     <test-task-base-info-modal ref="testTaskBaseInfoModal" :showExceptionAndEnd="true"/>
   </div>
@@ -86,14 +93,15 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@api/manage'
+import {postAction} from '@api/manage'
 import mixin from '@views/hifar/hifar-environmental-test/mixin.js'
 import AbnormalDetailModal from '@views/hifar/hifar-environmental-test/task/modules/AbnormalDetailModal';
-import { ACCESS_TOKEN } from '@/store/mutation-types';
+import {ACCESS_TOKEN} from '@/store/mutation-types';
 import * as WebCtrl from '@/plugins/webOffice';
 import TestEntrustReviewPdf from '@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf';
 import TestArchiveDetail from '@views/hifar/hifar-environmental-test/testArchive/TestArchiveDetail';
 import TestTaskBaseInfoModal from '@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal';
+import TerminationTableModal from "@views/hifar/hifar-environmental-test/task/modules/TerminationTableModal";
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -104,6 +112,7 @@ export default {
     }
   },
   components: {
+    TerminationTableModal,
     TestArchiveDetail,
     AbnormalDetailModal,
     TestEntrustReviewPdf,
@@ -399,24 +408,23 @@ export default {
     }
   },
   methods: {
+    handleTerminationDetail(record) {
+      let params = Object.assign({}, record, {id: record.taskid, testNames: record.projectName})
+      this.$refs.terminationTableModal.show(params)
+    },
     handleAbnormalDetail(record) {
-      record = {
-        ...record,
-        testNames: record.projectName
-      }
-      this.$refs.abnormalDetailModal.show(record)
+      let params = Object.assign({}, record, {id: record.taskid, testNames: record.projectName})
+      this.$refs.abnormalDetailModal.show(params)
     },
     handleDetail(record) {
-      this.$refs.testTaskBaseInfoModal.show(record, '1', '20px')
+      this.$refs.testTaskBaseInfoModal.show(record, '1', '20px', 'taskid')
     },
-    handleTestBefore() {
-      this.$refs.testArchiveDetail.show(this.selectedRows[0], 'before')
+    handleValidate() {
+      return this.selectedRows.length === 1
     },
-    handleTestMiddle() {
-      this.$refs.testArchiveDetail.show(this.selectedRows[0], 'middle')
-    },
-    handleTestAfter() {
-      this.$refs.testArchiveDetail.show(this.selectedRows[0], 'after')
+    handleTestOperator(type) {
+      if (!this.handleValidate()) return this.$message.warning('请选择一条试验')
+      this.$refs.testArchiveDetail.show(this.selectedRows[0], type)
     },
     handleReviewPdf(title, path) {
       if (!path) return

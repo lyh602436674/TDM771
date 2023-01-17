@@ -67,10 +67,13 @@ export default {
   },
 
   methods: {
-    show(record, type, top) {
+    /**
+     * @field 规定拿record中的哪一个字段，默认是id
+     * */
+    show(record, type, top, field) {
       this.visible = true
       this.viewDetailType = type
-      this.testId = record.id
+      this.testId = field ? record[field] : record.id
       this.top = top
       this.testCode = record.testCode
     },
