@@ -93,7 +93,7 @@
               :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect }"
             >
               <template slot="status" slot-scope="text, record">
-                <a-badge v-if="record.status == 1" color="geekblue" text="已发布"/>
+                <a-badge v-if="record.status == 1" color="geekblue" text="未分配"/>
                 <a-badge v-else-if="record.status == 10" color="green" text="已分配"/>
                 <a-badge v-else-if="record.status == 15" color="cyan" text="执行中"/>
                 <a-badge v-else-if="record.status == 20" color="volcano" text="已终止"/>
@@ -129,8 +129,11 @@
                 <a-divider type="vertical"/>
 
                 <a-tooltip title="分配">
-                  <a-icon v-has="'TaskPlan:allocation'" class="primary-text" type="control"
-                          @click="() => showTaskArrangement(record)"/>
+                  <a-icon
+                    v-has="'TaskPlan:allocation'"
+                    class="primary-text"
+                    type="control"
+                    @click="() => showTaskArrangement(record)"/>
                 </a-tooltip>
 
                 <a-divider type="vertical"/>
@@ -149,13 +152,16 @@
     <task-detail ref="taskDetail"/>
     <work-center-detail-modal ref="WorkCenterDetailModal"/>
     <test-info-list-modal ref="TestInfoListModal" @change="refhandleBack"/>
-    <task-force-end-modal ref="taskForceEnd" :forceEndUrl="url.forceEnd" :testDetailUrl="url.testDetail"
-                          @change="handleRefresh"/>
+    <task-force-end-modal
+      ref="taskForceEnd"
+      :forceEndUrl="url.forceEnd"
+      :testDetailUrl="url.testDetail"
+      @change="handleRefresh"/>
   </div>
 </template>
 
 <script>
-import {postAction} from '@/api/manage'
+import { postAction } from '@/api/manage'
 import moment from 'moment'
 import HPie from '@/components/HChart/HPie'
 import TaskArrangement from './modules/TaskArrangementModal.vue'
@@ -163,41 +169,41 @@ import TaskDetail from './modules/TaskDetail'
 import TestInfoListModal from './modules/TestInfoListModal'
 import WorkCenterDetailModal from '../components/WorkCenterDetailModal.vue'
 import TaskForceEndModal from './modules/TaskForceEndModal.vue'
-import {find} from 'lodash'
+import { find } from 'lodash'
 
 export default {
   provide() {
     return {
-      getContainer: () => this.$refs.taskPlan,
+      getContainer: () => this.$refs.taskPlan
     }
   },
-  components: {HPie, TaskArrangement, TaskDetail, WorkCenterDetailModal, TestInfoListModal, TaskForceEndModal,},
+  components: { HPie, TaskArrangement, TaskDetail, WorkCenterDetailModal, TestInfoListModal, TaskForceEndModal },
   data() {
     return {
       collapse: true,
       queryParams: {
-        type: 'month',
+        type: 'month'
       },
       searchForm: [
         {
           title: '运行单号',
           key: 'c_entrustCode_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '委托单号',
           key: 'c_entrustNo_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '送试单位',
           key: 'c_custName_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '任务编号',
           key: 'c_taskCode_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '任务状态',
@@ -207,45 +213,45 @@ export default {
             {
               title: '已发布',
               key: '1',
-              value: '1',
+              value: '1'
             },
             {
               title: '已分配',
               key: '10',
-              value: '10',
+              value: '10'
             },
             {
               title: '执行中',
               key: '15',
-              value: '15',
+              value: '15'
             },
             {
               title: '已终止',
               key: '20',
-              value: '20',
+              value: '20'
             },
             {
               title: '已完成',
               key: '30',
-              value: '30',
-            },
-          ],
+              value: '30'
+            }
+          ]
         },
         {
           title: '产品名称',
           key: 'productName',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '产品代号',
           key: 'productAlias',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '试验项目',
           key: 'c_unitName_7',
-          formType: 'input',
-        },
+          formType: 'input'
+        }
       ],
       columns: [
         {
@@ -253,34 +259,34 @@ export default {
           dataIndex: 'entrustCode',
           minWidth: 140,
           scopedSlots: {
-            customRender: 'entrustCode',
-          },
+            customRender: 'entrustCode'
+          }
         },
         {
           title: '委托单号',
           dataIndex: 'entrustNo',
           minWidth: 160,
           scopedSlots: {
-            customRender: 'entrustNo',
-          },
+            customRender: 'entrustNo'
+          }
         },
         {
           title: '送试单位',
           dataIndex: 'custName',
-          minWidth: 120,
+          minWidth: 120
         },
         {
           title: '任务状态',
           dataIndex: 'status',
           scopedSlots: {
-            customRender: 'status',
+            customRender: 'status'
           },
-          minWidth: 100,
+          minWidth: 100
         },
         {
           title: '试验项目',
           dataIndex: 'unitName',
-          minWidth: 100,
+          minWidth: 100
         },
         {
           title: '试验',
@@ -288,52 +294,52 @@ export default {
           minWidth: 100,
           align: 'center',
           scopedSlots: {
-            customRender: 'testNum',
-          },
+            customRender: 'testNum'
+          }
         },
         {
-          title: "产品名称",
-          align: "left",
-          dataIndex: "productNames",
+          title: '产品名称',
+          align: 'left',
+          dataIndex: 'productNames',
           minWidth: 100,
           customRender: (text, record) => {
-            return text || "--";
-          },
+            return text || '--';
+          }
         },
         {
-          title: "产品代号",
-          align: "left",
-          dataIndex: "productAliass",
+          title: '产品代号',
+          align: 'left',
+          dataIndex: 'productAliass',
           minWidth: 100,
           customRender: (text, record) => {
-            return text || "--";
-          },
+            return text || '--';
+          }
         },
         {
-          title: "产品编号",
-          align: "left",
-          dataIndex: "pieceNo",
+          title: '产品编号',
+          align: 'left',
+          dataIndex: 'pieceNo',
           minWidth: 100,
           customRender: (text, record) => {
-            return text || "--";
-          },
+            return text || '--';
+          }
         },
         {
           title: '数量',
           dataIndex: 'productNums',
           minWidth: 100,
-          align: 'center',
+          align: 'center'
         },
         {
           title: '异常数量',
           minWidth: 100,
           dataIndex: 'exceptionNum',
-          align: 'center',
+          align: 'center'
         },
         {
           title: '试验标准',
           dataIndex: 'standardName',
-          minWidth: 150,
+          minWidth: 150
         },
         {
           title: '委托日期',
@@ -341,7 +347,7 @@ export default {
           minWidth: 160,
           customRender: (text) => {
             return text && text != 0 ? moment(parseFloat(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          },
+          }
         },
         {
           title: '委托单创建日期',
@@ -349,7 +355,7 @@ export default {
           minWidth: 160,
           customRender: (text) => {
             return text && text != 0 ? moment(parseFloat(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          },
+          }
         },
         {
           title: '操作',
@@ -358,15 +364,15 @@ export default {
           fixed: 'right',
           width: 120,
           scopedSlots: {
-            customRender: 'actions',
-          },
-        },
+            customRender: 'actions'
+          }
+        }
       ],
       url: {
         taskStatistics: '/HfEnvTaskBusiness/taskStatistics',
         list: '/HfEnvTaskBusiness/listPage',
         forceEnd: '/HfEnvTaskTestBusiness/forceEnd',
-        testDetail: '/HfEnvTaskTestBusiness/queryById',
+        testDetail: '/HfEnvTaskTestBusiness/queryById'
       },
       selectedRowKeys: [],
       selectedRows: [],
@@ -382,7 +388,7 @@ export default {
             onclick: () => {
               this.chartType = 'bar'
               this.getTaskStatistics()
-            },
+            }
           },
           myTool1: {
             title: '饼状图',
@@ -390,15 +396,15 @@ export default {
             onclick: () => {
               this.chartType = 'pie'
               this.getTaskStatistics()
-            },
-          },
-        },
+            }
+          }
+        }
       },
       taskTimeCount: [],
       calendarDate: moment(),
       calendarMode: 'month',
       loading: false,
-      chartType: 'bar',
+      chartType: 'bar'
     }
   },
   created() {
@@ -409,7 +415,7 @@ export default {
       if (this.loading) return
       this.loading = true
       let params = {
-        ...this.queryParams,
+        ...this.queryParams
       }
       switch (this.queryParams.type) {
         case 'year':
@@ -421,13 +427,13 @@ export default {
       }
       postAction(this.url.taskStatistics, params).then((res) => {
           if (res.code === 200) {
-            let {waitDistributeTaskPieCount, taskTimeCount} = res.data
+            let { waitDistributeTaskPieCount, taskTimeCount } = res.data
             if (this.chartType === 'pie') {
               let pieData = waitDistributeTaskPieCount.map((item) => {
                 return {
                   value: parseInt(item.taskNum),
                   name: item.unitName,
-                  unitId: item.unitId,
+                  unitId: item.unitId
                 }
               })
               this.options = Object.assign({}, this.localOption, {
@@ -446,15 +452,15 @@ export default {
                         baseline: 'middle',
                         fontFamily: '微软雅黑',
                         fontSize: 12,
-                        fontWeight: 'bolder',
-                      },
-                    },
-                  },
-                ],
+                        fontWeight: 'bolder'
+                      }
+                    }
+                  }
+                ]
               })
             } else if (this.chartType === 'bar') {
-              let barData = [],
-                xAxisData = []
+              let barData = [];
+                let xAxisData = []
               waitDistributeTaskPieCount.map((item) => {
                 barData.push(item.taskNum)
                 xAxisData.push(item.unitName)
@@ -465,15 +471,15 @@ export default {
                   type: 'category',
                   axisLabel: {
                     interval: 0,
-                    rotate: xAxisData.length > 5 ? 30 : 0,
+                    rotate: xAxisData.length > 5 ? 30 : 0
                   },
-                  data: xAxisData,
+                  data: xAxisData
                 },
                 tooltip: {
                   trigger: 'axis',
                   axisPointer: {
-                    type: 'shadow',
-                  },
+                    type: 'shadow'
+                  }
                 },
                 yAxis: {},
                 series: [
@@ -482,7 +488,7 @@ export default {
                     data: barData,
                     label: {
                       show: true,
-                      distance:10,
+                      distance: 10,
                       position: 'outside',
                       formatter: '数量{c}',
                       textStyle: {
@@ -490,11 +496,11 @@ export default {
                         baseline: 'middle',
                         fontFamily: '微软雅黑',
                         fontSize: 12,
-                        fontWeight: 'bolder',
-                      },
-                    },
-                  },
-                ],
+                        fontWeight: 'bolder'
+                      }
+                    }
+                  }
+                ]
               })
             }
             this.taskTimeCount = taskTimeCount
@@ -520,7 +526,7 @@ export default {
             distributeNum: taskCount.distributeNum || 0,
             waitOverNum: taskCount.waitOverNum || 0,
             waitDistributeNum: taskCount.waitDistributeNum || 0,
-            waitDistributeOverNum: taskCount.waitDistributeOverNum || 0,
+            waitDistributeOverNum: taskCount.waitDistributeOverNum || 0
           }
         } else {
           return {
@@ -529,7 +535,7 @@ export default {
             distributeNum: taskCount.distributeNum || 0,
             waitOverNum: taskCount.waitOverNum || 0,
             waitDistributeNum: taskCount.waitDistributeNum || 0,
-            waitDistributeOverNum: taskCount.waitDistributeOverNum || 0,
+            waitDistributeOverNum: taskCount.waitDistributeOverNum || 0
           }
         }
       }
@@ -551,7 +557,7 @@ export default {
             distributeNum: taskCount.distributeNum || 0,
             waitOverNum: taskCount.waitOverNum || 0,
             waitDistributeNum: taskCount.waitDistributeNum || 0,
-            waitDistributeOverNum: taskCount.waitDistributeOverNum,
+            waitDistributeOverNum: taskCount.waitDistributeOverNum
           }
         } else {
           return {
@@ -560,7 +566,7 @@ export default {
             distributeNum: taskCount.distributeNum || 0,
             waitOverNum: taskCount.waitOverNum || 0,
             waitDistributeNum: taskCount.waitDistributeNum || 0,
-            waitDistributeOverNum: taskCount.waitDistributeOverNum || 0,
+            waitDistributeOverNum: taskCount.waitDistributeOverNum || 0
           }
         }
       }
@@ -581,9 +587,9 @@ export default {
       this.selectedRowKeys = []
       this.selectedRows = []
       let data = {
-        c_status_2: "30", // 过滤掉已完成的
+        c_status_2: '30', // 过滤掉已完成的
         ...params,
-        ...this.queryParams,
+        ...this.queryParams
       }
       switch (data.type) {
         case 'year':
@@ -648,8 +654,8 @@ export default {
     handleReload() {
       this.queryParams = {}
       this.refresh(true)
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang="less">
@@ -767,4 +773,3 @@ export default {
 }
 
 </style>
-
