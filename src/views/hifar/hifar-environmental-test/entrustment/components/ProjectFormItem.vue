@@ -354,7 +354,6 @@ export default {
       selectBeforeItemIndex: 0,
       dragFlag: true,
       filterProjectByType: false,
-      disabledShowUser: false,
       disabledPowerUpTime: false,
     }
   },
@@ -447,12 +446,13 @@ export default {
           },
           change: (val, opt) => {
             let formName = 'projectInfoForm' + this.index
+            let isShowUserInReport = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'isShowUserInReport')[0]
             if (opt.title === '无') {
               this.$refs[formName].form.setFieldsValue({isShowUserInReport: '2'})
-              // this.disabledShowUser = true
+              isShowUserInReport.disabled = true
             } else {
               this.$refs[formName].form.setFieldsValue({isShowUserInReport: '1'})
-              // this.disabledShowUser = false
+              isShowUserInReport.disabled = false
             }
           }
         },
@@ -465,7 +465,6 @@ export default {
             {title: '是', value: '1', key: '1'},
             {title: '否', value: '2', key: '2'}
           ],
-          disabled: this.disabledShowUser,
           defaultValue: '1',
           validate: {
             rules: [{required: true, message: '请选择报告中是否显示最终用户'}]
@@ -486,9 +485,12 @@ export default {
           },
           change: (val) => {
             let formName = 'projectInfoForm' + this.index
-            // this.disabledPowerUpTime = val === '2'
+            let powerUpTime = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'powerUpTime')[0]
             if (val === '2') {
+              powerUpTime.disabled = true
               this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
+            } else {
+              powerUpTime.disabled = false
             }
           },
         },
