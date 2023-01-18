@@ -486,7 +486,7 @@ export default {
           },
           change: (val) => {
             let formName = 'projectInfoForm' + this.index
-            this.disabledPowerUpTime = val === '2'
+            // this.disabledPowerUpTime = val === '2'
             if (val === '2') {
               this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
             }
