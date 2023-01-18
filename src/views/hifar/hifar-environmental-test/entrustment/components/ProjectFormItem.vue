@@ -446,12 +446,13 @@ export default {
             rules: [{required: true, message: '请选择最终用户'}],
           },
           change: (val, opt) => {
+            let formName = 'projectInfoForm' + this.index
             if (opt.title === '无') {
-              this.model.isShowUserInReport = '2'
-              this.disabledShowUser = true
+              this.$refs[formName].form.setFieldsValue({isShowUserInReport: '2'})
+              // this.disabledShowUser = true
             } else {
-              this.model.isShowUserInReport = '1'
-              this.disabledShowUser = false
+              this.$refs[formName].form.setFieldsValue({isShowUserInReport: '1'})
+              // this.disabledShowUser = false
             }
           }
         },
@@ -484,9 +485,10 @@ export default {
             rules: [{required: true, message: '请选择是否加电'}]
           },
           change: (val) => {
+            let formName = 'projectInfoForm' + this.index
             this.disabledPowerUpTime = val === '2'
             if (val === '2') {
-              this.model.powerUpTime = '4'
+              this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
             }
           },
         },
