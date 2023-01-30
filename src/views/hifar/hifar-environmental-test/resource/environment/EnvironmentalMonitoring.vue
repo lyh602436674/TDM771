@@ -125,34 +125,34 @@ export default {
             return text || '--'
           },
         },
+        // {
+        //   title: '最高温度(℃)',
+        //   align: 'left',
+        //   dataIndex: 'temperatureMax',
+        //   customRender: (text, record) => {
+        //     return text || '--'
+        //   },
+        // },
         {
-          title: '最高温度(℃)',
+          title: '温度(℃)',
           align: 'left',
-          dataIndex: 'temperatureMax',
+          dataIndex: 'temperatureAvg',
           customRender: (text, record) => {
             return text || '--'
           },
         },
+        // {
+        //   title: '最高湿度(％)',
+        //   align: 'left',
+        //   dataIndex: 'humidityMax',
+        //   customRender: (text, record) => {
+        //     return text || '--'
+        //   },
+        // },
         {
-          title: '最低温度(℃)',
+          title: '湿度(％)',
           align: 'left',
-          dataIndex: 'temperatureMin',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '最高湿度(％)',
-          align: 'left',
-          dataIndex: 'humidityMax',
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
-          title: '最低湿度(％)',
-          align: 'left',
-          dataIndex: 'humidityMin',
+          dataIndex: 'humidityAvg',
           customRender: (text, record) => {
             return text || '--'
           },
