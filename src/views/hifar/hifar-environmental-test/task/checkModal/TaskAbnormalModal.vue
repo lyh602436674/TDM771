@@ -359,7 +359,6 @@ export default {
       this.visible = false
       this.model = {}
       this.terFormData = []
-      this.$emit('change',true)
     },
     // 试验详情
     getTestDetail() {

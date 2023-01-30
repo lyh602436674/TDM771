@@ -27,7 +27,7 @@
       <!--          </a-button>-->
       <a-button
         v-has="'device:privice'"
-        icon="download"
+        icon="export"
         size="small"
         type="ghost-warning"
         @click="handleExportXls('设备信息')">

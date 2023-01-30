@@ -20,7 +20,7 @@
       />
       <div slot="table-operator" style="border-top: 5px">
         <a-button v-has="'consumable:add'" size="small" @click="handleAdd" type="ghost-primary" icon="plus">新增</a-button>
-        <a-button v-has="'consumable:privice'" size="small" type="ghost-warning" icon="download" @click="handleExportXls('耗材管理')">导出</a-button>
+        <a-button v-has="'consumable:privice'" size="small" type="ghost-warning" icon="export" @click="handleExportXls('耗材管理')">导出</a-button>
         <a-button v-has="'consumable:import'" size="small" type="ghost-success" icon="import" @click="handleImportExcel">导入</a-button>
         <a-button v-has="'consumable:delete'" type="danger" size="small" icon="delete" @click="batchDel()">批量删除</a-button>
       </div>

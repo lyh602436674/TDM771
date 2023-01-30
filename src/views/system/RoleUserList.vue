@@ -32,7 +32,7 @@
           >
             <a-button size="small" type="ghost-success" icon="import">导入</a-button>
           </a-upload> -->
-          <a-button v-has="'role:derive'" size="small" type="ghost-warning" icon="download" @click="handleExportXls('角色管理')">
+          <a-button v-has="'role:derive'" size="small" type="ghost-warning" icon="export" @click="handleExportXls('角色管理')">
             导出
           </a-button>
         </div>

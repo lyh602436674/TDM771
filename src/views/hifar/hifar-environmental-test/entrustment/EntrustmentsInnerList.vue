@@ -13,7 +13,7 @@
         <!--        </a-button>-->
         <a-button v-has="'entrustment:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 新增
         </a-button>
-        <a-button icon="download" size="small" type="ghost-warning" @click="handleExportXls('委托单信息')">
+        <a-button icon="export" size="small" type="ghost-warning" @click="handleExportXls('委托单信息')">
           导出
         </a-button>
         <template v-if="selectedRowKeys.length>0">

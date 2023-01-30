@@ -20,7 +20,7 @@
       />
       <div slot="table-operator" style="border-top: 5px">
         <a-button v-has="'record:add'" size="small" @click="handleAdd" type="ghost-primary" icon="plus">新增</a-button>
-        <a-button v-has="'record:privice'" size="small" type="ghost-warning" icon="download" @click="handleExportXls('培训记录')">导出</a-button>
+        <a-button v-has="'record:privice'" size="small" type="ghost-warning" icon="export" @click="handleExportXls('培训记录')">导出</a-button>
         <a-button v-has="'record:import'" size="small" type="ghost-success" icon="import" @click="handleImportExcel">导入</a-button>
         <template>
           <a-button v-has="'record:delete'" type="danger" size="small" icon="delete" @click="batchDel">

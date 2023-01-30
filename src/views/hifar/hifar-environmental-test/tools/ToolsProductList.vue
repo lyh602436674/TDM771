@@ -20,7 +20,7 @@
       <vxe-toolbar ref='envEquipmentOperator' custom>
         <div slot='buttons'>
           <a-button v-has="'device:add'" icon='plus' size='small' type='ghost-primary' @click='handleAdd'>添加</a-button>
-          <a-button v-has="'device:privice'" icon='download' size='small' type='ghost-warning'
+          <a-button v-has="'device:privice'" icon='export' size='small' type='ghost-warning'
                     @click="handleExportXls('工装信息')">
             导出
           </a-button>

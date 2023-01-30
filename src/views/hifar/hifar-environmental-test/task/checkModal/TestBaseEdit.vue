@@ -21,7 +21,7 @@
       </a-button>
       <a-button :loading="submitLoading" type="primary" @click="handleSave">保存</a-button>
     </div>
-    <div style="width:100%;display:flex;">
+    <div style="width:100%;display:flex;padding: 5px;">
       <div style="flex:1">
         <h-desc id="product" title="试件信息">
           <h-card :bordered="false" style="width: 100%">
@@ -301,7 +301,9 @@
             @delete="handleDeleteImg"></h-upload-file>
         </h-desc>
       </div>
-      <div style="width: 60px;"></div>
+      <div style="width: 60px;">
+        <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
+      </div>
     </div>
     <!-- 试件信息 -->
     <handle-select-modal
@@ -342,7 +344,6 @@
     <postion-modal ref="PostionModal" :title="'添加参试人员'" @change="selectPersonHandle" />
     <check-ensure-modal ref="checkEnsureModal"></check-ensure-modal>
     <product-file-modal @close="getTestDetail(testId)" ref="productFileModal"></product-file-modal>
-    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </h-modal>
 </template>
 

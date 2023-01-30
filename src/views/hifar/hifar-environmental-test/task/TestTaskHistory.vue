@@ -11,12 +11,25 @@
     <h-card fixed title="试验查询">
       <h-search v-model="queryParams" slot="search-form" :data="searchForm" @change="refresh"/>
       <div slot="table-operator" style="border-top: 5px">
-        <a-button size="small" type="ghost-warning" icon="download" @click="handleExportXls('试验查询信息')">
+        <a-button
+          v-for="(item, index) in operatorButtons"
+          :key="item.key"
+          :size="item.size"
+          :type="item.type"
+          :v-has="item.has"
+          @click="() => item.click(item, index)"
+        >
+          <a-icon v-if="item.icon.indexOf('icon-') === -1" :type="item.icon"/>
+          <h-icon v-else :type="item.icon"/>
+          {{ item.title }}
+        </a-button>
+        <a-button icon="export" size="small" type="ghost-warning" @click="handleExportXls('试验查询信息')">
           导出
         </a-button>
       </div>
-      <h-vex-table ref="taskHistoryTable" slot="content" :columns="columns" :data="loadData" :rowSelection='{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }'>
-        <a slot="testCode" slot-scope="text, record" @click="() => handleShowDetail(record)">
+      <h-vex-table ref="taskHistoryTable" slot="content" :columns="columns" :data="loadData"
+                   :rowSelection='{ selectedRowKeys, onSelect }'>
+        <a slot="testCode" slot-scope="text, record" @click="handleShowDetail(record)">
           {{ record.testCode || '--' }}
         </a>
         <template slot="status" slot-scope="text">
@@ -97,6 +110,109 @@ export default {
       records: {},
       selectedRowKeys: [],
       selectedRows: [],
+      operatorButtons: [
+        {
+          title: '试前检查',
+          key: '0',
+          size: 'small',
+          type: 'primary',
+          has: 'ArrangeMent:boforTest',
+          icon: 'icon-jianchaqianzhunbei',
+          click: (item, index) => {
+            if (!this.selectedRows.length) {
+              this.$message.error('请至少选择一项')
+            } else {
+              this.$refs.testCheckModal.show(this.selectedRows[0], '试前', 'before')
+            }
+          },
+        },
+        {
+          title: '试中检查',
+          key: '1',
+          size: 'small',
+          type: 'primary',
+          has: 'ArrangeMent:intest',
+          icon: 'icon-jianchazhong',
+          click: (item, index) => {
+            if (!this.selectedRows.length) {
+              this.$message.error('请至少选择一项')
+            } else if (this.selectedRows.length > 1) {
+              this.$message.error('请至少选择一项')
+            } else {
+              this.$refs.testCheckModal.show(this.selectedRows[0], '试中', 'testMiddle')
+            }
+          },
+        },
+        {
+          title: '试后检查',
+          key: '2',
+          size: 'small',
+          type: 'primary',
+          has: 'ArrangeMent:afterTest',
+          icon: 'icon-shiyanhouguanli',
+          click: (item, index) => {
+            if (!this.selectedRows.length) {
+              this.$message.error('请至少选择一项')
+            } else if (this.selectedRows.length > 1) {
+              this.$message.error('请至少选择一项')
+            } else {
+              this.$refs.testCheckModal.show(this.selectedRows[0], '试后', 'after')
+            }
+          },
+        },
+        {
+          title: '试验结果',
+          key: '3',
+          size: 'small',
+          has: 'ArrangeMent:edit',
+          icon: 'icon-tianxie',
+          type: 'primary',
+          click: (item, index) => {
+            if (this.selectedRows.length === 0) {
+              this.$message.error('请至少选择一项')
+            } else if (this.selectedRows.length > 1) {
+              this.$message.error('请至少选择一项')
+            } else {
+              this.records = this.selectedRows[0]
+              this.$refs.TestBaseEdit.show(this.selectedRows[0])
+            }
+          },
+        },
+        {
+          title: '试验数据',
+          key: '4',
+          size: 'small',
+          has: 'ArrangeMent:dataTest',
+          icon: 'icon-shiyanshuju',
+          type: 'primary',
+          click: (item, index) => {
+            if (!this.selectedRows.length) {
+              this.$message.error('请至少选择一项')
+            } else if (this.selectedRows.length > 1) {
+              this.$message.error('请至少选择一项')
+            } else {
+              this.$refs.testDataAddModal.show(this.selectedRows[0])
+            }
+          },
+        },
+        {
+          title: '异常记录',
+          key: '5',
+          size: 'small',
+          has: 'ArrangeMent:errRecord',
+          icon: 'icon-gantanhao',
+          type: 'primary',
+          click: (item, index) => {
+            if (!this.selectedRows.length) {
+              this.$message.error('请至少选择一项')
+            } else if (this.selectedRows.length > 1) {
+              this.$message.error('请至少选择一项')
+            } else {
+              this.$refs.taskAbnormalModal.show('error', this.selectedRows[0])
+            }
+          },
+        },
+      ],
       searchForm: [
         {
           title: '运行单号',
@@ -381,7 +497,7 @@ export default {
 }
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .task-history {
   height: 100%;
   width: 100%;

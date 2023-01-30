@@ -32,7 +32,7 @@
           <a-button type="default" icon="reload" size="small" style="margin: 0 5px 0 5px" @click="handleReset">
             重置
           </a-button>
-          <a-button size="small" type="ghost-warning" icon="download" @click="handleExportXls()">
+          <a-button size="small" type="ghost-warning" icon="export" @click="handleExportXls()">
             导出
           </a-button>
         </a-col>

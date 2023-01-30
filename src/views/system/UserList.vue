@@ -11,7 +11,7 @@
     <!-- 操作按钮 -->
     <div slot="table-operator">
       <a-button v-has="'userlist:add'" type="ghost-primary" size="small" @click="handleAdd" icon="plus">添加用户</a-button>
-      <a-button v-has="'userlist:derive'" size="small" type="ghost-success" icon="download" @click="handleExportXls('用户管理')">导出</a-button>
+      <a-button v-has="'userlist:derive'" size="small" type="ghost-success" icon="export" @click="handleExportXls('用户管理')">导出</a-button>
       <a-button type="ghost-success" size="small" icon="import" @click="handleImportExcel">导入</a-button>
       <!-- <a-button type="success" size="small" @click="handleSyncUser">
         <h-icon type="icon-tongbu"></h-icon>
