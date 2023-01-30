@@ -145,6 +145,14 @@ export default {
           scopedSlots: { customRender: 'placeName' },
         },
         {
+          title: '场地编号 ',
+          align: 'left',
+          dataIndex: 'placeCode',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
           title: '创建人 ',
           align: 'left',
           dataIndex: 'createUserName',
