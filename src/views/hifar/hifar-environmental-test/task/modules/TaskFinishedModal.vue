@@ -122,7 +122,7 @@ export default {
                 if (this.radioValue === '1' && res && this.model.unitPrice && this.model.startupCost) {
                   form3.setFieldsValue({totalExpenses: res * this.model.unitPrice + +this.model.startupCost})
                 } else {
-                  form3.setFieldsValue({totalExpenses: 0})
+                  form3.setFieldsValue({totalExpenses: undefined})
                 }
               }}
             />
@@ -145,7 +145,7 @@ export default {
           style: {width: '100%',},
           change: (val) => {
             if (this.radioValue === '2' && this.model.unitPrice && this.model.startupCost) {
-              this.model.totalExpenses = val * this.model.unitPrice + +this.model.startupCost
+              this.$refs.taskForm3.form.setFieldsValue({totalExpenses: (val * this.model.unitPrice + +this.model.startupCost) || undefined})
             }
           }
         },
@@ -159,9 +159,15 @@ export default {
         {
           title: '试验费用',
           key: 'totalExpenses',
-          formType: 'input',
-          readOnly: true,
-          placeholder: '根据计费方式自动计算'
+          component: (
+            <a-input-search
+              v-decorator={['totalExpenses', {initialValue: undefined}]}
+              placeholder={"根据计费方式自动计算"} onSearch={this.calcTotalCost}>
+              <a-button type="primary" icon={'redo'} slot="enterButton">
+                重置
+              </a-button>
+            </a-input-search>
+          ),
         },
         {
           title: '备注',
@@ -211,19 +217,22 @@ export default {
     },
     calcTotalCost() {
       let {unitPrice, startupCost} = this.model
+      let form1 = this.$refs.taskForm1.form
+      let form2 = this.$refs.taskForm2.form
+      let form3 = this.$refs.taskForm3.form
       if (this.radioValue === '1' && unitPrice && startupCost) {
-        let realStartTime = this.$refs.taskForm1.form.getFieldsValue().realStartTime
+        let realStartTime = form1.getFieldsValue().realStartTime
         let startTime = realStartTime ? moment(realStartTime).format('x') : 0
-        let realEndTime = this.$refs.taskForm1.form.getFieldsValue().realEndTime
+        let realEndTime = form1.getFieldsValue().realEndTime
         let endTime = realEndTime ? moment(realEndTime).format('x') : 0
         let diff = this.getTimeDiff(startTime, endTime)
         if (startTime && endTime) {
-          this.model.totalExpenses = diff * unitPrice + +startupCost
+          form3.setFieldsValue({totalExpenses: (diff * unitPrice + +startupCost) || undefined})
         }
       } else if (this.radioValue === '2' && unitPrice && startupCost) {
-        let testSecondary = this.$refs.taskForm2.form.getFieldsValue().testSecondary
-        if (testSecondary) {
-          this.model.totalExpenses = testSecondary * unitPrice + +startupCost
+        let testSecondary = form2.getFieldsValue().testSecondary
+        if (testSecondary >= 0) {
+          form3.setFieldsValue({totalExpenses: (testSecondary * unitPrice + +startupCost) || undefined})
         }
       }
     },
