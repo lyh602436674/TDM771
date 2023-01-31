@@ -325,7 +325,7 @@ export default {
                 this.form.setFieldsValue(data)
                 this.triggleChange()
               }
-            }} disabled={com.disabled} vDecorator={[com.key, com.validate || {}]}/>
+            }} placeholder={com.placeholder || '请选择' + com.title} disabled={com.disabled} vDecorator={[com.key, com.validate || {}]}/>
           )
         case 'radio':
           return (

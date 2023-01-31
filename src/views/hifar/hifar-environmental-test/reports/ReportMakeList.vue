@@ -123,8 +123,8 @@
             <template v-if="record.status >= 3">
               <span v-has="'report:download'">
                 <a-icon
-                  :type="record.docxLoading ? 'loading' : 'file-pdf'"
-                  title="下载docx"
+                  :type="record.docxLoading ? 'loading' : 'file-word'"
+                  title="下载word"
                   class="primary-text cursor-pointer"
                   @click="handleDownload(record, 'docx')"
                 />
@@ -424,12 +424,12 @@ export default {
     handleUploadCallback(file, record, isUpload) {
       postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, isUpload}).then(res => {
         if (res.code === 200) {
-          this.refresh()
           this.$message.success(isUpload ? '上传成功' : '替换成功')
         } else {
           this.$message.error(isUpload ? '上传失败' : '替换失败')
         }
       }).finally(() => {
+        this.refresh()
         this.reportFileList = []
       })
     },

@@ -111,12 +111,6 @@ export default {
           key: 'c_equipName_7',
         },
         {
-          title: '设备用途',
-          key: 'c_equipUse_1',
-          formType: 'dict',
-          dictCode: 'hf_res_equip_use',
-        },
-        {
           title: '设备类型',
           formType: 'dict',
           key: 'c_equipTypeCode_1',
@@ -152,6 +146,16 @@ export default {
           ellipsis: true,
           width: 120,
           dataIndex: 'equipName',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '内部名称 ',
+          align: 'left',
+          ellipsis: true,
+          width: 120,
+          dataIndex: 'innerName',
           customRender: (text, record) => {
             return text || '--'
           },

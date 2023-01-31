@@ -185,14 +185,10 @@ export default {
       this.$emit('change', this.selectedRowKeys, this.selectedRows, this.pieceNoArr)
     },
     handleSubmit() {
-      let {selectedRowKeys, selectedRows} = this
-      let selectedProductName = selectedRows.map((item) => item.productName + item.productAlias)
-      if (Array.from(new Set(selectedProductName)).length > 1) {
-        return this.$message.warning('只能选择相同的产品名称和代号')
-      }
+      let {selectedRowKeys} = this
       if (selectedRowKeys.length) {
-        this.handleCancel()
         this.triggerChange()
+        this.handleCancel()
       } else {
         this.$message.error('请选择产品')
       }

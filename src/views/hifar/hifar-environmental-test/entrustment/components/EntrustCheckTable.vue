@@ -82,13 +82,13 @@ export default {
       unitId: "",
       searchBar: [
         {
-          title: "运行单号",
-          key: "c_entrustCode_7",
+          title: "委托单号",
+          key: "c_entrustNo_7",
           formType: "input",
         },
         {
-          title: "委托单号",
-          key: "c_entrustNo_7",
+          title: "运行单号",
+          key: "c_entrustCode_7",
           formType: "input",
         },
         {

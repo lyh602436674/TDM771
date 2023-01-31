@@ -50,6 +50,15 @@
             <a :href="record.docxPathXh" title="下载word">
               <a-icon class="primary-text" type="download"/>
             </a>
+            <h-upload-file-b
+              v-model="swapFileList"
+              :customParams="{id:record.id}"
+              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              isPublic
+              @beforeUpload="$refs.taskHistoryTable.localLoading = true"
+              @change="file => handleUploadCallback(file, record,'1')">
+              <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+            </h-upload-file-b>
           </a-space>
         </template>
         <template #embodiment="text,record">
@@ -61,6 +70,15 @@
             <a :href="record.docxPathSs" title="下载word">
               <a-icon class="primary-text" type="download"/>
             </a>
+            <h-upload-file-b
+              v-model="swapFileList"
+              :customParams="{id:record.id}"
+              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              isPublic
+              @beforeUpload="$refs.taskHistoryTable.localLoading = true"
+              @change="file => handleUploadCallback(file, record,'2')">
+              <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+            </h-upload-file-b>
           </a-space>
         </template>
         <template slot="actions" slot-scope="text, record">
@@ -108,6 +126,7 @@ export default {
       reviewPdfTitle: '',
       queryParams: {},
       records: {},
+      swapFileList: [],
       selectedRowKeys: [],
       selectedRows: [],
       operatorButtons: [
@@ -381,14 +400,14 @@ export default {
         {
           title: '巡检记录',
           align: 'center',
-          width: 80,
+          width: 110,
           dataIndex: 'archiveRecord',
           scopedSlots: {customRender: 'archiveRecord'}
         },
         {
           title: '实施方案',
           align: 'center',
-          width: 80,
+          width: 110,
           dataIndex: 'embodiment',
           scopedSlots: {customRender: 'embodiment'}
         },
@@ -452,11 +471,27 @@ export default {
       },
       url: {
         list: '/HfEnvTaskTestBusiness/listPageForEquipAll',
-        export: '/HfEnvTaskTestBusiness/listAllForExport'
+        export: '/HfEnvTaskTestBusiness/listAllForExport',
+        authUploads: "/HfResEquipBusiness/authUploads"
       },
     }
   },
   methods: {
+    /**
+     * @type 1:巡检 2:实施
+     * */
+    handleUploadCallback(file, record, type) {
+      postAction(this.url.authUploads, {id: record.id, fileId: file[0].fileId, type}).then(res => {
+        if (res.code === 200) {
+          this.$message.success('替换成功')
+        } else {
+          this.$message.error('替换失败')
+        }
+      }).finally(() => {
+        this.refresh()
+        this.swapFileList = []
+      })
+    },
     handleReviewPdf(title, path) {
       this.reviewPdfTitle = title
       this.$refs.reviewPdf.show(path)

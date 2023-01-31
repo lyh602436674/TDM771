@@ -30,7 +30,8 @@
 
 <script>
 import moment from 'moment'
-import { downloadFile, postAction, getFileAccessHttpUrl } from '@/api/manage'
+import {downloadFile, getAction, getFileAccessHttpUrl, postAction} from '@/api/manage'
+
 export default {
   inject: {
     getContainer: {
@@ -49,8 +50,15 @@ export default {
         add: '/HfResPlaceBusiness/add',
         edit: '/HfResPlaceBusiness/modifyById',
         detailById: '/HfResPlaceBusiness/queryById',
+        getPlace: "/HfResPlaceBusiness/listSysDictEquipAddress"
       },
-      formData: [
+      placeList: [],
+
+    }
+  },
+  computed: {
+    formData() {
+      return [
         {
           key: 'id',
           formType: 'input',
@@ -59,9 +67,19 @@ export default {
         {
           title: '场地名称',
           key: 'placeName',
+          formType: "dict",
+          dictCode: "hf_res_equip_address",
+          span: 2,
+          change: (val, opt) => {
+            this.$refs.VenueManageForm.form.setFieldsValue({placeFullName: opt.title})
+          }
+        },
+        {
+          title: '场地别名',
+          key: 'placeFullName',
           formType: 'input',
           validate: {
-            rules: [{ required: true, message: '请输入场地名称' }],
+            rules: [{required: true, message: '请输入场地别名'}],
           },
           span: 2,
         },
@@ -71,8 +89,15 @@ export default {
           formType: 'textarea',
           span: 2,
         },
-      ],
+      ]
     }
+  },
+  created() {
+    getAction(this.url.getPlace).then(res => {
+      if (res.code === 200) {
+        this.placeList = res.data.sort((a, b) => a.rowSort - b.rowSort)
+      }
+    })
   },
   methods: {
     show(record, title) {

@@ -28,7 +28,6 @@
         :showSeq="false"
         :data='loadData'
         :rowKey='(record) => record.id'
-        :scroll='{ x: true }'
         :treeConfig="treeConfig"
       >
         <template #categoryName="text, record">
@@ -83,13 +82,25 @@ export default {
       getContainer: () => this.$refs.productCategory
     }
   },
+  computed: {
+    // treeConfig() {
+    //   return {
+    //     children: "children",
+    //     // expandAll:true,
+    //     expandRowKeys: this.defaultExpandKeys
+    //   }
+    // },
+  },
   data() {
     return {
       moment,
       queryParams: {},
       treeConfig: {
-        children: "children"
+        children: "children",
+        expandAll:true,
+        // expandRowKeys: ['ae39ece96393470baae1d0124210cb68']
       },
+      defaultExpandKeys: ['ae39ece96393470baae1d0124210cb68'],
       selectedRowKeys: [],
       selectedRows: [],
       url: {
@@ -102,6 +113,7 @@ export default {
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
+            this.defaultExpandKeys = [res.data[0].id]
             return res.data
           }
         })

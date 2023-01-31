@@ -445,14 +445,18 @@ export default {
             rules: [{required: true, message: '请选择最终用户'}],
           },
           change: (val, opt) => {
-            let formName = 'projectInfoForm' + this.index
-            let isShowUserInReport = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'isShowUserInReport')[0]
-            if (opt.title === '无') {
-              this.$refs[formName].form.setFieldsValue({isShowUserInReport: '2'})
-              isShowUserInReport.disabled = true
-            } else {
-              this.$refs[formName].form.setFieldsValue({isShowUserInReport: '1'})
-              isShowUserInReport.disabled = false
+            let formName = 'projectInfoForm' + this.index, isShowUserInReport
+            if (formName) {
+              this.$nextTick().then(() => {
+                isShowUserInReport = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'isShowUserInReport')[0]
+                if (opt.title === '无') {
+                  this.$refs[formName].form.setFieldsValue({isShowUserInReport: '2'})
+                  isShowUserInReport.disabled = true
+                } else {
+                  this.$refs[formName].form.setFieldsValue({isShowUserInReport: '1'})
+                  isShowUserInReport.disabled = false
+                }
+              })
             }
           }
         },
@@ -484,13 +488,17 @@ export default {
             rules: [{required: true, message: '请选择是否加电'}]
           },
           change: (val) => {
-            let formName = 'projectInfoForm' + this.index
-            let powerUpTime = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'powerUpTime')[0]
-            if (val === '2') {
-              powerUpTime.disabled = true
-              this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
-            } else {
-              powerUpTime.disabled = false
+            let formName = 'projectInfoForm' + this.index, powerUpTime
+            if (formName) {
+              this.$nextTick().then(() => {
+                powerUpTime = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'powerUpTime')[0]
+                if (val === '2') {
+                  powerUpTime.disabled = true
+                  this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
+                } else {
+                  powerUpTime.disabled = false
+                }
+              })
             }
           },
         },

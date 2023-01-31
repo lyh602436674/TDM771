@@ -177,6 +177,15 @@
                         <a :href="record.docxPathXh" title="下载word">
                           <a-icon class="primary-text" type="download"></a-icon>
                         </a>
+                        <h-upload-file-b
+                          v-model="swapFileList"
+                          :customParams="{id:record.id}"
+                          accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          isPublic
+                          @beforeUpload="$refs.equipTaskList.localLoading = true"
+                          @change="file => handleUploadCallback(file, record,'1')">
+                          <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+                        </h-upload-file-b>
                       </a-space>
                     </template>
                     <template #embodiment="text,record">
@@ -188,6 +197,15 @@
                         <a :href="record.docxPathSs" title="下载word">
                           <a-icon class="primary-text" type="download"></a-icon>
                         </a>
+                        <h-upload-file-b
+                          v-model="swapFileList"
+                          :customParams="{id:record.id}"
+                          accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          isPublic
+                          @beforeUpload="$refs.equipTaskList.localLoading = true"
+                          @change="file => handleUploadCallback(file, record,'2')">
+                          <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+                        </h-upload-file-b>
                       </a-space>
                     </template>
                     <a-space slot="actions" slot-scope="text, record">
@@ -317,6 +335,7 @@ export default {
     return {
       moment,
       treeSpinning: false,
+      swapFileList: [],
       selectedKeys: [],
       selectedRows: [],
       queryParams: {},
@@ -575,14 +594,14 @@ export default {
         {
           title: '巡检记录',
           align: 'center',
-          width: 80,
+          width: 110,
           dataIndex: 'archiveRecord',
           scopedSlots: {customRender: 'archiveRecord'}
         },
         {
           title: '实施方案',
           align: 'center',
-          width: 80,
+          width: 110,
           dataIndex: 'embodiment',
           scopedSlots: {customRender: 'embodiment'}
         },
@@ -650,6 +669,7 @@ export default {
         recover: '/HfEnvTaskTestBusiness/recover',
         forceEnd: '/HfEnvTestForceEndBusiness/forceEnd',
         testDetail: '/HfEnvTaskTestBusiness/queryById',
+        authUploads: "/HfResEquipBusiness/authUploads"
       },
     }
   },
@@ -657,6 +677,21 @@ export default {
     this.loadLeftTree()
   },
   methods: {
+    /**
+     * @type 1:巡检 2:实施
+     * */
+    handleUploadCallback(file, record, type) {
+      postAction(this.url.authUploads, {id: record.id, fileId: file[0].fileId, type}).then(res => {
+        if (res.code === 200) {
+          this.$message.success('替换成功')
+        } else {
+          this.$message.error('替换失败')
+        }
+      }).finally(() => {
+        this.refresh()
+        this.swapFileList = []
+      })
+    },
     handleReviewPdf(title, path) {
       this.reviewPdfTitle = title
       this.$refs.reviewPdf.show(path)
@@ -779,6 +814,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.cursor-pointer {
+  cursor: pointer;
+}
+
 .tree-extra-tip {
   background-color: #409eff;
   color: #fff;

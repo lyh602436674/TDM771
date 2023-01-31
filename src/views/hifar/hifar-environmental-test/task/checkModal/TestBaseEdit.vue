@@ -1113,13 +1113,6 @@ export default {
       ],
       addProductColumns: [
         {
-          title: '委托单号',
-          dataIndex: 'entrustCode',
-          customRender: (t) => {
-            return t || '--'
-          }
-        },
-        {
           title: '试件单位',
           dataIndex: 'custName',
           customRender: (t) => {
@@ -1168,13 +1161,6 @@ export default {
             return t || '--'
           }
         },
-        {
-          title: '库存数量',
-          dataIndex: 'pieceCnum',
-          customRender: (t) => {
-            return t || '--'
-          }
-        }
       ],
       addEquipColumns: [
         {

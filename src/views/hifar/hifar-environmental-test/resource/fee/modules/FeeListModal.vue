@@ -63,6 +63,7 @@
             <vxe-table-column align="center" type="checkbox" width="40"></vxe-table-column>
             <vxe-table-column align="center" type="seq" width="40"></vxe-table-column>
             <vxe-table-column field="unitName" title="设备名称" width="160"></vxe-table-column>
+            <vxe-table-column field="innerName" title="内部名称" width="160"></vxe-table-column>
             <vxe-table-column field="equipModel" title="设备型号"></vxe-table-column>
             <vxe-table-column field="assetsCode" title="资产编号"></vxe-table-column>
             <vxe-table-column

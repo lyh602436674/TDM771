@@ -19,21 +19,18 @@
     <div class="footer" slot="footer">
       <a-button @click="handleCancel" type="ghost-danger"> 关闭 </a-button>
     </div>
-    <h-detail :showElevator="false">
       <h-desc size="small" labelWidth="110px" :column="1" title="基本信息">
         <h-desc-item v-for="(item, index) in formData" :key="index" :label="item.title">
           {{ detail ? detail[item.key] : '' }}
         </h-desc-item>
       </h-desc>
-    </h-detail>
   </h-modal>
 </template>
 
 <script>
 import moment from 'moment'
-import HDesc from '../../../../../../components/HDesc/HDesc.vue'
+
 export default {
-  components: {HDesc},
   inject: {
     getContainer: {
       default: () => document.body,
@@ -47,7 +44,7 @@ export default {
       formData: [
         {
           title: '场地名称',
-          key: 'placeName',
+          key: 'placeFullName',
           formType: 'input',
           span: 2,
         },

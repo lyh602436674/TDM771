@@ -20,6 +20,10 @@ export default {
       type: [String, Function],
       default: () => 'id'
     },
+    rowId: {
+      type: String,
+      default: 'id'
+    },
     // 需要生成的数据,这里接收一个promise对象
     data: {
       type: Function,
@@ -574,10 +578,10 @@ export default {
   render() {
     let vxeTableProps = {
       id: this.tableId,
-      // rowId: this.rowKey,
+      rowId: this.rowId,
       height: this.height,
       autoResize: true,
-      stripe: this.isTreeTable,
+      stripe: !this.isTreeTable,
       border: this.bordered || true,
       round: true,
       size: this.size,

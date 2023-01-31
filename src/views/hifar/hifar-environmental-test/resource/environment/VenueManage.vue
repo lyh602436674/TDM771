@@ -35,8 +35,8 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <!-- 点击场地名称跳转详情 -->
-        <span slot="placeName" slot-scope="text, record">
-          <a href="javascript:;" @click="handleDetailCode(record)">
+        <span slot="placeFullName" slot-scope="text, record">
+          <a @click="handleDetailCode(record)">
             {{ record.placeName ? record.placeName : '--' }}
           </a>
         </span>
@@ -141,8 +141,8 @@ export default {
         {
           title: '场地名称',
           align: 'left',
-          dataIndex: 'placeName',
-          scopedSlots: { customRender: 'placeName' },
+          dataIndex: 'placeFullName',
+          scopedSlots: { customRender: 'placeFullName' },
         },
         {
           title: '创建人 ',
