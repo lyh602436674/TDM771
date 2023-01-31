@@ -32,6 +32,12 @@
         <span v-else>暂无附件</span>
       </div>
     </h-desc-item>
+    <h-desc-item :span='3' label='试验曲线'>
+      <div slot='content'>
+        <img v-if="model.curveUrl" :src="model.curveUrl" alt="试验曲线">
+        <span v-else>无</span>
+      </div>
+    </h-desc-item>
     <h-desc-item :span='3' label='试验条件结构化'>
       <template slot='content'>
         <template v-if="!model.abilityRequire.length">
@@ -39,7 +45,8 @@
         </template>
         <a-tabs v-else :default-active-key="0" style="width: 100%">
           <template v-for="(proItem,itemIndex) in model.abilityRequire">
-            <a-tab-pane :key="itemIndex" :tab="proItem.type === 'stage' ? proItem.title + (itemIndex + 1) : proItem.title">
+            <a-tab-pane :key="itemIndex"
+                        :tab="proItem.type === 'stage' ? proItem.title + (itemIndex + 1) : proItem.title">
               <test-condition-template :data-source="proItem.abilityInfo || []"/>
             </a-tab-pane>
           </template>

@@ -545,6 +545,9 @@ export default {
         class: 'h-vex-table-selected_list'
       }, [tags])
     },
+    setAllTreeExpand(checked) {
+      this.$refs[this.tableId].setAllTreeExpand(checked)
+    },
     setCheckboxStatus() {
       // 因为当前表格数据刷新后 vxe-table的row-id属性发生了变化，导致selectedRows中的数据与当前table的数据不一致，导致数据无法正常更新上去，所以这里做了一次数据查询
       let tableData = this.$refs[this.tableId].getData()

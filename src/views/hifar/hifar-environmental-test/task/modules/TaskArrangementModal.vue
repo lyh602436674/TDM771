@@ -298,7 +298,7 @@ export default {
         bottom = index * this.raphael.stepHeight - 3
       let paper = this.raphael.equip[index].paper
       // 绘制设备名称
-      let equipInnerName = equip.innerName + '[' + equip.equipModel + ']'
+      let equipInnerName = equip.innerName + '[' + equip.equipName + ']'
       this.raphael.equipText[index] = paper.text(
         top + 20,
         25 + bottom + this.raphael.offsetX,
@@ -306,7 +306,7 @@ export default {
         /**
          * 2022-2-9 雷宇航 设备名称改为设备的内部名称
          * */
-        equip.innerName.length < 8 ? equipInnerName : equipInnerName.substring(0, 18) + '...' || '--'
+        equipInnerName.length <= 18 ? equipInnerName : (equipInnerName.substring(0, 18) + '...')
       )
       this.raphael.equipText[index]
         .attr({

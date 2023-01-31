@@ -11,6 +11,7 @@
     <r-l-layout class="h-custom-layout" :leftMinWidth="280">
       <template slot="left">
         <h-edit-tree
+          defaultExpandAll
           ref="physicoChemicalTree"
           title="检测项目"
           menuIcon="icon-fenlei"
@@ -67,17 +68,19 @@
 
 <script>
 import HEditTree from '@/views/components/HEditTree.js'
-import { chemicalTree } from '@/api/api'
-import { postAction } from '@/api/manage'
+import {chemicalTree} from '@/api/api'
+import {postAction} from '@/api/manage'
 import classifyAndUnitModal from './modules/ClassifyAndUnitModal'
 import classifyInfo from './modules/ClassifyInfo'
 import unitInfo from './modules/UnitInfo.vue'
+
 export default {
-  components: { HEditTree,
-  classifyAndUnitModal,
-   classifyInfo,
+  components: {
+    HEditTree,
+    classifyAndUnitModal,
+    classifyInfo,
     unitInfo
-    },
+  },
   provide() {
     return {
       groupCode: this.groupCode,

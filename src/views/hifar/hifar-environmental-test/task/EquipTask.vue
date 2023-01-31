@@ -401,11 +401,12 @@ export default {
       let top = 10,
         bottom = index * this.raphael.stepHeight - 3
       let paper = this.raphael.equip[index].paper
+      let equipInnerName = equip.innerName + '[' + equip.equipName + ']'
       // 绘制设备名称
       let text = paper.text(
         top + 28,
         25 + bottom + this.raphael.offsetX,
-        (equip.equipName + "[" + equip.equipModel + "]").length <= 18 ? equip.equipName + "[" + equip.equipModel + "]" : (equip.equipName + "[" + equip.equipModel + "]").substring(0, 18) + '...' || '--'
+        equipInnerName.length <= 18 ? equipInnerName : equipInnerName.substring(0, 18) + '...'
       )
       text
         .attr({

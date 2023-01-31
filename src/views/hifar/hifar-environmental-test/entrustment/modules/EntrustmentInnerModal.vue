@@ -436,6 +436,7 @@ export default {
     show(record, type) {
       this.visible = true
       this.handleType = type
+      this.selectedPieceRows = []
       if (record.id) {
         this.handleEdit(record.id)
       } else {

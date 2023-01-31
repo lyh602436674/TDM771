@@ -4,6 +4,7 @@
       <template slot="left">
         <div style="height: 100%;">
           <h-edit-tree
+            defaultExpandAll
             ref="productTree"
             :replaceFields="replaceFields"
             :selectedKeys="selectedTreeKeys"

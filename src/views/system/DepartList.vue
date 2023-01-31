@@ -52,16 +52,12 @@
         <!-- 树-->
         <div style="display: block">
           <a-dropdown :trigger="[this.dropTrigger]" @visibleChange="dropStatus">
-            <div style="user-select: none">
+            <div v-if="departTree.length" style="user-select: none">
               <a-tree
-                multiple
-                checked
+                :treeData="departTree"
+                defaultExpandAll
                 :selectedKeys="selectedKeys"
                 :checkedKeys="checkedKeys"
-                :treeData="departTree"
-                :checkStrictly="checkStrictly"
-                :expandedKeys="iExpandedKeys"
-                :autoExpandParent="autoExpandParent"
                 :replaceFields="{
                   title: 'deptName',
                   key: 'id',
@@ -116,11 +112,11 @@
 <script>
 import DepartModal from './modules/DepartModal'
 import DepartUser from './modules/DepartUser'
-import { addDepart, editDepart, queryDepartTreeList, searchByKeywords, deleteByDepartId } from '@/api/api'
-import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+import {addDepart, deleteByDepartId, editDepart, queryDepartTreeList} from '@/api/api'
+import {JeecgListMixin} from '@/mixins/JeecgListMixin'
 import departMixin from './modules/departMixin'
 import DepartUserSelectModal from './modules/DepartUserSelectModal.vue'
-import { postAction, downloadFile } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 // 表头
 const columns = [
   {
@@ -261,9 +257,6 @@ export default {
           this.setThisExpandedKeys(node.children[a])
         }
       }
-    },
-    refresh() {
-      this.loadData()
     },
     // 右键操作方法
     rightHandle(node) {

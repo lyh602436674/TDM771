@@ -732,7 +732,7 @@ export default {
           item.scopedSlots = {
             title: 'customTitle',
           }
-          item.title = item.equipName + "-" + item.equipModel
+          item.title = item.innerName + "-" + item.equipName
           // 这一步是证明当前数据为目录，当没有children时，则判断为文件
           item.children = []
           return item

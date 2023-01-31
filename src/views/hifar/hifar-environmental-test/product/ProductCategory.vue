@@ -82,14 +82,16 @@ export default {
       getContainer: () => this.$refs.productCategory
     }
   },
-  computed: {
-    // treeConfig() {
-    //   return {
-    //     children: "children",
-    //     // expandAll:true,
-    //     expandRowKeys: this.defaultExpandKeys
-    //   }
-    // },
+  watch: {
+    treeData: {
+      handler(val) {
+        if (val.length) {
+          setTimeout(() => {
+            this.$refs.productCategoryTable.setAllTreeExpand(true)
+          })
+        }
+      }
+    }
   },
   data() {
     return {
@@ -97,12 +99,10 @@ export default {
       queryParams: {},
       treeConfig: {
         children: "children",
-        expandAll:true,
-        // expandRowKeys: ['ae39ece96393470baae1d0124210cb68']
       },
-      defaultExpandKeys: ['ae39ece96393470baae1d0124210cb68'],
       selectedRowKeys: [],
       selectedRows: [],
+      treeData: [],
       url: {
         list: '/HfProductClassifyBusiness/listAll',
         delete: '/HfProductClassifyBusiness/logicRemoveById',
@@ -113,7 +113,7 @@ export default {
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
-            this.defaultExpandKeys = [res.data[0].id]
+            this.treeData = res.data
             return res.data
           }
         })
