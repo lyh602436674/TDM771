@@ -458,7 +458,7 @@ export default {
     },
     handleEdit(id) {
       this.submitLoading = true
-      postAction(this.url.edit, {id}).then(res => {
+      postAction(this.url.edit, {id, type: '1'}).then(res => {
         if (res.code === 200) {
           let obj = Object.assign({}, res.data)
           obj.entrustTime = obj.entrustTime && +obj.entrustTime !== 0 ? moment(+obj.entrustTime) : moment()
@@ -592,6 +592,7 @@ export default {
       let errMap = await this.$refs.pieceTable.validate().catch(errMap => errMap)
       if (errMap) return this.$message.warning('请填写产品编号')
       if (!this.tableData.length) return this.$message.warning('请先添加产品')
+      if (!this.selectedPieceRows.length) return this.$message.warning('请先选择产品')
       this.$refs.projectAddModal.visible = true
       await this.$refs.projectAddModal.getProjectTree()
       this.$refs.projectAddModal.selectedRowKeys = this.projectInfoData && this.projectInfoData.length && this.projectInfoData.map(item => item.id) || []
@@ -599,8 +600,6 @@ export default {
 
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
-      // let pieceTableData = this.$refs.pieceTable.getData()
-      // let pieceSorting = this.pieceSorting(pieceTableData)
       let extendRecord = cloneDeep(record)
       if (this.projectInfoData.length) {
         for (let i = 0; i < extendRecord.length; i++) {
@@ -689,8 +688,7 @@ export default {
       projectData.forEach((item) => {
         item.pieceIds = isArray(item.pieceIds) && item.pieceIds.length > 0 ? item.pieceIds.join(',') : item.pieceIds
         item.pieceNos = isArray(item.pieceNos) && item.pieceNos.length > 0 ? item.pieceNos.join(',') : item.pieceNos
-        item.standardId =
-          isArray(item.standardId) && item.standardId.length > 0 ? item.standardId[0] : item.standardId
+        item.standardId = isArray(item.standardId) && item.standardId.length > 0 ? item.standardId[0] : item.standardId
       })
       if (bool) {
         if (projectData.length) {

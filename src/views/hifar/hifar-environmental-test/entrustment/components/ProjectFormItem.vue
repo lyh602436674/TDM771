@@ -209,6 +209,8 @@ export default {
             }
           }
           this.model = obj
+          this.disabledIsShowUserInReport = obj.lastUser
+          this.disabledPowerUpTime = obj.isPowerUp
           if (filterProjectByType) {
             this.$nextTick(() => {
               this.createSortable()
@@ -229,12 +231,6 @@ export default {
     }
   },
   data() {
-    const validatorTestCondition = (rule, value, callback) => {
-      if (value.length >= 240) {
-        callback('最多输入240个字符，其他试验条件请以附件的形式提供！')
-      }
-      callback()
-    }
     return {
       moment,
       model: {},
@@ -354,7 +350,8 @@ export default {
       selectBeforeItemIndex: 0,
       dragFlag: true,
       filterProjectByType: false,
-      disabledPowerUpTime: false,
+      disabledIsShowUserInReport: null,
+      disabledPowerUpTime: null,
     }
   },
   computed: {
@@ -465,6 +462,7 @@ export default {
           key: 'isShowUserInReport',
           formType: 'radio',
           radioType: 'radioButton',
+          disabled: this.disabledIsShowUserInReport === '7',
           options: [
             {title: '是', value: '1', key: '1'},
             {title: '否', value: '2', key: '2'}
@@ -508,7 +506,7 @@ export default {
           formType: 'dict',
           dictCode: 'hf_powerup_time',
           placeholder: '请选择加电时间',
-          disabled: this.disabledPowerUpTime,
+          disabled: this.disabledPowerUpTime === '2',
           validate: {
             rules: [{required: true, message: '请选择加电时间'}]
           },

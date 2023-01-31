@@ -57,6 +57,10 @@ export default {
       type: Boolean,
       default: false
     },
+    defaultExpandAll: {
+      type: Boolean,
+      default: false
+    },
     checkStrictly: {
       type: Boolean,
       default: false
@@ -168,6 +172,7 @@ export default {
           selectable: this.selectable,
           checkable: this.checkable,
           autoExpandParent: this.autoExpandParent,
+          defaultExpandAll: this.defaultExpandAll,
           checkStrictly: this.checkStrictly,
           disabled: this.disabled,
           selectedKeys: this.__selectedKeys__,

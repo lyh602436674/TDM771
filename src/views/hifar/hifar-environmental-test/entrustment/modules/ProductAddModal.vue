@@ -25,6 +25,7 @@
           <div style="height: 100%;">
             <h-edit-tree
               ref="productTree"
+              defaultExpandAll
               :replaceFields="replaceFields"
               :selectedKeys="selectedTreeKeys"
               :tree="treeData"

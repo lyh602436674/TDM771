@@ -34,6 +34,7 @@
 <script>
 import ProjectFormItem from '@views/hifar/hifar-environmental-test/entrustment/components/ProjectFormItem'
 import entrustmentMixins from "@views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins";
+import {isArray} from "lodash"
 
 export default {
   mixins: [entrustmentMixins],
@@ -111,22 +112,39 @@ export default {
           let tabItemTableAllData = [];
           if (filterProjectByType) {
             let testConditionTabItem = that.$refs.testConditionTabItem;
-            [].forEach.call(testConditionTabItem, (item, index) => {
-              let tabPanelItem = that.model.abilityRequire[index]
-              let _item_ = item.$refs['pointTable' + [i] + [index]]
-              tabItemTableAllData.push({
-                title: tabPanelItem.title,
-                type: tabPanelItem.type,
-                highLowTemperature: tabPanelItem.highLowTemperature,
-                abilityInfo: _item_.getData()
-              })
-            })
+            for (let j = 0; j < testConditionTabItem.length; j++) {
+              let tabPanelItem = that.model.abilityRequire[j]
+              let item = testConditionTabItem[j]
+              let _item_ = item.$refs['pointTable' + [i] + [j]]
+              let abilityInfo = _item_.getData()
+              if (abilityInfo && isArray(abilityInfo) && abilityInfo.length) {
+                tabItemTableAllData.push({
+                  title: tabPanelItem.title,
+                  type: tabPanelItem.type,
+                  highLowTemperature: tabPanelItem.highLowTemperature,
+                  abilityInfo,
+                })
+              } else {
+                if (bool) {
+                  this.$emit('emptyData')
+                  return this.$message.warning(`第${i + 1}个试验项目(${formInfoDataList[i].unitName})的结构化条件未填写`)
+                }
+              }
+            }
           } else {
-            tabItemTableAllData.push({
-              title: '试验条件',
-              type: 'default',
-              abilityInfo: that.$refs.testConditionTabItem.$refs['pointTable' + [i] + 0].getData()
-            })
+            let abilityInfo = that.$refs.testConditionTabItem.$refs['pointTable' + [i] + 0].getData()
+            if (abilityInfo && isArray(abilityInfo) && abilityInfo.length) {
+              tabItemTableAllData.push({
+                title: '试验条件',
+                type: 'default',
+                abilityInfo
+              })
+            } else {
+              if (bool) {
+                this.$emit('emptyData')
+                return this.$message.warning(`第${i + 1}个试验项目(${formInfoDataList[i].unitName})的结构化条件未填写`)
+              }
+            }
           }
           if (bool) {
             projectForm.form.validateFieldsAndScroll((error, val) => {
