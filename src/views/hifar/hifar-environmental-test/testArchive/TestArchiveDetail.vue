@@ -80,32 +80,32 @@
         />
       </h-desc>
       <!-- 安装、控制方式 -->
-      <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>
-        <h-card :bordered='false' style='width: 100%'>
-          <a-table
-            :columns='installControlColumns'
-            :dataSource='installControlTable'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-            style="width: 100%;"
-          >
-            <div slot="expandedRowRender" slot-scope="record,index">
-              <a-table
-                :columns='sensorColumns'
-                :dataSource='record.testSensorInfo'
-                :pagination='false'
-                bordered
-                rowKey='id'
-                size='small'
-                style="width: 100%;"
-              >
-              </a-table>
-            </div>
-          </a-table>
-        </h-card>
-      </h-desc>
+<!--      <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>-->
+<!--        <h-card :bordered='false' style='width: 100%'>-->
+<!--          <a-table-->
+<!--            :columns='installControlColumns'-->
+<!--            :dataSource='installControlTable'-->
+<!--            :pagination='false'-->
+<!--            bordered-->
+<!--            rowKey='id'-->
+<!--            size='small'-->
+<!--            style="width: 100%;"-->
+<!--          >-->
+<!--            <div slot="expandedRowRender" slot-scope="record,index">-->
+<!--              <a-table-->
+<!--                :columns='sensorColumns'-->
+<!--                :dataSource='record.testSensorInfo'-->
+<!--                :pagination='false'-->
+<!--                bordered-->
+<!--                rowKey='id'-->
+<!--                size='small'-->
+<!--                style="width: 100%;"-->
+<!--              >-->
+<!--              </a-table>-->
+<!--            </div>-->
+<!--          </a-table>-->
+<!--        </h-card>-->
+<!--      </h-desc>-->
       <!-- 试前检查 -->
       <h-desc
         :id="checkTypeMap[testCheckType].id"

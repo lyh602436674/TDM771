@@ -130,9 +130,12 @@ export default {
       })
       this.selectedKeys = selectedKeys
       this.selectedRows = selectedRows
+      this.handleRequest(selectedRows)
+    },
+    handleRequest(selectedRows) {
       this.$nextTick(() => {
         if (selectedRows.length) {
-          if (selectedRows[0].type == 'classify') {
+          if (selectedRows[0].type === 'classify') {
             this.$refs.classifyInfo.getDetail(this.selectedKeys[0])
           } else {
             // 这里展示项目的信息，传入0~5可以切换不同的tab
@@ -192,8 +195,7 @@ export default {
       let res = await chemicalTree(params)
       if (res.code === 200) {
         this.treeData = res.data
-        this.selectedRows = []
-        this.selectedKeys = []
+        this.handleRequest(this.selectedRows)
       }
     },
   },
