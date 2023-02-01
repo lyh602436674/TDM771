@@ -40,8 +40,8 @@ export default {
     defaultValue: {
       immediate: true,
       handler(val) {
-        this.valueRadio = val
-        this.$emit('change', this.valueRadio)
+        // this.valueRadio = val
+        // this.$emit('change', this.valueRadio)
       },
     },
     radioType: {

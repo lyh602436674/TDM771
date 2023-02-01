@@ -448,10 +448,10 @@ export default {
               isShowUserInReport = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'isShowUserInReport')[0]
               if (opt.title === '无') {
                 this.$refs[formName].form.setFieldsValue({isShowUserInReport: '2'})
-                isShowUserInReport.component.componentOptions.propsData.disabled = true
+                isShowUserInReport.disabled = true
               } else {
                 this.$refs[formName].form.setFieldsValue({isShowUserInReport: '1'})
-                isShowUserInReport.component.componentOptions.propsData.disabled = false
+                isShowUserInReport.disabled = false
               }
             }
           }
@@ -459,84 +459,43 @@ export default {
         {
           title: "报告中是否显示最终用户",
           key: 'isShowUserInReport',
+          formType: 'radio',
+          radioType: 'radioButton',
+          disabled: this.disabledIsShowUserInReport === '7',
+          options: [
+            {title: '是', value: '1', key: '1'},
+            {title: '否', value: '2', key: '2'}
+          ],
+          defaultValue: '1',
           validate: {
             rules: [{required: true, message: '请选择报告中是否显示最终用户'}]
-          },
-          component: (
-            <a-radio-group v-decorator={['isShowUserInReport', {initialValue: []}]}
-                           disabled={this.disabledIsShowUserInReport === '7'} defaultValue={'1'}>
-              {
-                [
-                  {title: '是', value: '1', key: '1'},
-                  {title: '否', value: '2', key: '2'}
-                ].map(item => {
-                  return <a-radio-button
-                    value={item.value}
-                    dataTitle={item.title}
-                    key={item.key}
-                  >{item.title}</a-radio-button>
-                })
-              }
-            </a-radio-group>
-          ),
+          }
         },
         {
           title: "是否加电",
           key: 'isPowerUp',
-          component: (
-            <a-radio-group v-decorator={['isPowerUp', {initialValue: []}]} defaultValue={'1'} onChange={
-              (e) => {
-                let val = e.target.value
-                let formName = 'projectInfoForm' + this.index, powerUpTime
-                if (formName) {
-                  powerUpTime = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'powerUpTime')[0]
-                  if (val === '2') {
-                    powerUpTime.disabled = true
-                    this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
-                  } else {
-                    powerUpTime.disabled = false
-                  }
-                }
-              }
-            }>
-              {
-                [
-                  {title: '是', value: '1', key: '1'},
-                  {title: '否', value: '2', key: '2'}
-                ].map(item => {
-                  return <a-radio-button
-                    value={item.value}
-                    dataTitle={item.title}
-                    key={item.key}
-                  >{item.title}</a-radio-button>
-                })
-              }
-            </a-radio-group>
-          ),
-          // formType: 'radio',
-          // radioType: 'radioButton',
-          // options: [
-          //   {title: '是', value: '1', key: '1'},
-          //   {title: '否', value: '2', key: '2'}
-          // ],
-          // defaultValue: '1',
+          formType: 'radio',
+          radioType: 'radioButton',
+          options: [
+            {title: '是', value: '1', key: '1'},
+            {title: '否', value: '2', key: '2'}
+          ],
+          defaultValue: '1',
           validate: {
             rules: [{required: true, message: '请选择是否加电'}]
           },
-          // change: (val) => {
-          //   let formName = 'projectInfoForm' + this.index, powerUpTime
-          //   if (formName) {
-          //     this.$nextTick().then(() => {
-          //       powerUpTime = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'powerUpTime')[0]
-          //       if (val === '2') {
-          //         powerUpTime.disabled = true
-          //         this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
-          //       } else {
-          //         powerUpTime.disabled = false
-          //       }
-          //     })
-          //   }
-          // },
+          change: (val) => {
+            let formName = 'projectInfoForm' + this.index, powerUpTime
+            if (formName) {
+                powerUpTime = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'powerUpTime')[0]
+                if (val === '2') {
+                  powerUpTime.disabled = true
+                  this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
+                } else {
+                  powerUpTime.disabled = false
+                }
+            }
+          },
         },
         {
           title: '加电时间',
