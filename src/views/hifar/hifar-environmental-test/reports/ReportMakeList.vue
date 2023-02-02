@@ -52,109 +52,103 @@
           <a @click="downloadRecord(record)">查看下载记录</a>
         </template>
         <div slot="action" slot-scope="text, record">
-          <a-icon
-            class="primary-text cursor-pointer"
-            title="详情"
-            type="eye"
-            @click="() => handleDetail(record)"
-          />
-          <a-divider v-if="record.status != 2" style="color: #409eff" type="vertical"/>
-          <span v-if="record.status == 1">
-            <a-popconfirm
-              v-if="record.isExternalManage == 0"
-              title="确定生成报告吗?"
-              @confirm="() => handleMakeReport(record)">
-              <a-icon
-                v-has="'report:make'"
-                class="primary-text cursor-pointer"
-                title="生成"
-                type="check-square"/>
-            </a-popconfirm>
-            <h-upload-file-b
-              v-else
-              v-model="reportFileList"
-              :customParams="{id:record.id}"
-              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              isPublic
-              @beforeUpload="$refs.reportMakeTable.localLoading = true"
-              @change="file => handleUploadCallback(file,record,true)"
-            >
-              <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
-            </h-upload-file-b>
-            <a-divider style="color: #409eff" type="vertical"/>
-          </span>
-          <template v-if="!isIntranet">
-             <span v-if="record.status == 3 || record.status == 30 || record.status == 50 ">
-              <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
-                <h-icon
-                  v-if="record.isExternalManage != 1"
-                  v-has="'report:submit'"
-                  title="提交"
-                  class="primary-text cursor-pointer"
-                  type="icon-tijiao"/>
-              </a-popconfirm>
-              <a-divider
-                v-if="record.filePath && record.isExternalManage != 1"
-                v-has="'report:submit'"
-                style="color: #409eff"
-                type="vertical"/>
-              <a-icon
-                v-if="record.filePath"
-                v-has="'report:edit'"
-                class="primary-text cursor-pointer"
-                type="edit"
-                @click="handleEdit(record)"/>
-             <a-divider style="color: #409eff" type="vertical"/>
-               <h-upload-file-b
-                 v-model="reportFileList"
-                 :customParams="{id:record.id}"
-                 accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                 isPublic
-                 @beforeUpload="$refs.reportMakeTable.localLoading = true"
-                 @change="file => handleUploadCallback(file,record)">
-                   <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
-               </h-upload-file-b>
-            <a-divider
-              v-if="record.isExternalManage != 1"
-              v-has="'report:edit'"
-              style="color: #409eff"
-              type="vertical"/>
-          </span>
-            <template v-if="record.status >= 3">
-              <span v-has="'report:download'">
-                <a-icon
-                  :type="record.docxLoading ? 'loading' : 'file-word'"
-                  title="下载word"
-                  class="primary-text cursor-pointer"
-                  @click="handleDownload(record, 'docx')"
-                />
-                <a-divider type="vertical"/>
-                <a-icon
-                  :type="record.pdfLoading ? 'loading' : 'file-pdf'"
-                  title="下载pdf"
-                  class="primary-text cursor-pointer"
-                  @click="handleDownload(record, 'pdf')"
-                />
-              </span>
-              <span>
-              <a-divider type="vertical"/>
-              <a-icon :type="record.intranetLoading ? 'loading' :'cloud-sync'"
+          <a-space>
+            <a-icon
+              class="primary-text cursor-pointer"
+              title="详情"
+              type="eye"
+              @click="() => handleDetail(record)"
+            />
+            <span v-if="record.status == 1">
+              <a-space>
+                <a-popconfirm
+                  v-if="record.isExternalManage == 0"
+                  title="确定生成报告吗?"
+                  @confirm="() => handleMakeReport(record)">
+                  <a-icon
+                    v-has="'report:make'"
+                    class="primary-text cursor-pointer"
+                    title="生成"
+                    type="check-square"/>
+                </a-popconfirm>
+                <h-upload-file-b
+                  v-else
+                  v-model="reportFileList"
+                  :customParams="{id:record.id}"
+                  accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  isPublic
+                  @beforeUpload="$refs.reportMakeTable.localLoading = true"
+                  @change="file => handleUploadCallback(file,record,true)"
+                >
+                  <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
+                </h-upload-file-b>
+              </a-space>
+            </span>
+            <template v-if="!isIntranet">
+               <span v-if="record.status == 3 || record.status == 30 || record.status == 50 ">
+                 <a-space>
+                  <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
+                    <h-icon
+                      v-if="record.isExternalManage != 1"
+                      v-has="'report:submit'"
                       class="primary-text cursor-pointer"
-                      title="推送至内网"
-                      @click="handlePush(record,'intranet')"/>
-              <a-divider type="vertical"/>
-              <a-icon :type="record.mesLoading ? 'loading' :'cloud-sync'" class="primary-text cursor-pointer"
-                      title="推送至MES"
-                      @click="handlePush(record,'mes')"/>
+                      title="提交"
+                      type="icon-tijiao"/>
+                  </a-popconfirm>
+                  <a-icon
+                    v-if="record.filePath"
+                    v-has="'report:edit'"
+                    class="primary-text cursor-pointer"
+                    type="edit"
+                    @click="handleEdit(record)"/>
+                   <h-upload-file-b
+                     v-model="reportFileList"
+                     v-has="'report:edit'"
+                     :customParams="{id:record.id}"
+                     accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                     isPublic
+                     @beforeUpload="$refs.reportMakeTable.localLoading = true"
+                     @change="file => handleUploadCallback(file,record)">
+                       <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+                   </h-upload-file-b>
+                 </a-space>
+              </span>
+              <template v-if="record.status >= 3">
+                <span v-has="'report:download'">
+                  <a-space>
+                    <a-icon
+                      :type="record.docxLoading ? 'loading' : 'file-word'"
+                      class="primary-text cursor-pointer"
+                      title="下载word"
+                      @click="handleDownload(record, 'docx')"
+                    />
+                    <a-icon
+                      :type="record.pdfLoading ? 'loading' : 'file-pdf'"
+                      class="primary-text cursor-pointer"
+                      title="下载pdf"
+                      @click="handleDownload(record, 'pdf')"
+                    />
+                  </a-space>
+                </span>
+                <a-space>
+                  <a-icon :type="record.intranetLoading ? 'loading' :'cloud-sync'"
+                          class="primary-text cursor-pointer"
+                          title="推送至内网"
+                          v-has="'report:pushinner'"
+                          @click="handlePush(record,'intranet')"/>
+                  <a-icon :type="record.mesLoading ? 'loading' :'cloud-sync'" class="primary-text cursor-pointer"
+                          title="推送至MES"
+                          v-has="'report:pushmes'"
+                          @click="handlePush(record,'mes')"/>
+                </a-space>
+              </template>
+              <span v-if="record.status == 1 || record.status == 30 || record.status == 50 " v-has="'report:delete'">
+                <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
+                  <a-icon class="danger-text cursor-pointer" title="删除" type="delete"/>
+                </a-popconfirm>
               </span>
             </template>
-            <span v-if="record.status == 1 || record.status == 30 || record.status == 50 " v-has="'report:delete'">
-              <a-divider v-if="record.status == 30 || record.status == 50" style="color: #409eff" type="vertical"/>
-              <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
-                <a-icon class="danger-text cursor-pointer" title="删除" type="delete"/>
-              </a-popconfirm>
-            </span>
-          </template>
+          </a-space>
         </div>
       </h-vex-table>
     </h-card>
@@ -381,7 +375,7 @@ export default {
           title: '操作',
           dataIndex: 'action',
           fixed: 'right',
-          width: 300,
+          width: 240,
           align: 'center',
           scopedSlots: {customRender: 'action'}
         }

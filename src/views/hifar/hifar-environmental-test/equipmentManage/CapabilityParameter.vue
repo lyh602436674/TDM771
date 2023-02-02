@@ -32,9 +32,9 @@
       >
         <template slot="actions" slot-scope="text, record">
           <a-icon class="primary-text" type="edit" @click="() => handleEdit(record)"/>
-          <a-divider type="vertical"/>
+          <a-divider type="vertical" v-has="'parameter:delete'"/>
           <a-popconfirm title="确认删除" @confirm="() => handleDelete(record.id)">
-            <h-icon class="danger-text" style="cursor:pointer" type="icon-shanchu"/>
+            <h-icon v-has="'parameter:delete'" class="danger-text" style="cursor:pointer" type="icon-shanchu"/>
           </a-popconfirm>
         </template>
       </h-vex-table>

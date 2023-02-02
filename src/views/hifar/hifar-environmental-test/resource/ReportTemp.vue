@@ -40,6 +40,7 @@
         </span>
         <span slot="action" slot-scope="text, record">
           <a-icon
+            v-has="'template:add'"
             type="edit"
             title="编辑"
             class="primary-text"
@@ -49,6 +50,7 @@
           <a-divider type="vertical" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
             <a-icon
+              v-has="'template:delete'"
               type="delete"
               title="删除"
               class="primary-text"

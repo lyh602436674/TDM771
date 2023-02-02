@@ -60,15 +60,17 @@
             </span>
             <span slot='action' slot-scope='text, record'>
               <a-icon
+                v-has="'product:add'"
                 class='primary-text'
                 style='cursor: pointer'
                 title='编辑'
                 type='edit'
                 @click='() => handleEdit(record)'
               />
-              <a-divider type='vertical'/>
+              <a-divider v-has="'product:add'" type='vertical'/>
               <a-popconfirm title='确定删除吗?' @confirm='() => handleDelete(record.id)'>
                 <a-icon
+                  v-has="'product:delete'"
                   class='primary-text'
                   style='cursor: pointer'
                   theme='twoTone'

@@ -135,13 +135,10 @@
                     type="control"
                     @click="() => showTaskArrangement(record)"/>
                 </a-tooltip>
-
                 <a-divider type="vertical"/>
-
                 <a-tooltip title="终止">
                   <a-icon class="primary-text" type="pause" @click="$refs.taskForceEnd.show('forceEnd', record)"/>
                 </a-tooltip>
-
               </template>
             </h-vex-table>
           </h-card>

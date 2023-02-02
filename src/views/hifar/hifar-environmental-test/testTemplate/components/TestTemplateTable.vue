@@ -46,8 +46,8 @@
           <a @click="handleDetail(record)">{{ record.equipCode }}</a>
         </span>
         <template slot="actions" slot-scope="text, record">
-          <a-icon type="edit" class="primary-text" @click="() => handleEdit(record)"/>
-          <a-divider type="vertical"/>
+          <a-icon v-has="hasAdd" class="primary-text" type="edit" @click="() => handleEdit(record)"/>
+          <a-divider v-has="hasAdd" type="vertical"/>
           <a-icon
             type="eye"
             title="详情"
@@ -57,7 +57,7 @@
           />
           <a-divider type="vertical"/>
           <a-popconfirm title="确认删除" @confirm="() => handleDelete(record.id)">
-            <h-icon class="danger-text" type="icon-shanchu"/>
+            <h-icon v-has="hasDelete" class="danger-text" type="icon-shanchu"/>
           </a-popconfirm>
         </template>
       </h-vex-table>

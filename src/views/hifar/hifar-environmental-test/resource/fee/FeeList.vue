@@ -59,9 +59,10 @@
             style="cursor: pointer"
             @click="() => editDictItem(record)"
           />
-          <a-divider type="vertical" />
+          <a-divider v-has="'billing:delete'" type="vertical"/>
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
             <a-icon
+              v-has="'billing:delete'"
               type="delete"
               title="删除"
               class="primary-text"

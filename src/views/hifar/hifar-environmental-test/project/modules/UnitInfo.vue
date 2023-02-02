@@ -31,20 +31,19 @@
             @change="() => handleSearch('experiment')"
           />
           <template slot="table-operator">
-            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(1)">
+            <a-button v-has="'methods:add'" icon="plus" size="small" type="ghost-primary"
+                      @click="() => handleShowAddModal(1)">
               添加方法
             </a-button>
-            <template>
-              <a-button
-                v-has="'entrustment:delete'"
-                icon="delete"
-                size="small"
-                type="danger"
-                @click="() => deleteBatch(1)"
-              >
-                批量删除
-              </a-button>
-            </template>
+            <a-button
+              v-has="'methods:delete'"
+              icon="delete"
+              size="small"
+              type="danger"
+              @click="() => deleteBatch(1)"
+            >
+              批量删除
+            </a-button>
           </template>
           <h-vex-table
             ref="experiment"
@@ -57,7 +56,8 @@
           >
             <template slot="actions" slot-scope="text, record">
               <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(1, record.id)"/>
+                <h-icon v-has="'methods:delete'" class="danger-text" type="icon-shanchu"
+                        @click="() => handleDelete(1, record.id)"/>
               </a-tooltip>
             </template>
           </h-vex-table>
@@ -75,10 +75,13 @@
             @change="() => handleSearch('parameter')"
           />
           <template slot="table-operator">
-            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(3)">
+            <a-button v-has="'testcondition:add'" icon="plus" size="small" type="ghost-primary"
+                      @click="() => handleShowAddModal(3)">
               新增参数
             </a-button>
-            <a-button icon="delete" size="small" type="danger" @click="() => deleteBatch(3)"> 批量删除</a-button>
+            <a-button v-has="'testcondition:delete'" icon="delete" size="small" type="danger"
+                      @click="() => deleteBatch(3)"> 批量删除
+            </a-button>
           </template>
           <h-vex-table
             ref="parameter"
@@ -91,7 +94,8 @@
           >
             <template slot="actions" slot-scope="text, record">
               <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(3, record.id)"/>
+                <h-icon v-has="'testcondition:delete'" class="danger-text" type="icon-shanchu"
+                        @click="() => handleDelete(3, record.id)"/>
               </a-tooltip>
             </template>
           </h-vex-table>
@@ -109,10 +113,13 @@
             @change="() => handleSearch('testBefore')"
           />
           <template slot="table-operator">
-            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(7, 1)">
+            <a-button v-has="'testTemplate:add'" icon="plus" size="small" type="ghost-primary"
+                      @click="() => handleShowAddModal(7, 1)">
               添加试前模板
             </a-button>
-            <a-button icon="delete" size="small" type="danger" @click="deleteBatch(7, 1)"> 批量删除</a-button>
+            <a-button v-has="'testTemplate:delete'" icon="delete" size="small" type="danger" @click="deleteBatch(7, 1)">
+              批量删除
+            </a-button>
           </template>
           <h-vex-table
             ref="testBefore"
@@ -138,7 +145,8 @@
                 <a-divider type="vertical"/>
               </span>
               <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(7, record.id, 1)"/>
+                <h-icon v-has="'testTemplate:delete'" class="danger-text" type="icon-shanchu"
+                        @click="() => handleDelete(7, record.id, 1)"/>
               </a-tooltip>
             </template>
           </h-vex-table>
@@ -156,10 +164,13 @@
             @change="() => handleSearch('testHalfway')"
           />
           <template slot="table-operator">
-            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(7, 2)">
+            <a-button v-has="'testTemplate:add'" icon="plus" size="small" type="ghost-primary"
+                      @click="() => handleShowAddModal(7, 2)">
               添加试中模板
             </a-button>
-            <a-button icon="delete" size="small" type="danger" @click="deleteBatch(7, 2)"> 批量删除</a-button>
+            <a-button v-has="'testTemplate:delete'" icon="delete" size="small" type="danger" @click="deleteBatch(7, 2)">
+              批量删除
+            </a-button>
           </template>
           <h-vex-table
             ref="testHalfway"
@@ -185,7 +196,8 @@
                 <a-divider type="vertical"/>
               </span>
               <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(7, record.id, 2)"/>
+                <h-icon v-has="'testTemplate:delete'" class="danger-text" type="icon-shanchu"
+                        @click="() => handleDelete(7, record.id, 2)"/>
               </a-tooltip>
             </template>
           </h-vex-table>
@@ -203,10 +215,13 @@
             @change="() => handleSearch('testAfter')"
           />
           <template slot="table-operator">
-            <a-button icon="plus" size="small" type="ghost-primary" @click="() => handleShowAddModal(7, 3)">
+            <a-button v-has="'testTemplate:add'" icon="plus" size="small" type="ghost-primary"
+                      @click="() => handleShowAddModal(7, 3)">
               添加试后模板
             </a-button>
-            <a-button icon="delete" size="small" type="danger" @click="deleteBatch(7, 3)"> 批量删除</a-button>
+            <a-button v-has="'testTemplate:delete'" icon="delete" size="small" type="danger" @click="deleteBatch(7, 3)">
+              批量删除
+            </a-button>
           </template>
           <h-vex-table
             ref="testAfter"
@@ -232,7 +247,8 @@
                 <a-divider type="vertical"/>
               </span>
               <a-tooltip title="删除">
-                <h-icon class="danger-text" type="icon-shanchu" @click="() => handleDelete(7, record.id, 3)"/>
+                <h-icon v-has="'testTemplate:delete'" class="danger-text" type="icon-shanchu"
+                        @click="() => handleDelete(7, record.id, 3)"/>
               </a-tooltip>
             </template>
           </h-vex-table>

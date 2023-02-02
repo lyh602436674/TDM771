@@ -26,7 +26,7 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <span slot="standardCode" slot-scope="text,record">
-          <a href="javascript:;" @click="handleDetailCode(record)">
+          <a  @click="handleDetailCode(record)">
             {{ record.standardCode? record.standardCode:'--' }}
           </a>
         </span>
@@ -49,6 +49,7 @@
         </span>
         <span slot="action" slot-scope="text, record">
           <a-icon
+            v-has="'method:add'"
             type="edit"
             title="编辑"
             class="primary-text"
@@ -66,6 +67,7 @@
           <a-divider type="vertical" />
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
             <a-icon
+              v-has="'method:delete'"
               type="delete"
               title="删除"
               class="primary-text"

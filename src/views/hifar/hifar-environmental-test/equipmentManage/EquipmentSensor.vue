@@ -71,7 +71,7 @@
                 </a>
                 <template slot="actions" slot-scope="text, record">
                   <a-popconfirm title="确认删除？" @confirm="() => handleDelete(record.id)">
-                    <h-icon class="danger-text" type="icon-shanchu" style="cursor: pointer" />
+                    <h-icon v-has="'sensor:delete'" class="danger-text" type="icon-shanchu" style="cursor: pointer" />
                   </a-popconfirm>
                 </template>
               </h-vex-table>

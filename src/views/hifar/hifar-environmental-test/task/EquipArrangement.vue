@@ -172,12 +172,13 @@
                       <a-space style="cursor: pointer">
                         <a-icon class="primary-text" title="查看" type="eye"
                                 @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
-                        <a-icon class="primary-text" title="在线编辑" type="edit"
+                        <a-icon v-has="'archiveTem:edit'" class="primary-text" title="在线编辑" type="edit"
                                 @click="webOfficeEdit(record.docxPathXh)"></a-icon>
                         <a :href="record.docxPathXh" title="下载word">
                           <a-icon class="primary-text" type="download"></a-icon>
                         </a>
                         <h-upload-file-b
+                          v-has="'archiveTem:edit'"
                           v-model="swapFileList"
                           :customParams="{id:record.id}"
                           accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -192,12 +193,13 @@
                       <a-space style="cursor: pointer">
                         <a-icon class="primary-text" title="查看" type="eye"
                                 @click="handleReviewPdf('实施方案',record.pdfPathSs)"></a-icon>
-                        <a-icon class="primary-text" title="在线编辑" type="edit"
+                        <a-icon v-has="'embodimentTem:edit'" class="primary-text" title="在线编辑" type="edit"
                                 @click="webOfficeEdit(record.docxPathSs)"></a-icon>
                         <a :href="record.docxPathSs" title="下载word">
                           <a-icon class="primary-text" type="download"></a-icon>
                         </a>
                         <h-upload-file-b
+                          v-has="'embodimentTem:edit'"
                           v-model="swapFileList"
                           :customParams="{id:record.id}"
                           accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"

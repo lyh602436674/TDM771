@@ -63,9 +63,9 @@
           style="cursor: pointer"
           @click="() => handleDetail(record)"
         />
-        <a-divider type="vertical" />
+        <a-divider type="vertical" v-has="'sensorlist:delete'"/>
         <a-popconfirm title="确认删除" @confirm="() => handleDelete(record.id)">
-          <h-icon class="danger-text" type="icon-shanchu" />
+          <h-icon v-has="'sensorlist:delete'" class="danger-text" type="icon-shanchu" />
         </a-popconfirm>
       </template>
     </h-vex-table>

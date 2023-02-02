@@ -39,7 +39,7 @@
             />
           </a-form-item>
 
-          <template v-if="form.getFieldValue('menuType') == 'menu'">
+          <template v-if="form.getFieldValue('menuType') === 'menu'">
             <a-form-item :labelCol="labelCol" :wrapperCol="wrapperCol" label="菜单路径">
               <a-input v-decorator="['path', validatorRules.path]" placeholder="请输入菜单路径" />
             </a-form-item>
@@ -82,7 +82,7 @@
           </template>
 
           <a-form-item
-            v-if="form.getFieldValue('menuType') == 'btn'"
+            v-if="form.getFieldValue('menuType') === 'btn'"
             :labelCol="labelCol"
             :wrapperCol="wrapperCol"
             label="授权标识"
@@ -105,19 +105,20 @@
     </div>
     <div class="drawer-bootom-button">
       <a-button :style="{ marginRight: '8px' }" @click="handleCancel"> 关闭 </a-button>
-      <a-button type="primary" @click="handleOk">提交</a-button>
+      <a-button type="primary" @click="handleOk">确定</a-button>
     </div>
   </a-drawer>
 </template>
 
 <script>
-import { addPermission, editPermission, getSystemMenuList } from '@/api/api'
+import {addPermission, editPermission, getSystemMenuList} from '@/api/api'
 import Icons from './icon/Icons'
 import pick from 'lodash.pick'
-import { rebuildRouter } from '@/utils/hasPermission'
+import {rebuildRouter} from '@/utils/hasPermission'
+
 export default {
   name: 'PermissionModal',
-  components: { Icons },
+  components: {Icons},
   data() {
     return {
       drawerWidth: 700,
@@ -341,7 +342,7 @@ export default {
         this.menuLabel = '按钮名称'
       }
       this.form.resetFields()
-      this.form.setFieldsValue({ menuType: menuType })
+      this.form.setFieldsValue({menuType: menuType, pid: this.model.pid})
     },
     selectIcons() {
       this.iconChooseVisible = true

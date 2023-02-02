@@ -33,13 +33,13 @@
           />
           <a-space slot="extra" class="actions-icon" align="end" size="small">
             <a-tooltip title="新建">
-              <a-icon type="plus-circle" @click="handleAdd" />
+              <a-icon v-has="'project:add'" type="plus-circle" @click="handleAdd"/>
             </a-tooltip>
             <a-tooltip title="编辑">
-              <a-icon type="edit" @click="handleModify" />
+              <a-icon v-has="'project:add'" type="edit" @click="handleModify"/>
             </a-tooltip>
             <a-tooltip title="删除">
-              <h-icon class="danger-text" type="icon-shanchu" @click="handleDelete" />
+              <h-icon v-has="'project:delete'" class="danger-text" type="icon-shanchu" @click="handleDelete"/>
             </a-tooltip>
           </a-space>
         </h-edit-tree>

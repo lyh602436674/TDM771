@@ -81,13 +81,12 @@
               @click="() => handleDetail(record)"
             />
           </a-tooltip>
-          <a-divider type="vertical" />
+          <a-divider v-has="'handover:delete'" type="vertical"/>
           <!-- 删除 -->
-          <a-tooltip title="删除">
             <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-              <h-icon type="icon-shanchu" title="删除" class="danger-text" style="cursor: pointer" />
+              <h-icon v-has="'handover:delete'" class="danger-text" style="cursor: pointer" title="删除"
+                      type="icon-shanchu"/>
             </a-popconfirm>
-          </a-tooltip>
         </template>
       </h-vex-table>
     </h-card>
@@ -98,10 +97,11 @@
 
 <script>
 import HandoverAddModal from './modules/HandoverAddModal.vue'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import mixin from '@/views/hifar/mixin.js'
 import handoverDetail from './modules/handoverDetail.vue'
 import moment from 'moment'
+
 export default {
   mixins: [mixin],
   provide() {

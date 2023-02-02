@@ -116,9 +116,10 @@
           type="history"
           @click="() => historyCollection(record)"
         />
-        <a-divider type="vertical"/>
+        <a-divider type="vertical" v-has="'device:delete'"/>
         <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
           <a-icon
+            v-has="'device:delete'"
             class="primary-text"
             style="cursor: pointer"
             theme="twoTone"

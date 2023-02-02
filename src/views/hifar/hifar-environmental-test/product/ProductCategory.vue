@@ -35,6 +35,7 @@
         </template>
         <span slot='action' slot-scope='text, record'>
           <a-icon
+            v-has="'productCategory:add'"
             class='primary-text'
             style='cursor: pointer'
             title='编辑'

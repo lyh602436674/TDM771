@@ -56,9 +56,10 @@
             style="cursor: pointer"
             @click="() => detailHandle(record)"
           />
-          <a-divider type="vertical" />
+          <a-divider type="vertical" v-has="'site:delete'"/>
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
             <a-icon
+              v-has="'site:delete'"
               type="delete"
               title="删除"
               class="primary-text"
