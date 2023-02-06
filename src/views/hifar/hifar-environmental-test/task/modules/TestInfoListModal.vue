@@ -27,7 +27,7 @@
         :showToggleButton="false"
         @change="refresh(true)"
       />
-      <h-vex-table slot="content" ref="testInfoListTable" :columns="equipColumns" :data="loadData">
+      <h-vex-table slot="content" ref="testInfoListTable" :columns="columns" :data="loadData">
         <template slot="status" slot-scope="text">
           <a-badge v-if="text == 0" color="grey" text="未发布" />
           <a-badge v-else-if="text == 1" color="geekblue" text="已发布" />
@@ -42,14 +42,12 @@
           <a-popconfirm title="确定发布吗？" @confirm="() => handleRelease(record.id)">
             <a v-if="[0].includes(record.status)">发布</a>
           </a-popconfirm>
+          <a-divider v-if="[0].includes(record.status)" type="vertical"/>
           <a-popconfirm title="确定删除吗？" @confirm="() => handleDelete(record.id)">
-            <a-divider
-              v-if="[0].includes(record.status)"
-              type="vertical"/>
             <a v-if="[0].includes(record.status)" style="color: red">删除</a>
           </a-popconfirm>
-          <a-popconfirm title="确定撤销吗？" @confirm="() => handleBack(record.id)">
-            <a v-if="[1,20,25,30,40].includes(record.status)">撤销</a>
+          <a-popconfirm title="确定撤销吗？" @confirm="() => handleBack(record)">
+            <a v-if="record.status === 1">撤销</a>
           </a-popconfirm>
         </span>
       </h-vex-table>
@@ -75,7 +73,7 @@ export default {
         delete: '/HfEnvTaskTestBusiness/logicRemoveById' // 删除
       },
       queryParams: {},
-      equipColumns: [
+      columns: [
         {
           title: '设备名称',
           dataIndex: 'equipName',
@@ -258,9 +256,9 @@ export default {
     refresh(bool = true) {
       this.$refs.testInfoListTable.refresh(bool)
     },
-    handleBack(id) {
-      postAction(this.url.recover, { id: id }).then((res) => {
-        if (res.code == 200) {
+    handleBack(record) {
+      postAction(this.url.recover, {id: record.id}).then((res) => {
+        if (res.code === 200) {
           this.$message.success('操作成功')
           this.refresh()
         }
