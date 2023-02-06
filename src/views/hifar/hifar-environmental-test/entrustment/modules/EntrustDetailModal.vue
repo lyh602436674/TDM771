@@ -18,8 +18,11 @@
   >
     <div slot="footer" class="footer">
       <template v-if="detailData.status == 10">
-        <a-button :loading="submitLoading" v-has="'entrustCheck:pass'" type="primary"
-                  @click="handleCheckPass(detailData.id,0)"> 审核通过
+        <a-button
+          :loading="submitLoading"
+          v-has="'entrustCheck:pass'"
+          type="primary"
+          @click="handleCheckPass(detailData.id,0)"> 审核通过
         </a-button>
         <a-button v-has="'entrustCheck:reject'" type="ghost-primary" @click="handleCheck(detailData)"> 审核驳回</a-button>
       </template>
@@ -28,21 +31,21 @@
     <a-spin :spinning="spinning">
       <h-card :bordered="false">
         <h-tabs :activeKey="activeKey" :animated="true" @change="handleTabsChange">
-          <a-tab-pane key="1" :tab='viewDetailType === "1" ? "委托信息" : "运行单信息"'>
-            <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
+          <a-tab-pane key="1" :tab="viewDetailType === &quot;1&quot; ? &quot;委托信息&quot; : &quot;运行单信息&quot;">
+            <entrust-detail ref="EntrustDetail" :detailData="detailData"></entrust-detail>
           </a-tab-pane>
           <a-tab-pane key="2" tab="委托单预览" v-if="detailData.entrustType === '2'">
-            <div class='autoHeight'>
+            <div class="autoHeight">
               <embed
-                v-if='detailData.reportPath'
-                ref='iframe'
-                :src='detailData.reportPath'
-                frameborder='0'
-                height='100%'
-                scrolling='auto'
-                width='100%'
+                v-if="detailData.reportPath"
+                ref="iframe"
+                :src="detailData.reportPath"
+                frameborder="0"
+                height="100%"
+                scrolling="auto"
+                width="100%"
               />
-              <a-empty v-else style='margin-top: 160px'/>
+              <a-empty v-else style="margin-top: 160px"/>
             </div>
           </a-tab-pane>
         </h-tabs>
@@ -54,18 +57,18 @@
 
 <script>
 import pdf from 'vue-pdf'
-import {postAction} from '@/api/manage'
-import EntrustDetail from "@views/hifar/hifar-environmental-test/entrustment/components/EntrustDetail";
+import { postAction } from '@/api/manage'
+import EntrustDetail from '@views/hifar/hifar-environmental-test/entrustment/components/EntrustDetail';
 
 export default {
   inject: {
     getContainer: {
-      default: () => document.body,
-    },
+      default: () => document.body
+    }
   },
   components: {
     EntrustDetail,
-    pdf,
+    pdf
   },
 
   data() {
@@ -82,16 +85,16 @@ export default {
         detail: '/HfEnvEntrustBusiness/queryById',
         check: '/HfEnvEntrustBusiness/submitConfirm',
         reject: '/HfEnvEntrustBusiness/reject',
-        externalManage: '/HfEnvEntrustBusiness/externalManage',
+        externalManage: '/HfEnvEntrustBusiness/externalManage'
       },
       numPages: 1, // pdf文件总页数
       pdfUrl: null,
       currentPage: 0,
       pageCount: 0,
-      outsourcingUnit: "",
-      viewDetailType: "",
+      outsourcingUnit: '',
+      viewDetailType: '',
       testCondition: 2,
-      testProgress: 2,
+      testProgress: 2
     }
   },
   methods: {
@@ -112,7 +115,7 @@ export default {
     loadDetail(id, type) {
       this.spinning = true
       let url = this.url.detail
-      postAction(url, {id, type}).then((res) => {
+      postAction(url, { id, type }).then((res) => {
         if (res.code === 200) {
           this.detailData = res.data
         }
@@ -125,7 +128,7 @@ export default {
         title: '提示',
         content: '确认驳回吗?',
         onOk: () => {
-          postAction(this.url.reject, {id: record.id}).then(res => {
+          postAction(this.url.reject, { id: record.id }).then(res => {
             if (res.code === 200) {
               this.$message.success('操作成功')
               this.handleCancel();
@@ -134,26 +137,30 @@ export default {
               this.$message.warning(res.msg)
             }
           })
-        },
+        }
       })
     },
     handleCheckPass(id, isForce) {
       if (this.submitLoading) return
       this.submitLoading = true
-      postAction(this.url.check, {id, isForce}).then((res) => {
+      postAction(this.url.check, { id, isForce }).then((res) => {
         if (res.code === 200) {
           this.$message.success('操作成功')
           this.loadDetail(this.entrustId)
         } else {
           if (res.msg.includes('没有合适的设备')) {
+            let testNames = res.data
+              .map(item => item.testName)
+              .join(',')
+
             this.$confirm({
               title: '提示',
-              content: '没有匹配到合适的设备，是否继续通过?',
+              content: testNames + '没有匹配到合适的设备，是否继续通过?',
               onOk: () => {
-                postAction(this.url.check, {id, isForce: 1}).then(res => {
+                postAction(this.url.check, { id, isForce: 1 }).then(res => {
                   if (res.code === 200) {
                     this.$message.success('操作成功')
-                    this.handleCancel();
+                    this.handleCancel()
                     this.$emit('change', true)
                   } else {
                     this.$message.warning(res.msg)
@@ -168,8 +175,8 @@ export default {
           }
         }
       })
-    },
-  },
+    }
+  }
 }
 </script>
 <style lang='less' scoped>
