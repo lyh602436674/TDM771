@@ -208,7 +208,8 @@ export default {
     }
   },
   methods: {
-    show(pieceIds) {
+    show(pieceIds,selectedKeys) {
+      this.selectedKeys = selectedKeys
       this.pieceIds = pieceIds
       this.visible = true
       this.$nextTick(() => {

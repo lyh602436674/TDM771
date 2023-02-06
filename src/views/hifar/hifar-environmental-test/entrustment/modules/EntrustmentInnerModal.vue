@@ -585,8 +585,9 @@ export default {
       let errMap = await this.$refs.pieceTable.validate().catch(errMap => errMap)
       if (errMap) return this.$message.warning('请填写产品编号')
       if (!this.tableData.length) return this.$message.warning('请先添加产品')
-      this.$refs.historyProjectModal.show(this.tableData.map(item => item.id).toString())
-      this.$refs.historyProjectModal.selectedKeys = this.projectInfoData && this.projectInfoData.length && this.projectInfoData.map(item => item.id) || []
+      let pieceIds = this.tableData.map(item => item.id).toString()
+      let projectIds = this.projectInfoData.map(item => item.unitId)
+      this.$refs.historyProjectModal.show(pieceIds, projectIds)
     },
     // 选择项目
     async handleAddProject() {
@@ -594,9 +595,8 @@ export default {
       if (errMap) return this.$message.warning('请填写产品编号')
       if (!this.tableData.length) return this.$message.warning('请先添加产品')
       if (!this.selectedPieceRows.length) return this.$message.warning('请先选择产品')
-      this.$refs.projectAddModal.visible = true
-      await this.$refs.projectAddModal.getProjectTree()
-      this.$refs.projectAddModal.selectedRowKeys = this.projectInfoData && this.projectInfoData.length && this.projectInfoData.map(item => item.id) || []
+      let projectIds = this.projectInfoData.map(item => item.unitId)
+      this.$refs.projectAddModal.show(projectIds)
     },
 
     // 选择项目弹框返回数据
@@ -625,8 +625,8 @@ export default {
       })).map((v, i) => {
         return {
           ...v,
-          pieceIds: selectedPiece.length ? selectedPiece.map(_item => _item.id).toString() : '',
-          pieceNos: selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : ''
+          pieceIds: v.pieceIds || (selectedPiece.length ? selectedPiece.map(_item => _item.id).toString() : ''),
+          pieceNos: v.pieceNos || (selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : '')
         }
       })
       this.buildLayer(this.projectInfoData)

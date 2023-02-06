@@ -145,6 +145,9 @@ export default {
     show(record) {
       this.visible = true
       this.equipCode = record.equipCode
+
+      const collectionUrl = window._CONFIG['collectionURL']
+      postAction(collectionUrl + '/GetDeviceTag', {"deviceCode": "32303041001"})
     },
     handleCancel(e) {
       this.visible = false
