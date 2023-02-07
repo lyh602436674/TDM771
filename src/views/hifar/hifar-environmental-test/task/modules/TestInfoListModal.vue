@@ -245,13 +245,11 @@ export default {
   methods: {
     show(record = {}) {
       this.visible = true
-      if (record.id) {
-        this.taskId = record.id
-      }
+      this.taskId = record.id
     },
     handleCancel() {
       this.visible = false
-      this.$emit('change', this.handleBack())
+      this.$emit('change')
     },
     refresh(bool = true) {
       this.$refs.testInfoListTable.refresh(bool)

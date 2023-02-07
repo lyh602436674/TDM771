@@ -25,14 +25,22 @@
         style="margin: 0 0 20px 0"
         title="适用计费准备详情">
         <h-desc-item label="试验项目">{{ model.unitName || '--' }}</h-desc-item>
-        <h-desc-item label="试验设备">{{ model.equipName || '--' }}</h-desc-item>
+        <h-desc-item label="试验设备(设备编号)">{{ `${model.equipName}(${model.equipCode})` || '--' }}</h-desc-item>
         <h-desc-item label="温度范围">{{ model.temperatureRange || '--' }}</h-desc-item>
         <h-desc-item label="湿度">{{ model.humidityRange || '--' }}</h-desc-item>
         <h-desc-item label="折扣">{{ model.discount || '--' }}</h-desc-item>
         <h-desc-item label="压力">{{ model.pressureRange || '--' }}</h-desc-item>
         <h-desc-item label="加速度">{{ model.accelerationRange || '--' }}</h-desc-item>
-        <h-desc-item label="开机费">{{ model.startupCost || '--' }}</h-desc-item>
-        <h-desc-item label="单价">{{ model.unitPrice || '--' }}</h-desc-item>
+        <h-desc-item label="开机费">
+          <span slot="content" :style="{color: isNaN(Number(model.startupCost)) ? 'red' : ''}">
+            {{ model.startupCost || '--' }}
+          </span>
+        </h-desc-item>
+        <h-desc-item label="单价">
+          <span slot="content" :style="{color: isNaN(Number(model.unitPrice)) ? 'red' : ''}">
+            {{ model.unitPrice || '--' }}
+          </span>
+        </h-desc-item>
       </h-desc>
       <h-card class="cost-type" title="计费方式">
         <a-radio-group v-model="radioValue" @change="handleRadioChange">
@@ -119,7 +127,7 @@ export default {
                 let endTime = val ? val.valueOf() : 0
                 let res = this.getTimeDiff(startTimeVal, endTime)
                 form1.setFieldsValue({realUseTime: res || 0})
-                if (this.radioValue === '1' && res && this.model.unitPrice && this.model.startupCost) {
+                if (this.radioValue === '1' && res && this.isNumberEqual(this.model.unitPrice) && this.isNumberEqual(this.model.startupCost)) {
                   form3.setFieldsValue({totalExpenses: res * this.model.unitPrice + +this.model.startupCost})
                 } else {
                   form3.setFieldsValue({totalExpenses: undefined})
@@ -144,7 +152,7 @@ export default {
           min: 0,
           style: {width: '100%',},
           change: (val) => {
-            if (this.radioValue === '2' && this.model.unitPrice && this.model.startupCost) {
+            if (this.radioValue === '2' && this.isNumberEqual(this.model.unitPrice) && this.isNumberEqual(this.model.startupCost)) {
               this.$refs.taskForm3.form.setFieldsValue({totalExpenses: (val * this.model.unitPrice + +this.model.startupCost) || undefined})
             }
           }
@@ -179,6 +187,7 @@ export default {
         finish: '/HfEnvTaskTestBusiness/finish',
         calcCost: "/HfEnvTaskTestBusiness/costCalculation",
       },
+      errMessage: ''
     }
   },
   methods: {
@@ -200,12 +209,16 @@ export default {
       postAction(this.url.calcCost, {id: record.id}).then(res => {
         if (res.code === 200) {
           this.model = Object.assign({}, this.model, res.data)
+          if (res.msg) {
+            this.$message.warning(res.msg)
+            this.errMessage = res.msg
+          }
           this.visible = true
           this.$nextTick(() => {
             this.calcTotalCost()
           })
         } else {
-          this.$message.warning(res.msg)
+
         }
       }).finally(() => {
         this.loading = false
@@ -215,12 +228,15 @@ export default {
       this.radioValue = e.target.value
       this.calcTotalCost()
     },
+    isNumberEqual(value) {
+      return !isNaN(Number(value))
+    },
     calcTotalCost() {
       let {unitPrice, startupCost} = this.model
       let form1 = this.$refs.taskForm1.form
       let form2 = this.$refs.taskForm2.form
       let form3 = this.$refs.taskForm3.form
-      if (this.radioValue === '1' && unitPrice && startupCost) {
+      if (this.radioValue === '1' && this.isNumberEqual(unitPrice) && this.isNumberEqual(startupCost)) {
         let realStartTime = form1.getFieldsValue().realStartTime
         let startTime = realStartTime ? moment(realStartTime).format('x') : 0
         let realEndTime = form1.getFieldsValue().realEndTime
@@ -229,11 +245,14 @@ export default {
         if (startTime && endTime) {
           form3.setFieldsValue({totalExpenses: (diff * unitPrice + +startupCost) || undefined})
         }
-      } else if (this.radioValue === '2' && unitPrice && startupCost) {
+      } else if (this.radioValue === '2' && this.isNumberEqual(unitPrice) && this.isNumberEqual(startupCost)) {
         let testSecondary = form2.getFieldsValue().testSecondary
         if (testSecondary >= 0) {
           form3.setFieldsValue({totalExpenses: (testSecondary * unitPrice + +startupCost) || undefined})
         }
+      } else {
+        form3.setFieldsValue({totalExpenses: undefined})
+        form2.setFieldsValue({testSecondary: undefined})
       }
     },
     getTimeDiff(startTime, endTime) {
@@ -277,13 +296,14 @@ export default {
           if (errMap) return
         }
         if (errMap) {
-          resolve(result)
-        } else {
           reject(errMap)
+        } else {
+          resolve(result)
         }
       })
     },
     handleSubmit() {
+      if (this.errMessage) return this.$message.warning(this.errMessage)
       this.validateForm().then(res => {
         this.loading = true
         let params = {
@@ -305,7 +325,7 @@ export default {
           this.loading = false
         })
       }).catch((err) => {
-        console.log(err)
+        console.log(err, 'ERR')
       })
     },
   },
