@@ -117,7 +117,6 @@ export default {
       this.visible = true
       this.getProjectTree()
       this.selectedRowKeys = selectedRowKeys
-      console.log(this.selectedRowKeys,this.selectedRowKeys)
     },
     getProjectTree() {
       getAction(this.url.treeList).then((res) => {

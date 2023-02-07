@@ -615,7 +615,8 @@ export default {
         }
       }
       let selectedPiece = this.selectedPieceRows
-      this.projectInfoData = this.projectInfoData.concat(extendRecord.map((item, index) => {
+      let {projectResult} = this.$refs.ProjectForm.validateProjectForm(this.projectInfoData, false)
+      this.projectInfoData = projectResult.concat(extendRecord.map((item, index) => {
         return {
           ...item,
           // 给选择之后的项目添加unitId字段

@@ -340,6 +340,7 @@ export default {
       this.userInfo = Object.assign({}, record, {
         avatar: record.headUrl,
         birthday: record.birthday == 0 || !record.birthday ? moment() : moment(record.birthday.toString()),
+        testType: Number(record.testType)
       })
       // 根据数据中是否包含id这个字段，如果包含，那么创建的form中不包含密码字段
       if (this.userInfo.id) {

@@ -144,6 +144,8 @@ export default {
           let obj = Object.assign({}, val, {
             unitId: val.unitId ? val.unitId : val.id,
             testName: val.unitName,
+            isShowUserInReport: val.isShowUserInReport || '1',
+            isPowerUp: val.isPowerUp || '1',
             attachIds: val.fileInfo && val.fileInfo.length && val.fileInfo.map(item => {
               return {
                 fileId: item.id,

@@ -324,18 +324,6 @@ export default {
     managerChange1(val, option) {
       this.$refs.toolsProductForm.form.setFieldsValue({person: option.idName})
     },
-    validateCheckPeriod(rule, value, callback) {
-      if (!value) {
-        // callback('请输入检定周期')
-        callback()
-      } else {
-        if (value < 0) {
-          callback('请输入正确格式的保质期')
-        } else {
-          callback()
-        }
-      }
-    }
   }
 }
 </script>

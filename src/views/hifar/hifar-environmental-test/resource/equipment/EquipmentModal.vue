@@ -443,7 +443,7 @@ export default {
         callback()
       } else {
         if (value < 0) {
-          callback('请输入正确格式的保质期')
+          callback('请输入正确格式的计量周期')
         } else {
           callback()
         }

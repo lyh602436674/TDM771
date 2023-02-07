@@ -193,6 +193,7 @@ export default {
   methods: {
     show(type, record) {
       this.loading = true
+      this.errMessage = ''
       this.model = Object.assign({}, record, {
         approachTime: this.dateFormat(record.approachTime),
         departureTime: this.dateFormat(record.departureTime),
@@ -218,7 +219,7 @@ export default {
             this.calcTotalCost()
           })
         } else {
-
+          this.$message.warning(res.msg)
         }
       }).finally(() => {
         this.loading = false
