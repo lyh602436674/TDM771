@@ -10,9 +10,7 @@
     @submit='handleClickSubmit'
     @cancel='handleCancel'
   >
-    <h-card>
       <h-form
-        slot='content'
         v-if='visible'
         ref='toolsProductForm'
         v-model='equipentInfo'
@@ -20,14 +18,13 @@
         :column='24'
         @change='submit'
       ></h-form>
-    </h-card>
   </h-modal>
 </template>
 <script>
 import moment from 'moment'
-import { downloadFile, postAction, getFileAccessHttpUrl } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import SysUserSelect from '@/views/components/SysUserSelect'
-import { isArray } from 'lodash'
+import {isArray} from 'lodash'
 
 export default {
   name: 'ToolProductModel',

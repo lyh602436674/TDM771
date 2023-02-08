@@ -7,96 +7,93 @@
  * @FilePath: /hifar-platform-client/src/views/hifar/hifar-environmental-test/tools/ToolsProductList
 -->
 <template>
-  <h-card ref="pageWrapper" :bordered='true' fixed>
-    <h-search
-      slot='search-form'
-      v-model='queryParam'
-      :data='searchBar'
-      :showToggleButton='true'
-      size='small'
-      @change='refresh'
-    />
-    <div slot='table-operator' style='border-top: 5px'>
-      <vxe-toolbar ref='envEquipmentOperator' custom>
-        <div slot='buttons'>
-          <a-button v-has="'device:add'" icon='plus' size='small' type='ghost-primary' @click='handleAdd'>添加</a-button>
-          <a-button v-has="'device:privice'" icon='export' size='small' type='ghost-warning'
-                    @click="handleExportXls('工装信息')">
-            导出
-          </a-button>
-          <a-button v-has="'device:import'" icon='import' size='small' type='ghost-success' @click='handleImportExcel'>
-            导入
-          </a-button>
-          <a-button icon='download' size='small' type='ghost-success' @click='handleTagDownload'>
-            标签下载
-          </a-button>
-          <!--          <a-button icon='logout' size='small' type='ghost-primary' @click='handleBorrow'>-->
-          <!--            借用-->
-          <!--          </a-button>-->
-          <!--          <a-button icon='login' size='small' type='ghost-primary' @click='handleReturn'>-->
-          <!--            归还-->
-          <!--          </a-button>-->
-          <!--          <a-button icon='bar-chart' size='small' type='primary' @click='handleStatistics1'>-->
-          <!--            统计1-->
-          <!--          </a-button>-->
-          <!--          <a-button icon='bar-chart' size='small' type='primary' @click='handleStatistics2'>-->
-          <!--            统计2-->
-          <!--          </a-button>-->
-          <template>
-            <a-button v-has="'device:delete'" icon='delete' size='small' type='danger' @click='batchDel'>
-              批量删除
-            </a-button>
-          </template>
-        </div>
-      </vxe-toolbar>
-    </div>
-    <h-vex-table
-      ref='diveceInfoTable'
-      slot='content'
-      :columns='columns'
-      :customConfig='{ storage: { visible: true, resizable: true } }'
-      :data='deviceInfoLoadData'
-      :row-selection='{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }'
-      :rowKey='(record) => record.id'
-      :scroll='{ x: true }'
-      uid='envEquipmentList'
-    >
+  <div ref="pageWrapper" class="page-wrapper">
+    <h-card :bordered='true' fixed>
+      <h-search
+        slot='search-form'
+        v-model='queryParam'
+        :data='searchBar'
+        :showToggleButton='true'
+        size='small'
+        @change='refresh'
+      />
+      <div slot='table-operator' style='border-top: 5px'>
+        <a-button v-has="'device:add'" icon='plus' size='small' type='ghost-primary' @click='handleAdd'>添加
+        </a-button>
+        <a-button v-has="'device:privice'" icon='export' size='small' type='ghost-warning'
+                  @click="handleExportXls('工装信息')">
+          导出
+        </a-button>
+        <a-button v-has="'device:import'" icon='import' size='small' type='ghost-success'
+                  @click='handleImportExcel'>
+          导入
+        </a-button>
+        <!--          <a-button icon='download' size='small' type='ghost-success' @click='handleTagDownload'>-->
+        <!--            标签下载-->
+        <!--          </a-button>-->
+        <!--          <a-button icon='logout' size='small' type='ghost-primary' @click='handleBorrow'>-->
+        <!--            借用-->
+        <!--          </a-button>-->
+        <!--          <a-button icon='login' size='small' type='ghost-primary' @click='handleReturn'>-->
+        <!--            归还-->
+        <!--          </a-button>-->
+        <!--          <a-button icon='bar-chart' size='small' type='primary' @click='handleStatistics1'>-->
+        <!--            统计1-->
+        <!--          </a-button>-->
+        <!--          <a-button icon='bar-chart' size='small' type='primary' @click='handleStatistics2'>-->
+        <!--            统计2-->
+        <!--          </a-button>-->
+        <a-button v-has="'device:delete'" icon='delete' size='small' type='danger' @click='batchDel'>
+          批量删除
+        </a-button>
+      </div>
+      <h-vex-table
+        ref='diveceInfoTable'
+        slot='content'
+        :columns='columns'
+        :customConfig='{ storage: { visible: true, resizable: true } }'
+        :data='deviceInfoLoadData'
+        :row-selection='{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }'
+        :rowKey='(record) => record.id'
+        :scroll='{ x: true }'
+        uid='envEquipmentList'
+      >
       <span slot='countBorrow' slot-scope='text, record'>
         <a href='javascript:;' @click='countBorrowDetails(record)'>
           {{ record.countBorrow }}
         </a>
       </span>
-      <span slot='toolsCode' slot-scope='text, record'>
+        <span slot='toolsCode' slot-scope='text, record'>
         <a href='javascript:;' @click='detailHandle(record)'>
           {{ record.toolsCode ? record.toolsCode : '--' }}
         </a>
       </span>
-      <!-- 借用日期 -->
-      <span slot='borrowDate' slot-scope='text, record'>
+        <!-- 借用日期 -->
+        <span slot='borrowDate' slot-scope='text, record'>
         {{
-          record.borrowDate && record.borrowDate !== 0 && record.borrowDate > 0
-            ? moment(parseInt(record.borrowDate)).format('YYYY-MM-DD')
-            : '--'
-        }}
+            record.borrowDate && record.borrowDate !== 0 && record.borrowDate > 0
+              ? moment(parseInt(record.borrowDate)).format('YYYY-MM-DD')
+              : '--'
+          }}
       </span>
-      <!-- 检定日期 -->
-      <span slot='verificationDate' slot-scope='text, record'>
+        <!-- 检定日期 -->
+        <span slot='verificationDate' slot-scope='text, record'>
         {{
-          record.verificationDate && record.verificationDate !== 0 && record.verificationDate > 0
-            ? moment(parseInt(record.verificationDate)).format('YYYY-MM-DD')
-            : '--'
-        }}
+            record.verificationDate && record.verificationDate !== 0 && record.verificationDate > 0
+              ? moment(parseInt(record.verificationDate)).format('YYYY-MM-DD')
+              : '--'
+          }}
       </span>
-      <!-- 启用日期 -->
-      <span slot='activeDate' slot-scope='text, record'>
+        <!-- 启用日期 -->
+        <span slot='activeDate' slot-scope='text, record'>
         {{
-          record.activeDate && record.activeDate !== 0 && record.activeDate > 0
-            ? moment(parseInt(record.activeDate)).format('YYYY-MM-DD')
-            : '--'
-        }}
+            record.activeDate && record.activeDate !== 0 && record.activeDate > 0
+              ? moment(parseInt(record.activeDate)).format('YYYY-MM-DD')
+              : '--'
+          }}
       </span>
-      <!-- 操作 -->
-      <span slot='action' slot-scope='text, record'>
+        <!-- 操作 -->
+        <span slot='action' slot-scope='text, record'>
         <a-icon
           class='primary-text'
           style='cursor: pointer'
@@ -125,16 +122,15 @@
           />
         </a-popconfirm>
       </span>
-    </h-vex-table>
-    <tool-product-model ref='toolProductModel' @change='refresh(true)'></tool-product-model>
+      </h-vex-table>
+    </h-card>
+    <tool-product-model ref='toolProductModel' @change='refresh'></tool-product-model>
     <tools-product-borrow-list-model ref='borrowListModel'></tools-product-borrow-list-model>
     <tools-product-detail ref='detailModal'></tools-product-detail>
-    <tools-products-borrow-model ref='toolProductBorrowModel' @change='refresh(true)'/>
-    <tools-products-statistics-model ref='toolProductStatisticsModel' @change='refresh(true)'/>
-    <h-file-import ref='HFileImport' @change='refresh(true)' @downloadExcel='downloadChange'/>
-  </h-card>
-
-
+    <tools-products-borrow-model ref='toolProductBorrowModel' @change='refresh'/>
+    <tools-products-statistics-model ref='toolProductStatisticsModel' @change='refresh'/>
+    <h-file-import ref='HFileImport' @change='refresh' @downloadExcel='downloadChange'/>
+  </div>
 </template>
 
 <script>
@@ -427,8 +423,7 @@ export default {
       this.$refs.toolProductModel.show(record, '编辑')
     },
     handleAdd() {
-      let record = {}
-      this.$refs.toolProductModel.show(record, '添加')
+      this.$refs.toolProductModel.show({}, '添加')
     },
     // 导出
     async handleExportXls(name, model) {
@@ -479,6 +474,10 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+.page-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
 </style>
