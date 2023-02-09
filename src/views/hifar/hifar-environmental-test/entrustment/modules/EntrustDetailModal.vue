@@ -31,10 +31,10 @@
     <a-spin :spinning="spinning">
       <h-card :bordered="false">
         <h-tabs :activeKey="activeKey" :animated="true" @change="handleTabsChange">
-          <a-tab-pane key="1" :tab="viewDetailType === &quot;1&quot; ? &quot;委托信息&quot; : &quot;运行单信息&quot;">
+          <a-tab-pane key="1" :tab='viewDetailType === "1" ? "委托信息" : "运行单信息"'>
             <entrust-detail ref="EntrustDetail" :detailData="detailData"></entrust-detail>
           </a-tab-pane>
-          <a-tab-pane key="2" tab="委托单预览" v-if="detailData.entrustType === '2'">
+          <a-tab-pane key="2" tab="委托单预览">
             <div class="autoHeight">
               <embed
                 v-if="detailData.reportPath"

@@ -38,9 +38,6 @@ export default {
     entrustCode: {
       type: String
     },
-    isExternalManage: {
-      type: Boolean
-    }
   },
   components: {
     ReportMakeModal,
@@ -228,38 +225,6 @@ export default {
                     }
                   }
                 }),
-                this.isExternalManage ? h('a-upload', {
-                  props: {
-                    action: this.autoFileUrl,
-                    data: {id: params.row.id},
-                    headers: this.tokenHeader,
-                    multiple: false,
-                    'show-upload-list': false,
-                  },
-                  attrs: {
-                    name: "file"
-                  },
-                  on: {
-                    change: (e) => {
-                      this.fileChange1(e)
-                    }
-                  }
-                }, [h('a-divider', {
-                  style: {
-                    color: '#409eff'
-                  },
-                  attrs: {
-                    type: "vertical"
-                  }
-                }), h('a-icon', {
-                  attrs: {
-                    title: "替换",
-                    type: "swap"
-                  },
-                  style: {
-                    cursor: "pointer"
-                  }
-                })]) : '',
                 h('a-divider', {
                   style: {
                     color: '#409eff'

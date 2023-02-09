@@ -39,17 +39,15 @@
                             class='autoHeight'></test-task-info>
           </a-tab-pane>
           <a-tab-pane key='4' tab='报告信息'
-                      v-if="viewDetailType !== '1' && (detailData.status === 40 || isSubpackage)">
+                      v-if="viewDetailType !== '1' && detailData.status === 40">
             <a-button
-              v-if="viewDetailType !== '1' && isSubpackage"
+              v-if="viewDetailType !== '1'"
               @click='addReport(detailData.id)'
               type='primary' style="margin: 0 5px 10px">添加
             </a-button>
-            <report-info ref='ReportInfo' :entrustCode='detailData.entrustCode'
-                         :isExternalManage="isSubpackage" class='autoHeight'></report-info>
+            <report-info ref='ReportInfo' :entrustCode='detailData.entrustCode' class='autoHeight'></report-info>
           </a-tab-pane>
-          <!--        委托单预览 功能只在非草稿状态和外部委托单下显示-->
-          <a-tab-pane key='5' tab='委托单预览' v-if='detailData.status !== 1 && detailData.entrustType === "2"'>
+          <a-tab-pane v-if='detailData.status !== 1' key='5' tab='委托单预览'>
             <div class='autoHeight'>
               <iframe
                 v-if='detailData.reportPath'
@@ -136,12 +134,6 @@ export default {
         detailById: '/HfEnvEntrustBusiness/queryById',
         addReport: '/HfEnvEntrustBusiness/addReport'
       }
-    }
-  },
-  computed: {
-    isSubpackage() {
-      // 项目信息中是否外包
-      return Object.keys(this.detailData).length && this.detailData.projectInfo[0].isSubpackage === '1'
     }
   },
   methods: {
