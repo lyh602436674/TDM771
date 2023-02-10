@@ -84,7 +84,7 @@ export default {
       type: Object,
       default: () => {
         return {
-          title: 'standardName',
+          title: 'pieceNo',
           key: 'id',
         }
       },
@@ -176,9 +176,10 @@ export default {
           })
           break
         case 'checkbox':
-          this.localSelectedName = []
+          let localSelectedName = []
           this.selectedRows.map((item) => {
-            this.localSelectedName.push(item[this.replaceFields.title])
+            localSelectedName.push(item[this.replaceFields.title])
+            this.localSelectedName = localSelectedName.toString()
           })
           break
       }

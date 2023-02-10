@@ -222,16 +222,17 @@ export default {
         }
       }
     },
-    'model.pieceNos': {
+    model: {
       immediate: true,
+      deep: true,
       handler(val) {
         if (val) {
           this.$nextTick(() => {
-            this.$refs.newSampleListModal.localSelectedName = val
+            this.$refs.newSampleListModal.localSelectedName = val.pieceNos
           })
         }
       },
-    }
+    },
   },
   data() {
     return {
@@ -397,15 +398,17 @@ export default {
               ref="newSampleListModal"
               v-decorator={['pieceIds', {initialValue: []}]}
               selectedName={() => {
-                return this.model.pieceNosName ? this.model.pieceNosName : this.model.pieceNos
+                return this.model.pieceNos
               }}
               entrustType={this.entrustType}
               pieceTableData={this.pieceTableData}
-              onchange={(selectedRowKeys, selectedRows, pieceNos) => {
+              onchange={(selectedRowKeys, selectedRows) => {
                 let formName = 'projectInfoForm' + this.index
-                this.model.pieceIds = selectedRowKeys
-                this.model.pieceNosName = pieceNos && pieceNos.length > 0 ? pieceNos.join(',') : ''
-                this.$refs[formName].form.setFieldsValue({pieceNos: pieceNos.join(',')})
+                let pieceIds = selectedRows.map(v => v.id).toString()
+                let pieceNos = selectedRows.map(v => v.pieceNo).toString()
+                this.model.pieceIds = pieceIds
+                this.model.pieceNos = pieceNos
+                this.$refs[formName].form.setFieldsValue({pieceIds, pieceNos})
               }}
             />
           )

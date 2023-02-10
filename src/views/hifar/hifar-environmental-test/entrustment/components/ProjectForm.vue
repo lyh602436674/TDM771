@@ -142,6 +142,8 @@ export default {
             } else {
               let projectFormValue = val
               let attachIds = val.attachIds.map(item => item.fileId).toString()
+              projectFormValue.pieceIds = that.model.pieceIds
+              projectFormValue.pieceNos = that.model.pieceNos
               projectFormValue.unitName = that.model.unitName;
               projectFormValue.attachIds = attachIds;
               projectFormValue.abilityRequire = tabItemTableAllData;
@@ -154,6 +156,8 @@ export default {
           if (errMap) return this.$emit('emptyData')
         } else {
           let projectFormValue = projectForm.form.getFieldsValue()
+          projectFormValue.pieceIds = that.model.pieceIds
+          projectFormValue.pieceNos = that.model.pieceNos
           projectFormValue.unitName = that.model.unitName
           projectFormValue.attachIds = projectFormValue.attachIds.map(item => item.fileId).toString()
           projectFormValue.abilityRequire = tabItemTableAllData
@@ -201,7 +205,7 @@ export default {
     .panel-custom-item-left {
       width: 100%;
       min-height: 226px;
-      border: 1px solid #e8e8e8;
+      border: 2px solid #d2cfcf;
       padding: 0 40px 20px 20px;
     }
 

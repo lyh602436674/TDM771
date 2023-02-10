@@ -529,7 +529,7 @@ export default {
       this.activePieceRow = row[column.property]
     },
     pieceDataBlur({row, rowIndex, column}) {
-      // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更和提醒
+      // 判断一下输入框失去焦点后数据是否已经改变，改变了再去做变更
       setTimeout(() => {
         if (row[column.property] !== this.activePieceRow) {
           this.setProjectPieceNos(row)
@@ -542,16 +542,15 @@ export default {
       $table.removeCheckboxRow()
       let getRemoveRecords = $table.getRemoveRecords()
       let tableData = this.tableData
-      for (let i = 0; i < tableData.length; i++) {
-        for (let j = 0; j < getRemoveRecords.length; j++) {
-          if (tableData[i].id === getRemoveRecords[j].id) {
-            this.tableData.splice(i, 1)
-            this.setProjectPieceNos(tableData[i])
-            i--
-            break
-          }
+      for (let j = 0; j < getRemoveRecords.length; j++) {
+        let index = tableData.findIndex(item => item.id === getRemoveRecords[j].id)
+        if (index >= 0) {
+          let item = tableData[index]
+          tableData.splice(index, 1)
+          this.setProjectPieceNos(item)
         }
       }
+      this.tableData = tableData
       this.selectedPieceRows = []
     },
     // 动态设置项目中已选产品
@@ -569,6 +568,7 @@ export default {
             let pieceIds = getPieceIds(resData)
             projectFormItem[i].$refs['projectInfoForm' + i].form.setFieldsValue({pieceIds, pieceNos})
             projectFormItem[i].model.pieceNos = pieceNos
+            projectFormItem[i].model.pieceIds = pieceIds
           }
         }
       }
