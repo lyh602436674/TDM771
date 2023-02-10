@@ -167,9 +167,31 @@ export default {
         {
           title: '试验费用',
           key: 'totalExpenses',
+          validate: {
+            rules: [
+              {
+                required: true,
+                message: '请输入试验费用'
+              },
+              {
+                validator: (rule, value, cb) => {
+                  if (!this.isNumberEqual(value)) {
+                    cb('请输入正确格式的试验费用')
+                  } else {
+                    cb()
+                  }
+                }
+              }
+            ],
+          },
           component: (
             <a-input-search
-              v-decorator={['totalExpenses', {initialValue: undefined}]}
+              v-decorator={['totalExpenses', {
+                rules: [{
+                  required: true,
+                  message: '请输入试验费用'
+                }],
+              }, {initialValue: undefined}]}
               placeholder={"根据计费方式自动计算"} onSearch={this.calcTotalCost}>
               <a-button type="primary" icon={'redo'} slot="enterButton">
                 重置
@@ -187,13 +209,11 @@ export default {
         finish: '/HfEnvTaskTestBusiness/finish',
         calcCost: "/HfEnvTaskTestBusiness/costCalculation",
       },
-      errMessage: ''
     }
   },
   methods: {
     show(type, record) {
       this.loading = true
-      this.errMessage = ''
       this.model = Object.assign({}, record, {
         approachTime: this.dateFormat(record.approachTime),
         departureTime: this.dateFormat(record.departureTime),
@@ -212,7 +232,6 @@ export default {
           this.model = Object.assign({}, this.model, res.data)
           if (res.msg) {
             this.$message.warning(res.msg)
-            this.errMessage = res.msg
           }
           this.visible = true
           this.$nextTick(() => {
@@ -304,7 +323,6 @@ export default {
       })
     },
     handleSubmit() {
-      if (this.errMessage) return this.$message.warning(this.errMessage)
       this.validateForm().then(res => {
         this.loading = true
         let params = {
