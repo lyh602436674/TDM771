@@ -18,13 +18,13 @@
     />
     <div slot="table-operator" style="border-top: 5px">
       <a-button v-has="'device:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd">新增</a-button>
-      <!--          <a-button-->
-      <!--            icon="edit"-->
-      <!--            size="small"-->
-      <!--            type="ghost-primary"-->
-      <!--            @click="handleImportEditExcel">-->
-      <!--            批量修改-->
-      <!--          </a-button>-->
+      <a-button
+        icon="edit"
+        size="small"
+        type="ghost-primary"
+        @click="handleImportEditExcel">
+        批量修改
+      </a-button>
       <a-button
         v-has="'device:privice'"
         icon="export"
