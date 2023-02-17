@@ -55,7 +55,10 @@
                 <a @click="handleEdit(record)">编辑</a>
               </a-menu-item>
               <a-menu-item v-has="'entrustment:add'">
-                <a @click="handleCopyItem(record)">复制</a>
+                <a @click="handleCopyItem(record,'1')">复制运行单</a>
+              </a-menu-item>
+              <a-menu-item v-has="'entrustment:add'">
+                <a @click="handleCopyItem(record,'2')">复制委托单</a>
               </a-menu-item>
               <a-menu-item v-if="record.status == 1" v-has="'entrustment:delete'">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -100,9 +103,7 @@ export default {
         list: '/HfEnvEntrustBusiness/listPage',
         delete: '/HfEnvEntrustBusiness/logicRemoveById',
         copy: '/HfEnvEntrustBusiness/copyById',
-        batchSubmitConfirm: '/HfEnvEntrustBusiness/batchSubmitConfirm',
         export: '/HfEnvEntrustBusiness/listAllForExport',
-        signAndIssue: '/HfEnvEntrustBusiness/signAndIssue'
       },
       queryParams: {},
       selectedRowKeys: [],
@@ -393,9 +394,9 @@ export default {
       await downloadFile(url, fileName, params)
     },
     // 复制
-    handleCopyItem(record) {
+    handleCopyItem(record, copyType) {
       let url = this.url.copy
-      postAction(url, { id: record.id }).then((res) => {
+      postAction(url, {id: record.id, copyType}).then((res) => {
         if (res.code === 200) {
           this.$message.success('复制成功!')
           this.refresh(true)

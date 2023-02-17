@@ -151,7 +151,7 @@
                       <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
                     </template>
                     <template slot="status" slot-scope="text,record">
-                      <div v-if="record.forceEndStatus==10">
+                      <div v-if="record.forceEndStatus == 10">
                         <a-badge v-if="text == 1" color="geekblue" text="未开始-终止申请中"/>
                         <a-badge v-else-if="text == 10" color="red" text="已撤销-终止申请中"/>
                         <a-badge v-else-if="text == 20" color="green" text="进行中-终止申请中"/>
@@ -174,7 +174,7 @@
                                 @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
                         <a-icon v-has="'archiveTem:edit'" class="primary-text" title="在线编辑" type="edit"
                                 @click="webOfficeEdit(record.docxPathXh)"></a-icon>
-                        <a :href="record.docxPathXh" title="下载word">
+                        <a title="下载word" @click="handleDownloadDocx(record.docxPathXh)">
                           <a-icon class="primary-text" type="download"></a-icon>
                         </a>
                         <h-upload-file-b
@@ -195,7 +195,7 @@
                                 @click="handleReviewPdf('实施方案',record.pdfPathSs)"></a-icon>
                         <a-icon v-has="'embodimentTem:edit'" class="primary-text" title="在线编辑" type="edit"
                                 @click="webOfficeEdit(record.docxPathSs)"></a-icon>
-                        <a :href="record.docxPathSs" title="下载word">
+                        <a title="下载word" @click="handleDownloadDocx(record.docxPathSs)">
                           <a-icon class="primary-text" type="download"></a-icon>
                         </a>
                         <h-upload-file-b
@@ -231,7 +231,7 @@
                           v-has="'ArrangeMent:finish'"
                           class="h-icon-item"
                           type="icon-wancheng1"
-                          @click="$refs.taskFinishedModal.show('finish', record)"
+                          @click="handleFinish(record)"
                         />
                       </a-tooltip>
                       <!-- 更多 -->
@@ -284,7 +284,7 @@
 
 <script>
 import moment from 'moment'
-import {postAction} from '@/api/manage'
+import {createLink, postAction} from '@/api/manage'
 import TaskStartModal from './modules/TaskStartModal.vue'
 import TaskSuspendModal from './modules/TaskSuspendModal.vue'
 import TaskForceEndModal from './modules/TaskForceEndModal.vue'
@@ -679,6 +679,10 @@ export default {
     this.loadLeftTree()
   },
   methods: {
+    handleFinish(record) {
+      if (record.status === 1) return this.$message.warning('试验未开始，不能完成')
+      this.$refs.taskFinishedModal.show('finish', record)
+    },
     /**
      * @type 1:巡检 2:实施
      * */
@@ -785,6 +789,10 @@ export default {
         this.$refs.equipTaskList.refresh(bool)
         this.loadLeftTree();
       }
+    },
+    handleDownloadDocx(filePath) {
+      if (!filePath) return this.$message.warning('暂无数据')
+      createLink(filePath)
     },
     onSelect(selectedKeys, event) {
       //关闭弹窗

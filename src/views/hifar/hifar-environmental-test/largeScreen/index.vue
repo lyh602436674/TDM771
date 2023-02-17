@@ -114,7 +114,6 @@ export default {
         {title: '试验项目', key: 'unitName', value: '--'},
         {title: '试验性质', key: 'testPropertyName', value: '--'},
         {title: '试品名称', key: 'productName', value: '--'},
-        {title: '试品型号', key: 'productModel', value: '--'},
         {title: '开始时间', key: 'realStartTime', value: '--'},
         {title: '预计时长', key: 'predictUseTime', value: '--'},
       ],

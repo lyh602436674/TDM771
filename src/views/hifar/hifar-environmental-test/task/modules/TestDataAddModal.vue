@@ -49,7 +49,8 @@ export default {
         attachList: '/MinioBusiness/listByRefId',
         testAttachList: '/HfEnvTaskTestBusiness/listByRefId',
         delete: '/MinioBusiness/logicRemoveById',
-        updateFileStatus:'/HfEnvTestPressureRecordBusiness/updateFileStatus'
+        updateFileStatus: '/HfEnvTestPressureRecordBusiness/updateFileStatus',
+        saveSerial: '/HfEnvTaskTestBusiness/saveSerial',
       },
       attachData: [
         {
@@ -58,9 +59,13 @@ export default {
           span: 1,
           component: (
             <h-upload-file
-                v-decorator={['attachIds', { initialValue: [] }]}
-                customParams={{ refType: 'test_attach', refId: this.testId }}
-                on-delete={this.handleDelete}
+              isVarSeq={true}
+              accept={"application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
+              v-decorator={['attachIds', {initialValue: []}]}
+              customParams={{refType: 'test_attach', refId: this.testId}}
+              on-delete={this.handleDelete}
+              on-serialBlur={this.handleSerialBlur}
+              on-serialFocus={this.handleSerialFocus}
             />
           ),
         },
@@ -72,13 +77,14 @@ export default {
           span: 1,
           component: (
             <h-upload-file
-              v-decorator={['attachIds', { initialValue: [] }]}
-              customParams={{ refType: 'test_video', refId: this.testId }}
+              v-decorator={['attachIds', {initialValue: []}]}
+              customParams={{refType: 'test_video', refId: this.testId}}
               on-delete={this.handleDelete}
             />
           ),
         },
       ],
+      serialBeforeRecord: "",
     }
   },
   methods: {
@@ -118,7 +124,8 @@ export default {
                 secretLevel: item.secretLevel,
                 type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
                 replaceStatus: item.replaceStatus,
-                rowSort: item.rowSort
+                rowSort: item.rowSort,
+                serial: item.serial,
               })
             })
           }
@@ -158,8 +165,19 @@ export default {
     },
     // 图片删除
     handleDelete(file, fileList) {
-      postAction(this.url.delete, { id: file.fileId }).then(() => {
+      postAction(this.url.delete, {id: file.fileId}).then(() => {
         this.$message.success('删除成功')
+      })
+    },
+    handleSerialFocus(e, record) {
+      this.serialBeforeRecord = e.target.value
+    },
+    handleSerialBlur(record) {
+      if (!record.serial || this.serialBeforeRecord === record.serial) return
+      postAction(this.url.saveSerial, {...record, refId: this.testId}).then(res => {
+        if (res.code === 200) {
+          this.$message.success('序列号保存成功')
+        }
       })
     },
   },

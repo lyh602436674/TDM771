@@ -22,7 +22,7 @@
       <a-spin :spinning="spinning">
         <div class="task-detail-wrapper">
           <div id="entrust" class="task-info">
-            <detail-base-info :detailDataObj="model.entrustData" :attachInfo="model.attachInfo"></detail-base-info>
+            <detail-base-info showPreviewBtn :detailDataObj="model.entrustData" :attachInfo="model.attachInfo"></detail-base-info>
           </div>
           <div id="product" class="piece-info">
             <piece-detail-template :dataSource="pieceInfo"

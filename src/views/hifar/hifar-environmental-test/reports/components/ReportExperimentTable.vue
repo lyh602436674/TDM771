@@ -116,14 +116,6 @@ export default {
           dataIndex: 'entrustCode',
         },
         {
-          title: '委托单类型',
-          align: 'left',
-          dataIndex: 'entrustType',
-          customRender: (t) => {
-            return +t === 1 ? '内部' : "外部"
-          }
-        },
-        {
           title: '项目名称',
           align: 'left',
           dataIndex: 'unitName',

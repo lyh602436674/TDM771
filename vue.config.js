@@ -106,7 +106,7 @@ module.exports = {
   },
 
   devServer: {
-    port: 3000,
+    port: 3771,
     proxy: {
       // '/api/busi': {
       //    target: 'http://192.168.3.149:9771', //mock API接口系统

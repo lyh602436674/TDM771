@@ -32,12 +32,12 @@
         <h-desc-item label="压力">{{ model.pressureRange || '--' }}</h-desc-item>
         <h-desc-item label="加速度">{{ model.accelerationRange || '--' }}</h-desc-item>
         <h-desc-item label="开机费">
-          <span slot="content" :style="{color: isNumberEqual(model.startupCost) ? 'red' : ''}">
+          <span slot="content" :style="{color: !isNumberEqual(model.startupCost) ? 'red' : ''}">
             {{ model.startupCost || '--' }}
           </span>
         </h-desc-item>
         <h-desc-item label="单价">
-          <span slot="content" :style="{color: isNumberEqual(model.unitPrice)? 'red' : ''}">
+          <span slot="content" :style="{color: !isNumberEqual(model.unitPrice)? 'red' : ''}">
             {{ model.unitPrice || '--' }}
           </span>
         </h-desc-item>

@@ -158,7 +158,7 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import moment from 'moment'
 import HPie from '@/components/HChart/HPie'
 import TaskArrangement from './modules/TaskArrangementModal.vue'
@@ -166,7 +166,7 @@ import TaskDetail from './modules/TaskDetail'
 import TestInfoListModal from './modules/TestInfoListModal'
 import WorkCenterDetailModal from '../components/WorkCenterDetailModal.vue'
 import TaskForceEndModal from './modules/TaskForceEndModal.vue'
-import { find } from 'lodash'
+import {find} from 'lodash'
 
 export default {
   provide() {
@@ -178,9 +178,7 @@ export default {
   data() {
     return {
       collapse: true,
-      queryParams: {
-        type: 'month'
-      },
+      queryParams: {},
       searchForm: [
         {
           title: '运行单号',
@@ -634,6 +632,9 @@ export default {
       this.$refs.taskArrangement.show(record)
     },
     handleQueryTaskList(value) {
+      if (!this.queryParams.type) {
+        this.queryParams.type = 'month'
+      }
       let date = null
       if (this.queryParams.type === 'year') {
         date = value.format('YYYY-MM')

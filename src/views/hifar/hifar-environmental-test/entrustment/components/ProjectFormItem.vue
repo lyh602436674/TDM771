@@ -519,7 +519,7 @@ export default {
           formType: 'textarea',
           span: 3,
           placeholder: '请输入试验判据',
-          autoSize: {minRows: 4},
+          autoSize: {minRows: 2},
           validate: {
             rules: [{required: true, message: '请输入试验判据'}]
           }
@@ -530,7 +530,7 @@ export default {
           formType: 'textarea',
           span: 3,
           placeholder: '请输入合格判据',
-          autoSize: {minRows: 4},
+          autoSize: {minRows: 2},
           validate: {
             rules: [{required: true, message: '请输入合格判据'}]
           }
@@ -541,7 +541,7 @@ export default {
           formType: 'textarea',
           span: 3,
           placeholder: '请输入试验依据',
-          autoSize: {minRows: 4},
+          autoSize: {minRows: 2},
           validate: {
             rules: [{required: true, message: '请输入试验依据'}]
           }
@@ -552,7 +552,7 @@ export default {
           formType: 'textarea',
           span: 3,
           placeholder: '请输入试验条件',
-          autoSize: {minRows: 4},
+          autoSize: {minRows: 2},
           validate: {
             rules: [{required: true, message: '请输入试验条件'}],
           },

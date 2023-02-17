@@ -36,7 +36,7 @@
     <template v-else>
       <!-- 基本信息 -->
       <div id="basicInfo" :style="{ marginTop: top ? top : '50px' }">
-        <detail-base-info :detailDataObj="entrustInfoItem"></detail-base-info>
+        <detail-base-info showPreviewBtn :detailDataObj="entrustInfoItem"></detail-base-info>
       </div>
       <!--      试件信息-->
       <test-piece-detail
@@ -727,19 +727,19 @@ export default {
           scopedSlots: { customRender: 'itemRes' }
         },
         {
-          title: '检查人',
+          title: '试验员',
           align: 'left',
           dataIndex: 'fillUserName',
           customRender: (text, record) => {
-            return text || '--'
+            return text ? text + ' ' + this.formatTime(record.fillTime) : ''
           }
         },
         {
-          title: '复核人',
+          title: '检验员',
           align: 'left',
           dataIndex: 'checkUserName',
           customRender: (text, record) => {
-            return text || '--'
+            return text ? text + ' ' + this.formatTime(record.checkTime) : ''
           }
         }
       ],
@@ -933,6 +933,9 @@ export default {
           this.model_video = obj
         }
       })
+    },
+    formatTime(time) {
+      return (time && +time) ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : ''
     },
   }
 }

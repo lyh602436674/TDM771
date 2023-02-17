@@ -39,9 +39,11 @@
               </div>
               <div class="check-res-person">
                 {{ item.fillUserName || '--' }}
+                <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class="check-flag-person">
                 {{ item.checkUserName || '--' }}
+                <div>{{ formatTime(item.checkTime) }}</div>
               </div>
             </div>
           </template>
@@ -76,9 +78,11 @@
               </div>
               <div class="check-res-person">
                 {{ item.fillUserName || '--' }}
+                <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class="check-flag-person">
                 {{ item.checkUserName || '--' }}
+                <div>{{ formatTime(item.checkTime) }}</div>
               </div>
             </div>
           </template>
@@ -113,9 +117,11 @@
               </div>
               <div class="check-res-person">
                 {{ item.fillUserName || '--' }}
+                <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class="check-flag-person">
                 {{ item.checkUserName || '--' }}
+                <div>{{ formatTime(item.checkTime) }}</div>
               </div>
             </div>
           </template>

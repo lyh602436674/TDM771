@@ -4,19 +4,34 @@
     <template slot="footer">
       <a-button type='ghost-danger' @click='handleCancel'> 关闭</a-button>
       <a-button :loading='submitLoading' type='ghost-success' @click='handleSubmit'>
-        保存
+        确定
       </a-button>
     </template>
     <h-vex-table
+      ref="templateTable"
       :columns="columns"
       :data="loadData"
-      height="500"
+      height="350"
       :row-selection="{ selectedRowKeys, onChange: onSelectChange,type:'radio' }"
       :rowKey="(record) => record.id"
       :scroll="{ x: true }"
       style="height: 100%"
     >
     </h-vex-table>
+
+    <h-card v-if="selectedRowKeys.length" style="margin-top:20px" title="报告内容信息">
+      <a-checkbox-group :value="checkboxValue" @change="handleCheckboxChange">
+        <a-checkbox
+          v-for="item in checkboxOptions"
+          :key="item.value"
+          :data-title="item.title"
+          :value="item.value"
+        >
+          {{ item.title }}
+        </a-checkbox>
+      </a-checkbox-group>
+    </h-card>
+
   </h-modal>
 </template>
 
@@ -35,6 +50,13 @@ export default {
     return {
       visible: false,
       submitLoading: false,
+      checkboxValue: ['1', '2', '3', '4'],
+      checkboxOptions: [
+        {title: "样品图片", value: "1"},
+        {title: "图片图谱", value: "2"},
+        {title: "试前检查单", value: "3"},
+        {title: "附件", value: "4"},
+      ],
       columns: [
         {
           title: '模板分类',
@@ -79,7 +101,7 @@ export default {
       },
       selectedRowKeys: [],
       loadData: (params) => {
-        return postAction(this.url.list, {...params}).then(res => {
+        return postAction(this.url.list, {...params, reportType: '1'}).then(res => {
           if (res.code === 200) {
             return res.data
           }
@@ -90,6 +112,9 @@ export default {
   methods: {
     show() {
       this.visible = true
+    },
+    handleCheckboxChange(checked) {
+      this.checkboxValue = checked
     },
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -103,7 +128,7 @@ export default {
       if (this.submitLoading) return
       if (this.selectedRowKeys.length) {
         this.submitLoading = true
-        this.$emit('callback', this.selectedRowKeys)
+        this.$emit('callback', this.selectedRowKeys, this.checkboxValue)
         this.handleCancel()
       } else {
         this.$message.warning('请选择模板')

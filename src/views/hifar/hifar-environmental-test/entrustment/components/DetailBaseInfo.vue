@@ -10,12 +10,12 @@
     <h-desc :data="detailData" labelWidth='160px' size='small' title='基本信息'>
       <h-desc-item label='委托单号'>
         {{ detailData.entrustNo || '--' }}
-      </h-desc-item>
-      <h-desc-item label='运行单号'>
-        {{ detailData.entrustCode || '--' }}
         <a-button v-if="showPreviewBtn" icon="eye" size="small" style="margin-left: 10px" type="primary"
                   @click="entrustReview">委托单预览
         </a-button>
+      </h-desc-item>
+      <h-desc-item label='运行单号'>
+        {{ detailData.entrustCode || '--' }}
       </h-desc-item>
       <h-desc-item label='委托状态'>
         <a-tag slot='content' :color='detailData.status | wtStatusColorFilter' class='status_tag'>
@@ -154,7 +154,7 @@ export default {
       downloadFile(fileAccessUrl, fileName)
     },
     entrustReview() {
-      this.$refs.testEntrustReviewPdf.show(this.model.entrustData.reportPath)
+      this.$refs.testEntrustReviewPdf.show(this.detailData.reportPath)
     },
   }
 }

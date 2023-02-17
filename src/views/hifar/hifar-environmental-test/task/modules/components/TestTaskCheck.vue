@@ -46,9 +46,11 @@
               </div>
               <div class="check-res-person" @click="() => handleFillCheck(item, index)">
                 {{ item.fillUserName || '--' }}
+                <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class="check-flag-person" @click="() => handleFlagCheck(item, index)">
                 {{ item.checkUserName || '--' }}
+                <div>{{ formatTime(item.checkTime) }}</div>
               </div>
             </div>
           </template>
@@ -87,9 +89,11 @@
               </div>
               <div class="check-res-person" @click="() => handleFillCheck(item, index)">
                 {{ item.fillUserName || '--' }}
+                <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class="check-flag-person" @click="() => handleFlagCheck(item, index)">
                 {{ item.checkUserName || '--' }}
+                <div>{{ formatTime(item.checkTime) }}</div>
               </div>
             </div>
           </template>
@@ -131,9 +135,11 @@
               </div>
               <div class="check-res-person" @click="() => handleFillCheck(item, index)">
                 {{ item.fillUserName || '--' }}
+                <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class="check-flag-person" @click="() => handleFlagCheck(item, index)">
                 {{ item.checkUserName || '--' }}
+                <div>{{ formatTime(item.checkTime) }}</div>
               </div>
             </div>
           </template>
@@ -148,6 +154,7 @@
 import { postAction } from '@/api/manage'
 import { isArray, isObject } from 'lodash'
 import ensureModal from './CheckEnsureModal.vue'
+import moment from "moment";
 export default {
   name: 'TestTaskCheck',
   props: {
@@ -259,6 +266,9 @@ export default {
         }
       })
     },
+  },
+  formatTime(time) {
+    return (time && +time) ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : ''
   },
 }
 </script>

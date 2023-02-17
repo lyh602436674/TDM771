@@ -38,7 +38,7 @@
             </a-input-password>
           </a-form-item>
         </a-form>
-        <a-button block type="primary" @click="submit">确认</a-button>
+        <a-button :loading="submitLoading" block type="primary" @click="submit">确认</a-button>
       </div>
       <div class="divider-line"></div>
       <div class="check-ensure-left"></div>
@@ -57,10 +57,12 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
       visible: false,
       model: {},
       form: null,
-      localCallback: () => {},
+      localCallback: () => {
+      },
     }
   },
   methods: {
@@ -89,9 +91,13 @@ export default {
       }
     },
     submit() {
+      if (this.submitLoading) return
+      this.submitLoading = true
       this.form.validateFields((err, values) => {
         if (!err) {
           this.localCallback(Object.assign({}, this.model, values))
+        } else {
+          this.submitLoading = false
         }
       })
     },
@@ -99,6 +105,7 @@ export default {
       this.model = {}
       this.form = null
       this.visible = false
+      this.submitLoading = false
     },
   },
 }

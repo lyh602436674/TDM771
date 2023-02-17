@@ -154,15 +154,7 @@ export default {
           align: "center"
         },
         {
-          title: '型号/规格',
-          dataIndex: 'productModel',
-          align: "center",
-          customRender: (text) => {
-            return text || '--'
-          }
-        },
-        {
-          title: '图号',
+          title: '样品代号',
           dataIndex: 'productAlias',
           align: "center",
           customRender: (text) => {
@@ -171,8 +163,11 @@ export default {
         },
         {
           title: '样品编号',
-          align: "center",
           dataIndex: 'pieceNo',
+          align: "center",
+          customRender: (text) => {
+            return text || '--'
+          }
         },
         {
           title: '试验名称',

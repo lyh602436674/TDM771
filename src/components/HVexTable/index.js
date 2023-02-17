@@ -571,7 +571,7 @@ export default {
       for (let key in this.selectedRows) {
         selectedRows.push(this.selectedRows[key])
       }
-      if (this.rowSelection.type != 'radio') {
+      if (this.rowSelection.type !== 'radio') {
         this.$refs[this.tableId].setCheckboxRow(selectedRows, true)
       } else {
         this.$refs[this.tableId].setRadioRow(selectedRows[0])

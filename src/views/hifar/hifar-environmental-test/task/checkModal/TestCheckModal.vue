@@ -66,9 +66,9 @@
               <div class='check-res check-list-item-center'>
                 <div v-if="!item.isEdit || item.isCheckRes"
                      @click="() => handleCheckRes(item, index, 'beforeCheckInfo')">
-                  <div v-if="item.itemRes == '1'" class='check-box'></div>
-                  <h-icon v-else-if="item.itemRes == '2'" class='success-text' type='icon-wancheng1'/>
-                  <h-icon v-else-if="item.itemRes == '3'" class='danger-text' type='icon-chacha'/>
+                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
                   <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="item.itemRes"></span>
                 </div>
                 <a-textarea v-else v-model="item.itemRes" :auto-size="{minRows:2}"
@@ -76,9 +76,11 @@
               </div>
               <div class='check-res-person' @click='() => handleFillCheck(item, index)'>
                 {{ item.fillUserName || '--' }}
+                <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
                 {{ item.checkUserName || '--' }}
+                <div>{{ formatTime(item.checkTime) }}</div>
               </div>
               <a-popconfirm class='check-operate' title='确定删除吗?' @confirm='handleDelete(item,index,"beforeCheckInfo")'>
                 <a style='color: #ff4d4f'>删除</a>
@@ -131,9 +133,9 @@
               </div>
               <div class='check-res check-list-item-center'>
                 <div v-if="!item.isEdit || item.isCheckRes" @click="() => handleCheckRes(item, index, 'inCheckInfo')">
-                  <div v-if="item.itemRes == '1'" class='check-box'></div>
-                  <h-icon v-else-if="item.itemRes == '2'" class='success-text' type='icon-wancheng1'/>
-                  <h-icon v-else-if="item.itemRes == '3'" class='danger-text' type='icon-chacha'/>
+                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
                   <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="item.itemRes"></span>
                 </div>
                 <a-textarea v-else v-model="item.itemRes" :auto-size="{minRows:2}"
@@ -141,9 +143,11 @@
               </div>
               <div class='check-res-person' @click='() => handleFillCheck(item, index)'>
                 {{ item.fillUserName || '--' }}
+                <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
                 {{ item.checkUserName || '--' }}
+                <div>{{ formatTime(item.checkTime) }}</div>
               </div>
               <a-popconfirm class='check-operate' title='确定删除吗?' @confirm='handleDelete(item,index,"inCheckInfo")'>
                 <a style='color: #ff4d4f'>删除</a>
@@ -197,9 +201,9 @@
               <div class='check-res check-list-item-center'>
                 <div v-if="!item.isEdit || item.isCheckRes"
                      @click="() => handleCheckRes(item, index, 'afterCheckInfo')">
-                  <div v-if="item.itemRes == '1'" class='check-box'></div>
-                  <h-icon v-else-if="item.itemRes == '2'" class='success-text' type='icon-wancheng1'/>
-                  <h-icon v-else-if="item.itemRes == '3'" class='danger-text' type='icon-chacha'/>
+                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
                   <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="item.itemRes"></span>
                 </div>
                 <a-textarea v-else v-model="item.itemRes" :auto-size="{minRows:2}"
@@ -207,9 +211,11 @@
               </div>
               <div class='check-res-person' @click='() => handleFillCheck(item, index)'>
                 {{ item.fillUserName || '--' }}
+                <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
                 {{ item.checkUserName || '--' }}
+                <div>{{ formatTime(item.checkTime) }}</div>
               </div>
               <a-popconfirm class='check-operate' title='确定删除吗?' @confirm='handleDelete(item,index,"afterCheckInfo")'>
                 <a style='color: #ff4d4f'>删除</a>
@@ -218,6 +224,7 @@
           </template>
         </div>
       </h-card>
+      <check-ensure-modal ref="checkEnsureModal"/>
     </a-spin>
   </h-modal>
 </template>
@@ -226,6 +233,8 @@
 import {postAction} from '@/api/manage'
 import {cloneDeep, isArray, isObject} from 'lodash'
 import {randomUUID} from "@/utils/util";
+import CheckEnsureModal from "@views/hifar/hifar-environmental-test/task/modules/components/CheckEnsureModal";
+import moment from 'moment'
 
 export default {
   inject: {
@@ -233,8 +242,10 @@ export default {
       default: () => document.body
     }
   },
+  components: {CheckEnsureModal},
   data() {
     return {
+      moment,
       visible: false,
       submitShow: false,
       type: '',
@@ -358,14 +369,15 @@ export default {
     },
     handleCheckRes(item, index, type) {
       let itemRes = item.itemRes
-      if (itemRes == 1) {
-        itemRes = 2
-      } else if (itemRes == 2) {
-        itemRes = 3
-      } else if (itemRes == 3) {
-        itemRes = 2
+      if (itemRes === '1') {
+        itemRes = '2'
+      } else if (itemRes === '2') {
+        itemRes = '3'
+      } else if (itemRes === '3') {
+        itemRes = '1'
       }
       this.$set(this[type][index], 'itemRes', itemRes)
+      this.handleBlurSave(item)
     },
     handleFillCheck(item) {
       let record = {
@@ -379,7 +391,17 @@ export default {
           itemRes: item.itemRes
         })
       }
-      this.handleFillSubmit(record)
+      this.$refs.checkEnsureModal.show(record, this.handleFillSubmit)
+    },
+    handleFillSubmit(record) {
+      postAction(this.url.fill, {...record}).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('检查审核成功')
+          this.getCheckDetail()
+          this.resetCheckedState()
+          this.$refs.checkEnsureModal.handleCancel()
+        }
+      })
     },
     handleDelete(item, index, type) {
       //  如果时手动新增的，那就前台删除
@@ -413,14 +435,15 @@ export default {
           id: item.id
         })
       }
-      this.handleCheckSubmit(record)
+      this.$refs.checkEnsureModal.show(record, this.handleCheckSubmit)
     },
-    handleFillSubmit(record) {
-      postAction(this.url.fill, {...record}).then((res) => {
+    handleCheckSubmit(record) {
+      postAction(this.url.check, {...record}).then((res) => {
         if (res.code === 200) {
-          this.$message.success('检查审核成功')
+          this.$message.success('检查复核成功')
           this.getCheckDetail()
           this.resetCheckedState()
+          this.$refs.checkEnsureModal.handleCancel()
         }
       })
     },
@@ -497,15 +520,6 @@ export default {
         })
       }
     },
-    handleCheckSubmit(record) {
-      postAction(this.url.check, {...record}).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('检查复核成功')
-          this.getCheckDetail()
-          this.resetCheckedState()
-        }
-      })
-    },
     resetCheckedState() {
       this.indeterminate = false
       this.checkAll = false
@@ -515,7 +529,10 @@ export default {
         after: "afterCheckInfo",
       }
       this[typeObj[this.type]].forEach(item => item.checked = false)
-    }
+    },
+    formatTime(time) {
+      return (time && +time) ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : ''
+    },
   }
 }
 </script>

@@ -73,8 +73,7 @@ export default {
     loadData() {
       getAction(this.url.list).then((res) => {
         if (res.code === 200) {
-          this.dataSource = res.data
-          this.dataSource.map((item) => {
+          this.dataSource = res.data.filter(item => item.status === '1').map((item) => {
             item.statusNum = JSON.parse(JSON.stringify(item.status))
             item.status = this.deviceStatusFilter(item.status)
             item.predictEndTime = item.predictEndTime ? moment(+item.predictEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
@@ -86,9 +85,9 @@ export default {
       let s = parseInt(status)
       switch (s) {
         case 1:
-          return '运行'
+          return '占用'
         case 2:
-          return '待机'
+          return '空闲'
 /*        case 1:
           return '在用'
         case 2:

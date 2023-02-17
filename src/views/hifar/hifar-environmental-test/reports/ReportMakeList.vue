@@ -275,7 +275,7 @@ export default {
         {
           title: '状态',
           align: 'left',
-          width: 80,
+          width: 100,
           dataIndex: 'status',
           scopedSlots: {customRender: 'status'}
         },
@@ -470,9 +470,7 @@ export default {
     },
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
-      selectedRows.map((item) => {
-        this.selectedRows = item
-      })
+      this.selectedRows = selectedRows
     },
     handleDownload(record, type) {
       let obj = {
@@ -506,7 +504,7 @@ export default {
     },
     // 单个删除
     handleDelete(id, status) {
-      let delInfo = [{ id: id, status: status }]
+      let delInfo = [{id, status}]
       postAction(this.url.delete, { delInfo: delInfo }).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
@@ -525,8 +523,13 @@ export default {
           title: '确认删除',
           content: '删除后不可恢复，确认删除？',
           onOk: function () {
-            let delInfo = [{ id: _this.selectedRowKeys.join(), status: _this.selectedRows.status }]
-            postAction(_this.url.delete, { delInfo: delInfo }).then((res) => {
+            let delInfo = _this.selectedRows.map(item => {
+              return {
+                id: item.id,
+                status: item.status,
+              }
+            })
+            postAction(_this.url.delete, {delInfo: delInfo}).then((res) => {
               if (res.code === 200) {
                 _this.$message.success('删除成功')
                 _this.refresh()

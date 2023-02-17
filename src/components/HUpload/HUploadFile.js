@@ -151,6 +151,11 @@ export default {
       type: Boolean,
       default: false
     },
+    // 是否可以给文件自定义序列号
+    isVarSeq: {
+      type: Boolean,
+      default: false
+    },
   },
   watch: {
     value: {
@@ -169,6 +174,16 @@ export default {
       inputConfig: {
         ref: "HUpload" + randomUUID()
       },
+      seqColumn: [
+        {
+          title: "序列号",
+          dataIndex: 'serial',
+          minWidth: 60,
+          scopedSlots: {
+            customRender: "serial"
+          }
+        }
+      ],
       columns: [
         [
           {
@@ -325,6 +340,9 @@ export default {
             return o.dataIndex != 'percent'
           })
         }
+        if (this.isVarSeq) {
+          columns.unshift(this.seqColumn[0])
+        }
         return h(
           'vxe-table',
           {
@@ -346,8 +364,24 @@ export default {
               'show-header-overflow': 'tooltip',
             },
             scopedSlots: {
+              serial: (text, record) => {
+                return this.isVarSeq && this.isEdit ? (
+                  <aInput readOnly={!this.isEdit} value={record.serial}
+                          onFocus={e => {
+                            this.$emit('serialFocus', e, record)
+                          }}
+                          onBlur={(e) => {
+                            record.serial = e.target.value
+                            this.$emit('serialBlur', record)
+                          }}/>
+                ) : (
+                  <div>
+                    <span>{text}</span>
+                  </div>
+                )
+              },
               remarks: (text, record) => {
-                return this.isWriteRemarks && this.isEdit? (
+                return this.isWriteRemarks && this.isEdit ? (
                   <aInput readOnly={!this.isEdit} value={record.remarks} onBlur={(e) => {
                     record.remarks = e.target.value
                   }}/>

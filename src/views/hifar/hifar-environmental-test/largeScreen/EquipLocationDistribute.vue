@@ -100,9 +100,9 @@ export default {
       autoplay: false,
       equipStatusImage: [require('./image/running.png'), require('./image/warning.png'), require('./image/error.png')],
       equipRunningStatus: [
-        {title: '运行', status: '1'},
+        {title: '占用', status: '1'},
         {title: '检修', status: '3'},
-        {title: '待机', status: '2'},
+        {title: '空闲', status: '2'},
       ],
       url: {
         getEquipStatus: '/HfBulletinBoardBusiness/getEquipStatus',

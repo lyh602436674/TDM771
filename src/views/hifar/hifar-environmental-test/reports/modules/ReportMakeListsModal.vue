@@ -18,7 +18,7 @@
     <template slot="footer">
       <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
       <a-button type="ghost-success" :loading="submitLoading" @click="saveTestHandle">
-        保存
+        确定
       </a-button>
     </template>
     <report-experiment-table ref="reportExperimentMain" @change="selectChange"></report-experiment-table>
@@ -78,13 +78,14 @@ export default {
     // 按试验生成报告按钮
     saveTestHandle() {
       if (!this.selectedRowKeys.length) return this.$message.warning('请选择试验')
+      if (Array.from(new Set(this.selectedRow.map(item => item.entrustNo))).length > 1) return this.$message.warning('只能选择同一委托单')
       this.$refs.reportTemplateSelect.show()
     },
-    selectedTemplate(selectedRowKeys) {
-      this.handleSubmit(selectedRowKeys)
+    selectedTemplate(selectedRowKeys, checkboxValue) {
+      this.handleSubmit(selectedRowKeys, checkboxValue)
     },
-    handleSubmit(templateId) {
-      let { entrustCodeArr, selectedRowKeys } = this
+    handleSubmit(templateId, checkboxValue) {
+      let {entrustCodeArr, selectedRowKeys} = this
       if (!selectedRowKeys.length) {
         this.$message.warning('请选择试验')
       } else {
@@ -97,14 +98,15 @@ export default {
         let params = {
           tests: selectedRow,
           buttonFlag: 'save',
-          templateId: templateId.toString()
+          templateId: templateId.toString(),
+          options: checkboxValue
         }
         postAction('/HfEnvReportBusiness/generateReport', params).then((res) => {
           if (res.code === 200) {
             this.$message.success(res.msg ? res.msg : '报告添加成功')
             this.$emit('change', true)
             this.handleCancel()
-          }else{
+          } else {
             this.$message.warning(res.msg)
           }
         }).finally(() => {
