@@ -153,7 +153,7 @@ export default {
             if (isObject(file)) {
               return {
                 fileId: file.fileId,
-                isInReport: file.isInReport || 2, // 1:进报告 2:不进报告
+                isInReport: file.isInReport || 1, // 1:进报告 2:不进报告
                 url: file.url,
                 uuid: randomUUID()
               }
@@ -176,7 +176,7 @@ export default {
     }
   },
   methods: {
-    handlecCollect(file) {
+    handleCollect(file) {
       file.isInReport = +file.isInReport === 1 ? 2 : 1
       this.$emit('collect', file);
     },
@@ -317,10 +317,10 @@ export default {
         if (this.isCollect) {
           if (+file.isInReport === 1) {
             btns.push(<a-icon type='star' theme="filled" style='color:yellow' title='取消进报告'
-                              onclick={() => this.handlecCollect(file)}/>)
+                              onclick={() => this.handleCollect(file)}/>)
           } else {
             btns.push(<a-icon type='star' theme="filled" style='color:#FFF' title="进报告"
-                              onclick={() => this.handlecCollect(file)}/>)
+                              onclick={() => this.handleCollect(file)}/>)
           }
         }
         btns.push(<h-icon type="icon-shanchu" class="danger-text" onclick={() => this.handleDelete(file)} />)

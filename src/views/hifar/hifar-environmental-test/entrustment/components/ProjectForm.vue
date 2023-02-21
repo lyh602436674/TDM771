@@ -160,9 +160,12 @@ export default {
           projectFormValue.pieceNos = that.model.pieceNos
           projectFormValue.unitName = that.model.unitName
           projectFormValue.attachIds = projectFormValue.attachIds.map(item => item.fileId).toString()
-          projectFormValue.abilityRequire = tabItemTableAllData
           projectFormValue.curveUrl = that.curveUrl
           projectFormValue.testEquip = that.equipData
+          projectFormValue.abilityRequire = tabItemTableAllData
+          // 下面这两个是为了重新选择项目时，数据会丢失的问题
+          projectFormValue.fileInfo = that.model.fileInfo
+          projectFormValue.testEquipInfo = that.equipData
           projectResult.push(projectFormValue)
         }
       }

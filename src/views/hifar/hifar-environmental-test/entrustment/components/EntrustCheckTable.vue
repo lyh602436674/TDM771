@@ -21,6 +21,7 @@
       slot="content"
       :columns="columns"
       :data="loadData"
+      :autoLoad="false"
       :rowKey="(record) => record.id"
       :scroll="{ x: true }"
     >
@@ -34,10 +35,12 @@
         <span v-else>--</span>
       </span>
       <span slot="status" slot-scope="text, record">
-        <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter(record.entrustType)'/>
+        <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>
       </span>
     </h-vex-table>
     <entrust-detail-modal
+      :pageOption="pageOption"
+      :mainActiveKey="activeKey"
       ref="EntrustDetailModal"
       @change="refresh(true)"
     ></entrust-detail-modal>
@@ -52,13 +55,28 @@ import EntrustDetailModal from "../modules/EntrustDetailModal";
 
 export default {
   mixins: [mixin],
-  props: ["status"],
+  props: {
+    activeKey: {
+      type: String,
+      default: '',
+    },
+    status: {
+      type: Object,
+      default: () => ({}),
+    },
+    pageOption: {
+      type: Object,
+      default: () => ({}),
+    }
+  },
+
   components: {
     EntrustDetailModal,
   },
   watch: {
     status: {
       immediate: true,
+      deep: true,
       handler(val) {
         this.statusParams = val;
         this.refresh(true);
@@ -106,7 +124,7 @@ export default {
         {
           title: '运行单号',
           align: 'left',
-          width: 140,
+          width: 160,
           dataIndex: 'entrustCode',
           scopedSlots: {customRender: 'entrustCode'},
           fixed: 'left'
@@ -114,7 +132,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          width: 120,
+          width: 145,
           dataIndex: 'entrustNo',
           scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'

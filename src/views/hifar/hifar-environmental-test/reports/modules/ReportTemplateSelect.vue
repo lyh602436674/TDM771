@@ -52,9 +52,9 @@ export default {
       submitLoading: false,
       checkboxValue: ['1', '2', '3', '4'],
       checkboxOptions: [
-        {title: "样品图片", value: "1"},
-        {title: "图片图谱", value: "2"},
-        {title: "试前检查单", value: "3"},
+        {title: "试前检查单", value: "1"},
+        {title: "样品图片", value: "2"},
+        {title: "图片图谱", value: "3"},
         {title: "附件", value: "4"},
       ],
       columns: [

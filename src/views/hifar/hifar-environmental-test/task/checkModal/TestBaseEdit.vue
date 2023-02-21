@@ -67,67 +67,67 @@
           </h-card>
         </h-desc>
         <!-- 安装、控制方式 -->
-<!--        <h-desc id="installControl" class="mg-t-20" title="安装、控制方式">-->
-<!--          <h-card :bordered="false" style="width: 100%">-->
-<!--            <template slot="table-operator">-->
-<!--              <a-button icon="plus" size="small" type="primary" @click="installControlAdd">-->
-<!--                添加-->
-<!--              </a-button>-->
-<!--            </template>-->
-<!--            <a-table-->
-<!--              :columns="installControlColumns"-->
-<!--              :dataSource="installControlTable"-->
-<!--              :pagination="false"-->
-<!--              bordered-->
-<!--              rowKey="id"-->
-<!--              size="small"-->
-<!--              style="width: 100%;"-->
-<!--            >-->
-<!--              <div slot="expandedRowRender" slot-scope="record,index">-->
-<!--                <a-table-->
-<!--                  :columns="sensorColumns"-->
-<!--                  :dataSource="record.testSensorInfo"-->
-<!--                  :pagination="false"-->
-<!--                  bordered-->
-<!--                  rowKey="id"-->
-<!--                  size="small"-->
-<!--                  style="width: 100%;"-->
-<!--                >-->
-<!--                  <template #action="text, record,subIndex">-->
-<!--                    <a-popconfirm title="确定删除吗?" @confirm="() => testSensorHandleDelete(index,subIndex)">-->
-<!--                      <a-icon-->
-<!--                        class="primary-text"-->
-<!--                        style="cursor: pointer"-->
-<!--                        theme="twoTone"-->
-<!--                        title="删除"-->
-<!--                        two-tone-color="#ff4d4f"-->
-<!--                        type="delete"-->
-<!--                      />-->
-<!--                    </a-popconfirm>-->
-<!--                  </template>-->
-<!--                </a-table>-->
-<!--              </div>-->
-<!--              <template #action="text, record,index">-->
-<!--                <a-popconfirm title="确定删除吗?" @confirm="() => installControlHandleDelete(index)">-->
-<!--                  <a-icon-->
-<!--                    class="primary-text"-->
-<!--                    style="cursor: pointer"-->
-<!--                    theme="twoTone"-->
-<!--                    title="删除"-->
-<!--                    two-tone-color="#ff4d4f"-->
-<!--                    type="delete"-->
-<!--                  />-->
-<!--                </a-popconfirm>-->
-<!--                <a-icon-->
-<!--                  class="primary-text"-->
-<!--                  style="cursor: pointer;margin-left: 10px"-->
-<!--                  title="添加传感器"-->
-<!--                  type="plus"-->
-<!--                  @click="sensorAdd(record,index)" />-->
-<!--              </template>-->
-<!--            </a-table>-->
-<!--          </h-card>-->
-<!--        </h-desc>-->
+        <h-desc id="installControl" class="mg-t-20" title="安装、控制方式">
+          <h-card :bordered="false" style="width: 100%">
+            <template slot="table-operator">
+              <a-button icon="plus" size="small" type="primary" @click="installControlAdd">
+                添加
+              </a-button>
+            </template>
+            <a-table
+              :columns="installControlColumns"
+              :dataSource="installControlTable"
+              :pagination="false"
+              bordered
+              rowKey="id"
+              size="small"
+              style="width: 100%;"
+            >
+              <div slot="expandedRowRender" slot-scope="record,index">
+                <a-table
+                  :columns="sensorColumns"
+                  :dataSource="record.testSensorInfo"
+                  :pagination="false"
+                  bordered
+                  rowKey="id"
+                  size="small"
+                  style="width: 100%;"
+                >
+                  <template #action="text, record,subIndex">
+                    <a-popconfirm title="确定删除吗?" @confirm="() => testSensorHandleDelete(index,subIndex)">
+                      <a-icon
+                        class="primary-text"
+                        style="cursor: pointer"
+                        theme="twoTone"
+                        title="删除"
+                        two-tone-color="#ff4d4f"
+                        type="delete"
+                      />
+                    </a-popconfirm>
+                  </template>
+                </a-table>
+              </div>
+              <template #action="text, record,index">
+                <a-popconfirm title="确定删除吗?" @confirm="() => installControlHandleDelete(index)">
+                  <a-icon
+                    class="primary-text"
+                    style="cursor: pointer"
+                    theme="twoTone"
+                    title="删除"
+                    two-tone-color="#ff4d4f"
+                    type="delete"
+                  />
+                </a-popconfirm>
+                <a-icon
+                  class="primary-text"
+                  style="cursor: pointer;margin-left: 10px"
+                  title="添加传感器"
+                  type="plus"
+                  @click="sensorAdd(record,index)" />
+              </template>
+            </a-table>
+          </h-card>
+        </h-desc>
         <!-- 试验设备开关机记录 -->
         <h-desc id="switchRecording" class="mg-t-20" title="试验设备开关机记录">
           <h-card :bordered="false" style="width: 100%">
@@ -1934,7 +1934,7 @@ export default {
           //   }
           // }),
           // 安装、控制方式 + 传感器
-          // insertMethodArr: this.installControlTable
+          insertMethodArr: this.installControlTable
         }
         postAction(this.url.save, params).then((res) => {
           if (res.code === 200) {

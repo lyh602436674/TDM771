@@ -17,14 +17,16 @@
     @cancel="handleCancel"
   >
     <div slot="footer" class="footer">
-      <template v-if="detailData.status == 10">
+      <template v-if="[10,15].includes(detailData.status) && mainActiveKey === '1'">
         <a-button
           :loading="submitLoading"
-          v-has="'entrustCheck:pass'"
+          v-has="pageOption.pass"
           type="primary"
-          @click="handleCheckPass(detailData.id,0)"> 审核通过
+          @click="handleCheckPass(detailData.id,0)"> {{ "审核" + pageOption.typeText }}
         </a-button>
-        <a-button v-has="'entrustCheck:reject'" type="ghost-primary" @click="handleCheck(detailData)"> 审核驳回</a-button>
+        <a-button v-has="pageOption.reject" type="ghost-primary" @click="handleCheck(detailData)">
+          {{ pageOption.typeText + "驳回" }}
+        </a-button>
       </template>
       <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     </div>
@@ -57,7 +59,7 @@
 
 <script>
 import pdf from 'vue-pdf'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import EntrustDetail from '@views/hifar/hifar-environmental-test/entrustment/components/EntrustDetail';
 
 export default {
@@ -65,6 +67,17 @@ export default {
     getContainer: {
       default: () => document.body
     }
+  },
+
+  props: {
+    pageOption: {
+      type: Object,
+      default: () => ({}),
+    },
+    mainActiveKey: {
+      type: String,
+      default: '',
+    },
   },
   components: {
     EntrustDetail,
@@ -128,9 +141,9 @@ export default {
         title: '提示',
         content: '确认驳回吗?',
         onOk: () => {
-          postAction(this.url.reject, { id: record.id }).then(res => {
+          postAction(this.url.reject, {id: record.id, typeNo: this.pageOption.typeNo}).then(res => {
             if (res.code === 200) {
-              this.$message.success('操作成功')
+              this.$message.success('驳回成功')
               this.handleCancel();
               this.$emit('change', true)
             } else {
@@ -143,23 +156,22 @@ export default {
     handleCheckPass(id, isForce) {
       if (this.submitLoading) return
       this.submitLoading = true
-      postAction(this.url.check, { id, isForce }).then((res) => {
+      postAction(this.url.check, {id, isForce, typeNo: this.pageOption.typeNo}).then((res) => {
         if (res.code === 200) {
-          this.$message.success('操作成功')
+          this.$message.success(this.pageOption.typeText + '成功')
           this.loadDetail(this.entrustId)
+          this.handleCancel();
+          this.$emit('change', true)
         } else {
           if (res.msg.includes('没有合适的设备')) {
-            let testNames = res.data
-              .map(item => item.testName)
-              .join(',')
-
+            let testNames = res.data.map(item => item.testName).join(',')
             this.$confirm({
               title: '提示',
               content: testNames + '没有匹配到合适的设备，是否继续通过?',
               onOk: () => {
                 postAction(this.url.check, { id, isForce: 1 }).then(res => {
                   if (res.code === 200) {
-                    this.$message.success('操作成功')
+                    this.$message.success(this.pageOption.typeText + '成功')
                     this.handleCancel()
                     this.$emit('change', true)
                   } else {

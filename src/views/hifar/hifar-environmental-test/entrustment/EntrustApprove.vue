@@ -3,7 +3,7 @@
  * @Date: 2022-01-06 16:31:45
  * @LastEditTime: 2022-01-07 15:26:10
  * @LastEditors: 雷宇航
- * @Descripttion: 委托审核
+ * @Descripttion: 委托批准页面
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\entrustment\EntrustCheck.vue
 -->
 <template>
@@ -14,7 +14,7 @@
 import EntrustFlow from "@views/hifar/hifar-environmental-test/entrustment/EntrustFlow";
 
 export default {
-  name: "EntrustCheck",
+  name: "EntrustApprove",
   components: {
     EntrustFlow,
   },
@@ -22,11 +22,10 @@ export default {
   data() {
     return {
       pageOption: {
-        typeText: "审批",
-        typeNo: "1", // 判断是审批还是批准 1：审批 不传的话就是 批准
-        defaultStatus: 10,
-        pass: "entrustCheck:pass",
-        reject: "entrustCheck:reject",
+        typeText: "批准",
+        defaultStatus: 15,
+        pass: "entrustApprove:pass",
+        reject: "entrustApprove:reject",
       }
     };
   },

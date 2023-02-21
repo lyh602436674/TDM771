@@ -90,7 +90,7 @@ export default {
   methods: {
     show(record) {
       this.visible = true
-      this.title = record.testNames + '(' + record.testCode + ') - 试验数据'
+      this.title = (record.testNames || record.unitNames) + '(' + record.testCode + ') - 试验数据'
       this.testId = record.id
       this.attachData[0].component.componentOptions.propsData.customParams.refId = record.id
       this.videoData[0].component.componentOptions.propsData.customParams.refId = record.id

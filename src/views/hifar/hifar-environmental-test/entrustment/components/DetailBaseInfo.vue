@@ -19,7 +19,7 @@
       </h-desc-item>
       <h-desc-item label='委托状态'>
         <a-tag slot='content' :color='detailData.status | wtStatusColorFilter' class='status_tag'>
-          {{ detailData.status | wtStatusFilter(detailData.entrustType) }}
+          {{ detailData.status | wtStatusFilter }}
         </a-tag>
       </h-desc-item>
       <h-desc-item label='委托日期'>
@@ -69,8 +69,11 @@
       <h-desc-item label='是否拍照'>
         {{ detailData.isPhotograph === 1 ? '是' : '否' }}
       </h-desc-item>
-      <h-desc-item label='发起人/电话'>
-        {{ detailData.initiator || '--' }}
+      <h-desc-item label='发起人'>
+        {{ detailData.initiatorName || '--' }}
+      </h-desc-item>
+      <h-desc-item label='电话'>
+        {{ detailData.phone || '--' }}
       </h-desc-item>
       <h-desc-item label='创建人'>
         {{ detailData.createUserName || '--' }}

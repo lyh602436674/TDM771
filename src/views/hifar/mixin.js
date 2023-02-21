@@ -156,7 +156,7 @@ export default {
       }
     },
     //委托单状态
-    wtStatusFilter(status,type) {
+    wtStatusFilter(status) {
       let s = Number(status)
       switch (s) {
         case 1:
@@ -168,7 +168,7 @@ export default {
         case 30:
           return '已驳回'
         case 40:
-          return type === '1' ? '已完成' : '待出报告';
+          return '已完成';
         case 50:
           return '已出报告'
         case 80:

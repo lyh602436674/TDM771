@@ -13,15 +13,18 @@
       <h-desc :bordered="false" title="图片">
         <h-upload-img-collect
           v-model="modelImage"
-          :customParams="{refType: 'hf_env_test_piece_img', refId,}"
+          :customParams="{refType: 'hf_env_test_piece_img', refId,isInReport:1}"
           :isEdit="isEdit"
           :max="100"
           style="width: 100%;"
           :multiple="true"
+          :isCollect="true"
+          :isInReport="true"
           :propsData="propsData"
           accept="image/png,image/gif,image/jpg,image/jpeg"
           @delete="handleDelete"
           @success="loadImgData"
+          @collect="handleCollect"
         />
       </h-desc>
       <h-desc :bordered="false" title="视频">
@@ -85,6 +88,7 @@ export default {
         attachList: '/MinioBusiness/listByRefId',
         collectVideo: "/HfEnvPieceBusiness/recordVideo",
         collectImage: "/HfEnvPieceBusiness/takePhoto",
+        updateIsInReport: "/HfEnvTaskTestBusiness/updateFileStatus"
       },
     }
   },
@@ -100,6 +104,20 @@ export default {
     handleCancel() {
       this.visible = false
       this.$emit('close')
+    },
+    handleCollect(file) {
+      let params = {
+        refId: this.refId,
+        fileId: file.fileId,
+        isInReport: file.isInReport,
+      }
+      postAction(this.url.updateIsInReport, params).then(res => {
+        if (res.code === 200) {
+          this.$message.success('更新成功');
+        } else {
+          this.$message.warning('更新失败');
+        }
+      })
     },
     loadImgData() {
       postAction(this.url.attachList, {refType: 'hf_env_test_piece_img', refId: this.refId}).then((res) => {
@@ -135,6 +153,7 @@ export default {
           status: item.status === 9 ? 'success' : 'exception',
           url: item.filePath,
           name: item.fileName,
+          isInReport: item.isInReport,
           uuid: item.id,
           percent: 100,
           uploadTime: item.createTime,

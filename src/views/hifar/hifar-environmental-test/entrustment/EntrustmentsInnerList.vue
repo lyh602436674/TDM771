@@ -31,7 +31,7 @@
           <span v-else>--</span>
         </template>
         <span slot="status" slot-scope="text, record">
-          <a-badge :color="record.status | wtStatusColorFilter" :text="record.status | wtStatusFilter('1')"/>
+          <a-badge :color="record.status | wtStatusColorFilter" :text="record.status | wtStatusFilter"/>
         </span>
         <template slot="actions" slot-scope="text, record">
           <a-tooltip title="详情">
@@ -54,7 +54,8 @@
               <a-menu-item v-has="'entrustment:edit'" v-if="record.status == 1 || record.status == 30">
                 <a @click="handleEdit(record)">编辑</a>
               </a-menu-item>
-              <a-menu-item v-has="'entrustment:add'">
+              <!-- 草稿，已提交，已驳回 状态只能复制委托单，因为还没有运行单 -->
+              <a-menu-item v-if="![1,10,30].includes(record.status)" v-has="'entrustment:add'">
                 <a @click="handleCopyItem(record,'1')">复制运行单</a>
               </a-menu-item>
               <a-menu-item v-has="'entrustment:add'">
@@ -186,15 +187,15 @@ export default {
         {
           title: '运行单号',
           align: 'left',
-          width: 140,
+          width: 160,
           dataIndex: 'entrustCode',
-          scopedSlots: { customRender: 'entrustCode' },
+          scopedSlots: {customRender: 'entrustCode'},
           fixed: 'left'
         },
         {
           title: '委托单号',
           align: 'left',
-          width: 110,
+          width: 140,
           dataIndex: 'entrustNo',
           scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'
@@ -303,6 +304,42 @@ export default {
           dataIndex: 'pieceNum',
           customRender: (text, record) => {
             return text || '--';
+          }
+        },
+        {
+          title: '审批人',
+          align: 'center',
+          width: 80,
+          dataIndex: 'approveName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '审批时间',
+          align: 'center',
+          width: 140,
+          dataIndex: 'approveTime',
+          customRender: (text, record) => {
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
+          }
+        },
+        {
+          title: '批准人',
+          align: 'center',
+          width: 80,
+          dataIndex: 'ratifyName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '批准时间',
+          align: 'center',
+          width: 140,
+          dataIndex: 'ratifyTime',
+          customRender: (text, record) => {
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
           }
         },
         {

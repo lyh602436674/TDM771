@@ -161,11 +161,10 @@
         </div>
       </a-spin>
     </h-card>
-    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
-    <product-add-modal ref='productAddModal' :entrustType="entrustType"
-                       @callback='productAddCallback'></product-add-modal>
-    <project-add-modal ref='projectAddModal' @change='projectModalCallback'></project-add-modal>
-    <history-project-modal ref='historyProjectModal' @callback='projectModalCallback'></history-project-modal>
+    <hf-elevator-layer :layer-columns="layerColumns"/>
+    <product-add-modal ref='productAddModal' :entrustType="entrustType" @callback='productAddCallback'/>
+    <project-add-modal ref='projectAddModal' @change='projectModalCallback'/>
+    <history-project-modal ref='historyProjectModal' @callback='projectModalCallback'/>
   </h-modal>
 </template>
 
@@ -180,6 +179,7 @@ import ProductAddModal from "@views/hifar/hifar-environmental-test/entrustment/m
 import HistoryProjectModal from "@views/hifar/hifar-environmental-test/entrustment/modules/HistoryProjectModal";
 import HfElevatorLayer from '@/components/HfElevatorLayer'
 import {randomUUID} from "@/utils/util";
+import SysUserSelect from '@/views/components/SysUserSelect'
 
 export default {
   name: "EntrustmentInnerModal",
@@ -189,7 +189,8 @@ export default {
     ProductAddModal,
     ProjectAddModal,
     ProjectForm,
-    PhemismCustomSelect
+    PhemismCustomSelect,
+    SysUserSelect
   },
   inject: {
     getContainer: {
@@ -379,13 +380,22 @@ export default {
           ],
         },
         {
-          title: '发起人/电话',
+          title: '发起人',
           key: 'initiator',
-          formType: 'input',
-          placeholder: '例：张三/0000',
+          component: (
+            <sys-user-select
+              v-decorator={['initiator', {initialValue: []}]}
+              v-on:change={this.initiatorChange}
+            />
+          ),
           validate: {
-            rules: [{required: true, message: '请输入发起人/电话'}]
+            rules: [{required: true, message: '请选择发起人'}]
           }
+        },
+        {
+          title: '电话',
+          key: 'phone',
+          formType: 'input',
         },
         {
           title: '测试软件/测试方法',
@@ -476,6 +486,9 @@ export default {
       }).finally(() => {
         this.submitLoading = false
       })
+    },
+    initiatorChange(value, option) {
+      this.$refs.entrustFrom.form.setFieldsValue({phone: option.mobile})
     },
     handleScroll() {
       // 滚动条滚动时电梯层自动定位，暂时先不做
@@ -616,6 +629,9 @@ export default {
       }
       let selectedPiece = this.selectedPieceRows
       let {projectResult} = this.$refs.ProjectForm.validateProjectForm(this.projectInfoData, false)
+      projectResult.forEach(item => {
+        item.attachIds = (isArray(item.fileInfo) && item.fileInfo.length) ? item.fileInfo : item.attachIds
+      })
       this.projectInfoData = projectResult.concat(extendRecord.map((item, index) => {
         return {
           ...item,

@@ -162,6 +162,7 @@ export default {
               }
             }) || [],
           })
+          console.log(obj, 'objobjobjobjobjobjobjobjobj')
           let filterProjectByType = this.filterUnitCode(obj.classifyType)
           this.filterProjectByType = filterProjectByType
           this.equipData = obj.testEquipInfo && isArray(obj.testEquipInfo) ? obj.testEquipInfo : []
