@@ -56,6 +56,7 @@ export default {
         {title: "样品图片", value: "2"},
         {title: "图片图谱", value: "3"},
         {title: "附件", value: "4"},
+        {title: "项目附件", value: "5"},
       ],
       columns: [
         {

@@ -17,15 +17,27 @@
     @cancel="handleCancel"
   >
     <div class="footer" slot="footer">
-      <template v-if="type == 'check' && detailData.status == 10">
-        <a-button type="primary" @click="handleCheckPass(detailData.id, 20)"> 审核通过 </a-button>
-        <a-button type="ghost-primary" @click="handleCheck(detailData, '审核驳回')"> 审核驳回 </a-button>
-      </template>
-      <template v-if="type == 'approve' && detailData.status == 20">
-        <a-button type="primary" @click="handleCheckApprovePass(detailData.id, 40)"> 批准通过 </a-button>
-        <a-button type="ghost-primary" @click="handleCheck(detailData, '批准驳回')"> 批准驳回 </a-button>
-      </template>
-      <a-button @click="handleCancel" type="ghost-danger"> 关闭 </a-button>
+      <a-space>
+        <template v-if="type === 'check'">
+          <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckPass(detailData.id, 20)">
+            <a-button type="primary"> 审核通过</a-button>
+          </a-popconfirm>
+          <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
+                                 @write="drawerVisible = true">
+            <a-button type="ghost-primary"> 审核驳回</a-button>
+          </report-reject-popover>
+        </template>
+        <template v-if="type === 'approve'">
+          <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckApprovePass(detailData.id, 40)">
+            <a-button type="primary"> 批准通过</a-button>
+          </a-popconfirm>
+          <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
+                                 @write="drawerVisible = true">
+            <a-button type="ghost-primary"> 批准驳回</a-button>
+          </report-reject-popover>
+        </template>
+        <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
+      </a-space>
     </div>
     <h-card :bordered="false">
       <h-tabs fixed :activeKey="activeKey" :animated="true" @change="handleTabsChange">
@@ -33,47 +45,36 @@
           <report-detail :detailData="detailData"></report-detail>
         </a-tab-pane>
         <a-tab-pane key="2" tab="报告信息">
-          <embed
-            v-if="detailData.pdfPath"
-            ref="iframe"
-            scrolling="auto"
-            width="100%"
-            height="100%"
-            frameborder="0"
-            :src="detailData.pdfPath"
-          />
-          <!-- <div v-if="detailData.pdfPath">
-            <p class="arrow">
-              <span @click="changePdfPage(0)" class="turn" :class="{ grey: currentPage == 1 }">上一页</span>
-              {{ currentPage }} / {{ pageCount }}
-              <span @click="changePdfPage(1)" class="turn" :class="{ grey: currentPage == pageCount }">下一页</span>
-            </p>
-            <pdf
-              :src="src"
-              :page="currentPage"
-              @loaded="loadPdfHandler"
-              @num-pages="pageCount = $event"
-              @page-loaded="currentPage = $event"
-            >
-            </pdf>
-          </div> -->
-          <a-empty v-else style="margin-top: 160px" />
+          <div v-if="pdfPath" :style="{width:'100%',height:'100%',display:'flex'}">
+            <embed
+              ref="iframe"
+              :src="detailData.pdfPath"
+              :style="{width:drawerVisible ? '60%' : '100%'}"
+              frameborder="0"
+              height="100%"
+              scrolling="auto"
+            />
+            <report-reject-info-table v-if="drawerVisible" ref="reportRejectInfoTable"
+                                      :reportId="reportId" :type="type"
+                                      style="flex:1"/>
+          </div>
+          <a-empty v-else style="margin-top: 160px"/>
         </a-tab-pane>
         <a-tab-pane key="3" tab="流转信息">
           <report-flow-info-table ref="ReportFlowInfoTable" :reportId="reportId"></report-flow-info-table>
         </a-tab-pane>
       </h-tabs>
     </h-card>
-    <report-check-modal ref="ReportCheckModal" @change="loadDetail(detailData.id)"></report-check-modal>
   </h-modal>
 </template>
 
 <script>
-import pdf from 'vue-pdf'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import ReportDetail from './ReportDetail'
 import ReportFlowInfoTable from '../components/ReportFlowInfoTable'
-import ReportCheckModal from './ReportCheckModal'
+import ReportRejectInfoTable from "@views/hifar/hifar-environmental-test/reports/components/ReportRejectInfoTable";
+import ReportRejectPopover from "@views/hifar/hifar-environmental-test/reports/components/ReportRejectPopover";
+
 export default {
   inject: {
     getContainer: {
@@ -81,15 +82,22 @@ export default {
     },
   },
   components: {
-    pdf,
+    ReportRejectPopover,
+    ReportRejectInfoTable,
     ReportDetail,
     ReportFlowInfoTable,
-    ReportCheckModal,
+  },
+
+  computed: {
+    pdfPath() {
+      return !!this.detailData.pdfPath;
+    }
   },
 
   data() {
     return {
       visible: false,
+      drawerVisible: false,
       activeKey: '1',
       detailData: {},
       model: {},
@@ -107,44 +115,22 @@ export default {
     }
   },
   methods: {
-    show(id, type = 'checkOut', activeKey = 1) {
+    show(id, type = 'checkOut', activeKey = 1, bool = false) {
+      // bool 是否打开填写意见弹框
       this.visible = true
       this.type = type
       this.activeKey = activeKey
       this.reportId = id
-      // this.model = record
+      if (bool) {
+        this.drawerVisible = true
+      }
       this.loadDetail(id)
     },
     handleCancel() {
       this.visible = false
-      if (this.type == 'check' || this.type == 'approve') {
+      this.drawerVisible = false
+      if (this.type === 'check' || this.type === 'approve') {
         this.$emit('change', true)
-      }
-    },
-    // pdf加载时
-    loadPdfHandler(e) {
-      this.currentPage = 1 // 加载的时候先加载第一页
-    },
-    pdfTask(src) {
-      var self = this
-      var loadingTask = pdf.createLoadingTask(src)
-      loadingTask.promise
-        .then((pdf) => {
-          console.log('pdf加载成功>>>>>>>>>>>>>>>>>>>>>>>>>', pdf)
-          self.pdfUrl = loadingTask
-          self.numPages = pdf.numPages
-        })
-        .catch((err) => {
-          console.error('pdf加载失败')
-        })
-    },
-    changePdfPage(val) {
-      // console.log(val)
-      if (val === 0 && this.currentPage > 1) {
-        this.currentPage--
-      }
-      if (val === 1 && this.currentPage < this.pageCount) {
-        this.currentPage++
       }
     },
     handleTabsChange(v) {
@@ -152,32 +138,43 @@ export default {
     },
     loadDetail(id) {
       let url = this.url.detail
-      postAction(url, { id: id }).then((res) => {
+      postAction(url, {id}).then((res) => {
         if (res.code === 200) {
-          let record = res.data
-          this.detailData = record
-          // this.src = pdf.createLoadingTask(record.pdfPath)
-          // this.pdfTask(record.pdfPath)
+          this.detailData = res.data
         }
       })
     },
-    handleCheck(record, title) {
-      let type = this.type
-      this.$refs.ReportCheckModal.show(record, title, type)
+    handleCheck(record) {
+      let params = {
+        id: record.id,
+        examineFlag: this.type === 'check' ? 30 : this.type === 'approve' ? 50 : null,
+        // rejectType 驳回节点 1 报告生成 2 报告审核 3 报告批准
+        rejectType: this.type === 'check' ? '2' : this.type === 'approve' ? '3' : null,
+        reportRejectList: this.$refs.reportRejectInfoTable.getTableData()
+      }
+      postAction(this.url.check, params).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('驳回成功')
+          this.handleCancel()
+          this.$emit('change', true)
+        }
+      })
     },
     handleCheckPass(id, examineFlag) {
-      postAction(this.url.check, { id: id, examineFlag: examineFlag }).then((res) => {
+      postAction(this.url.check, {id, examineFlag}).then((res) => {
         if (res.code === 200) {
-          this.$message.success('操作成功')
-          this.loadDetail(this.reportId)
+          this.$message.success('审核成功')
+          this.handleCancel()
+          this.$emit('change', true)
         }
       })
     },
     handleCheckApprovePass(id, examineFlag) {
-      postAction(this.url.checkApprove, { id: id, examineFlag: examineFlag }).then((res) => {
+      postAction(this.url.checkApprove, {id, examineFlag}).then((res) => {
         if (res.code === 200) {
-          this.$message.success('操作成功')
-          this.loadDetail(this.reportId)
+          this.$message.success('批准成功')
+          this.handleCancel()
+          this.$emit('change', true)
         }
       })
     },

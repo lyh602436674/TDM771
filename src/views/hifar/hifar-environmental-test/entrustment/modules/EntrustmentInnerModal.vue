@@ -628,23 +628,37 @@ export default {
         }
       }
       let selectedPiece = this.selectedPieceRows
-      let {projectResult} = this.$refs.ProjectForm.validateProjectForm(this.projectInfoData, false)
-      projectResult.forEach(item => {
-        item.attachIds = (isArray(item.fileInfo) && item.fileInfo.length) ? item.fileInfo : item.attachIds
-      })
-      this.projectInfoData = projectResult.concat(extendRecord.map((item, index) => {
+      // let {projectResult} = this.$refs.ProjectForm.validateProjectForm(this.projectInfoData, false)
+      // console.log(projectResult, 'projectResult')
+      // projectResult.forEach(item => {
+      //   item.attachIds = (isArray(item.fileInfo) && item.fileInfo.length) ? item.fileInfo : item.attachIds
+      // })
+      // this.projectInfoData = projectResult.concat(extendRecord.map((item, index) => {
+      //   return {
+      //     ...item,
+      //     // 给选择之后的项目添加unitId字段
+      //     unitId: item.id,
+      //     testCondition: item.remarks,
+      //   }
+      // })).map((v, i) => {
+      //   return {
+      //     ...v,
+      //     pieceIds: v.pieceIds || (selectedPiece.length ? selectedPiece.map(_item => _item.id).toString() : ''),
+      //     pieceNos: v.pieceNos || (selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : '')
+      //   }
+      // })
+      extendRecord = extendRecord.map((item, index) => {
         return {
           ...item,
           // 给选择之后的项目添加unitId字段
           unitId: item.id,
           testCondition: item.remarks,
         }
-      })).map((v, i) => {
-        return {
-          ...v,
-          pieceIds: v.pieceIds || (selectedPiece.length ? selectedPiece.map(_item => _item.id).toString() : ''),
-          pieceNos: v.pieceNos || (selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : '')
-        }
+      })
+      this.projectInfoData.push(...extendRecord);
+      this.projectInfoData.forEach((item, index) => {
+        item.pieceIds = item.pieceIds || (selectedPiece.length ? selectedPiece.map(_item => _item.id).toString() : '')
+        item.pieceNos = item.pieceNos || (selectedPiece.length ? selectedPiece.map(_item => _item.pieceNo).toString() : '')
       })
       this.buildLayer(this.projectInfoData)
     },

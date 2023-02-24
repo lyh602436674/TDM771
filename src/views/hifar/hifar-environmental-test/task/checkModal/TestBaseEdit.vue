@@ -394,10 +394,10 @@ export default {
           title: '实施过程',
           id: 'processForm'
         },
-        // {
-        //   title: '安装控制方式',
-        //   id: 'installControl'
-        // },
+        {
+          title: '安装控制方式',
+          id: 'installControl'
+        },
         {
           title: '试验设备开关机记录',
           id: 'switchRecording'

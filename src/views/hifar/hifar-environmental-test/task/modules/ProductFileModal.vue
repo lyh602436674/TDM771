@@ -19,6 +19,7 @@
           style="width: 100%;"
           :multiple="true"
           :isCollect="true"
+          :is-write-remarks="true"
           :isInReport="true"
           :propsData="propsData"
           accept="image/png,image/gif,image/jpg,image/jpeg"

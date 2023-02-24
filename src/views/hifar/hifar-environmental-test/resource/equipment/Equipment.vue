@@ -291,12 +291,22 @@ export default {
           }
         },
         {
+          title: '规格',
+          align: 'left',
+          ellipsis: true,
+          width: 120,
+          dataIndex: 'specification',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
           title: '购买日期',
           align: 'left',
           ellipsis: true,
           width: 120,
           dataIndex: 'buyTime',
-          scopedSlots: { customRender: 'buyTime' }
+          scopedSlots: {customRender: 'buyTime'}
         },
         {
           title: '出厂编号',

@@ -462,7 +462,7 @@ export default {
       })
     },
     handleImportExcel() {
-      this.$refs.HFileImport.show('用户管理', this.url.importExcelUrl, {})
+      this.$refs.HFileImport.show('用户管理', this.url.importExcelUrl, {importCode: "BaseOrgUserImport"})
     },
     downloadChange() {
       this.handleExportXls('用户管理', {type: 'template'})

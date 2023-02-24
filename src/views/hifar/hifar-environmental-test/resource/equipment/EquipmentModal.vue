@@ -143,6 +143,12 @@ export default {
           key: 'assetsCode'
         },
         {
+          title: '规格',
+          formType: 'input',
+          span: 12,
+          key: 'specification'
+        },
+        {
           title: '出厂编号',
           formType: 'input',
           span: 12,

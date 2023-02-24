@@ -99,32 +99,32 @@
         <h-desc-item :span="3" label="实施过程">{{ detailData.remarks || '--' }}</h-desc-item>
       </h-desc>
       <!-- 安装、控制方式 -->
-<!--      <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>-->
-<!--        <h-card :bordered='false' style='width: 100%'>-->
-<!--          <a-table-->
-<!--            :columns='installControlColumns'-->
-<!--            :dataSource='installControlTable'-->
-<!--            :pagination='false'-->
-<!--            bordered-->
-<!--            rowKey='id'-->
-<!--            size='small'-->
-<!--            style="width: 100%;"-->
-<!--          >-->
-<!--            <div slot="expandedRowRender" slot-scope="record,index">-->
-<!--              <a-table-->
-<!--                :columns='sensorColumns'-->
-<!--                :dataSource='record.testSensorInfo'-->
-<!--                :pagination='false'-->
-<!--                bordered-->
-<!--                rowKey='id'-->
-<!--                size='small'-->
-<!--                style="width: 100%;"-->
-<!--              >-->
-<!--              </a-table>-->
-<!--            </div>-->
-<!--          </a-table>-->
-<!--        </h-card>-->
-<!--      </h-desc>-->
+      <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>
+        <h-card :bordered='false' style='width: 100%'>
+          <a-table
+            :columns='installControlColumns'
+            :dataSource='installControlTable'
+            :pagination='false'
+            bordered
+            rowKey='id'
+            size='small'
+            style="width: 100%;"
+          >
+            <div slot="expandedRowRender" slot-scope="record,index">
+              <a-table
+                :columns='sensorColumns'
+                :dataSource='record.testSensorInfo'
+                :pagination='false'
+                bordered
+                rowKey='id'
+                size='small'
+                style="width: 100%;"
+              >
+              </a-table>
+            </div>
+          </a-table>
+        </h-card>
+      </h-desc>
       <!-- 试验设备开关机记录 -->
       <h-desc id="switchRecording" class="mg-t-20" title='试验设备开关机记录'>
         <h-card :bordered='false' style='width: 100%'>
@@ -325,10 +325,10 @@ export default {
           title: "实施过程",
           id: "processForm"
         },
-        // {
-        //   title: "安装控制方式",
-        //   id: "installControl"
-        // },
+        {
+          title: "安装控制方式",
+          id: "installControl"
+        },
         {
           title: "开关机记录",
           id: "switchRecording"

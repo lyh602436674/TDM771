@@ -528,14 +528,14 @@ export default {
         {
           title: '运行单号',
           dataIndex: 'entrustCodes',
-          minWidth: 150,
+          minWidth: 160,
           scopedSlots: {customRender: 'entrustCodes'},
         },
         {
           title: '委托单号',
           dataIndex: 'entrustNos',
           // hidden: isHiddenColumns('ArrangeMent:suspend'),
-          minWidth: 120,
+          minWidth: 140,
           scopedSlots: {customRender: 'entrustNos'},
         },
         {
@@ -963,6 +963,10 @@ export default {
  .ant-tree-node-content-wrapper {
     width: 100% !important;
   }
+}
+
+/deep/ .desc-item .desc-item-content .desc-item-value {
+  display: block;
 }
 
 </style>

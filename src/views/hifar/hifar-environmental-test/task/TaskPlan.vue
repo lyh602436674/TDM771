@@ -252,7 +252,7 @@ export default {
         {
           title: '运行单号',
           dataIndex: 'entrustCode',
-          minWidth: 140,
+          minWidth: 160,
           scopedSlots: {
             customRender: 'entrustCode'
           }

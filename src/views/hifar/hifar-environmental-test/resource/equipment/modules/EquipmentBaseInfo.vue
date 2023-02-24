@@ -31,6 +31,9 @@
         <a-descriptions-item label="资产编号">
           {{ detailData.assetsCode || '--' }}
         </a-descriptions-item>
+        <a-descriptions-item label="规格">
+          {{ detailData.specification || '--' }}
+        </a-descriptions-item>
         <a-descriptions-item label="出厂编号">
           {{ detailData.leaveCode || '--' }}
         </a-descriptions-item>

@@ -42,14 +42,16 @@
                     style="cursor: pointer"/>
           </a-popconfirm>
           <a-divider type="vertical" style="color: #409eff"/>
-          <h-icon
-            v-has="'reportCheck:reject'"
-            type="icon-chacha"
-            title="驳回"
-            class="danger-text"
-            style="cursor: pointer"
-            @click="() => handleCheck(record, '审核驳回')"
-          />
+          <report-reject-popover style="display: inline-block" @reject="handleCheck(record.id)"
+                                 @write="handleWrite(record.id)">
+            <h-icon
+              v-has="'reportCheck:reject'"
+              class="danger-text"
+              style="cursor: pointer"
+              title="驳回"
+              type="icon-chacha"
+            />
+          </report-reject-popover>
         </span>
       </div>
     </h-vex-table>
@@ -64,6 +66,7 @@ import {postAction} from '@/api/manage'
 import mixin from '../mixin'
 import ReportCheckModal from '../modules/ReportCheckModal'
 import ReportDetailModal from '../modules/ReportDetailModal'
+import ReportRejectPopover from "@views/hifar/hifar-environmental-test/reports/components/ReportRejectPopover";
 
 export default {
   mixins: [mixin],
@@ -71,6 +74,7 @@ export default {
   components: {
     ReportCheckModal,
     ReportDetailModal,
+    ReportRejectPopover
   },
   watch: {
     queryType(val) {
@@ -252,25 +256,23 @@ export default {
       let activeKey = '2'
       this.$refs.ReportDetailModal.show(record.id, type, activeKey)
     },
-    handleCheck(record, title) {
-      let type = this.type
-      this.$refs.ReportCheckModal.show(record, title, type)
+    handleWrite(id) {
+      this.$refs.ReportDetailModal.show(id, 'check', '2', true)
     },
-    handleCheckPass(id) {
-      postAction(this.url.check, {id: id, examineFlag: 20}).then((res) => {
+    handleCheck(id) {
+      postAction(this.url.check, {id, examineFlag: 30}).then((res) => {
         if (res.code === 200) {
-          this.$message.success('操作成功')
+          this.$message.success('驳回成功')
           this.refresh(true)
         }
       })
     },
-    // 委托详情
-    handleWtDetail(record) {
-      this.$router.push({
-        path: '/entrustlistDetail',
-        query: {
-          id: record.entrustId,
-        },
+    handleCheckPass(id) {
+      postAction(this.url.check, {id: id, examineFlag: 20}).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('审核成功')
+          this.refresh(true)
+        }
       })
     },
   },

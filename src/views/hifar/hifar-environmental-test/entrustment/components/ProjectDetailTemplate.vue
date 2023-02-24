@@ -33,8 +33,8 @@
       </div>
     </h-desc-item>
     <h-desc-item :span='3' label='试验曲线'>
-      <div slot='content'>
-        <img v-if="model.curveUrl" :src="model.curveUrl" alt="试验曲线">
+      <div slot='content' style="width: 100%;height: 100%;">
+        <img v-if="model.curveUrl" :src="model.curveUrl" alt="试验曲线" style="width: 100%;height: 100%;">
         <span v-else>无</span>
       </div>
     </h-desc-item>

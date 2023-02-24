@@ -144,7 +144,7 @@ export default {
      * @Date: 2021-10-22 16:59:13
      * @Author: 陈乾龙
      * @description: 这里做页面说明，需要记录用户是否点击了完成或者跳过，将记录保存到本地，并记录过期时间，时间过期后，需要再此说明
-     */    
+     */
     // this.$intro()
     //   .setOptions({
     //     prevLabel: '上一步',

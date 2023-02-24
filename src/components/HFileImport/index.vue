@@ -173,6 +173,7 @@ export default {
     },
     handleDownload() {
       const { filePath, fileName } = this.importResult
+      if (!filePath) return this.$message.warning('暂无数据')
       downloadFile(filePath, fileName)
     },
   },

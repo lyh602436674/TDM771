@@ -123,7 +123,11 @@ export default {
       // console.log(event)
     },
     handleSelect(selectedKeys, event) {
-      this.$emit('onSelect', selectedKeys, event)
+      let selectedRows = []
+      event.selectedNodes.map((item) => {
+        selectedRows.push(item.data.props)
+      })
+      this.$emit('onSelect', selectedKeys, event,selectedRows)
     },
     renderCardBody(h) {
       if (!this.tree.length) {

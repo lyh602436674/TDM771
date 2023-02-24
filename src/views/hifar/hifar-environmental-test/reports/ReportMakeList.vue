@@ -18,6 +18,9 @@
         @change="refresh(true)"
       />
       <div slot="table-operator" style="border-top: 5px">
+        <a-button icon="eye" size="small" type="primary" @click="handleIdea">
+          驳回意见
+        </a-button>
         <a-badge :count="reportNum">
           <a-button
             v-has="'report:add'"
@@ -155,6 +158,7 @@
     <ReportMakeListsModal ref="ReportMakeListsModal" @change="addReportchange"/>
     <report-detail-modal ref="ReportDetailModal"/>
     <report-download-record ref="reportDownloadRecord"/>
+    <report-reject-all-info ref="reportRejectAllInfo"/>
   </div>
 </template>
 
@@ -168,6 +172,7 @@ import ReportDetailModal from './modules/ReportDetailModal'
 import {ACCESS_TOKEN} from '@/store/mutation-types'
 import {getAction} from '@api/manage';
 import ReportDownloadRecord from './components/ReportDownloadRecord';
+import ReportRejectAllInfo from "@views/hifar/hifar-environmental-test/reports/modules/ReportRejectAllInfo";
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -178,6 +183,7 @@ export default {
     }
   },
   components: {
+    ReportRejectAllInfo,
     ReportMakeListsModal,
     ReportDetailModal,
     ReportDownloadRecord
@@ -415,6 +421,9 @@ export default {
     this.loadReportNum()
   },
   methods: {
+    handleIdea() {
+      this.$refs.reportRejectAllInfo.show()
+    },
     handleUploadCallback(file, record, isUpload) {
       postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, isUpload}).then(res => {
         if (res.code === 200) {

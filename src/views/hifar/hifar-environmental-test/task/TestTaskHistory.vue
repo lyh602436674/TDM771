@@ -323,7 +323,7 @@ export default {
         },
         {
           title: '产品编号',
-          key: 'productNo',
+          key: 'pieceNo',
           formType: 'input',
         },
       ],

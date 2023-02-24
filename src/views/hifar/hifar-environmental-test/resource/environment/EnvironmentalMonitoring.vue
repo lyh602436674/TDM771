@@ -71,8 +71,9 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import EnvironmentalMonitorModal from './modules/EnvironmentalMonitorModal'
+
 export default {
   components: {
     EnvironmentalMonitorModal,
@@ -125,14 +126,6 @@ export default {
             return text || '--'
           },
         },
-        // {
-        //   title: '最高温度(℃)',
-        //   align: 'left',
-        //   dataIndex: 'temperatureMax',
-        //   customRender: (text, record) => {
-        //     return text || '--'
-        //   },
-        // },
         {
           title: '温度(℃)',
           align: 'left',
@@ -141,14 +134,6 @@ export default {
             return text || '--'
           },
         },
-        // {
-        //   title: '最高湿度(％)',
-        //   align: 'left',
-        //   dataIndex: 'humidityMax',
-        //   customRender: (text, record) => {
-        //     return text || '--'
-        //   },
-        // },
         {
           title: '湿度(％)',
           align: 'left',
@@ -199,11 +184,7 @@ export default {
           res.data.data = data.map((item) => {
             return {
               id: item.id,
-              humidityMin: item.humidityMin / 10000,
-              humidityMax: item.humidityMax / 10000,
               humidityAvg: item.humidityAvg / 10000,
-              temperatureMax: item.temperatureMax / 10000,
-              temperatureMin: item.temperatureMin / 10000,
               temperatureAvg: item.temperatureAvg / 10000,
               placeTime: item.placeTime,
               placeTime_1:
@@ -227,10 +208,8 @@ export default {
       let myChart = this.$echarts.init(document.getElementById('monitorEachrts'))
       let data = this.dataSource.reverse()
       let x = data.map((item) => (item.placeTime_1 ? item.placeTime_1 : null))
-      let y1 = data.map((item) => (item.temperatureMax ? item.temperatureMax : null))
-      let y2 = data.map((item) => (item.temperatureMin ? item.temperatureMin : null))
-      let y3 = data.map((item) => (item.humidityMax ? item.humidityMax : null))
-      let y4 = data.map((item) => (item.humidityMin ? item.humidityMin : null))
+      let y1 = data.map((item) => (item.temperatureAvg ? item.temperatureAvg : null))
+      let y2 = data.map((item) => (item.humidityAvg ? item.humidityAvg : null))
       // 绘制图表
       myChart.setOption({
         title: {
@@ -242,25 +221,17 @@ export default {
             return `${params[0].name}<br/>
             <div style="display:inline-block;width:8px;height:8px;background-color:${
               params[0].color
-            };border-radius:5px;margin-right:4px;"></div>最高温度:
-            ${data[params[0].dataIndex].temperatureMax ? data[params[0].dataIndex].temperatureMax : '-'} ℃<br/>
+            };border-radius:5px;margin-right:4px;"></div>温度:
+            ${data[params[0].dataIndex].temperatureAvg ? data[params[0].dataIndex].temperatureAvg : '-'} ℃<br/>
             <div style="display:inline-block;width:8px;height:8px;background-color:${
               params[1].color
-            };border-radius:5px;margin-right:4px;"></div>最低温度:
-            ${data[params[0].dataIndex].temperatureMin ? data[params[0].dataIndex].temperatureMin : '-'} ℃<br/>
-            <div style="display:inline-block;width:8px;height:8px;background-color:${
-              params[2].color
-            };border-radius:5px;margin-right:4px;"></div>最高湿度:
-            ${data[params[0].dataIndex].humidityMax ? data[params[0].dataIndex].humidityMax : '-'} %<br/>
-            <div style="display:inline-block;width:8px;height:8px;background-color:${
-              params[3].color
-            };border-radius:5px;margin-right:4px;"></div>最低湿度:
-            ${data[params[0].dataIndex].humidityMin ? data[params[0].dataIndex].humidityMin : '-'} %`
+            };border-radius:5px;margin-right:4px;"></div>湿度:
+            ${data[params[0].dataIndex].humidityAvg ? data[params[0].dataIndex].humidityAvg : '-'} %<br/>`
           },
         },
-        color: ['#5470C6', '#91CC75', '#FBCD67', '#EE6666'],
+        color: ['#5470C6', '#91CC75'],
         legend: {
-          data: ['最高温度', '最低温度', '最高湿度', '最低湿度'],
+          data: ['温度', '湿度'],
         },
         grid: {
           left: '3%',
@@ -290,28 +261,16 @@ export default {
         },
         series: [
           {
-            name: '最高温度',
+            name: '温度',
             type: 'line',
-            stack: '最高温度',
+            stack: '温度',
             data: y1,
           },
           {
-            name: '最低温度',
+            name: '湿度',
             type: 'line',
-            stack: '最低温度',
+            stack: '湿度',
             data: y2,
-          },
-          {
-            name: '最高湿度',
-            type: 'line',
-            stack: '最高湿度',
-            data: y3,
-          },
-          {
-            name: '最低湿度',
-            type: 'line',
-            stack: '最低湿度',
-            data: y4,
           },
         ],
       })

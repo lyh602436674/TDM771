@@ -8,11 +8,13 @@
 <template>
   <div>
     <h-desc :data="detailData" labelWidth='160px' size='small' title='基本信息'>
-      <h-desc-item label='委托单号'>
-        {{ detailData.entrustNo || '--' }}
-        <a-button v-if="showPreviewBtn" icon="eye" size="small" style="margin-left: 10px" type="primary"
-                  @click="entrustReview">委托单预览
-        </a-button>
+      <h-desc-item label='委托单号' style="display: block">
+        <template slot="content">
+          <div>{{ detailData.entrustNo || '--' }}</div>
+          <a-button v-if="showPreviewBtn" icon="eye" size="small" style="margin-left: 10px" type="primary"
+                    @click="entrustReview">委托单预览
+          </a-button>
+        </template>
       </h-desc-item>
       <h-desc-item label='运行单号'>
         {{ detailData.entrustCode || '--' }}

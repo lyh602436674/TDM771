@@ -169,7 +169,7 @@ export default {
               title: '提示',
               content: testNames + '没有匹配到合适的设备，是否继续通过?',
               onOk: () => {
-                postAction(this.url.check, { id, isForce: 1 }).then(res => {
+                postAction(this.url.check, {id, isForce: 1, typeNo: this.pageOption.typeNo}).then(res => {
                   if (res.code === 200) {
                     this.$message.success(this.pageOption.typeText + '成功')
                     this.handleCancel()

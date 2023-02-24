@@ -162,7 +162,6 @@ export default {
               }
             }) || [],
           })
-          console.log(obj, 'objobjobjobjobjobjobjobjobj')
           let filterProjectByType = this.filterUnitCode(obj.classifyType)
           this.filterProjectByType = filterProjectByType
           this.equipData = obj.testEquipInfo && isArray(obj.testEquipInfo) ? obj.testEquipInfo : []
@@ -563,7 +562,9 @@ export default {
           key: 'attachIds',
           span: 3,
           component: (
-            <h-upload-file v-decorator={['attachIds', {initialValue: []}]}/>
+            <h-upload-file
+              accept={"application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
+              v-decorator={['attachIds', {initialValue: []}]}/>
           ),
         }
       ]

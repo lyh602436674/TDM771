@@ -73,43 +73,22 @@ export default {
         },
 
         {
-          title: '最高温度',
-          key: 'temperatureMax',
+          title: '温度(℃)',
+          key: 'temperatureAvg',
           type: 'number',
           formType: 'input',
           validate: {
-            rules: [{ required: true, message: '请输入最高温度' }],
+            rules: [{ required: true, message: '请输入温度' }],
           },
           span: 2,
         },
         {
-          title: '最低温度',
-          key: 'temperatureMin',
-          formType: 'input',
-          type: 'number',
-          validate: {
-            rules: [{ required: true, validator: this.temperature }],
-          },
-          span: 2,
-        },
-
-        {
-          title: '最高湿度',
-          key: 'humidityMax',
+          title: '湿度(％)',
+          key: 'humidityAvg',
           type: 'number',
           formType: 'input',
           validate: {
-            rules: [{ required: true, message: '请输入最高湿度' }],
-          },
-          span: 2,
-        },
-        {
-          title: '最低湿度',
-          key: 'humidityMin',
-          type: 'number',
-          formType: 'input',
-          validate: {
-            rules: [{ required: true, validator: this.humidity }],
+            rules: [{ required: true, message: '请输入湿度' }],
           },
           span: 2,
         },

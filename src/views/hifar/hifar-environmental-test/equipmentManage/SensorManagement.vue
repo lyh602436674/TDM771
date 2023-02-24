@@ -18,13 +18,13 @@
     />
     <div slot="table-operator" style="border-top: 5px">
       <a-button v-has="'sensorlist:add'" type="ghost-primary" size="small" icon="plus" @click="handleAdd">新建</a-button>
-<!--      <a-button v-has="'sensorlist:export'" icon="download" size="small" type="ghost-warning"-->
-<!--                @click="handleExportXls('传感器信息')">-->
-<!--        导出-->
-<!--      </a-button>-->
-<!--      <a-button v-has="'sensorlist:import'" icon="import" size="small" type="ghost-success" @click="handleImportExcel">-->
-<!--        导入-->
-<!--      </a-button>-->
+      <a-button v-has="'sensorlist:export'" icon="download" size="small" type="ghost-warning"
+                @click="handleExportXls('传感器信息')">
+        导出
+      </a-button>
+      <a-button v-has="'sensorlist:import'" icon="import" size="small" type="ghost-success" @click="handleImportExcel">
+        导入
+      </a-button>
       <a-button v-has="'sensorlist:delete'" icon="delete" size="small" type="danger" @click="batchDel">
         批量删除
       </a-button>
@@ -249,8 +249,8 @@ export default {
       url: {
         list: '/HfResSensorBusiness/listPageBySearchType',
         delete: '/HfResSensorBusiness/logicRemoveById',
-        importExcelUrl: "",
-        export: "",
+        importExcelUrl: "/HfResSensorBusiness/importExcel",
+        export: "/HfResSensorBusiness/exportExcel",
       },
       loadData: (params) => {
         let data = {
