@@ -9,15 +9,15 @@
 <template>
   <div ref="pageWrapper" class="h-custom-layout" style="height: 100%; position: relative">
     <h-card>
-      <template slot="title"> 报告批准 </template>
-      <h-tabs fixed :activeKey="activeKey" :animated="true" @change="handleTabsChange">
+      <template slot="title"> 修改审核</template>
+      <h-tabs :activeKey="activeKey" :animated="true" fixed @change="handleTabsChange">
         <a-tab-pane key="1">
-          <a-badge :count="0" slot="tab" :offset="offset">待批准</a-badge>
-          <report-approve-table ref="ReportApproveTable" :queryType='queryType'></report-approve-table>
+          <a-badge slot="tab" :count="0" :offset="offset">待审核</a-badge>
+          <report-examine-table ref="ReportExamineTable" :queryType='queryType'/>
         </a-tab-pane>
         <a-tab-pane key="2">
-          <a-badge :count="0" slot="tab" :offset="offset">已批准</a-badge>
-          <report-approve-table ref="ReportApprovedTable" :queryType='queryType'></report-approve-table>
+          <a-badge slot="tab" :count="0" :offset="offset">已审核</a-badge>
+          <report-examine-table ref="ReportExamineTable" :queryType='queryType'/>
         </a-tab-pane>
       </h-tabs>
     </h-card>
@@ -25,7 +25,8 @@
 </template>
 
 <script>
-import ReportApproveTable from './components/ReportApproveTable.vue'
+import ReportExamineTable from "@views/hifar/hifar-environmental-test/reports/components/ReportExamineTable";
+
 export default {
   provide() {
     return {
@@ -34,24 +35,24 @@ export default {
   },
 
   components: {
-    ReportApproveTable,
+    ReportExamineTable,
   },
 
   data() {
     return {
       activeKey: '1',
       offset: [10, 1],
-      queryType:1,
+      queryType: 1,
     }
   },
 
   methods: {
     handleTabsChange(v) {
       this.activeKey = v
-      if(v ==1){
-        this.queryType = 1
-      }else{
-        this.queryType = 2
+      if (v === '1') {
+        this.queryType = '1'
+      } else {
+        this.queryType = '2'
       }
     },
   },

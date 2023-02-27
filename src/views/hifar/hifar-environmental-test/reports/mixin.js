@@ -48,6 +48,12 @@ export default {
           return '批准通过';
         case 50:
           return '批准驳回';
+        case 60:
+          return '修改审批';
+        case 70:
+          return '修改审批通过';
+        case 80:
+          return '修改审批驳回';
         case 99:
           return '已删除';
       }
@@ -90,6 +96,10 @@ export default {
           return 'red';
         case 60:
           return 'geekblue';
+        case 70:
+          return '#67A78F';
+        case 80:
+          return 'red';
         case 99:
           return 'red';
       }
@@ -115,7 +125,11 @@ export default {
         case 50:
           return '批准驳回';
         case 60:
-          return '已发放';
+          return '修改审批';
+        case 70:
+          return '修改审批通过';
+        case 80:
+          return '修改审批驳回';
         case 99:
           return '已删除';
       }
@@ -141,6 +155,12 @@ export default {
           return '审核驳回';
         case 'examineReject':
           return '审核驳回';
+        case 'amendApply':
+          return '申请修改';
+        case 'amendPass':
+          return '修改审批通过';
+        case 'amendReject':
+          return '修改审批驳回';
       }
     }
   },

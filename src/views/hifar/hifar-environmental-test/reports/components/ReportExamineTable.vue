@@ -1,51 +1,50 @@
 <!--
- * @Author: 赵峰
- * @Date: 2021-09-09 13:59:43
- * @LastEditTime: 2021-11-10 09:34:06
- * @LastEditors: 赵峰
- * @Descripttion: 报告批准table
- * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\reports\components\ReportApproveTable.vue
+ * @Author: 雷宇航
+ * @Date: 2023-02-24 17:14:16
+ * @fileName: ReportExamineTable.vue
+ * @FilePath: tdm771-client\src\views\hifar\hifar-environmental-test\reports\components\ReportExamineTable.vue
+ * @Description: 报告批准完成后，可以提交修改审批，在此页面审批
 -->
 <template>
-  <h-card fixed :bordered="false">
+  <h-card :bordered="false" fixed>
     <h-search
-      v-model="queryParams"
       slot="search-form"
-      size="small"
-      :showToggleButton="true"
+      v-model="queryParams"
       :data="searchBar"
+      :showToggleButton="true"
+      size="small"
       @change="refresh"
     />
     <h-vex-table
-      slot="content"
       ref="dataCheckTable"
-      :scroll="{ x: true }"
+      slot="content"
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"
+      :scroll="{ x: true }"
     >
       <span slot="status" slot-scope="text, record">
-        <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter" />
+        <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
       </span>
       <div slot="action" slot-scope="text, record">
         <a-icon
-          type="eye"
-          title="详情"
           class="primary-text"
           style="cursor: pointer"
+          title="详情"
+          type="eye"
           @click="() => handleDetail(record)"
         />
-        <span v-if="record.status === 20">
+        <span v-if="record.status === 60">
           <a-divider style="color: #409eff" type="vertical"/>
-          <a-popconfirm title="确定批准通过吗?" @confirm="() => handleCheckPass(record.id)">
-            <h-icon v-has="'reportApprove:pass'" class="success-text" style="cursor: pointer" title="批准通过"
+          <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckPass(record.id)">
+            <h-icon v-has="'examine:pass'" class="success-text" style="cursor: pointer" title="审核通过"
                     type="icon-wancheng1"/>
           </a-popconfirm>
           <a-divider style="color: #409eff" type="vertical"/>
           <report-reject-popover style="display: inline-block" @reject="handleCheck(record.id)"
                                  @write="handleWrite(record.id)">
             <h-icon
-              v-has="'reportApprove:reject'"
+              v-has="'examine:reject'"
               class="danger-text"
               style="cursor: pointer"
               title="驳回"
@@ -86,9 +85,9 @@ export default {
       id: '',
       title: '',
       url: {
-        list: '/HfEnvReportApproveBusiness/listPage',
+        list: '/HfEnvReportAmendBusiness/listPage',
         check: '/HfEnvReportExamineBusiness/examineById',
-        checkApprove: '/HfEnvReportApproveBusiness/approveById',
+        amendById: '/HfEnvReportAmendBusiness/amendById',
       },
       unitId: '',
       searchBar: [
@@ -139,7 +138,7 @@ export default {
           align: 'left',
           width: 140,
           dataIndex: 'reportCode',
-          customRender: (t)=>{
+          customRender: (t) => {
             return t || '--'
           }
         },
@@ -226,10 +225,10 @@ export default {
           fixed: 'right',
           width: 100,
           align: 'center',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
         },
       ],
-      type: 'approve',
+      type: 'examine',
       loadData: (params) => {
         let data = {
           ...this.queryParams,
@@ -250,15 +249,13 @@ export default {
       this.$refs.dataCheckTable.refresh(bool)
     },
     handleDetail(record) {
-      let type = this.type
-      let activeKey = '2'
-      this.$refs.ReportDetailModal.show(record.id, type, activeKey)
+      this.$refs.ReportDetailModal.show(record.id, this.type, '2')
     },
     handleWrite(id) {
-      this.$refs.ReportDetailModal.show(id, 'approve', '2', true)
+      this.$refs.ReportDetailModal.show(id, this.type, '2', true)
     },
     handleCheck(id) {
-      postAction(this.url.check, {id, examineFlag: 50}).then((res) => {
+      postAction(this.url.check, {id, examineFlag: 80}).then((res) => {
         if (res.code === 200) {
           this.$message.success('驳回成功')
           this.refresh(true)
@@ -266,7 +263,7 @@ export default {
       })
     },
     handleCheckPass(id) {
-      postAction(this.url.checkApprove, {id, examineFlag: 40}).then((res) => {
+      postAction(this.url.amendById, {id, examineFlag: 70}).then((res) => {
         if (res.code === 200) {
           this.$message.success('批准成功')
           this.refresh(true)

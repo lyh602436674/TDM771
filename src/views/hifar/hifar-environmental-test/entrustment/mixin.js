@@ -3,7 +3,7 @@
  * @Date: 2021-09-08 17:48:53
  * @LastEditTime: 2021-11-08 11:06:39
  * @LastEditors: Please set LastEditors
- * @Descripttion: 
+ * @Descripttion:
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-physico-chemical\reports\mixin.js
  */
 export default {
@@ -100,16 +100,20 @@ export default {
                     return '保存';
                 case 'submit':
                     return '提交';
-                case 'approvePass':
-                    return '批准通过';
-                case 'approveReject':
-                    return '批准驳回';
-                case 'examinePass':
-                    return '审核通过';
-                case 'examineNotPass':
-                    return '审核驳回';
-                case 'examineReject':
-                    return '审核驳回';
+              case 'approvePass':
+                return '批准通过';
+              case 'approveReject':
+                return '批准驳回';
+              case 'examinePass':
+                return '审核通过';
+              case 'examineNotPass':
+                return '审核驳回';
+              case 'examineReject':
+                return '审核驳回';
+              case 'amendPass':
+                return '修改审批通过';
+              case 'amendReject':
+                return '修改审批驳回';
             }
         }
     },

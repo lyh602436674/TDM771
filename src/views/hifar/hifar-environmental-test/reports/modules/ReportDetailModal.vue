@@ -18,23 +18,34 @@
   >
     <div class="footer" slot="footer">
       <a-space>
-        <template v-if="type === 'check'">
-          <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckPass(detailData.id, 20)">
-            <a-button type="primary"> 审核通过</a-button>
-          </a-popconfirm>
-          <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
-                                 @write="drawerVisible = true">
-            <a-button type="ghost-primary"> 审核驳回</a-button>
-          </report-reject-popover>
-        </template>
-        <template v-if="type === 'approve'">
-          <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckApprovePass(detailData.id, 40)">
-            <a-button type="primary"> 批准通过</a-button>
-          </a-popconfirm>
-          <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
-                                 @write="drawerVisible = true">
-            <a-button type="ghost-primary"> 批准驳回</a-button>
-          </report-reject-popover>
+        <template v-if="queryType === '1'">
+          <template v-if="type === 'check'">
+            <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckPass(detailData.id, 20)">
+              <a-button type="primary"> 审核通过</a-button>
+            </a-popconfirm>
+            <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
+                                   @write="drawerVisible = true">
+              <a-button type="ghost-primary"> 审核驳回</a-button>
+            </report-reject-popover>
+          </template>
+          <template v-if="type === 'approve'">
+            <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckApprovePass(detailData.id, 40)">
+              <a-button type="primary"> 批准通过</a-button>
+            </a-popconfirm>
+            <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
+                                   @write="drawerVisible = true">
+              <a-button type="ghost-primary"> 批准驳回</a-button>
+            </report-reject-popover>
+          </template>
+          <template v-if="type === 'examine'">
+            <a-popconfirm title="确定审批通过吗?" @confirm="() => handleCheckAmendPass(detailData.id, 70)">
+              <a-button type="primary"> 审批通过</a-button>
+            </a-popconfirm>
+            <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
+                                   @write="drawerVisible = true">
+              <a-button type="ghost-primary"> 审批驳回</a-button>
+            </report-reject-popover>
+          </template>
         </template>
         <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
       </a-space>
@@ -88,6 +99,13 @@ export default {
     ReportFlowInfoTable,
   },
 
+  props: {
+    queryType: {
+      type: String,
+      default: '1'
+    }
+  },
+
   computed: {
     pdfPath() {
       return !!this.detailData.pdfPath;
@@ -107,6 +125,7 @@ export default {
         detail: '/HfEnvReportBusiness/queryDetailById',
         check: '/HfEnvReportExamineBusiness/examineById',
         checkApprove: '/HfEnvReportApproveBusiness/approveById',
+        amendById: '/HfEnvReportAmendBusiness/amendById',
       },
       numPages: 1, // pdf文件总页数
       pdfUrl: null,
@@ -129,9 +148,7 @@ export default {
     handleCancel() {
       this.visible = false
       this.drawerVisible = false
-      if (this.type === 'check' || this.type === 'approve') {
-        this.$emit('change', true)
-      }
+      this.$emit('change', true)
     },
     handleTabsChange(v) {
       this.activeKey = v
@@ -147,16 +164,15 @@ export default {
     handleCheck(record) {
       let params = {
         id: record.id,
-        examineFlag: this.type === 'check' ? 30 : this.type === 'approve' ? 50 : null,
-        // rejectType 驳回节点 1 报告生成 2 报告审核 3 报告批准
-        rejectType: this.type === 'check' ? '2' : this.type === 'approve' ? '3' : null,
+        examineFlag: this.type === 'check' ? 30 : this.type === 'approve' ? 50 : this.type === 'examine' ? 80 : null,
+        // rejectType 驳回节点 1 报告生成 2 报告审核 3 报告批准 4 修改审批
+        rejectType: this.type === 'check' ? '2' : this.type === 'approve' ? '3' : this.type === 'examine' ? '4' : null,
         reportRejectList: this.$refs.reportRejectInfoTable.getTableData()
       }
       postAction(this.url.check, params).then((res) => {
         if (res.code === 200) {
           this.$message.success('驳回成功')
           this.handleCancel()
-          this.$emit('change', true)
         }
       })
     },
@@ -165,7 +181,6 @@ export default {
         if (res.code === 200) {
           this.$message.success('审核成功')
           this.handleCancel()
-          this.$emit('change', true)
         }
       })
     },
@@ -174,7 +189,14 @@ export default {
         if (res.code === 200) {
           this.$message.success('批准成功')
           this.handleCancel()
-          this.$emit('change', true)
+        }
+      })
+    },
+    handleCheckAmendPass(id, examineFlag) {
+      postAction(this.url.amendById, {id, examineFlag}).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('审批成功')
+          this.handleCancel()
         }
       })
     },

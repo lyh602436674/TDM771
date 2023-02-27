@@ -24,6 +24,7 @@ const rejectType = [
   {title: "报告生成", key: "1", value: "1"},
   {title: "报告审核", key: "2", value: "2"},
   {title: "报告批准", key: "3", value: "3"},
+  {title: "修改审批", key: "4", value: "4"},
 ]
 
 export default {

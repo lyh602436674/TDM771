@@ -36,7 +36,7 @@
           @click="() => handleDetail(record)"
         />
         <a-divider type="vertical" style="color: #409eff"/>
-        <span v-if="record.status == 10">
+        <span v-if="record.status === 10">
           <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckPass(record.id)">
             <h-icon v-has="'reportCheck:pass'" type="icon-wancheng1" title="通过" class="success-text"
                     style="cursor: pointer"/>
@@ -55,8 +55,7 @@
         </span>
       </div>
     </h-vex-table>
-    <report-check-modal ref="ReportCheckModal" @change="refresh(true)"></report-check-modal>
-    <report-detail-modal ref="ReportDetailModal" @change="refresh(true)"></report-detail-modal>
+    <report-detail-modal ref="ReportDetailModal" :queryType="queryType" @change="refresh(true)"></report-detail-modal>
   </h-card>
 </template>
 
@@ -64,7 +63,6 @@
 import moment from 'moment'
 import {postAction} from '@/api/manage'
 import mixin from '../mixin'
-import ReportCheckModal from '../modules/ReportCheckModal'
 import ReportDetailModal from '../modules/ReportDetailModal'
 import ReportRejectPopover from "@views/hifar/hifar-environmental-test/reports/components/ReportRejectPopover";
 
@@ -72,7 +70,6 @@ export default {
   mixins: [mixin],
   props: ['queryType'],
   components: {
-    ReportCheckModal,
     ReportDetailModal,
     ReportRejectPopover
   },
@@ -148,7 +145,7 @@ export default {
         {
           title: '状态',
           align: 'left',
-          width: 100,
+          width: 120,
           dataIndex: 'status',
           scopedSlots: {customRender: 'status'},
         },

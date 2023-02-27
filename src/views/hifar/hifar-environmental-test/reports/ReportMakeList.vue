@@ -19,7 +19,7 @@
       />
       <div slot="table-operator" style="border-top: 5px">
         <a-button icon="eye" size="small" type="primary" @click="handleIdea">
-          驳回意见
+          意见汇总
         </a-button>
         <a-badge :count="reportNum">
           <a-button
@@ -62,7 +62,14 @@
               type="eye"
               @click="() => handleDetail(record)"
             />
-            <span v-if="record.status == 1">
+            <a-popconfirm v-if="record.status === 40" title="确定申请修改吗?" @confirm="() => handleAmend(record)">
+              <a-icon
+                class="primary-text cursor-pointer"
+                title="申请修改"
+                type="tool"
+              />
+            </a-popconfirm>
+            <span v-if="record.status === 1">
               <a-space>
                 <a-popconfirm
                   v-if="record.isExternalManage == 0"
@@ -88,7 +95,7 @@
               </a-space>
             </span>
             <template v-if="!isIntranet">
-               <span v-if="record.status == 3 || record.status == 30 || record.status == 50 ">
+               <span v-if="[3,30,50,70,80].includes(record.status)">
                  <a-space>
                   <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
                     <h-icon
@@ -103,6 +110,7 @@
                     v-has="'report:edit'"
                     class="primary-text cursor-pointer"
                     type="edit"
+                    title="编辑"
                     @click="handleEdit(record)"/>
                    <h-upload-file-b
                      v-model="reportFileList"
@@ -206,6 +214,7 @@ export default {
         download: '/HfEnvReportBusiness/download',
         pushIntranet: '/ReportPushApiBusiness/pushIntranet',
         pushMes: '/ReportPushApiBusiness/pushReportToMes',
+        amend: "/HfEnvReportAmendBusiness/amendReport",
       },
       reportNum: 0,
       selectedRowKeys: [],
@@ -281,7 +290,7 @@ export default {
         {
           title: '状态',
           align: 'left',
-          width: 100,
+          width: 120,
           dataIndex: 'status',
           scopedSlots: {customRender: 'status'}
         },
@@ -553,6 +562,15 @@ export default {
       } else {
         this.openNotificationWithIcon('error', '删除提示', '请至少选择一项')
       }
+    },
+    // 申请修改报告
+    handleAmend(record) {
+      postAction(this.url.amend, {id: record.id}).then(res => {
+        if (res.code === 200) {
+          this.$message.success('申请成功')
+          this.refresh()
+        }
+      })
     },
     // 添加
     handleAdd() {
