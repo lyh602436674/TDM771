@@ -105,6 +105,25 @@ import {filterDictTextByCache} from '@comp/_util/JDictSelectUtil'
 import SysUserSelect from '@/views/components/SysUserSelect'
 import HandleSelectModal from "@views/hifar/hifar-environmental-test/task/modules/components/HandleSelectModal";
 
+const seriesLabel = {
+  show: true,
+  fontWeight: "bold",
+  formatter: (params) => {
+    console.log(params, 'params')
+    let a = params.seriesName === '温度'
+    return (a ? params.value[1] + '℃' : params.value[1] + 'RH%') + '\n' + momentFormat(params.value[0])
+  }
+}
+const momentFormat = function (value) {
+  let hours = Math.floor(value / 1000 / 60 / 60)
+  hours = hours < 10 ? '0' + hours : hours
+  let minutes = Math.floor(value / 1000 / 60) % 60
+  minutes = minutes < 10 ? '0' + minutes : minutes
+  let seconds = Math.floor((value / 1000) % 60)
+  seconds = seconds < 10 ? '0' + seconds : seconds
+  return `${hours}:${minutes}:${seconds}`
+}
+
 export default {
   components: {
     NewSampleListModal,
@@ -667,15 +686,6 @@ export default {
     equipHandleDelete(index) {
       this.equipData.splice(index, 1)
     },
-    momentFormat(value) {
-      let hours = Math.floor(value / 1000 / 60 / 60)
-      hours = hours < 10 ? '0' + hours : hours
-      let minutes = Math.floor(value / 1000 / 60) % 60
-      minutes = minutes < 10 ? '0' + minutes : minutes
-      let seconds = Math.floor((value / 1000) % 60)
-      seconds = seconds < 10 ? '0' + seconds : seconds
-      return `${hours}:${minutes}:${seconds}`
-    },
     resultEcharts() {
       this.splitByCurveType()
       let {temperatureCurveFlag, humidityCurveFlag} = this
@@ -702,8 +712,8 @@ export default {
             },
             axisLabel: {
               formatter: function (value, index) {
-                return this.momentFormat(value);
-              }.bind(this),
+                return momentFormat(value);
+              },
               color: '#1B2232',
               rotate: 45,
             }
@@ -730,14 +740,16 @@ export default {
               type: 'line',
               hoverAnimation: false,
               symbolSize: 4,
-              data: this.temperatureResult || []
+              data: this.temperatureResult || [],
+              label: seriesLabel
             },
             {
               name: '湿度/RH',
               type: 'line',
               hoverAnimation: false,
               symbolSize: 4,
-              data: this.humidityResult || []
+              data: this.humidityResult || [],
+              label: seriesLabel
             },
           ]
         }

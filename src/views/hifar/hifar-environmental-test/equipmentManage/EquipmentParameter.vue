@@ -11,6 +11,16 @@
     <r-l-layout style="height: 100%">
       <div slot="left" class="ep-left" style="height: 100%; overflow: auto">
         <h-card fixed title="设备列表">
+          <a-input-search
+            slot="search-form"
+            v-model="equipQuery.keyWord"
+            allowClear
+            enter-button="搜索"
+            placeholder="请输入设备名称或设备型号或设备编号"
+            size="small"
+            @search="getEquipmentTree"
+            @keyup.enter.native="getEquipmentTree"
+          />
           <a-tree
             v-if="equipmentTree.length"
             :replaceFields="replaceFields"
@@ -377,6 +387,7 @@ export default {
       selectedKeys: [],
       selectedTreeRows: [],
       editRules: {},
+      equipQuery: {},
       editConfig: {
         trigger: 'click',
         mode: 'row',
@@ -957,7 +968,7 @@ export default {
       this.$refs.hSelectModal.show()
     },
     getEquipmentTree() {
-      postAction(this.url.tree, {c_equipUse_1: 1}).then((res) => {
+      postAction(this.url.tree, {c_equipUse_1: 1,...this.equipQuery}).then((res) => {
         if (res.code === 200) {
           this.equipmentTree = res.data.map((item) => {
             return {

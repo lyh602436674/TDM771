@@ -206,7 +206,7 @@ export default {
           dataIndex: 'rejectType',
           customRender: (text, record) => {
             let [res] = rejectType.filter(item => item.key === text)
-            return res.title
+            return (res && res.title) || '--'
           }
         },
         {
@@ -263,7 +263,8 @@ export default {
     }
   },
   methods: {
-    show() {
+    show(selectedRowKeys) {
+      this.selectedTreeKeys = selectedRowKeys
       this.visible = true
       this.getReportTree()
     },

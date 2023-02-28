@@ -98,14 +98,7 @@ export default {
     ReportDetail,
     ReportFlowInfoTable,
   },
-
-  props: {
-    queryType: {
-      type: String,
-      default: '1'
-    }
-  },
-
+  props: ['queryType'],
   computed: {
     pdfPath() {
       return !!this.detailData.pdfPath;

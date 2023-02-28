@@ -5,7 +5,25 @@
 </template>
 
 <script>
-import moment from 'moment'
+
+const seriesLabel = {
+  show: true,
+  fontWeight: "bold",
+  formatter: (params) => {
+    console.log(params, 'params')
+    let a = params.seriesName === '温度'
+    return (a ? params.value[1] + '℃' : params.value[1] + 'RH%') + '\n' + momentFormat(params.value[0])
+  }
+}
+const momentFormat = function (value) {
+  let hours = Math.floor(value / 1000 / 60 / 60)
+  hours = hours < 10 ? '0' + hours : hours
+  let minutes = Math.floor(value / 1000 / 60) % 60
+  minutes = minutes < 10 ? '0' + minutes : minutes
+  let seconds = Math.floor((value / 1000) % 60)
+  seconds = seconds < 10 ? '0' + seconds : seconds
+  return `${hours}:${minutes}:${seconds}`
+}
 
 export default {
   data() {
@@ -25,15 +43,6 @@ export default {
         this.darChart(record)
       })
     },
-    momentFormat(value) {
-      let hours = Math.floor(value / 1000 / 60 / 60)
-      hours = hours < 10 ? '0' + hours : hours
-      let minutes = Math.floor(value / 1000 / 60) % 60
-      minutes = minutes < 10 ? '0' + minutes : minutes
-      let seconds = Math.floor((value / 1000) % 60)
-      seconds = seconds < 10 ? '0' + seconds : seconds
-      return `${hours}:${minutes}:${seconds}`
-    },
     darChart(record) {
       let chart = this.$echarts.init(document.getElementById('Charts'));
       let option = {
@@ -44,8 +53,8 @@ export default {
           trigger: 'axis',
           formatter: function (params) {
             params = params[0]
-            return params.seriesName + '：' + params.value[1] + '  时长：' + this.momentFormat(params.value[0])
-          }.bind(this),
+            return params.seriesName + '：' + params.value[1] + '  时长：' + momentFormat(params.value[0])
+          },
           axisPointer: {
             animation: false
           }
@@ -67,8 +76,8 @@ export default {
           },
           axisLabel: {
             formatter: function (value, index) {
-              return this.momentFormat(value)
-            }.bind(this),
+              return momentFormat(value)
+            },
             color: '#1B2232',
             rotate: 45,
           }
@@ -102,14 +111,16 @@ export default {
             type: 'line',
             hoverAnimation: false,
             symbolSize: 4,
-            data: record.temperatureResult || []
+            data: record.temperatureResult || [],
+            label: seriesLabel,
           },
           {
             name: '湿度',
             type: 'line',
             hoverAnimation: false,
             symbolSize: 4,
-            data: record.humidityResult || []
+            data: record.humidityResult || [],
+            label: seriesLabel,
           },
         ]
       };

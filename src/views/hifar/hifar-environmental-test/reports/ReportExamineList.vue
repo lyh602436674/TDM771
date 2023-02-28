@@ -13,11 +13,11 @@
       <h-tabs :activeKey="activeKey" :animated="true" fixed @change="handleTabsChange">
         <a-tab-pane key="1">
           <a-badge slot="tab" :count="0" :offset="offset">待审核</a-badge>
-          <report-examine-table ref="ReportExamineTable" :queryType='queryType'/>
+          <report-examine-table ref="ReportExamineTable" :queryType='activeKey'/>
         </a-tab-pane>
         <a-tab-pane key="2">
           <a-badge slot="tab" :count="0" :offset="offset">已审核</a-badge>
-          <report-examine-table ref="ReportExamineTable" :queryType='queryType'/>
+          <report-examine-table ref="ReportExamineTable" :queryType='activeKey'/>
         </a-tab-pane>
       </h-tabs>
     </h-card>
@@ -42,18 +42,12 @@ export default {
     return {
       activeKey: '1',
       offset: [10, 1],
-      queryType: 1,
     }
   },
 
   methods: {
     handleTabsChange(v) {
       this.activeKey = v
-      if (v === '1') {
-        this.queryType = '1'
-      } else {
-        this.queryType = '2'
-      }
     },
   },
 }

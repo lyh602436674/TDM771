@@ -31,7 +31,7 @@
           >添加
           </a-button>
         </a-badge>
-        <a-button v-has="'report:delete'" icon="delete" size="small" type="danger" @click="batchDel()">
+        <a-button v-has="'report:delete'" icon="delete" size="small" type="danger" @click="batchDel">
           批量删除
         </a-button>
       </div>
@@ -221,13 +221,13 @@ export default {
       selectedRows: [],
       searchBar: [
         {
-          title: '运行单号',
-          key: 'c_entrustCode_7',
+          title: '委托单号',
+          key: 'c_entrustNo_7',
           formType: 'input'
         },
         {
-          title: '委托单号',
-          key: 'c_entrustNo_7',
+          title: '运行单号',
+          key: 'c_entrustCode_7',
           formType: 'input'
         },
         {
@@ -245,14 +245,17 @@ export default {
           key: 'c_status_1',
           formType: 'select',
           options: [
-            { title: '待生成', value: 1, key: 1 },
-            { title: '生成中', value: 2, key: 2 },
-            { title: '已生成', value: 3, key: 3 },
-            { title: '已提交', value: 10, key: 10 },
-            { title: '审核通过', value: 20, key: 20 },
-            { title: '审核驳回', value: 30, key: 30 },
-            { title: '批准通过', value: 40, key: 40 },
-            { title: '批准驳回', value: 50, key: 50 }
+            {title: '待生成', value: 1, key: 1},
+            {title: '生成中', value: 2, key: 2},
+            {title: '已生成', value: 3, key: 3},
+            {title: '已提交', value: 10, key: 10},
+            {title: '审核通过', value: 20, key: 20},
+            {title: '审核驳回', value: 30, key: 30},
+            {title: '批准通过', value: 40, key: 40},
+            {title: '批准驳回', value: 50, key: 50},
+            {title: '修改审批', value: 60, key: 60},
+            {title: '修改审批通过', value: 70, key: 70},
+            {title: '修改审批驳回', value: 80, key: 80},
           ]
         },
         {
@@ -431,7 +434,10 @@ export default {
   },
   methods: {
     handleIdea() {
-      this.$refs.reportRejectAllInfo.show()
+      if (this.selectedRowKeys.length > 1) {
+        return this.$message.warning('只能选择一条报告')
+      }
+      this.$refs.reportRejectAllInfo.show(this.selectedRowKeys)
     },
     handleUploadCallback(file, record, isUpload) {
       postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, isUpload}).then(res => {

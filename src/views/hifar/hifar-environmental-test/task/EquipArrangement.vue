@@ -355,13 +355,13 @@ export default {
       selectedRowKeys: [],
       searchForm: [
         {
-          title: '运行单号',
-          key: 'entrustCode',
+          title: '委托单号',
+          key: 'entrustNo',
           formType: 'input',
         },
         {
-          title: '委托单号',
-          key: 'entrustNo',
+          title: '运行单号',
+          key: 'entrustCode',
           formType: 'input',
         },
         {

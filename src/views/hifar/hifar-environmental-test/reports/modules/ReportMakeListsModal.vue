@@ -99,7 +99,7 @@ export default {
           tests: selectedRow,
           buttonFlag: 'save',
           templateId: templateId.toString(),
-          options: checkboxValue
+          options: checkboxValue.toString(),
         }
         postAction('/HfEnvReportBusiness/generateReport', params).then((res) => {
           if (res.code === 200) {

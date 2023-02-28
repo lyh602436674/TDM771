@@ -50,7 +50,7 @@ export default {
     return {
       visible: false,
       submitLoading: false,
-      checkboxValue: ['1', '2', '3', '4'],
+      checkboxValue: ['1', '2', '3', '4','5'],
       checkboxOptions: [
         {title: "试前检查单", value: "1"},
         {title: "样品图片", value: "2"},
