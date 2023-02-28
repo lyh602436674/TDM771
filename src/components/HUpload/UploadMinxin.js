@@ -125,11 +125,11 @@ export default {
      * @description: 文件上传前预处理
      */
     beforeRequestUpload() {
-      let promiseAll = this.fileList.map(file => {
+      let promiseAll = this.fileList.map((file, index) => {
         // 判断文件处于预加载结束状态且没有文件url的情况下，才能上传
         if (!file.pretreatment > 0 && !file.url) {
           return new Promise(async (resolve, reject) => {
-            let result = await this.calculateUploadParams(file)
+            let result = await this.calculateUploadParams(file, index)
             if (result) {
               resolve(result)
             } else {
@@ -163,7 +163,7 @@ export default {
      * @param {*} file  文件
      * @return {*}
      */
-    calculateUploadParams(file) {
+    calculateUploadParams(file, index) {
       return new Promise(async (resolve, reject) => {
         let md5 = null
         md5 = await this.getFileMd5(file)
@@ -177,6 +177,7 @@ export default {
           fileSize: file.size,
           ...this.customParams
         }
+        if (this.isVarSeq) uploadParams.serial = index
         let fileIndex = findIndex(this.fileList, obj => {
           return obj.uuid === file.uuid
         })
@@ -224,19 +225,20 @@ export default {
               const chunkUploadUrls = authResult.data.chunkUrls
               let cb = false
               for (let item of chunkUploadUrls) {
-                let uploadResult = await this.uploadChunk(item, file, fileChunkNum, percentStep, fileIndex)
-                cb = uploadResult
+                cb = await this.uploadChunk(item, file, fileChunkNum, percentStep, fileIndex)
               }
               finishedResult = await this.finishUpload(uploadParams, authResult.data.fileId)
-              if (finishedResult.code == 200) {
-                this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], {
+              if (finishedResult.code === 200) {
+                let fileListRow = {
                   status: "success",
                   percent: 100,
                   url: finishedResult.data.filePath,
                   uploadTime: finishedResult.data.createTime,
                   fileId: finishedResult.data.fileId,
-                  secretLevel: this.secretLevel
-                }))
+                  secretLevel: this.secretLevel,
+                }
+                if (this.isVarSeq) fileListRow.serial = uploadParams.serial
+                this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], fileListRow))
                 resolve(cb)
               } else {
                 resolve(false)

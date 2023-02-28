@@ -37,15 +37,8 @@
     <!-- update-end author:sunjianlei date:20191220 for: 解决全局样式冲突的问题 -->
     <!-- update_end  author:zhaoxin date:20191129 for: 做头部菜单栏导航 -->
     <span class="action iconfont">
-      <a-tooltip title="设备看板">
-        <a class="logout_title" @click="goEquipBoard">
-          <h-icon type="icon-shebei"/>
-        </a>
-      </a-tooltip>
-    </span>
-    <span class="action iconfont">
       <a-tooltip title="任务看板">
-        <a class="logout_title" @click="goTaskBoard">
+        <a class="logout_title" href="HifarBoard://123">
           <h-icon type="icon-yewukanban"/>
         </a>
       </a-tooltip>
@@ -270,35 +263,6 @@ export default {
       this.$router.push({
         path: '/fileClient'
       })
-    },
-    goEquipBoard() {
-    },
-    goTaskBoard() {
-      this.openExe()
-    },
-    openExe(filePath){
-      window.location.href = ""
-      // if (window.ActiveXObject) {
-      //   try {
-      //     let shell = new ActiveXObject("WScript.Shell");
-      //     let fso = new ActiveXObject("Scripting.FileSystemObject");
-      //     let exePath = shell.RegRead("HKEY_CLASSES_ROOT\\MBSFiles\\Shell\\Open\\Command\\");  //根据注册表信息找到本地应用程序安装路径
-      //     exePath = exePath.split("%")[0].substring(0, exePath.length - 1);
-      //     filePath = $("#hfFilePath").val() + filePath.split("HaiKou\\")[1];
-      //     let para = exePath + " " + filePath; //如果没有参数则去掉filePath
-      //     if (fso.FileExists(exePath)) {   //检测是否安装了
-      //       shell.exec(para); //打开
-      //     }
-      //     else {
-      //       alert("未能检测到本地已安装该软件");
-      //     }
-      //   } catch (e) {
-      //     alert(e.message);
-      //   }
-      // }
-      // else {
-      //   alert("请使用IE并正确配置浏览器！");
-      // }
     },
   },
 }

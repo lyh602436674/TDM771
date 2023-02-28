@@ -427,7 +427,7 @@ export default {
                 if (this.isEdit) {
                   btns.push(
                     <a-popconfirm title="确定删除吗?" onconfirm={() => this.handleDelete(record)}>
-                      <h-icon class="danger-text" type="icon-shanchu"/>
+                      <h-icon class="danger-text cursor-pointer" type="icon-shanchu"/>
                     </a-popconfirm>
                   )
                   if (this.isReplace) {
