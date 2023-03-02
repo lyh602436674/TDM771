@@ -177,7 +177,7 @@ export default {
           fileSize: file.size,
           ...this.customParams
         }
-        if (this.isVarSeq) uploadParams.serial = index
+        if (this.isVarSeq) uploadParams.serial = index + 1
         let fileIndex = findIndex(this.fileList, obj => {
           return obj.uuid === file.uuid
         })

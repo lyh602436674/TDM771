@@ -104,6 +104,7 @@ export default {
     },
     handleCancel() {
       this.visible = false
+      this.modelImage = []
       this.$emit('close')
     },
     handleCollect(file) {
