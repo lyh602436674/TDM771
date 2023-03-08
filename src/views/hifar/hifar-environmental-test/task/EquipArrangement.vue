@@ -587,6 +587,21 @@ export default {
           minWidth: 100,
         },
         {
+          title: '设备速率',
+          dataIndex: 'testRate',
+          minWidth: 100,
+        },
+        {
+          title: '试验人员',
+          dataIndex: 'chargeUserName',
+          minWidth: 100,
+        },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          minWidth: 150,
+        },
+        {
           title: '异常数量',
           dataIndex: 'exceptionNum',
           width: 80,

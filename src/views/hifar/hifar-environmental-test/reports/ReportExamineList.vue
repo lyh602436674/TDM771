@@ -9,14 +9,14 @@
 <template>
   <div ref="pageWrapper" class="h-custom-layout" style="height: 100%; position: relative">
     <h-card>
-      <template slot="title"> 修改审核</template>
+      <template slot="title"> 修改审批</template>
       <h-tabs :activeKey="activeKey" :animated="true" fixed @change="handleTabsChange">
         <a-tab-pane key="1">
-          <a-badge slot="tab" :count="0" :offset="offset">待审核</a-badge>
+          <a-badge slot="tab" :count="0" :offset="offset">待审批</a-badge>
           <report-examine-table ref="ReportExamineTable" :queryType='activeKey'/>
         </a-tab-pane>
         <a-tab-pane key="2">
-          <a-badge slot="tab" :count="0" :offset="offset">已审核</a-badge>
+          <a-badge slot="tab" :count="0" :offset="offset">已审批</a-badge>
           <report-examine-table ref="ReportExamineTable" :queryType='activeKey'/>
         </a-tab-pane>
       </h-tabs>

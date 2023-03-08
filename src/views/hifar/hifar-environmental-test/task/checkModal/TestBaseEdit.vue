@@ -353,7 +353,7 @@ import {cloneDeep} from 'lodash'
 import {postAction} from '@/api/manage'
 import HandleSelectModal from '../modules/components/HandleSelectModal.vue'
 import PostionModal from '../modules/PostionModal'
-import {randomUUID, recursive} from '@/utils/util'
+import {randomUUID, recursive, uniqueArray} from '@/utils/util'
 import CheckEnsureModal from '../modules/components/CheckEnsureModal'
 import ProductFileModal from '@views/hifar/hifar-environmental-test/task/modules/ProductFileModal'
 import HfElevatorLayer from '@/components/HfElevatorLayer'
@@ -1852,21 +1852,18 @@ export default {
     },
     selectPersonHandle(val, postVal) {
       let [postInfo] = postVal
-      let newPerson = []
-      if (val.length) {
-        val.forEach((item, index) => {
-          newPerson.push({
-            id: '',
-            rowId: index + 1,
-            testUserId: item.id,
-            testUserName: item.idName,
-            testPostId: postInfo.id,
-            testPostName: postInfo.postName,
-            testPostCode: postInfo.postCode
-          })
-        })
-      }
-      this.personArr = cloneDeep([].concat([], this.personArr, newPerson))
+      let newPerson = val.length && val.map((item, index) => {
+        return {
+          id: '',
+          rowId: index + 1,
+          testUserId: item.id,
+          testUserName: item.idName,
+          testPostId: postInfo.id,
+          testPostName: postInfo.postName,
+          testPostCode: postInfo.postCode
+        }
+      }) || []
+      this.personArr = this.personArr.concat(uniqueArray(this.personArr, 'testUserId', newPerson, 'testUserId'))
     },
     equipAdd() {
       this.$refs.equipHandleSelectModal.show(this.equipData)

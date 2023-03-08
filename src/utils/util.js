@@ -1,5 +1,6 @@
 import * as api from '@/api/api'
 import {asyncRouterMap} from '@/config/router.config.js'
+import {cloneDeep} from 'lodash'
 
 //hifar add begin
 export function validateDuplicateMultiValueWithMsg(tableName, fieldNames, fieldVals, dataId, msg, callback) {
@@ -510,4 +511,27 @@ export function recursive(arr, title, id) {
       children: item.children && item.children.length ? recursive(item.children, title, id) : []
     }
   })
+}
+
+/*
+* 两个数组去重
+* arr1 源数组1
+* arr2 源数组2
+* field 根据那个字段进行去重
+* @return 返回去重后的数组
+* */
+
+export function uniqueArray(array1, field1, array2, field2) {
+  if (!field1 || !field2) return
+  let arr1 = cloneDeep(array1), arr2 = cloneDeep(array2)
+  for (let i = 0; i < arr1.length; i++) {
+    for (let j = 0; j < arr2.length; j++) {
+      if (arr1[i][field1] === arr2[j][field2]) {
+        arr2.splice(j, 1)
+        j--
+        break
+      }
+    }
+  }
+  return arr2
 }

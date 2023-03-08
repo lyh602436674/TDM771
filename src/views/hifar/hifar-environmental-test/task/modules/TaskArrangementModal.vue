@@ -106,7 +106,8 @@ export default {
       this.model = Object.assign({}, record, {
         predictUseTime: record.predictDuration || 1,
         sampleNum: record.productNums || 1,
-        predictStartTime: moment().add(5, 'm'), //预计开始时间默认+5分钟
+        // predictStartTime: moment().add(5, 'm'), //预计开始时间默认+5分钟
+        predictStartTime: moment().format('YYYY-MM-DD'),
         expectTime: moment(parseFloat(record.expectStartTime)).format('YYYY-MM-DD HH:mm:ss'),
         checkValid:
           record.checkValid == '0' && record.checkValid != undefined ? '--' : moment(parseFloat(record.checkValid)),

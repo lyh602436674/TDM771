@@ -48,6 +48,7 @@
           :columns="columns"
           :data="loadData"
           :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect, type: type }"
+          historySelect
         ></h-vex-table>
       </h-card>
     </h-modal>
