@@ -327,7 +327,7 @@
       ref="sensorHandleSelectModal"
       :columns="addSensorColumns"
       :data-url="sensorList"
-      :title="'添加传感器'"
+      title="添加传感器"
       type="sensor"
       :searchData="equipSearchData"
       @callback="sensorCallback"
@@ -1478,6 +1478,7 @@ export default {
                 change: (v, option) => {
                   row.usePurposeCode = v
                   row.usePurposeName = option.title
+                  this.changeControlMethod(row)
                 }
               }
             })
@@ -1818,6 +1819,7 @@ export default {
     },
     testSensorHandleDelete(index, subIndex) {
       this.installControlTable[index].testSensorInfo.splice(subIndex, 1)
+      this.changeControlMethod()
     },
     installControlHandleDelete(index) {
       this.installControlTable.splice(index, 1)
@@ -1833,7 +1835,7 @@ export default {
     },
     sensorAdd(record, index) {
       this.selectedBeforeIndex = index
-      this.$refs.sensorHandleSelectModal.show(this.installControlTable[index].testSensorInfo, '选择传感器')
+      this.$refs.sensorHandleSelectModal.show(this.installControlTable[index].testSensorInfo)
     },
     // 选择传感器返回数据
     sensorCallback(value) {
@@ -1877,10 +1879,39 @@ export default {
     toolsProductCallback(value) {
       this.toolsProductData = Array.isArray(this.toolsProductData) ? this.toolsProductData.concat(value) : [].concat(value)
     },
+    changeControlMethod() {
+      for (let i = 0; i < this.installControlTable.length; i++) {
+        let item = this.installControlTable[i]
+        if (item.testSensorInfo.length) {
+          let controlNum = 0
+          item.testSensorInfo.forEach(item => {
+            if (item.usePurposeCode === '2') {
+              controlNum++;
+            }
+          });
+          this.$set(item, 'controlMethod', controlNum >= 2 ? "多点" : controlNum === 1 ? "单点" : "")
+        }
+      }
+    },
+    validControlTable() {
+      let div = []
+      for (let i = 0; i < this.installControlTable.length; i++) {
+        let item = this.installControlTable[i]
+        if (!item.testSensorInfo.length) {
+          div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式下请添加传感器`}</div>)
+        } else {
+          if (!(item.testSensorInfo.map(v => v.usePurposeCode).includes('2'))) {
+            // 判断安装控制方式下的传感器 规则：一个控制方式下必须有一个传感器，且传感器必须至少有一条是控制 1:测量 2:控制
+            div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式下缺少控制传感器`}</div>)
+          }
+        }
+      }
+      return this.$createElement('span', {}, div)
+    },
     // 保存
     handleSave() {
       this.submitLoading = true
-      const { $refs: { carryOutProcessForm } } = this
+      const {$refs: {carryOutProcessForm}} = this
       const carryOutProcess_form = new Promise((resolve, reject) => {
         carryOutProcessForm.form.validateFieldsAndScroll((err, values) => {
           if (err) {
@@ -1892,6 +1923,12 @@ export default {
       })
       Promise.all([carryOutProcess_form]).then((values) => {
         let record = values[0]
+        let msgList = this.validControlTable()
+        if (msgList.children.length) {
+          this.submitLoading = false
+          this.$message.warning(h => msgList)
+          return
+        }
         let params = {
           id: this.records.id,
           realStartTime: record.realStartTime ? record.realStartTime.valueOf() : '',
