@@ -7,8 +7,8 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\task\EquipTask.vue
 -->
 <template>
-  <div class="equip-task">
-    <a-spin v-if="loading" class="equip-task-loading" size="large" />
+  <div ref="equipTask" class="equip-task">
+    <a-spin v-if="loading" class="equip-task-loading" size="large"/>
     <div class="search-bar">
       <h-search
         v-model="queryParams"
@@ -19,7 +19,7 @@
       />
       <div>
         <a-range-picker
-          v-if="queryType == 'custom'"
+          v-if="queryType === 'custom'"
           v-model="queryTime"
           size="small"
           style="margin-right: 5px; width: 200px"
@@ -29,31 +29,34 @@
         />
         <a-radio-group v-model="queryType" size="small" button-style="solid" @change="handleQueryTypeChange">
           <a-radio-button value="all">全部</a-radio-button>
-          <a-radio-button value="yestoday">昨天</a-radio-button>
+          <a-radio-button value="yesterday">昨天</a-radio-button>
           <a-radio-button value="today">今天</a-radio-button>
-          <a-radio-button value="tommorow">明天</a-radio-button>
-          <!-- <a-radio-button value="7days">未来7天</a-radio-button>
-          <a-radio-button value="30days">未来30天</a-radio-button> -->
+          <a-radio-button value="tomorrow">明天</a-radio-button>
           <a-radio-button value="custom">自定义</a-radio-button>
         </a-radio-group>
       </div>
     </div>
-    <div v-resize="drawResize" class="equip-task-wrapper">
-      <div class="equip-axis" ref="equipExtend" style="height: 30px; width: 100%"></div>
-      <div class="raphael-paper-wrapper">
-        <div id="raphael-paper" class="raphael-paper" ref="equipTask"></div>
-      </div>
+    <div class="legend-wrapper">
+      <template v-for="(item,index) in legendOption">
+        <div :key="index" class="legend-item">
+          <div :style="{backgroundColor: item.color}" class="legend-item-rect"></div>
+          <div class="legend-item-text">{{ item.label }}</div>
+        </div>
+      </template>
     </div>
-    <test-task-base-info-modal ref="taskDetail" />
+    <div class="equip-task-wrapper">
+      <div id='equip-gantt-wrapper'></div>
+    </div>
+    <test-task-base-info-modal ref="taskDetail"/>
   </div>
 </template>
 <script>
-import Vue from 'vue'
-import Raphael from 'raphael'
-import { getAction } from '@/api/manage'
+import {getAction} from '@/api/manage'
 import moment from 'moment'
-import { isEmpty } from 'lodash'
+import {isEmpty} from 'lodash'
 import TestTaskBaseInfoModal from '@/views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal'
+import {gantt} from 'dhtmlx-gantt'
+
 const equipIcon = require('./assets/image/equip.png')
 const testIcon = require('./assets/image/test.png')
 export default {
@@ -62,7 +65,7 @@ export default {
       getContainer: () => this.$refs.equipTask,
     }
   },
-  components: { TestTaskBaseInfoModal },
+  components: {TestTaskBaseInfoModal},
   data() {
     return {
       moment,
@@ -75,29 +78,27 @@ export default {
           key: 'c_equipName_7',
           formType: 'input',
         },
+        {
+          title: '设备编号',
+          key: 'c_equipCode_7',
+          formType: 'input',
+        },
+        {
+          title: '设备型号',
+          key: 'c_equipModel_7',
+          formType: 'input',
+        },
       ],
+      legendOption: [
+        {key: "0", label: "超期", color: "#FF5319"},
+        {key: "1", label: "未开始", color: "#006BFF"},
+        {key: "20", label: "执行中", color: "#67C23A"},
+        {key: "30", label: "暂停", color: "#a9a9a9"},
+      ],
+      taskList: [],
       queryType: 'all',
       queryTime: [moment().startOf('day'), moment().endOf('day')],
-      raphael: {
-        // 背景
-        background: {
-          // 背景分割线
-          line: {},
-        },
-        paper: null,
-        // 应项目需求，每个设备所占宽度为确定值，修改stepHeight可调整设备宽度
-        stepHeight: 46,
-        offsetX: 30,
-      },
-      bgColor: '#fff',
-      lineColor: '#282c34',
-      dangerColor: '#FF5319',
-      warningColor: '#FF9B00',
-      primaryColor: '#006BFF',
-      successColor: '#67C23A',
-      defaultColor: '#a9a9a9',
       loading: false,
-      equipList: [],
       minShowStartTime: 0,
       maxShowEndTime: 0,
       url: {
@@ -106,836 +107,214 @@ export default {
     }
   },
   mounted() {
-    // 绘制legend
-    this.drawLegend()
     this.getList()
   },
   methods: {
+    getDate(type) {
+      let start, end
+      let dateObj = {
+        today: () => {
+          start = moment().format("YYYY-MM-DD") + " 00:00:00"
+          end = moment().format("YYYY-MM-DD") + " 23:59:59"
+        },
+        yesterday: () => {
+          start = moment(moment().add(-1, 'days').startOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+          end = moment(moment().add(-1, 'days').endOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+        },
+        tomorrow: () => {
+          start = moment(moment().add(1, 'days').startOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+          end = moment(moment().add(1, 'days').endOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+        }
+      }
+      dateObj[type]()
+      return {start, end}
+    },
     handleSearchChange(value) {
       this.getList()
     },
-    /**
-     * @Date: 2021-10-12 09:27:31
-     * @Author: 陈乾龙
-     * @description: 调整逻辑，先去获取设备列表数据，根据获得到的设备列表数据计算绘图区域
-     */
+    dateTimeFormat(time) {
+      return +time && +time !== 0 ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : '--'
+    },
+    ganttLoad() {
+      gantt.clearAll()
+      gantt.i18n.setLocale('cn')
+      gantt.config.date_format = '%Y-%m-%d %H:%i:%s' //  设置日期格式
+      gantt.config.readonly = true
+      let bool = ['all', 'custom'].includes(this.queryType)
+      let global_start_date = null
+      let global_end_date = null
+      // 设置时间刻度相关属性
+      gantt.config.scales = [];
+      if (bool) {
+        gantt.config.scales.push(
+          {unit: "day", step: 1, format: "%m-%d"}
+        )
+        if (this.queryType === 'custom') {
+          global_start_date = moment(this.queryTime[0]).format('YYYY-MM-DD HH:mm:ss')
+          global_end_date = moment(this.queryTime[1]).format('YYYY-MM-DD HH:mm:ss')
+        }
+      } else {
+        let result = this.getDate(this.queryType)
+        global_start_date = result.start
+        global_end_date = result.end
+        gantt.config.scales.push({
+          unit: "hour", step: 1, format: "%H"
+        })
+      }
+      gantt.config.start_date = global_start_date
+      gantt.config.end_date = global_end_date
+      // 允许在出现意外行为时显示错误警报
+      gantt.config.show_errors = false;
+      // 甘特图自动延长时间刻度以适应所有显示的任务
+      gantt.config.fit_tasks = true
+      // 设置工具提示隐藏之前的时间长度，以毫秒为单位
+      // gantt.config.tooltip_hide_timeout = 3000
+      // 在重新绘制甘特图时保留垂直和水平滚动条的当前位置
+      gantt.config.preserve_scroll = true
+      // 设置表格行的默认高度
+      gantt.config.row_height = 40
+
+      gantt.config.columns = [
+        {
+          name: 'equipName',
+          width: 250,
+          align: 'left',
+          label: '设备编号[设备型号]',
+          resize: true,
+          onrender: (item, node) => {
+            node.style.fontWeight = 'bold'
+            node.style.fontSize = '14px'
+            node.style.cursor = 'pointer'
+            node.style.marginLeft = '10px'
+            // node.onclick = e => {
+            //   console.log(item, node, e)
+            // }
+          }
+        },
+      ]
+      gantt.templates.task_class = function (start, end, task) {
+        switch (+task.statusFlag) {
+          case 0:
+            return 'overtime'
+          case 1:
+            return 'notStart'
+          case 20:
+            return 'running'
+          case 30:
+            return 'pause'
+        }
+        if (task.isSubTask) {
+          return "gantt_hidden";
+        }
+      }
+      gantt.config.drag_timeline = null
+      //任务条显示内容
+      // gantt.templates.task_text = function (start, end, task) {
+      //   return "";
+      // }
+      // 刷新任务
+      // gantt.refreshTask() refreshTask ( string| number id , [ boolean refresh_links ] );
+      //开启悬浮框功能（我也是醉了，还需要先开启一下）
+      gantt.plugins({
+        tooltip: true
+      })
+      //悬浮框
+      gantt.templates.tooltip_text = function (start, end, task) {
+        // 只在任务条上显示tooltip
+        if (!task.text) return false;
+        return ` <div class="task-tooltip-title">
+                      <img src="${testIcon}"/> ${task.testNames}
+                  </div>
+                 <ul>
+                  <li>委托单位：${task.custNames || '--'}</li>
+                  <li>样品：${task.products || '--'}</li>
+                  <li>试验项目：${task.testNames}</li>
+                  <li>预计开始时间：${task.predictStartTime}</li>
+                  <li>预计结束时间：${task.predictEndTime}</li>
+                  <li>实际开始时间：${task.realStartTime}</li>
+                  <li>实际结束时间：${task.realEndTime}</li>
+                   <li>预计时长：${task.predictUseTime || '--'}小时</li>
+                </ul>`
+      }
+      //任务的点击方法
+      gantt.attachEvent("onTaskClick", (id, e) => {
+        // 点击列的时候
+        if (e.target.className === 'gantt_tree_content') {
+
+        }
+        // 点击任务条的时候
+        if (e.target.className === 'gantt_task_content') {
+          let task = this.taskList.find(item => item.id === id)
+          this.$refs.taskDetail.show(task, '2', '10px')
+        }
+        return true;
+      }, {id: "myTaskClick"});
+      gantt.init(document.getElementById('equip-gantt-wrapper'))
+    },
     getList() {
       if (this.loading) return
       this.loading = true
       let params = {
         ...this.queryParams,
       }
-      if (this.queryType != 'all') {
+      if (this.queryType !== 'all') {
         let queryTime = this.filterQueryType(this.queryType)
         params.startTime = queryTime[0]
         params.endTime = queryTime[1]
       }
-      getAction(this.url.list, params)
-        .then((res) => {
-          this.loading = false
-          if (res.code === 200) {
-            let list = res.data.sort((a,b)=> a.rowSort - b.rowSort)
-            let ext = res.ext
-            if (this.queryType == 'all') {
-              this.minShowStartTime = parseFloat(ext.minShowStartTime) || 0
-              this.maxShowEndTime = parseFloat(ext.maxShowEndTime) || 0
-            }
-            /**
-             * 计算画布高度，宽度为百分之百
-             */
-            if (list.length) {
-              this.drawEquipTaskInfoList(list)
-            } else {
-              this.$refs.equipTask.style.height = 10 * this.raphael.stepHeight + this.raphael.offsetX + 'px'
-              this.$nextTick(() => {
-                this.initRaphael()
-              })
-            }
-            this.equipList = res.data.sort((a,b)=> a.rowSort - b.rowSort)
+      getAction(this.url.list, params).then((res) => {
+        this.loading = false
+        if (res.code === 200) {
+          let list = res.data.sort((a, b) => a.rowSort - b.rowSort)
+          this.ganttParse(list)
+          let ext = res.ext
+          if (this.queryType === 'all') {
+            this.minShowStartTime = parseFloat(ext.minShowStartTime) || 0
+            this.maxShowEndTime = parseFloat(ext.maxShowEndTime) || 0
           }
-        })
-        .finally(() => {
-          this.loading = false
-        })
+        }
+      }).finally(() => {
+        this.loading = false
+      })
     },
-    /**
-     * @Date: 2021-10-13 16:50:23
-     * @Author: 陈乾龙
-     * @description:绘制单个设备的甘特图
-     * @param {*}
-     * @return {*}
-     */
-    drawEquipTaskInfoOne(equip, index) {
-      let that = this
-      let content = this.$refs.equipTask
-      content.style.height =
-        (equip.equipTestInfo.length * this.raphael.stepHeight || this.raphael.stepHeight) + this.raphael.offsetX + 'px'
-      let width = content.offsetWidth
-      let height = content.offsetHeight
-      if (!this.raphael.paper) {
-        // 定义绘图实例
-        this.raphael = Object.assign({}, this.raphael, {
-          width: width,
-          height: height,
-          paper: Raphael(content, width, height),
-        })
-      } else {
-        this.raphael.width = width
-        this.raphael.height = height
-        this.raphael.paper.setSize(width, height)
+    ganttParse(list) {
+      this.ganttLoad()
+      let tasks = {
+        data: []
       }
-      this.raphael.paper.clear()
-      this.raphael.paper.setSize(this.raphael.width, this.raphael.height)
-      // 绘制返回按钮
-      this.raphael.backButton.show()
-      this.raphael.backButtonText.show()
-
-      // 绘制外框
-      this.raphael.paper
-        .rect(0, this.raphael.offsetX, this.raphael.width, this.raphael.height - this.raphael.offsetX)
-        .attr({
-          fill: this.bgColor,
-          stroke: this.lineColor,
-          'stroke-width': 1,
-        })
-
-      // 绘制表头
-      this.raphael.paper
-        .path(`M280,${this.raphael.offsetX}L280,${this.raphael.height - 1}`)
-        .attr({ stroke: this.lineColor })
-      // 绘制设备名称
-      this.raphael.paper
-        .text(
-          150 / 2,
-          30 / 2,
-          equip.equipName.length < 8 ? equip.equipName : equip.equipName.substring(0, 6) + '...' || '--'
+      list.forEach(item => {
+        let equipName = item.equipCode + '[' + item.equipModel + ']'
+        tasks.data.push(
+          {
+            id: item.id,
+            equipName,
+            resize: true,
+            render: 'split',
+            text: '',
+            isSubTask: item.equipTestInfo.length === 0
+          }
         )
-        .attr({
-          'font-size': 14,
-          'font-weight': '100',
-          'stroke-width': 0.3,
-          fill: this.lineColor,
-          stroke: this.lineColor,
-          title: equip.equipName,
-          cursor: 'pointer',
-        })
-      // 绘制栅格线
-      let queryTime = this.filterQueryType(this.queryType)
-      let startTime = queryTime[0],
-        endTime = queryTime[1]
-      let duration = (endTime - startTime) / 1000 / 3600
-      if (duration <= 24) {
-        this.drawHourAxis(startTime, duration)
-      } else {
-        duration = duration / 24
-        this.drawDayAxis(startTime, duration)
-      }
-      // 绘制任务
-      equip.equipTestInfo.map((task, taskIndex) => {
-        let xAxisOffset = 280,
-          yAxis = 5.5 + taskIndex * this.raphael.stepHeight,
-          xAxisWidth = this.raphael.width - xAxisOffset - 3
-        let { showStartTime, showEndTime } = task
-        showStartTime = parseFloat(showStartTime)
-        showEndTime = parseFloat(showEndTime)
-        let axisStepWidth = null,
-          timeWidth = null,
-          xAxis = null
-        let queryTime = this.filterQueryType(this.queryType)
-        let startTime = queryTime[0],
-          endTime = queryTime[1]
-        let duration = (endTime - startTime) / 1000 / 3600
-        /**
-         * @Date: 2021-10-19 14:23:27
-         * @Author: 陈乾龙
-         * @description: 绘制任务名称和Icon
-         */
-        // 排除掉第一条分割线
-        this.raphael.paper.text(280 / 2, yAxis + this.raphael.offsetX + 15, task.testName || '--').attr({
-          stroke: this.lineColor,
-          'stroke-width': 0.2,
-          'font-size': 14,
-        })
-        /**
-         * @Date: 2021-10-19 14:56:31
-         * @Author: 陈乾龙
-         * @description: 绘制任务分割线
-         */
-        this.raphael.paper.path(
-          `M0,${taskIndex * this.raphael.stepHeight + this.raphael.offsetX}L${this.raphael.width},${
-            taskIndex * this.raphael.stepHeight + this.raphael.offsetX
-          }`
-        )
-        /**
-         * @Date: 2021-10-19 14:23:13
-         * @Author: 陈乾龙
-         * @description: 绘制任务直方图
-         */
-        // 单位格的宽度
-        axisStepWidth = xAxisWidth / Math.ceil(duration)
-        // 计算图形的偏移量
-        let axisStepWidthOffset = ((showStartTime - startTime) / 3600000) * axisStepWidth
-        // 计算图形宽度
-        timeWidth = ((showEndTime - showStartTime) / 3600000) * axisStepWidth
-        // 计算图形起始x坐标
-        xAxis = axisStepWidthOffset + xAxisOffset
-        this.raphael.paper
-          .rect(xAxis, yAxis + this.raphael.offsetX, 0, this.raphael.stepHeight - 10.5, 10)
-          .attr({
-            stroke: this.filterStatusFlag(task.statusFlag),
-            // 'fill-opacity': 0.6,
+        item.equipTestInfo.length > 0 && item.equipTestInfo.forEach(target => {
+          this.taskList.push(target)
+          tasks.data.push({
+            id: target.id,
+            parent: target.equipId,
+            text: target.testNames || '',
+            start_date: this.dateTimeFormat(target.showStartTime),
+            end_date: this.dateTimeFormat(target.showEndTime),
+            custNames: target.custNames,
+            products: target.products,
+            testNames: target.testNames,
+            predictStartTime: this.dateTimeFormat(target.predictStartTime),
+            predictEndTime: this.dateTimeFormat(target.predictEndTime),
+            realStartTime: this.dateTimeFormat(target.realStartTime),
+            realEndTime: this.dateTimeFormat(target.realEndTime),
+            predictUseTime: target.predictUseTime,
+            statusFlag: target.statusFlag,
           })
-          .animate({ width: timeWidth, fill: this.filterStatusFlag(task.statusFlag) }, 300, 'easing')
-          .data('tooltip', task.id)
-          .hover(function (e) {
-            /**
-             * 下面是生成tooltip，该操作使用了原生JS操作DOM，会有渲染性能问题，页面在比较老旧的机器上会卡顿，后续尝试直接使用raphael绘制
-             * 也可以使用Vue动态挂载组件上去
-             */
-
-            let { pageX, pageY } = e
-            let container = document.getElementsByClassName('equip-task')[0]
-            let oDiv = document.createElement('div')
-            oDiv.id = task.id
-            oDiv.className = 'task-tooltip'
-            oDiv.innerHTML = `
-            <ul style="padding-left:20px;">
-              <li>委托单编码：${task.entrustCode}</li>
-              <li>任务名称：${task.taskCode}</li>
-              <li>项目名称：${task.unitName}</li>
-              <li>试验名称：${task.testName}</li>
-              <li>开始时间：${moment(parseFloat(task.startTime)).format('YYYY-MM-DD HH:mm')}</li>
-              <li>结束时间：${moment(parseFloat(task.endTime)).format('YYYY-MM-DD HH:mm')}</li>
-            </ul>
-            `
-            container.appendChild(oDiv)
-            // 做了边界检测，防止tooltip溢出可视窗
-            // let { top } = oDiv.getBoundingClientRect()
-            if (pageX + oDiv.offsetWidth > that.raphael.width) {
-              pageX = pageX - oDiv.offsetWidth
-            }
-            oDiv.style.cssText = `top:${pageY}px;left:${pageX}px;`
-          })
-          .mouseout(function () {
-            let container = document.getElementsByClassName('equip-task')[0]
-            let tooltip = document.getElementById(this.data('tooltip'))
-            container.removeChild(tooltip)
-          })
-          .click(function () {
-            that.$refs.taskDetail.show(task, null,'10px')
-          })
+        })
       })
-    },
-    /**
-     * @Date: 2021-10-13 13:54:03
-     * @Author: 陈乾龙
-     * @description: 绘制列表设备任务
-     * @param {*} equip 设备信息
-     * @param {*} index 设备下标
-     * @return {*}
-     */
-    drawEquipTaskInfoList(list = []) {
-      this.$refs.equipTask.style.height =
-        (list.length * this.raphael.stepHeight || this.raphael.stepHeight) + this.raphael.offsetX + 2 + 'px'
-      this.initRaphael()
-      this.raphael.background.line = {}
-      this.raphael.equipTask = []
-      list.map((item, index) => {
-        this.drawEquipTaskInfo(item, index)
-      })
-      // 绘制tooltip，这里先绘制一个假tooltip后续用来计算tooltip的宽度，以及计算tooltip是否溢出
-      let popContext = document.getElementsByClassName('equip-task-wrapper')[0]
-      let oDiv = (oDiv = document.createElement('div'))
-      oDiv.id = 'task-tooltip'
-      oDiv.className = 'task-tooltip'
-      // 马老师说的时间，startTime,endTime 2021/11/4 16:48
-      oDiv.innerHTML = `
-              <div class="task-tooltip-title">
-                <img src=""/> --
-              </div>
-              <ul>
-                <li>委托单位：--</li>
-                <li>样品名称：--</li>
-                <li>试验项目：--</li>
-                <li>预计开始时间：--</li>
-                <li>实际开始时间：--</li>
-                <li>预计时长：--</li>
-              </ul>
-              `
-      popContext.appendChild(oDiv)
-    },
-    drawEquipTaskInfo(equip, index) {
-      if (!this.raphael.equip) {
-        this.raphael.equip = []
-      }
-      let xAxis = 0,
-        yAxis = index * this.raphael.stepHeight
-      // 绘制设备任务条
-      this.raphael.equip[index] = this.raphael.paper.rect(
-        xAxis,
-        yAxis + this.raphael.offsetX,
-        this.raphael.width,
-        this.raphael.stepHeight
-      )
-      this.raphael.equip[index].attr({
-        stroke: this.lineColor,
-        fill: this.bgColor,
-        'fill-opacity': 0.02,
-      })
-      this.raphael.equip[index].click(() => {
-        this.handleEquipClick(equip, index)
-      })
-      // 绘制设备信息和设备任务信息
-      this.drawEquipInfo(equip, index)
-    },
-    /**
-     * @Date: 2021-10-12 10:17:56
-     * @Author: 陈乾龙
-     * @description:
-     * @param {*} equip 设备信息
-     * @param {*} index 设备下标
-     * @return {*}
-     */
-    drawEquipInfo(equip, index) {
-      let that = this
-      let top = 10,
-        bottom = index * this.raphael.stepHeight - 3
-      let paper = this.raphael.equip[index].paper
-      let equipInnerName = equip.innerName + '[' + equip.equipName + ']'
-      // 绘制设备名称
-      let text = paper.text(
-        top + 28,
-        25 + bottom + this.raphael.offsetX,
-        equipInnerName.length <= 18 ? equipInnerName : equipInnerName.substring(0, 18) + '...'
-      )
-      text
-        .attr({
-          'font-size': 14,
-          'text-anchor': 'start',
-          'font-weight': '100',
-          'stroke-width': 0.5,
-          stroke: this.lineColor,
-          title: equip.equipName + "[" + equip.equipModel + "]",
-          cursor: 'pointer',
-          fill: this.lineColor,
-        })
-        .click((e) => {
-          this.handleEquipClick(equip, index)
-        })
-      // 绘制设备ICON
-      paper.image(equipIcon, top - 2, 13 + bottom + this.raphael.offsetX, 20, 20).attr({
-        stroke: this.lineColor,
-      })
-      // 绘制设备任务
-      this.raphael.equipTask[index] = []
-      let xAxisOffset = 280,
-        yAxis = 5.5 + index * this.raphael.stepHeight,
-        xAxisWidth = this.raphael.width - xAxisOffset - 3
-      equip.equipTestInfo.map((task, taskIndex) => {
-        let { showStartTime, showEndTime } = task
-        showStartTime = parseFloat(showStartTime)
-        showEndTime = parseFloat(showEndTime)
-        let axisStepWidth = null,
-          timeWidth = null,
-          xAxis = null
-        let queryTime = this.filterQueryType(this.queryType)
-        let startTime = queryTime[0],
-          endTime = queryTime[1]
-        let duration = (endTime - startTime) / 1000 / 3600
-        // 单位格的宽度
-        axisStepWidth = xAxisWidth / Math.ceil(duration)
-        // 计算图形的偏移量
-        let axisStepWidthOffset = ((showStartTime - startTime) / 3600000) * axisStepWidth
-        // 计算图形宽度
-        timeWidth = ((showEndTime - showStartTime) / 3600000) * axisStepWidth
-        // 计算图形起始x坐标
-        xAxis = axisStepWidthOffset + xAxisOffset
-        this.raphael.equipTask[index][taskIndex] = this.raphael.paper.rect(
-          xAxis,
-          yAxis + this.raphael.offsetX,
-          0,
-          this.raphael.stepHeight - 10.5,
-          4
-        )
-        this.raphael.equipTask[index][taskIndex]
-          .attr({
-            stroke: this.filterStatusFlag(task.statusFlag),
-            // 'fill-opacity': 0.38,
-          })
-          .animate({ width: timeWidth, fill: this.filterStatusFlag(task.statusFlag) }, 300, 'easing')
-          .data('tooltip', task.id)
-          .hover(
-            function (e, eX, eY) {
-              let { srcElement } = e
-              // 获取到当前hover元素的长宽高和x,y坐标，即任务条状图的坐标和大小信息
-              let { height, y } = srcElement.getBoundingClientRect()
-              // 获取到tooltip
-              let oDiv = document.getElementById('task-tooltip')
-              // // 马老师说的时间，startTime,endTime 2021/11/4 16:48
-              oDiv.innerHTML = `
-              <div class="task-tooltip-title">
-                <img src="${testIcon}"/> ${task.testNames}
-              </div>
-              <ul>
-                <li>委托单位：${task.custNames || '--'}</li>
-                <li>样品：${task.products || '--'}</li>
-                <li>试验项目：${task.testNames}</li>
-                <li>预计开始时间：${
-                  task.predictStartTime == 0
-                    ? '--'
-                    : moment(parseFloat(task.predictStartTime)).format('YYYY-MM-DD HH:mm')
-                }</li>
-                <li>实际开始时间：${
-                  task.realStartTime == 0 ? '--' : moment(parseFloat(task.realStartTime)).format('YYYY-MM-DD HH:mm')
-                }</li>
-                 <li>预计时长：${task.predictUseTime || '--'}小时</li>
-              </ul>
-              `
-              let oDivWidth = oDiv.getBoundingClientRect().width,
-                oDivHeight = oDiv.getBoundingClientRect().height
-              // 获取当前画布的坐标和大小信息
-              let { offsetHeight, offsetWidth } = this // 获取当前画布的大小
-              let popContextTop = this.getBoundingClientRect().top,
-                popContextLeft = this.getBoundingClientRect().left
-              // 做了边界检测，防止tooltip溢出可视窗
-              let XLeftOffset = offsetWidth + popContextLeft - eX
-              let XBottomOffset = offsetHeight + popContextTop - eY
-              // 计算当前弹窗的位置
-              let showX = eX,
-                showY = y + height + 5
-              if (XLeftOffset <= oDivWidth) {
-                showX = offsetWidth + popContextLeft - oDivWidth
-              }
-              if (XBottomOffset <= oDivHeight) {
-                showY = y - oDivHeight
-              }
-              oDiv.style.cssText = `top:${y + height + 5}px;left:${eX}px;`
-              // oDiv.style.top = `${showY}px`
-              oDiv.style.left = `${showX}px`
-              oDiv.style.visibility = 'visible'
-              oDiv.style.opacity = 1
-            },
-            function (e, x, y) {
-              // console.log(this)
-              let oDiv = document.getElementById('task-tooltip')
-              oDiv.style.visibility = 'hidden'
-            },
-            document.getElementById('raphael-paper')
-          )
-          .click(function () {
-            let top = '10px'
-            that.$refs.taskDetail.show(task, top)
-          })
-      })
-    },
-    /**
-     * @Date: 2021-10-12 10:03:05
-     * @Author: 陈乾龙
-     * @description: raphael 初始化
-     */
-    initRaphael() {
-      let content = this.$refs.equipTask
-      let width = content.offsetWidth
-      let height = content.offsetHeight
-      if (!this.raphael.paper) {
-        // 定义绘图实例
-        this.raphael = Object.assign({}, this.raphael, {
-          width: width,
-          height: height,
-          paper: Raphael(content, width, height),
-        })
-      } else {
-        this.raphael.width = width
-        this.raphael.height = height
-        this.raphael.paper.setSize(width, height)
-      }
-      // 预先先清除画布
-      this.raphael.paper.clear()
-      // 绘制画布边框
-      this.raphael.background = {}
-      this.raphael.background.react = this.raphael.paper.rect(
-        0,
-        this.raphael.offsetX,
-        this.raphael.width,
-        this.raphael.height
-      )
-      this.raphael.background.react.attr({
-        fill: this.bgColor,
-        stroke: this.lineColor,
-        'stroke-width': 1,
-      })
-      // 绘制坐标与设备信息的分割线
-      this.raphael.dividerLine = this.raphael.paper.path(
-        `M280,${this.raphael.offsetX + 3}L280,${this.raphael.height - 3}`
-      )
-      this.raphael.dividerLine.attr({
-        stroke: this.lineColor,
-      })
-      this.raphael.axis = []
-      let queryTime = this.filterQueryType(this.queryType)
-      let startTime = queryTime[0],
-        endTime = queryTime[1]
-      let duration = (endTime - startTime) / 1000 / 3600
-      if (duration <= 24) {
-        this.drawHourAxis(startTime, duration)
-      } else {
-        duration = duration / 24
-        this.drawDayAxis(startTime, duration)
-      }
-    },
-    drawHourAxis(startTime, duration = 24) {
-      let axisStepWidth = (this.raphael.width - 280) / duration
-      for (let i = 0; i < Math.ceil(duration); i++) {
-        let axisStep = i * axisStepWidth
-        // 绘制x坐标值
-        let text = this.raphael.paper.text(
-          280 + axisStep,
-          15,
-          moment(startTime).add(i, 'h').startOf('hour').format('HH:mm')
-        )
-        text.attr({
-          stroke: this.lineColor,
-          'font-size': 14,
-          'stroke-width': 0.1,
-          fill: this.lineColor,
-          transform: this.raphael.width <= 1048 ? 't10,10r35t-10,0' : 't0,0r0t0,0',
-        })
-        // 绘制坐标线
-        if (!i) continue
-        this.raphael.axis[i] = this.raphael.paper.path(
-          `M${280 + axisStep},${this.raphael.offsetX}L${280 + axisStep},${this.raphael.height - 3}`
-        )
-        this.raphael.axis[i].attr({
-          stroke: this.lineColor,
-          'stroke-dasharray': ['--..'],
-          'stroke-width': 0.5,
-          fill: this.lineColor,
-        })
-      }
-    },
-    drawDayAxis(startTime = moment().startOf('day').valueOf(), step) {
-      let axisStepWidth = (this.raphael.width - 280) / Math.ceil(step)
-      for (let i = 0; i < Math.ceil(step); i++) {
-        let axisStep = i * axisStepWidth
-        let text = this.raphael.paper.text(
-          280 + axisStep,
-          15,
-          moment(startTime).startOf('day').add(i, 'd').format('MM-DD')
-        )
-        text.attr({
-          stroke: this.lineColor,
-          'stroke-width': 0.1,
-          'font-size': 12,
-          transform: 't10,10r40t-10,0',
-          fill: this.lineColor,
-        })
-        if (!i) continue
-        this.raphael.axis[i] = this.raphael.paper.path(
-          `M${280 + axisStep},${this.raphael.offsetX + 3}L${280 + axisStep},${this.raphael.height - 3}`
-        )
-        this.raphael.axis[i].attr({
-          stroke: this.lineColor,
-          'stroke-dasharray': ['--..'],
-          'stroke-width': 0.5,
-          fill: this.lineColor,
-        })
-      }
-    },
-    /**
-     * @Date: 2021-10-18 17:55:44
-     * @Author: 陈乾龙
-     * @description: 绘制图例
-     * @param {*}
-     * @return {*}
-     */
-    drawLegend() {
-      let legendXAxisBase = this.$refs.equipExtend.offsetWidth / 2
-      if (!this.raphael.equipExtendPaper) {
-        this.raphael.equipExtendPaper = Raphael(
-          this.$refs.equipExtend,
-          this.$refs.equipExtend.offsetWidth,
-          this.$refs.equipExtend.offsetHeight
-        )
-      } else {
-        this.raphael.equipExtendPaper.setSize(this.$refs.equipExtend.offsetWidth, this.$refs.equipExtend.offsetHeight)
-        this.raphael.equipExtendPaper.clear()
-      }
-      let unActive = {
-        stroke: this.defaultColor,
-        fill: this.defaultColor,
-      }
-      // legend*1是已经超时的图例
-      let legend1 = this.raphael.equipExtendPaper.rect(legendXAxisBase - 150, 6, 40, 20, 3)
-      let legendText1 = this.raphael.equipExtendPaper.text(legendXAxisBase - 75, 30 / 2 + 2, '超时未开始')
-      legend1
-        .attr({
-          stroke: this.dangerColor,
-          fill: this.dangerColor,
-          // 'fill-opacity': 0.38,
-          cursor: 'pointer',
-        })
-        .click(() => {
-          let statusFlags = this.queryParams.statusFlags.split(',')
-          if (statusFlags.includes('0')) {
-            statusFlags = statusFlags.filter((obj) => {
-              return obj != '0'
-            })
-            legend1.animate(unActive)
-            legendText1.animate(unActive)
-          } else {
-            statusFlags.push('0')
-            legend1.animate({
-              stroke: this.dangerColor,
-              fill: this.dangerColor,
-            })
-            legendText1.animate({
-              stroke: this.lineColor,
-              fill: this.lineColor,
-            })
-          }
-          this.queryParams.statusFlags = statusFlags.join(',')
-          this.getList()
-        })
-
-      legendText1
-        .attr({
-          stroke: this.lineColor,
-          fill: this.lineColor,
-          'stroke-width': 0.3,
-          'font-size': 12,
-          cursor: 'pointer',
-        })
-        .click(() => {
-          let statusFlags = this.queryParams.statusFlags.split(',')
-          if (statusFlags.includes('0')) {
-            statusFlags = statusFlags.filter((obj) => {
-              return obj != '0'
-            })
-            legend1.animate(unActive)
-            legendText1.animate(unActive)
-          } else {
-            statusFlags.push('0')
-            legend1.animate({
-              stroke: this.dangerColor,
-              fill: this.dangerColor,
-            })
-            legendText1.animate({
-              stroke: this.lineColor,
-              fill: this.lineColor,
-            })
-          }
-          this.queryParams.statusFlags = statusFlags.join(',')
-          this.getList()
-        })
-      // legend*2是正常未开始的图例
-      let legend2 = this.raphael.equipExtendPaper.rect(legendXAxisBase - 30, 6, 40, 20, 3)
-      let legendText2 = this.raphael.equipExtendPaper.text(legendXAxisBase + 45, 30 / 2 + 2, '正常未开始')
-      legend2
-        .attr({
-          stroke: this.primaryColor,
-          fill: this.primaryColor,
-          // 'fill-opacity': 0.38,
-          cursor: 'pointer',
-        })
-        .click(() => {
-          let statusFlags = this.queryParams.statusFlags.split(',')
-          if (statusFlags.includes('1')) {
-            statusFlags = statusFlags.filter((obj) => {
-              return obj != '1'
-            })
-            legend2.animate(unActive)
-            legendText2.animate(unActive)
-          } else {
-            statusFlags.push('1')
-            legend2.animate({
-              stroke: this.primaryColor,
-              fill: this.primaryColor,
-            })
-            legendText2.animate({
-              stroke: this.lineColor,
-              fill: this.lineColor,
-            })
-          }
-          this.queryParams.statusFlags = statusFlags.join(',')
-          this.getList()
-        })
-      legendText2
-        .attr({
-          stroke: this.lineColor,
-          fill: this.lineColor,
-          'stroke-width': 0.3,
-          'font-size': 12,
-          cursor: 'pointer',
-        })
-        .click(() => {
-          let statusFlags = this.queryParams.statusFlags.split(',')
-          if (statusFlags.includes('1')) {
-            statusFlags = statusFlags.filter((obj) => {
-              return obj != '1'
-            })
-            legend2.animate(unActive)
-            legendText2.animate(unActive)
-          } else {
-            statusFlags.push('1')
-            legend2.animate({
-              stroke: this.primaryColor,
-              fill: this.primaryColor,
-            })
-            legendText2.animate({
-              stroke: this.lineColor,
-              fill: this.lineColor,
-            })
-          }
-          this.queryParams.statusFlags = statusFlags.join(',')
-          this.getList()
-        })
-      // legend*3 是正常已经开始的图例
-      let legend3 = this.raphael.equipExtendPaper.rect(legendXAxisBase + 90, 6, 40, 20, 3)
-      let legendText3 = this.raphael.equipExtendPaper.text(legendXAxisBase + 158, 30 / 2 + 2, '正常运行')
-      legend3
-        .attr({
-          stroke: this.successColor,
-          fill: this.successColor,
-          // 'fill-opacity': 0.38,
-          cursor: 'pointer',
-        })
-        .click(() => {
-          let statusFlags = this.queryParams.statusFlags.split(',')
-          if (statusFlags.includes('20')) {
-            statusFlags = statusFlags.filter((obj) => {
-              return obj != '20'
-            })
-            legend3.animate(unActive)
-            legendText3.animate(unActive)
-          } else {
-            statusFlags.push('20')
-            legend3.animate({
-              stroke: this.successColor,
-              fill: this.successColor,
-            })
-            legendText3.animate({
-              stroke: this.lineColor,
-              fill: this.lineColor,
-            })
-          }
-          this.queryParams.statusFlags = statusFlags.join(',')
-          this.getList()
-        })
-      legendText3
-        .attr({
-          stroke: this.lineColor,
-          fill: this.lineColor,
-          'stroke-width': 0.3,
-          'font-size': 12,
-          cursor: 'pointer',
-        })
-        .click(() => {
-          let statusFlags = this.queryParams.statusFlags.split(',')
-          if (statusFlags.includes('20')) {
-            statusFlags = statusFlags.filter((obj) => {
-              return obj != '20'
-            })
-            legend3.animate(unActive)
-            legendText3.animate(unActive)
-          } else {
-            statusFlags.push('20')
-            legend3.animate({
-              stroke: this.successColor,
-              fill: this.successColor,
-            })
-            legendText3.animate({
-              stroke: this.lineColor,
-              fill: this.lineColor,
-            })
-          }
-          this.queryParams.statusFlags = statusFlags.join(',')
-          this.getList()
-        })
-      // legend4 是异常暂停的图例
-      let legend4 = this.raphael.equipExtendPaper.rect(legendXAxisBase + 196, 6, 40, 20, 3)
-      let legendText4 = this.raphael.equipExtendPaper.text(legendXAxisBase + 256, 30 / 2 + 2, '暂停')
-      legend4
-        .attr({
-          stroke: this.defaultColor,
-          fill: this.defaultColor,
-          // 'fill-opacity': 0.38,
-          cursor: 'pointer',
-        })
-        .click(() => {
-          let statusFlags = this.queryParams.statusFlags.split(',')
-          if (statusFlags.includes('30')) {
-            statusFlags = statusFlags.filter((obj) => {
-              return obj != '30'
-            })
-            legend4.animate(unActive)
-            legendText4.animate(unActive)
-          } else {
-            statusFlags.push('30')
-            legend4.animate({
-              stroke: this.defaultColor,
-              fill: this.defaultColor,
-            })
-            legendText4.animate({
-              stroke: this.lineColor,
-              fill: this.lineColor,
-            })
-          }
-          this.queryParams.statusFlags = statusFlags.join(',')
-          this.getList()
-        })
-      legendText4
-        .attr({
-          stroke: this.lineColor,
-          fill: this.lineColor,
-          'stroke-width': 0.3,
-          'font-size': 12,
-          cursor: 'pointer',
-        })
-        .click(() => {
-          let statusFlags = this.queryParams.statusFlags.split(',')
-          if (statusFlags.includes('30')) {
-            statusFlags = statusFlags.filter((obj) => {
-              return obj != '30'
-            })
-            legend4.animate(unActive)
-            legendText4.animate(unActive)
-          } else {
-            statusFlags.push('30')
-            legend4.animate({
-              stroke: this.defaultColor,
-              fill: this.defaultColor,
-            })
-            legendText4.animate({
-              stroke: this.lineColor,
-              fill: this.lineColor,
-            })
-          }
-          this.queryParams.statusFlags = statusFlags.join(',')
-          this.getList()
-        })
-    },
-    drawResize(width, height) {
-      if (this.equipList.length) {
-        this.drawEquipTaskInfoList(this.equipList)
-      } else {
-        this.$refs.equipTask.style.height = 10 * this.raphael.stepHeight + 'px'
-        this.$nextTick(() => {
-          this.initRaphael()
-        })
-      }
-      this.drawLegend()
-    },
-    /**
-     * @Date: 2021-10-13 13:51:03
-     * @Author: 陈乾龙
-     * @description: 点击设备名称事件
-     * @param {*} equip 设备值
-     * @param {*} index 设备下标
-     * @return {*}
-     */
-    handleEquipClick(equip, index) {
-      // this.queryParams.c_id_1 = equip.id
-      // this.getList()
+      gantt.parse(tasks)
     },
     handleQueryTypeChange(e) {
       this.getList()
@@ -950,16 +329,12 @@ export default {
     },
     filterQueryType(type) {
       switch (type) {
-        case 'yestoday':
+        case 'yesterday':
           return [moment().subtract(1, 'd').startOf('day').valueOf(), moment().subtract(1, 'd').endOf('day').valueOf()]
         case 'today':
           return [moment().startOf('day').valueOf(), moment().endOf('day').valueOf()]
-        case 'tommorow':
+        case 'tomorrow':
           return [moment().add(1, 'd').startOf('day').valueOf(), moment().add(1, 'd').endOf('day').valueOf()]
-        case '7days':
-          return [moment().startOf('day').valueOf(), moment().add(7, 'd').endOf('day').valueOf()]
-        case '30days':
-          return [moment().startOf('day').valueOf(), moment().add(30, 'd').endOf('day').valueOf()]
         case 'custom':
           return [this.queryTime[0].startOf('day').valueOf(), this.queryTime[1].endOf('day').valueOf()]
         case 'all':
@@ -968,23 +343,19 @@ export default {
           return
       }
     },
-    filterStatusFlag(flag) {
-      flag = parseInt(flag)
-      switch (flag) {
-        case 0:
-          return this.dangerColor
-        case 1:
-          return this.primaryColor
-        case 20:
-          return this.successColor
-        default:
-          return this.defaultColor
-      }
-    },
   },
 }
 </script>
+<style>
+@import "~dhtmlx-gantt/codebase/dhtmlxgantt.css";
+</style>
 <style lang="less">
+#equip-gantt-wrapper {
+  width: 100%;
+  height: 99%;
+  overflow: hidden;
+}
+
 .equip-task {
   height: 100%;
   width: 100%;
@@ -995,6 +366,32 @@ export default {
   justify-content: flex-start;
   align-items: flex-start;
   flex-direction: column;
+
+  .legend-wrapper {
+    padding: 10px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      padding: 0 15px 0 0;
+      cursor: pointer;
+
+      &-rect {
+        width: 42px;
+        height: 24px;
+        border-radius: 5px;
+        margin-right: 5px;
+      }
+
+      &-text {
+        font-weight: bold;
+      }
+    }
+  }
+
   .search-bar {
     display: flex;
     justify-content: space-between;
@@ -1004,6 +401,7 @@ export default {
     width: 100%;
     border-bottom: #d9d9d9 solid 1px;
   }
+
   .equip-task-wrapper {
     width: 100%;
     flex: 1;
@@ -1012,14 +410,6 @@ export default {
     justify-content: flex-start;
     align-items: flex-start;
     flex-direction: column;
-    .equip-axis,
-    .raphael-paper-wrapper {
-      width: 100%;
-    }
-    .raphael-paper-wrapper {
-      flex: 1;
-      overflow: auto;
-    }
   }
   .raphael-paper {
     width: 100%;
@@ -1047,34 +437,96 @@ export default {
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
-    .task-tooltip-title {
-      padding: 10px;
-      border-bottom: solid 1px @border-color-base;
-      font-size: 16px;
-      font-weight: 700;
-      img {
-        width: 26px;
-        height: 26px;
-        display: inline-block;
-        margin-right: 10px;
-      }
+  }
+}
+</style>
+<style lang="less">
+.gantt_tooltip {
+  font-size: 14px;
+  box-shadow: 10px 10px 10px rgba(0 0 0 0.5);
+
+  .task-tooltip-title {
+    padding: 10px;
+    border-bottom: solid 1px @border-color-base;
+    font-size: 16px;
+    font-weight: 700;
+
+    img {
+      width: 26px;
+      height: 26px;
+      display: inline-block;
+      margin-right: 10px;
     }
-    ul {
-      list-style-type: none;
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px;
+
+    li {
       margin: 0;
-      padding: 10px;
-      li {
-        margin: 0;
-        padding: 3px 0;
-        border-bottom: dotted 1px @border-color-base;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        &:last-child {
-          border: none;
-        }
+      padding: 3px 0;
+      border-bottom: dotted 1px @border-color-base;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      &:last-child {
+        border: none;
       }
     }
   }
+}
+</style>
+
+<style>
+.gantt_task_line {
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+.gantt_task_line .gantt_task_progress {
+  background-color: #000;
+}
+
+/* overtime */
+
+.gantt_task_line.overtime {
+  background-color: #FF5319;
+}
+
+.gantt_task_line.overtime .gantt_task_content {
+  color: #fff;
+}
+
+/* notStart */
+
+.gantt_task_line.notStart {
+  background-color: #006BFF;
+}
+
+.gantt_task_line.notStart .gantt_task_content {
+  color: #fff;
+}
+
+/* running */
+
+.gantt_task_line.running {
+  background-color: #67C23A;
+}
+
+.gantt_task_line.running .gantt_task_content {
+  color: #fff;
+}
+
+
+/* pause */
+
+.gantt_task_line.pause {
+  background-color: #a9a9a9;
+}
+
+.gantt_task_line.pause .gantt_task_content {
+  color: #000;
 }
 </style>
