@@ -145,10 +145,6 @@ export default {
       type: [String, Number],
       default: null
     },
-    pieceTableData: {
-      type: Array,
-      default: () => []
-    },
     entrustType: {
       type: String,
       default: '1'
@@ -420,7 +416,6 @@ export default {
                 return this.model.pieceNos
               }}
               entrustType={this.entrustType}
-              pieceTableData={this.pieceTableData}
               onchange={(selectedRowKeys, selectedRows) => {
                 let formName = 'projectInfoForm' + this.index
                 let pieceIds = selectedRows.map(v => v.id).toString()
@@ -754,7 +749,7 @@ export default {
           ]
         }
         chart.setOption(option)
-        this.curveUrl = chart.getDataURL()
+        this.curveUrl = chart.getDataURL({pixelRatio: 3, backgroundColor: '#fff'})
       }
     },
     //新增循环阶段

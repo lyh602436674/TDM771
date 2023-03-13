@@ -58,6 +58,9 @@ export default {
     getContainer: {
       default: () => document.body,
     },
+    pieceTableData: {
+      default: () => null,
+    },
   },
   props: {
     disabled: {
@@ -93,14 +96,15 @@ export default {
       type: [Function, String],
       default: ''
     },
-    pieceTableData: {
-      type: Array,
-      default: () => []
-    },
     entrustType: {
       type: String,
       default: '1'
     },
+  },
+  computed: {
+    localPieceTableData() {
+      return this.pieceTableData()
+    }
   },
   watch: {
     value: {
@@ -118,12 +122,13 @@ export default {
         }
       },
     },
-    pieceTableData: {
+    localPieceTableData: {
       deep: true,
       immediate: true,
       handler(val) {
-        this.dataList = val
-        this.selectedRows = val && val.length && val.filter(item => this.selectedRowKeys.includes(item.id))
+        let value = val.value
+        this.dataList = value
+        this.selectedRows = value && value.length && value.filter(item => this.selectedRowKeys.includes(item.id))
       }
     }
   },

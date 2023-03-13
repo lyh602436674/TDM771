@@ -311,9 +311,12 @@ export default {
     async handleOk() {
       if (this.entrustType === '1') {
         if (!this.selectedRows.length) return this.$message.warning('请选择产品')
-        await this.$refs.xTable.validate(this.selectedRows)
-        this.$emit('callback', this.selectedRows)
-        this.handleCancel()
+        try {
+          await this.$refs.xTable.validate(this.selectedRows)
+          this.$emit('callback', this.selectedRows)
+          this.handleCancel()
+        } catch {
+        }
       }
       if (this.entrustType === '2') {
         this.$refs.addProductForm.validateForm()

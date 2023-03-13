@@ -125,7 +125,7 @@ export default {
         ]
       };
       chart.setOption(option)
-      this.$emit('change', chart.getDataURL())
+      this.$emit('change', chart.getDataURL({pixelRatio: 3, backgroundColor: '#fff'}))
     }
   }
 }

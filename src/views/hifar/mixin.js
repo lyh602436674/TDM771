@@ -163,6 +163,8 @@ export default {
           return '草稿'
         case 10:
           return '已提交'
+        case 15:
+          return '已审批';
         case 20:
           return '已通过'
         case 30:
@@ -185,6 +187,8 @@ export default {
           return 'purple'
         case 10:
           return 'orange'
+        case 15:
+          return '#6200ff';
         case 20:
           return '#87d068'
         case 30:

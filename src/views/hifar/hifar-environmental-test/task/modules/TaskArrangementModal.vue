@@ -164,8 +164,12 @@ export default {
         let result = this.getDate(this.queryType)
         global_start_date = result.start
         global_end_date = result.end
+        let dateToStr = gantt.date.date_to_str("%H");
         gantt.config.scales.push({
-          unit: "hour", step: 1, format: "%H"
+          // format: "%H",
+          unit: "hour", step: 1, format: date => {
+            return +dateToStr(date) + 1
+          }
         })
       }
       gantt.config.start_date = global_start_date
@@ -317,7 +321,7 @@ export default {
           this.equipList = list
           this.ganttParse(list)
           let ext = res.ext
-          if (this.queryType == 'all') {
+          if (this.queryType === 'all') {
             this.minShowStartTime = parseFloat(ext.minShowStartTime) || 0
             this.maxShowEndTime = parseFloat(ext.maxShowEndTime) || 0
           }

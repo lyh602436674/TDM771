@@ -11,7 +11,7 @@
       <div class="panel-custom-item">
         <div class="panel-custom-item-left">
           <project-form-item ref="projectFormItem" :index="index" :entrustType="entrustType"
-                             :pieceTableData="pieceTableData" :project="item"></project-form-item>
+                             :project="item"></project-form-item>
         </div>
         <div class="panel-custom-item-top-right">
           <a-popconfirm title="确定删除吗?" @confirm="() => deleteProjectHandle(item, index)">
@@ -40,10 +40,6 @@ export default {
   mixins: [entrustmentMixins],
   props: {
     formInfoData: {
-      type: Array,
-      default: () => []
-    },
-    pieceTableData: {
       type: Array,
       default: () => []
     },

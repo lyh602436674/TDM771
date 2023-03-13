@@ -37,8 +37,9 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import mixin from '../mixin'
+
 export default {
   mixins: [mixin],
   props: ['reportId'],
@@ -68,6 +69,7 @@ export default {
         {
           title: '操作时间',
           align: 'left',
+          width: 200,
           dataIndex: 'createTime',
           customRender: (time, record) => {
             return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
@@ -76,6 +78,7 @@ export default {
         {
           title: '操作人',
           align: 'left',
+          width: 200,
           dataIndex: 'createUserName',
           customRender: (text, record) => {
             return text || '--'
@@ -84,14 +87,16 @@ export default {
         {
           title: '操作',
           align: 'left',
+          width: 200,
           dataIndex: 'optType',
-          scopedSlots: { customRender: 'optType' },
+          scopedSlots: {customRender: 'optType'},
         },
         {
           title: '状态',
           align: 'left',
           dataIndex: 'status',
-          scopedSlots: { customRender: 'status' },
+          width: 200,
+          scopedSlots: {customRender: 'status'},
         },
         {
           title: '备注',

@@ -43,6 +43,7 @@
             slot="content"
             :columns="columns"
             :data="loadProjectList"
+            historySelect
             :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect }"
           />
         </h-card>

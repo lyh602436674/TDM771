@@ -153,7 +153,7 @@
               历史库新增
             </a-button>
             <project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
-                          :pieceTableData="pieceTableData" style="margin-bottom:20px"
+                          style="margin-bottom:20px"
                           @change='projectFormChange'
                           @deleteProject="deleteProject"
                           @emptyData="emptyDatCallback"></project-form>
@@ -197,9 +197,15 @@ export default {
       default: () => document.body
     }
   },
+  provide() {
+    return {
+      pieceTableData: () => this.pieceTableData
+    }
+  },
   data() {
     const nameValid = ({cellValue}) => {
       return new Promise((resolve, reject) => {
+        console.log(cellValue, 'cellValue')
         setTimeout(() => {
           if (!cellValue) {
             reject(new Error('产品编号不能为空'))
@@ -428,18 +434,21 @@ export default {
         setSecretLevel: '/MinioBusiness/modifyAttachSecretLevelByIds',
         edit: "/HfEnvEntrustBusiness/queryById"
       },
+      pieceTableData: {
+        value: []
+      },
     }
   },
-  computed: {
-    pieceTableData() {
-      return this.tableData
-    },
-  },
   watch: {
-    tableData(val) {
-      this.$nextTick(() => {
-        this.$refs.entrustFrom.form.setFieldsValue({pieceCount: val.length})
-      })
+    tableData: {
+      deep: true,
+      handler(val) {
+        if (!isArray(val)) return
+        this.pieceTableData = {value: val}
+        this.$nextTick(() => {
+          this.$refs.entrustFrom.form.setFieldsValue({pieceCount: val.length})
+        })
+      }
     }
   },
   methods: {
@@ -459,6 +468,8 @@ export default {
         entrustTime: moment(),
         entrustType: '1',
         secretLevelCode: 1,
+        isBuildingReport: 1,
+        radioButton: 1,
       }
       this.tableData = []
       this.projectInfoData = []
@@ -604,7 +615,7 @@ export default {
     },
     // 选择项目
     async handleAddProject() {
-      let errMap = await this.$refs.pieceTable.validate().catch(errMap => errMap)
+      let errMap = await this.$refs.pieceTable.validate(true).catch(errMap => errMap)
       if (errMap) return this.$message.warning('请填写产品编号')
       if (!this.tableData.length) return this.$message.warning('请先添加产品')
       if (!this.selectedPieceRows.length) return this.$message.warning('请先选择产品')
@@ -765,7 +776,9 @@ export default {
       })
     },
     // 暂存-提交请求
-    submitRequest(status) {
+    async submitRequest(status) {
+      let errMap = await this.$refs.pieceTable.validate(true).catch(errMap => errMap)
+      if (errMap) return
       let {entrustModelInfo, pieceModelInfo, projectModelInfo} = this
       // 项目中实际用到的产品
       let projectOfPiece = projectModelInfo.reduce((pre, next) => {
@@ -801,7 +814,8 @@ export default {
             },
             onOk: () => {
               // 这里需要删除多余没有用到的产品
-              fn.call(this, pieceIds)
+              // fn.call(this, pieceIds)
+              fn.call(this)
             }
           })
         } else {

@@ -476,7 +476,7 @@ export default {
           ]
         }
         chart.setOption(option)
-        this.curveUrl = chart.getDataURL()
+        this.curveUrl = chart.getDataURL({pixelRatio: 3, backgroundColor: '#fff'})
       }
     },
     initialCurveData() {
