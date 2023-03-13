@@ -259,6 +259,7 @@ export default {
           let task = this.taskList.find(item => item.id === id)
           this.$refs.taskDetail.show(task, '2', '10px')
         }
+        this.destroyTooltip()
         return true;
       }, {id: "myTaskClick"});
       gantt.init(document.getElementById('gantt-wrapper'))
@@ -367,6 +368,9 @@ export default {
     },
     dateTimeFormat(time) {
       return +time && +time !== 0 ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : '--'
+    },
+    destroyTooltip() {
+      gantt.ext.tooltips.tooltip.hide()
     },
     handleCancel() {
       this.visible = false

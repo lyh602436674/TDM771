@@ -247,6 +247,7 @@ export default {
           let task = this.taskList.find(item => item.id === id)
           this.$refs.taskDetail.show(task, '2', '10px')
         }
+        this.destroyTooltip()
         return true;
       }, {id: "myTaskClick"});
       gantt.init(document.getElementById('equip-gantt-wrapper'))
@@ -315,6 +316,9 @@ export default {
         })
       })
       gantt.parse(tasks)
+    },
+    destroyTooltip() {
+      gantt.ext.tooltips.tooltip.hide()
     },
     handleQueryTypeChange(e) {
       this.getList()
