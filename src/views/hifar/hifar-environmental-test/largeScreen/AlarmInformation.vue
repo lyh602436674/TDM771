@@ -9,9 +9,9 @@
 <template>
   <div class="shiftRecords">
     <div class="title">报警信息</div>
-    <div class="content">
+    <div ref="content" class="content">
       <h-auto-scroll :class-option="classOption" :data="shiftData" class="content-wrapper">
-        <ul class="content-wrapper-item">
+        <ul ref="ul" class="content-wrapper-item">
           <li v-for="(item, index) in shiftData" :key="index">
             <span>
               <a-icon type="sound"></a-icon>
@@ -33,18 +33,35 @@ import moment from 'moment'
 import HAutoScroll from "@comp/HAutoScroll/HAutoScroll";
 
 export default {
-  name: 'ShiftRecords',
-  description: '交接班记录页面',
+  name: 'AlarmInformation',
+  description: '报警信息页面',
   components: {HAutoScroll},
   data() {
     return {
       shiftData: [],
-      classOption: {
-        singleHeight: 30,
-      },
       url: {
         list: '/HfResDeviceWarningBusiness/listPage',
       },
+    }
+  },
+  computed: {
+    classOption() {
+      return {
+        singleHeight: 30,
+        limitMoveNum: this.calcLimitMoveNum,
+      }
+    },
+    // 计算ul实际dom高度是否超过content的高度，如果超过就开启自动滚动
+    calcLimitMoveNum() {
+      if (this.shiftData.length) {
+        let ul = this.$refs.ul, content = this.$refs.content, ulHeight = ul.offsetHeight,
+          contentHeight = content.offsetHeight
+        console.log(ulHeight, contentHeight, 'contentHeightcontentHeight')
+        if (ulHeight > contentHeight) {
+          return 1
+        }
+        return 8
+      }
     }
   },
   methods: {
@@ -81,6 +98,7 @@ export default {
     width: 100%;
     height: calc(100% - 0.252rem);
     padding: 0.052rem /* 20/384 */;
+    overflow: hidden;
 
     &-wrapper {
       width: 100%;
@@ -89,7 +107,6 @@ export default {
       margin: 0 auto;
 
       &-item {
-        margin: 0 auto;
         padding: 0 0.063rem /* 24/384 */;
 
         li {

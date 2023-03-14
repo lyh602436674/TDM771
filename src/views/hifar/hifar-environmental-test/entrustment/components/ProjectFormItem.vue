@@ -298,6 +298,13 @@ export default {
           }
         },
         {
+          title: '设备用途',
+          align: 'left',
+          ellipsis: true,
+          minWidth: 80,
+          dataIndex: 'equipUse_dictText',
+        },
+        {
           title: '设备类型',
           dataIndex: 'equipTypeName',
           customRender: (t) => {
@@ -359,7 +366,7 @@ export default {
       ],
       equipParams: {
         list: '/HfResEquipBusiness/listPage',
-        queryParams: {},
+        queryParams: {c_equipUse_1: '2'},
       },
       equipData: [],
       tabsActiveKey: 0,

@@ -103,12 +103,19 @@ export default {
             let _item_ = item.$refs['pointTable' + [i] + [j]]
             let abilityInfo = _item_.getData()
             if (abilityInfo && isArray(abilityInfo) && abilityInfo.length) {
-              tabItemTableAllData.push({
-                title: tabPanelItem.title,
-                type: tabPanelItem.type,
-                highLowTemperature: tabPanelItem.highLowTemperature,
-                abilityInfo,
-              })
+              let validRes = this.validAbilityInfoItemValue(abilityInfo)
+              if (validRes.length) {
+                this.$emit('emptyData')
+                return this.$message.warning(h => h('div', {}, validRes.map(_item_ =>
+                  <div>{'第' + (i + 1) + '个试验项目结构化条件的第' + _item_.index + '个' + _item_.name + '未填写条件'}</div>)))
+              } else {
+                tabItemTableAllData.push({
+                  title: tabPanelItem.title,
+                  type: tabPanelItem.type,
+                  highLowTemperature: tabPanelItem.highLowTemperature,
+                  abilityInfo,
+                })
+              }
             } else {
               if (bool) {
                 this.$emit('emptyData')
@@ -119,11 +126,18 @@ export default {
         } else {
           let abilityInfo = that.$refs.testConditionTabItem.$refs['pointTable' + [i] + 0].getData()
           if (abilityInfo && isArray(abilityInfo) && abilityInfo.length) {
-            tabItemTableAllData.push({
-              title: '试验条件',
-              type: 'default',
-              abilityInfo
-            })
+            let validRes = this.validAbilityInfoItemValue(abilityInfo)
+            if (validRes.length) {
+              this.$emit('emptyData')
+              return this.$message.warning(h => h('div', {}, validRes.map(_item_ =>
+                <div>{'第' + (i + 1) + '个试验项目结构化条件的第' + _item_.index + '个' + _item_.name + '未填写条件'}</div>)))
+            } else {
+              tabItemTableAllData.push({
+                title: '试验条件',
+                type: 'default',
+                abilityInfo
+              })
+            }
           } else {
             if (bool) {
               this.$emit('emptyData')
@@ -185,6 +199,17 @@ export default {
           this.$emit('change', projectResult, bool)
         }
       }
+    },
+    // 校验结构化条件每一项的值是否填写
+    validAbilityInfoItemValue(list, field = 'conditionTypeDesc') {
+      let result = []
+      for (let i = 0; i < list.length; i++) {
+        let item = list[i]
+        if (item[field] === '' || item[field] === undefined || item[field] === null) {
+          result.push({name: item.paramName, index: i + 1})
+        }
+      }
+      return result
     }
   }
 }

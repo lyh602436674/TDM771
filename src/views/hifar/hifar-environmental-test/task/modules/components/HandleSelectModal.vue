@@ -110,7 +110,6 @@ export default {
   },
   methods: {
     show(record, field) {
-      console.log(record, 'ffff')
       // field 是指定取record中那个字段
       this.visible = true
       this.selectedRows = []

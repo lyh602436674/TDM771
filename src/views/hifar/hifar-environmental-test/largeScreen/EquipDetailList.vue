@@ -74,10 +74,13 @@ export default {
       getAction(this.url.list).then((res) => {
         if (res.code === 200) {
           this.dataSource = res.data.filter(item => item.status === '1').map((item) => {
-            item.statusNum = JSON.parse(JSON.stringify(item.status))
-            item.status = this.deviceStatusFilter(item.status)
-            item.predictEndTime = item.predictEndTime ? moment(+item.predictEndTime).format('YYYY-MM-DD HH:mm:ss') : ''
-          })
+            return {
+              ...item,
+              statusNum: JSON.parse(JSON.stringify(item.status)),
+              status: this.deviceStatusFilter(item.status),
+              predictEndTime: item.predictEndTime ? moment(+item.predictEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            }
+          }).sort((a, b) => a.rowSort - b.rowSort)
         }
       })
     },
