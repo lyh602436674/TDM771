@@ -61,7 +61,7 @@ export default {
     return {
       activeKey: "1",
       offset: [10, 1],
-      status: {'c_status_1': this.pageOption.defaultStatus},
+      status: {'c_status_96': this.pageOption.defaultStatus},
     };
   },
 
@@ -69,9 +69,9 @@ export default {
     handleTabsChange(v) {
       this.activeKey = v;
       if (v === '1') {
-        this.status = {'c_status_1': this.pageOption.typeNo === '1' ? 10 : 15};
+        this.status = {'c_status_96': this.pageOption.typeNo === '1' ? '10,30' : '15'};
       } else {
-        this.status = {'c_status_3': this.pageOption.typeNo === '1' ? 10 : 15};
+        this.status = {'c_status_3': this.pageOption.typeNo === '1' ? '10' : '15'};
       }
     },
   },

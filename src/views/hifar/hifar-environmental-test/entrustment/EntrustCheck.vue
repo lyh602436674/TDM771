@@ -24,7 +24,7 @@ export default {
       pageOption: {
         typeText: "审批",
         typeNo: "1", // 判断是审批还是批准 1：审批 不传的话就是 批准
-        defaultStatus: 10,
+        defaultStatus: '10,30',
         pass: "entrustCheck:pass",
         reject: "entrustCheck:reject",
       }

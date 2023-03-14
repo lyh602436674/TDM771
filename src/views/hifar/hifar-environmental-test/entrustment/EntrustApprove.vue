@@ -23,7 +23,7 @@ export default {
     return {
       pageOption: {
         typeText: "批准",
-        defaultStatus: 15,
+        defaultStatus: '15',
         pass: "entrustApprove:pass",
         reject: "entrustApprove:reject",
       }

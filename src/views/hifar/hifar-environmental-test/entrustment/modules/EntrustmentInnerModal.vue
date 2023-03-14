@@ -205,7 +205,6 @@ export default {
   data() {
     const nameValid = ({cellValue}) => {
       return new Promise((resolve, reject) => {
-        console.log(cellValue, 'cellValue')
         setTimeout(() => {
           if (!cellValue) {
             reject(new Error('产品编号不能为空'))
