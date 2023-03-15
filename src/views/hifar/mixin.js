@@ -169,6 +169,8 @@ export default {
           return '已通过'
         case 30:
           return '已驳回'
+        case 31:
+          return '批准驳回';
         case 40:
           return '已完成';
         case 50:
@@ -193,6 +195,8 @@ export default {
           return '#87d068'
         case 30:
           return '#F50'
+        case 31:
+          return '#ff0000';
         case 40:
           return '#2db7f5'
         case 50:

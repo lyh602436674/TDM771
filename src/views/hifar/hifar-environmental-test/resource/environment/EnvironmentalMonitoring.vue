@@ -129,7 +129,7 @@ export default {
         {
           title: '温度(℃)',
           align: 'left',
-          dataIndex: 'temperatureAvg',
+          dataIndex: 'temperatureMax',
           customRender: (text, record) => {
             return text || '--'
           },
@@ -137,7 +137,7 @@ export default {
         {
           title: '湿度(％)',
           align: 'left',
-          dataIndex: 'humidityAvg',
+          dataIndex: 'humidityMax',
           customRender: (text, record) => {
             return text || '--'
           },
@@ -184,8 +184,8 @@ export default {
           res.data.data = data.map((item) => {
             return {
               id: item.id,
-              humidityAvg: item.humidityAvg / 10000,
-              temperatureAvg: item.temperatureAvg / 10000,
+              humidityMax: item.humidityMax / 10000,
+              temperatureMax: item.temperatureMax / 10000,
               placeTime: item.placeTime,
               placeTime_1:
                 item.placeTime && item.placeTime != 0 ? moment(parseInt(item.placeTime)).format('YYYY-MM-DD') : '',
@@ -208,8 +208,8 @@ export default {
       let myChart = this.$echarts.init(document.getElementById('monitorEachrts'))
       let data = this.dataSource.reverse()
       let x = data.map((item) => (item.placeTime_1 ? item.placeTime_1 : null))
-      let y1 = data.map((item) => (item.temperatureAvg ? item.temperatureAvg : null))
-      let y2 = data.map((item) => (item.humidityAvg ? item.humidityAvg : null))
+      let y1 = data.map((item) => (item.temperatureMax ? item.temperatureMax : null))
+      let y2 = data.map((item) => (item.humidityMax ? item.humidityMax : null))
       // 绘制图表
       myChart.setOption({
         title: {
@@ -222,11 +222,11 @@ export default {
             <div style="display:inline-block;width:8px;height:8px;background-color:${
               params[0].color
             };border-radius:5px;margin-right:4px;"></div>温度:
-            ${data[params[0].dataIndex].temperatureAvg ? data[params[0].dataIndex].temperatureAvg : '-'} ℃<br/>
+            ${data[params[0].dataIndex].temperatureMax ? data[params[0].dataIndex].temperatureMax : '-'} ℃<br/>
             <div style="display:inline-block;width:8px;height:8px;background-color:${
               params[1].color
             };border-radius:5px;margin-right:4px;"></div>湿度:
-            ${data[params[0].dataIndex].humidityAvg ? data[params[0].dataIndex].humidityAvg : '-'} %<br/>`
+            ${data[params[0].dataIndex].humidityMax ? data[params[0].dataIndex].humidityMax : '-'} %<br/>`
           },
         },
         color: ['#5470C6', '#91CC75'],

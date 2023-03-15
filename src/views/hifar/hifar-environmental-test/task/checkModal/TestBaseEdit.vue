@@ -1027,7 +1027,9 @@ export default {
       ],
       equipList: {
         list: '/HfResEquipBusiness/listPage',
-        queryParams: {}
+        queryParams: {
+          c_equipUse_1: "2", // 只查询测试设备
+        }
       },
       productList: {
         list: '/HfEnvTaskTestBusiness/testTaskPieceList',
@@ -1173,6 +1175,13 @@ export default {
         {
           title: '设备名称',
           dataIndex: 'equipName',
+          customRender: (t) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '设备用途',
+          dataIndex: 'equipUse_dictText',
           customRender: (t) => {
             return t || '--'
           }
@@ -1792,7 +1801,7 @@ export default {
           this.projectData = model.testTaskInfo
           this.productList.queryParams.projectPieceInfo = []
           this.productTable.forEach((item) => {
-            this.productList.queryParams.projectPieceInfo.push({ projectId: item.projectId, pieceId: item.pieceId })
+            this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
           })
           this.equipData = model.testEquipInfo.length ? model.testEquipInfo : this.selectedTreeRows
           this.toolsProductData = model.testToolsProductInfo

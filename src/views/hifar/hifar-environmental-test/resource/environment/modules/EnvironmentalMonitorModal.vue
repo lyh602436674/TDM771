@@ -74,7 +74,7 @@ export default {
 
         {
           title: '温度(℃)',
-          key: 'temperatureAvg',
+          key: 'temperatureMax',
           type: 'number',
           formType: 'input',
           validate: {
@@ -84,7 +84,7 @@ export default {
         },
         {
           title: '湿度(％)',
-          key: 'humidityAvg',
+          key: 'humidityMax',
           type: 'number',
           formType: 'input',
           validate: {
@@ -167,10 +167,8 @@ export default {
         url = this.url.add
       }
       params.placeTime = params.placeTime && params.placeTime != 0 ? params.placeTime.valueOf() : ''
-      params.temperatureMin = params.temperatureMin ? params.temperatureMin * 10000 : ''
       params.temperatureMax = params.temperatureMax ? params.temperatureMax * 10000 : ''
       params.humidityMax = params.humidityMax ? params.humidityMax * 10000 : ''
-      params.humidityMin = params.humidityMin ? params.humidityMin * 10000 : ''
       postAction(url, params).then((res) => {
         if (res.code === 200) {
           this.$message.success(this.title + '成功')

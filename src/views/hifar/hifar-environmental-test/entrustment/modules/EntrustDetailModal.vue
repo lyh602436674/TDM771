@@ -17,7 +17,7 @@
     @cancel="handleCancel"
   >
     <div slot="footer" class="footer">
-      <template v-if="[10,15].includes(detailData.status) && mainActiveKey === '1'">
+      <template v-if="[10,15,30,31].includes(detailData.status) && mainActiveKey === '1'">
         <a-button
           :loading="submitLoading"
           v-has="pageOption.pass"
@@ -58,7 +58,6 @@
 </template>
 
 <script>
-import pdf from 'vue-pdf'
 import {postAction} from '@/api/manage'
 import EntrustDetail from '@views/hifar/hifar-environmental-test/entrustment/components/EntrustDetail';
 
@@ -81,7 +80,6 @@ export default {
   },
   components: {
     EntrustDetail,
-    pdf
   },
 
   data() {

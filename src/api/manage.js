@@ -1,23 +1,36 @@
 import Vue from 'vue'
 import {axios} from '@/utils/request'
+import {debounceAsync} from '@/utils/util'
 
 const api = {
-    user: '/mock/api/user',
-    role: '/mock/api/role',
-    service: '/mock/api/service',
-    permission: '/mock/api/permission',
-    permissionNoPager: '/mock/api/permission/no-pager'
+  user: '/mock/api/user',
+  role: '/mock/api/role',
+  service: '/mock/api/service',
+  permission: '/mock/api/permission',
+  permissionNoPager: '/mock/api/permission/no-pager'
 }
 
 export default api
 
+//防抖异步函数 暂时有问题
+export function postActionDebounce(url, parameter, delay) {
+  return debounceAsync(
+    axios({
+      url: url,
+      method: 'POST',
+      data: parameter
+    }),
+    delay
+  )
+}
+
 //post
 export function postAction(url, parameter) {
-    return axios({
-        url: url,
-        method: 'POST',
-        data: parameter
-    })
+  return axios({
+    url: url,
+    method: 'POST',
+    data: parameter
+  })
 }
 
 //post method= {post | put}

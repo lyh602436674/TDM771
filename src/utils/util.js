@@ -387,16 +387,46 @@ export function alwaysResolve(promise) {
  * @returns {Function}
  */
 export function simpleDebounce(fn, delay = 100) {
-    let timer = null
-    return function () {
-        let args = arguments
-        if (timer) {
-            clearTimeout(timer)
-        }
-        timer = setTimeout(() => {
-            fn.apply(this, args)
-        }, delay)
+  let timer = null
+  return function () {
+    let args = arguments
+    if (timer) {
+      clearTimeout(timer)
     }
+    timer = setTimeout(() => {
+      fn.apply(this, args)
+    }, delay)
+  }
+}
+
+/*
+* debounceAsync 函数接受两个参数，fn 表示需要防抖的异步函数，delay 表示防抖的时间间隔。debounceAsync 函数返回一个新的异步函数，
+* 这个函数会在防抖时间间隔内只执行一次，在执行完异步函数后，会将 timer 置为 null。
+* 需要注意的是，在异步函数中，我们使用了 Promise 来处理异步操作的结果，
+* 并使用 async/await 来等待异步操作的完成。在异步函数执行完成之前，如果再次触发，则会清除之前的计时器并重新计时，
+* 直到防抖时间间隔内没有再次触发，才会执行异步函数。
+* */
+
+export function debounceAsync(fn, delay) {
+  console.log(fn, delay, 'fn, delay')
+  let timer = null;
+  return async function () {
+    let args = arguments;
+    if (timer) {
+      clearTimeout(timer);
+    }
+    return new Promise((resolve, reject) => {
+      timer = setTimeout(() => {
+        fn.apply(this, args).then((result) => {
+          timer = null;
+          resolve(result);
+        }).catch((error) => {
+          timer = null;
+          reject(error);
+        });
+      }, delay);
+    });
+  };
 }
 
 /**
@@ -407,7 +437,7 @@ export function simpleDebounce(fn, delay = 100) {
  * @returns {String} 替换后的字符串
  */
 export function replaceAll(text, checker, replacer) {
-    let lastText = text
+  let lastText = text
     text = text.replace(checker, replacer)
     if (lastText !== text) {
         return replaceAll(text, checker, replacer)

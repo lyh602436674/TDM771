@@ -166,9 +166,14 @@ export default {
               value: 20
             },
             {
-              title: '已驳回',
+              title: '审批驳回',
               key: 30,
               value: 30
+            },
+            {
+              title: '批准驳回',
+              key: 31,
+              value: 31
             },
             {
               title: '待出报告',
@@ -393,6 +398,12 @@ export default {
           ...this.queryParams,
           c_entrustType_1: '1'
         }
+        // console.log(postActionDebounce(this.url.list, data, 500)(),'postActionDebounce(this.url.list, data, 500)')
+        // return postActionDebounce(this.url.list, data, 500)().then((res) => {
+        //   if (res.code === 200) {
+        //     return res.data
+        //   }
+        // })
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
             return res.data
