@@ -98,6 +98,10 @@ export default {
       maxShowEndTime: 0,
     }
   },
+  beforeRouteLeave(to, from, next) {
+    this.destroyTooltip()
+    next();
+  },
   methods: {
     show(record = {}) {
       this.localTaskId = record.id || ''
@@ -189,10 +193,11 @@ export default {
       gantt.config.columns = [
         {
           name: 'equipName',
-          width: 250,
+          width: 300,
           align: 'left',
           label: '设备编号[设备型号]',
           resize: true,
+          tree: true,
           onrender: (item, node) => {
             node.style.fontWeight = 'bold'
             node.style.fontSize = '14px'
@@ -209,6 +214,8 @@ export default {
           }
         },
       ]
+      // 默认打开所有分支
+      // gantt.config.open_tree_initially = true;
       gantt.templates.task_class = function (start, end, task) {
         switch (+task.statusFlag) {
           case 0:
@@ -238,7 +245,7 @@ export default {
       //悬浮框
       gantt.templates.tooltip_text = function (start, end, task) {
         // 只在任务条上显示tooltip
-        if (!task.text) return false;
+        if (task.type === 'equip') return false;
         return `<div class="task-tooltip-title">
                       <img src="${testIcon}"/> ${task.testNames}
                   </div>
@@ -255,13 +262,21 @@ export default {
       }
       //任务的点击方法
       gantt.attachEvent("onTaskClick", (id, e) => {
-        if (e.target.className === 'gantt_tree_content') {
-          let equip = this.equipList.find(item => item.id === id)
-          this.handleEquipClick(equip)
+        let equip = this.equipList.find(item => item.id === id)
+        let task = this.taskList.find(item => item.id === id)
+        if (equip) {
+          if (!e.target.className.includes('gantt_tree_icon')) {
+            this.handleEquipClick(equip)
+          } else {
+            return true
+          }
         }
-        if (e.target.className === 'gantt_task_content') {
-          let task = this.taskList.find(item => item.id === id)
-          this.$refs.taskDetail.show(task, '2', '10px')
+        if (task) {
+          if (!e.target.className.includes('gantt_tree_icon')) {
+            this.$refs.taskDetail.show(task, '2', '10px')
+          } else {
+            return true
+          }
         }
         this.destroyTooltip()
         return true;
@@ -330,6 +345,9 @@ export default {
         this.loading = false
       })
     },
+    getEquipTestInfoItem(item) {
+      return item.equipTestInfo.map(v => v.testNames).toString() || ''
+    },
     ganttParse(list) {
       this.ganttLoad()
       let tasks = {
@@ -342,18 +360,21 @@ export default {
             id: item.id,
             equipName,
             resize: true,
-            render: 'split',
-            text: '',
+            // render: 'split',
+            text: this.getEquipTestInfoItem(item),
             isSubTask: item.equipTestInfo.length === 0,
+            type: "equip",
             validFlag: item.validFlag,
           }
         )
         item.equipTestInfo.length > 0 && item.equipTestInfo.forEach(target => {
           this.taskList.push(target)
           tasks.data.push({
+            type: "task",
             id: target.id,
             parent: target.equipId,
             text: target.testNames || '',
+            equipName: target.testNames || '',
             start_date: this.dateTimeFormat(target.showStartTime),
             end_date: this.dateTimeFormat(target.showEndTime),
             custNames: target.custNames,
@@ -377,6 +398,7 @@ export default {
       gantt.ext.tooltips.tooltip.hide()
     },
     handleCancel() {
+      this.destroyTooltip()
       this.visible = false
       this.model = {}
       this.queryParams = {}

@@ -109,31 +109,13 @@ export default {
   mounted() {
     this.getList()
   },
+  beforeRouteLeave(to, from, next) {
+    this.destroyTooltip()
+    next();
+  },
   methods: {
-    getDate(type) {
-      let start, end
-      let dateObj = {
-        today: () => {
-          start = moment().format("YYYY-MM-DD") + " 00:00:00"
-          end = moment().format("YYYY-MM-DD") + " 23:59:59"
-        },
-        yesterday: () => {
-          start = moment(moment().add(-1, 'days').startOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
-          end = moment(moment().add(-1, 'days').endOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
-        },
-        tomorrow: () => {
-          start = moment(moment().add(1, 'days').startOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
-          end = moment(moment().add(1, 'days').endOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
-        }
-      }
-      dateObj[type]()
-      return {start, end}
-    },
     handleSearchChange(value) {
       this.getList()
-    },
-    dateTimeFormat(time) {
-      return +time && +time !== 0 ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : '--'
     },
     ganttLoad() {
       gantt.clearAll()
@@ -144,9 +126,10 @@ export default {
       let global_start_date = null
       let global_end_date = null
       // 设置时间刻度相关属性
+      let ganttScales = []
       gantt.config.scales = [];
       if (bool) {
-        gantt.config.scales.push(
+        ganttScales.push(
           {unit: "day", step: 1, format: "%m-%d"}
         )
         if (this.queryType === 'custom') {
@@ -154,17 +137,18 @@ export default {
           global_end_date = moment(this.queryTime[1]).format('YYYY-MM-DD HH:mm:ss')
         }
       } else {
-        let result = this.getDate(this.queryType)
-        global_start_date = result.start
-        global_end_date = result.end
+        let {start, end} = this.getDate(this.queryType)
+        global_start_date = start
+        global_end_date = end
         let dateToStr = gantt.date.date_to_str("%H");
-        gantt.config.scales.push({
+        ganttScales.push({
           // format: "%H",
           unit: "hour", step: 1, format: date => {
             return +dateToStr(date) + 1
           }
         })
       }
+      gantt.config.scales = ganttScales
       gantt.config.start_date = global_start_date
       gantt.config.end_date = global_end_date
       // 允许在出现意外行为时显示错误警报
@@ -181,21 +165,21 @@ export default {
       gantt.config.columns = [
         {
           name: 'equipName',
-          width: 250,
+          width: 270,
           align: 'left',
           label: '设备编号[设备型号]',
           resize: true,
+          tree: true,
           onrender: (item, node) => {
             node.style.fontWeight = 'bold'
             node.style.fontSize = '14px'
             node.style.cursor = 'pointer'
             node.style.marginLeft = '10px'
-            // node.onclick = e => {
-            //   console.log(item, node, e)
-            // }
           }
         },
       ]
+      // 默认打开所有分支
+      gantt.config.open_tree_initially = true;
       gantt.templates.task_class = function (start, end, task) {
         switch (+task.statusFlag) {
           case 0:
@@ -218,17 +202,16 @@ export default {
       // }
       // 刷新任务
       // gantt.refreshTask() refreshTask ( string| number id , [ boolean refresh_links ] );
-      //开启悬浮框功能（我也是醉了，还需要先开启一下）
       gantt.plugins({
-        tooltip: true
+        tooltip: true,//开启悬浮框功能
       })
       //悬浮框
       gantt.templates.tooltip_text = function (start, end, task) {
         // 只在任务条上显示tooltip
-        if (!task.text) return false;
+        if (task.type === 'equip') return false;
         return ` <div class="task-tooltip-title">
                       <img src="${testIcon}"/> ${task.testNames}
-                  </div>
+                 </div>
                  <ul>
                   <li>委托单位：${task.custNames || '--'}</li>
                   <li>样品：${task.products || '--'}</li>
@@ -242,15 +225,9 @@ export default {
       }
       //任务的点击方法
       gantt.attachEvent("onTaskClick", (id, e) => {
-        // 点击列的时候
-        if (e.target.className === 'gantt_tree_content') {
-
-        }
-        // 点击任务条的时候
-        if (e.target.className === 'gantt_task_content') {
-          let task = this.taskList.find(item => item.id === id)
-          this.$refs.taskDetail.show(task, '2', '10px')
-        }
+        let task = this.taskList.find(item => item.id === id)
+        if (!task) return
+        this.$refs.taskDetail.show(task, '2', '10px')
         this.destroyTooltip()
         return true;
       }, {id: "myTaskClick"});
@@ -282,11 +259,26 @@ export default {
         this.loading = false
       })
     },
+    getMinMaxTime(arr) {
+      return arr.reduce((acc, cur) => {
+        if (cur.startTime < acc.minStartTime) {
+          acc.minStartTime = cur.showStartTime;
+        }
+        if (cur.endTime > acc.maxEndTime) {
+          acc.maxEndTime = cur.showEndTime;
+        }
+        return acc;
+      }, {minStartTime: Infinity, maxEndTime: -Infinity});
+    },
+    getEquipTestInfoItem(item) {
+      return item.equipTestInfo.map(v => v.testNames).toString() || ''
+    },
     ganttParse(list) {
       this.ganttLoad()
       let tasks = {
         data: []
       }
+
       list.forEach(item => {
         let equipName = item.equipCode + '[' + item.equipModel + ']'
         tasks.data.push(
@@ -294,17 +286,22 @@ export default {
             id: item.id,
             equipName,
             resize: true,
-            render: 'split',
-            text: '',
-            isSubTask: item.equipTestInfo.length === 0
+            // start_date: this.dateTimeFormat(this.getMinMaxTime(item.equipTestInfo).minStartTime),
+            // end_date: this.dateTimeFormat(this.getMinMaxTime(item.equipTestInfo).maxEndTime),
+            // render: 'split', // 如果不需要树展示,就放开此行代码和注释 tree:true
+            text: this.getEquipTestInfoItem(item),
+            isSubTask: item.equipTestInfo.length === 0,
+            type: "equip"
           }
         )
         item.equipTestInfo.length > 0 && item.equipTestInfo.forEach(target => {
           this.taskList.push(target)
           tasks.data.push({
+            type: "task",
             id: target.id,
             parent: target.equipId,
             text: target.testNames || '',
+            equipName: target.testNames || '',
             start_date: this.dateTimeFormat(target.showStartTime),
             end_date: this.dateTimeFormat(target.showEndTime),
             custNames: target.custNames,
@@ -334,6 +331,27 @@ export default {
         this.queryTime = [v[0].startOf('day'), v[1].endOf('day')]
       }
       this.getList()
+    },
+    dateTimeFormat(time) {
+      return +time && +time !== 0 ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : '--'
+    },
+    getDate(type) {
+      let start, end, dateObj = {
+        today: () => {
+          start = moment().format("YYYY-MM-DD") + " 00:00:00"
+          end = moment().format("YYYY-MM-DD") + " 23:59:59"
+        },
+        yesterday: () => {
+          start = moment(moment().add(-1, 'days').startOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+          end = moment(moment().add(-1, 'days').endOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+        },
+        tomorrow: () => {
+          start = moment(moment().add(1, 'days').startOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+          end = moment(moment().add(1, 'days').endOf('day').valueOf()).format('YYYY-MM-DD HH:mm:ss');
+        }
+      }
+      dateObj[type]()
+      return {start, end}
     },
     filterQueryType(type) {
       switch (type) {

@@ -52,7 +52,7 @@
               <template slot="content">
 
                 <div>
-                  <a-badge color="#2f54eb" text="已发布"/>
+                  <a-badge color="#2f54eb" text="未分配"/>
                 </div>
                 <div>
                   <a-badge color="#f56c6c" text="超期"/>
@@ -206,7 +206,7 @@ export default {
           formType: 'select',
           options: [
             {
-              title: '已发布',
+              title: '未分配',
               key: '1',
               value: '1'
             },
@@ -577,6 +577,7 @@ export default {
     },
     refresh(bool = true) {
       this.$refs.taskPlanListTable.refresh(bool)
+      this.getTaskStatistics()
     },
     loadData(params) {
       this.selectedRowKeys = []
@@ -585,6 +586,9 @@ export default {
         c_status_2: '30', // 过滤掉已完成的
         ...params,
         ...this.queryParams
+      }
+      if (data.c_status_1) { // if通过查询条件查询了状态，那就不要c_status_2
+        delete data.c_status_2
       }
       switch (data.type) {
         case 'year':
