@@ -177,7 +177,6 @@ export default {
           fileSize: file.size,
           ...this.customParams
         }
-        if (this.isVarSeq) uploadParams.serial = index + 1
         let fileIndex = findIndex(this.fileList, obj => {
           return obj.uuid === file.uuid
         })
@@ -237,7 +236,6 @@ export default {
                   fileId: finishedResult.data.fileId,
                   secretLevel: this.secretLevel,
                 }
-                if (this.isVarSeq) fileListRow.serial = uploadParams.serial
                 this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], fileListRow))
                 resolve(cb)
               } else {
@@ -407,7 +405,7 @@ export default {
     handleDelete(file) {
       this.fileList = this.fileList.filter((item) => item.uuid !== file.uuid)
       this.$emit('delete', file, this.fileList)
-      this.triggerChange()
+      // this.triggerChange()
     },
     // 渲染Input
     renderInput(config = {}) {

@@ -178,7 +178,7 @@ export default {
         {
           title: "序列号",
           dataIndex: 'serial',
-          minWidth: 60,
+          minWidth: 100,
           scopedSlots: {
             customRender: "serial"
           }

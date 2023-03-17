@@ -20,10 +20,25 @@
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭 </a-button>
     <div style="height: 100%; overflow: auto; padding: 0 20px">
       <h-desc title="附件" :bordered="false">
-        <h-form ref="attachForm" v-model="model_attach" :column="1" :formData="attachData" style="width: 100%"/>
+        <h-upload-file
+          v-model="attachIds"
+          :customParams="{refType: 'test_attach', refId: this.testId}"
+          :isVarSeq="true"
+          accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          style="width: 100%"
+          @change="this.handleFilesChange"
+          @delete="this.handleDelete"
+          @serialBlur="this.handleSerialBlur"
+          @serialFocus="this.handleSerialFocus"
+        />
       </h-desc>
       <h-desc title="视频" :bordered="false">
-        <h-form ref="videoForm" v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
+        <h-upload-file
+          v-model="videoAttachIds"
+          :customParams="{refType: 'test_video', refId: this.testId}"
+          style="width: 100%"
+          @delete="this.handleDelete"
+        />
       </h-desc>
     </div>
   </h-modal>
@@ -42,8 +57,8 @@ export default {
     return {
       title: '',
       visible: false,
-      model_attach: {},
-      model_video: {},
+      attachIds: [],
+      videoAttachIds: [],
       testId: '',
       url: {
         attachList: '/MinioBusiness/listByRefId',
@@ -52,38 +67,6 @@ export default {
         updateFileStatus: '/HfEnvTestPressureRecordBusiness/updateFileStatus',
         saveSerial: '/HfEnvTaskTestBusiness/saveSerial',
       },
-      attachData: [
-        {
-          title: '附件',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-file
-              isVarSeq={true}
-              accept={"application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
-              v-decorator={['attachIds', {initialValue: []}]}
-              customParams={{refType: 'test_attach', refId: this.testId}}
-              on-delete={this.handleDelete}
-              on-serialBlur={this.handleSerialBlur}
-              on-serialFocus={this.handleSerialFocus}
-            />
-          ),
-        },
-      ],
-      videoData: [
-        {
-          title: '视频',
-          key: 'attachIds',
-          span: 1,
-          component: (
-            <h-upload-file
-              v-decorator={['attachIds', {initialValue: []}]}
-              customParams={{refType: 'test_video', refId: this.testId}}
-              on-delete={this.handleDelete}
-            />
-          ),
-        },
-      ],
       serialBeforeRecord: "",
     }
   },
@@ -92,8 +75,6 @@ export default {
       this.visible = true
       this.title = (record.testNames || record.unitNames) + '(' + record.testCode + ') - 试验数据'
       this.testId = record.id
-      this.attachData[0].component.componentOptions.propsData.customParams.refId = record.id
-      this.videoData[0].component.componentOptions.propsData.customParams.refId = record.id
       this.loadData()
     },
     handleCancel() {
@@ -107,30 +88,24 @@ export default {
     loadAttachData() {
       postAction(this.url.testAttachList, { refType: 'test_attach', refId: this.testId }).then((res) => {
         if (res.code === 200) {
-          const { data } = res
-          let fileArr = []
-          let obj = {}
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-                replaceStatus: item.replaceStatus,
-                rowSort: item.rowSort,
-                serial: item.serial,
-              })
-            })
-          }
-          obj.attachIds = fileArr
-          this.model_attach = obj
+          const {data} = res
+          this.attachIds = data && data.length && data.map((item) => {
+            return {
+              fileId: item.id,
+              size: item.fileSize,
+              status: item.status == 9 ? 'success' : 'exception',
+              url: item.filePath,
+              name: item.fileName,
+              uuid: item.id,
+              percent: 100,
+              uploadTime: item.createTime,
+              secretLevel: item.secretLevel,
+              type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
+              replaceStatus: item.replaceStatus,
+              rowSort: item.rowSort,
+              serial: item.serial,
+            }
+          }) || []
         }
       })
     },
@@ -138,28 +113,22 @@ export default {
     loadVideoData() {
       postAction(this.url.attachList, { refType: 'test_video', refId: this.testId }).then((res) => {
         if (res.code === 200) {
-          const { data } = res
-          let fileArr = []
-          let obj = {}
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-                replaceStatus:item.replaceStatus
-              })
-            })
-          }
-          obj.attachIds = fileArr
-          this.model_video = obj
+          const {data} = res
+          this.videoAttachIds = data && data.length && data.map((item) => {
+            return {
+              fileId: item.id,
+              size: item.fileSize,
+              status: item.status == 9 ? 'success' : 'exception',
+              url: item.filePath,
+              name: item.fileName,
+              uuid: item.id,
+              percent: 100,
+              uploadTime: item.createTime,
+              secretLevel: item.secretLevel,
+              type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
+              replaceStatus: item.replaceStatus
+            }
+          }) || []
         }
       })
     },
@@ -167,16 +136,28 @@ export default {
     handleDelete(file, fileList) {
       postAction(this.url.delete, {id: file.fileId}).then(() => {
         this.$message.success('删除成功')
+        this.attachIds = fileList
       })
+    },
+    handleFilesChange(fileList) {
+      this.attachIds = fileList
+      for (let i = 0; i < fileList.length; i++) {
+        let serial = fileList[i].serial || i + 1
+        this.$set(this.attachIds[i], 'serial', serial)
+      }
+      this.saveSerial(this.attachIds)
     },
     handleSerialFocus(e, record) {
       this.serialBeforeRecord = e.target.value
     },
     handleSerialBlur(record) {
       if (!record.serial || this.serialBeforeRecord === record.serial) return
-      postAction(this.url.saveSerial, {...record, refId: this.testId}).then(res => {
+      this.saveSerial([{...record, refId: this.testId}], true)
+    },
+    saveSerial(data, msg) {
+      postAction(this.url.saveSerial, {data}).then(res => {
         if (res.code === 200) {
-          this.$message.success('序列号保存成功')
+          msg && this.$message.success('序列号保存成功')
         }
       })
     },
