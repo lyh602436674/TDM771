@@ -336,7 +336,7 @@ export default {
       this.testId = record.id
       this.equipId = record.equipId
       this.type = type
-      this.title = '异常：' + record.testNames + '-' + record.testCode
+      this.title = '异常：' + (record.testNames || record.unitNames) + '-' + record.testCode
       if (type == 'edit') {
         if (record.exceptionType == 2 && record.dealStatus == 3) {
           this.terFormData = [].concat([], this.terFormBackUp[1], this.dealForm)
