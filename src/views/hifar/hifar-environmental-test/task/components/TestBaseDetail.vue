@@ -168,8 +168,8 @@
           </div>
         </h-card>
       </h-desc>
-      <!-- 图片图谱 -->
-      <h-desc id="picture" class="mg-t-20" title="图片图谱">
+      <!-- 曲线图片 -->
+      <h-desc id="picture" class="mg-t-20" title="曲线图片">
         <h-upload-file style="width: 100%" v-model="pictureData" isWriteRemarks :isEdit="false"></h-upload-file>
       </h-desc>
       <!-- 试前检查 -->
@@ -342,7 +342,7 @@ export default {
           id: "toolsProduct"
         },
         {
-          title: "图片图谱",
+          title: "曲线图片",
           id: "picture"
         },
         {
@@ -769,17 +769,17 @@ export default {
       },
       // 图片
       pictureData: [],
-      // 附件
+      // 振动图谱
       attachData: [
         {
-          title: '附件',
+          title: '振动图谱',
           key: 'attachIds',
           span: 1,
           component: (
             <h-upload-file
               isEdit={false}
-              v-decorator={['attachIds', { initialValue: [] }]}
-              customParams={{ refType: 'test_attach', refId: this.checkId }}
+              v-decorator={['attachIds', {initialValue: []}]}
+              customParams={{refType: 'test_attach', refId: this.checkId}}
             />
           )
         }
@@ -904,7 +904,7 @@ export default {
         }
       })
     },
-    // 附件
+    // 振动图谱
     loadAttachData() {
       postAction(this.url.attachList, { refType: 'test_attach', refId: this.checkId }).then((res) => {
         if (res.code === 200) {

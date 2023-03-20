@@ -19,7 +19,7 @@
   >
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭 </a-button>
     <div style="height: 100%; overflow: auto; padding: 0 20px">
-      <h-desc title="附件" :bordered="false">
+      <h-desc title="振动图谱" :bordered="false">
         <h-upload-file
           v-model="attachIds"
           :customParams="{refType: 'test_attach', refId: this.testId}"
@@ -84,7 +84,7 @@ export default {
       this.loadAttachData()
       this.loadVideoData()
     },
-    // 附件
+    // 振动图谱
     loadAttachData() {
       postAction(this.url.testAttachList, { refType: 'test_attach', refId: this.testId }).then((res) => {
         if (res.code === 200) {

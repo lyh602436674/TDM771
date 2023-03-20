@@ -291,7 +291,7 @@
             </div>
           </h-card>
         </h-desc>
-        <h-desc id="picture" class="mg-t-20" title="图片图谱">
+        <h-desc id="picture" class="mg-t-20" title="曲线图片">
           <h-upload-file
             v-model="pictureData"
             :customParams="pictureCustomParams"
@@ -419,7 +419,7 @@ export default {
           id: 'toolsProduct'
         },
         {
-          title: '图片图谱',
+          title: '曲线图片',
           id: 'picture'
         }
       ],
@@ -1960,7 +1960,7 @@ export default {
           }),
           // 被试件(试件)集合
           testToolsProductArr: this.toolsProductData,
-          pictureData: this.pictureData, // 图片图谱
+          pictureData: this.pictureData, // 曲线图片
           // 试验设备开关机记录
           switchOnOffArr: this.switchRecordingTable.map(item => {
             return {

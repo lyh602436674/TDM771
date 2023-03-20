@@ -8,7 +8,7 @@
 -->
 <template>
   <div style="height: 100%; overflow: auto">
-    <h-card title="图片图谱" fixed style="height: auto">
+    <h-card title="曲线图片" fixed style="height: auto">
       <h-upload-file style="width: 100%" v-model="pictureData" isWriteRemarks :isEdit="false"></h-upload-file>
     </h-card>
     <h-card title="附件" fixed style="height: auto">

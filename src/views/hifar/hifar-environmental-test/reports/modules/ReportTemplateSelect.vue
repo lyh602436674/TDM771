@@ -54,7 +54,7 @@ export default {
       checkboxOptions: [
         {title: "试前检查单", value: "1"},
         {title: "样品图片", value: "2"},
-        {title: "图片图谱", value: "3"},
+        {title: "曲线图片", value: "3"},
         {title: "附件", value: "4"},
         {title: "项目附件", value: "5"},
       ],

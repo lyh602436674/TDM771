@@ -88,8 +88,7 @@
         </template>
       </h-vex-table>
     </h-card>
-    <!--    showExceptionAndEnd 是否展示异常信息和终止信息-->
-    <test-task-base-info-modal ref="TaskDetailModal" :showExceptionAndEnd="true"/>
+    <test-task-base-info-modal ref="TaskDetailModal" sshowExceptionAndEnd/>
     <task-abnormal-modal ref="taskAbnormalModal" @change="refreshEquipTaskList"></task-abnormal-modal>
     <test-data-add-modal ref="testDataAddModal" @change="refreshEquipTaskList"></test-data-add-modal>
     <test-check-modal ref="testCheckModal"/>
