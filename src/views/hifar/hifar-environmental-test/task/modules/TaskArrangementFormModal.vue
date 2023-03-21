@@ -237,6 +237,7 @@ export default {
       ],
       url: {
         distribute: '/HfEnvTaskTestBusiness/distributeTask',
+        beforeDistributeTask: '/HfEnvTaskTestBusiness/beforeDistributeTask',
       },
     }
   },
@@ -268,41 +269,53 @@ export default {
       this.submitLoading = true
       this.$refs.taskArrangementForm.validateForm()
     },
+    async beforeDistributeTask(params) {
+      const res = await postAction(this.url.beforeDistributeTask, params)
+      if (res.code === 200) {
+        if (res.msg) {
+          return res.msg
+        }
+        return true
+      }
+    },
+    distributeTask(params) {
+      postAction(this.url.distribute, params).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('分配成功')
+          this.$emit('change', res.data)
+          this.handleCancel()
+        } else {
+          this.$message.success(res.msg)
+        }
+      }).finally(() => {
+        this.submitLoading = false
+      })
+    },
     submit(values, res) {
       if (!this.submitLoading) return
+      this.submitLoading = true
       let params = {
         ...values,
       }
       params.chargeUserId = params.chargeUserId && params.chargeUserId.toString()
       params.predictStartTime = moment(params.predictStartTime).valueOf()
-      postAction(this.url.distribute, params).then((res) => {
-        if (res.code === 200) {
-          if (res.msg && res.msg.includes('error')) {
-            this.$confirm({
-              title: "提示",
-              content: '是否推迟其他任务？',
-              onOk: () => {
-                params.confirm = 1
-                postAction(this.url.distribute, params).then((res) => {
-                  if (res.code === 200) {
-                    this.$message.success('分配成功')
-                    this.$emit('change', res.data)
-                    this.handleCancel()
-                  }
-                })
-              },
-              onCancel: () => {
-                this.submitLoading = false
-              }
-            })
-          } else {
-            this.$message.success('分配成功')
-            this.$emit('change', res.data)
-            this.handleCancel()
-          }
+      this.beforeDistributeTask(params).then(res => {
+        if (res !== true) {
+          this.$confirm({
+            title: "提示",
+            content: res,
+            onOk: () => {
+              this.distributeTask(params)
+            },
+            onCancel: () => {
+              this.submitLoading = false
+            }
+          })
         } else {
-          this.submitLoading = false
+          this.distributeTask(params)
         }
+      }).catch(err => {
+        console.log(err, 'err')
       }).finally(() => {
         this.submitLoading = false
       })

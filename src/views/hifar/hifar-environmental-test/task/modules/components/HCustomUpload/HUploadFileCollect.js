@@ -53,7 +53,7 @@ export default {
     renderUploadAction(h) {
       let actions = []
       if (this.isEdit) {
-        actions.push(<a-button size="small" type="ghost-primary" icon="plus"
+        actions.push(<a-button size="small" type="ghost-primary" icon="upload"
                                onclick={this.clickUpload}>{this.fileList.length ? '继续上传' : '上传文件'}</a-button>,
           <a-popover placement="topRight" visible={this.popoverVisible} title="请选择采集时间区间" trigger="click">
             <div slot="content">
