@@ -71,18 +71,16 @@
             </a-popconfirm>
             <span v-if="record.status === 1">
               <a-space>
-                <a-popconfirm
-                  v-if="record.isExternalManage == 0"
-                  title="确定生成报告吗?"
-                  @confirm="() => handleMakeReport(record)">
-                  <a-icon
-                    v-has="'report:make'"
-                    class="primary-text cursor-pointer"
-                    title="生成"
-                    type="check-square"/>
-                </a-popconfirm>
+<!--                <a-popconfirm-->
+<!--                  title="确定生成报告吗?"-->
+<!--                  @confirm="() => handleMakeReport(record)">-->
+<!--                  <a-icon-->
+<!--                    v-has="'report:make'"-->
+<!--                    class="primary-text cursor-pointer"-->
+<!--                    title="生成"-->
+<!--                    type="check-square"/>-->
+<!--                </a-popconfirm>-->
                 <h-upload-file-b
-                  v-else
                   v-model="reportFileList"
                   :customParams="{id:record.id}"
                   accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -99,7 +97,6 @@
                  <a-space>
                   <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
                     <h-icon
-                      v-if="record.isExternalManage != 1"
                       v-has="'report:submit'"
                       class="primary-text cursor-pointer"
                       title="提交"

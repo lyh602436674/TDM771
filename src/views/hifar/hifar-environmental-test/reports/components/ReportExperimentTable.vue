@@ -19,9 +19,11 @@
       @change='refresh(true)'
     />
     <h-vex-table
+      :row-class-name="tableClassRowName"
       ref='reportProductTable'
       slot='content'
       :columns='columns'
+      class="templateSelect"
       :data='custLoadData'
       :row-selection="{ selectedRowKeys: selectedRowKeys,  onSelect: onSelect }"
       :rowKey="(record) => record.id"
@@ -165,6 +167,11 @@ export default {
     refresh(bool = true) {
       this.$refs.reportProductTable.refresh(bool)
     },
+    tableClassRowName({row}) {
+      if (row.overdue === 1) {
+        return 'table-row-overdue'
+      }
+    },
     // 是否选中表格,数据传到父标签,保存
     onSelect(selectedRowKeys, selectedRow) {
       this.selectedRowKeys = selectedRowKeys
@@ -174,7 +181,13 @@ export default {
   }
 }
 </script>
-
+<style lang="less" scoped>
+.templateSelect {
+  /deep/  .table-row-overdue {
+    background-color: #faa4a4;
+  }
+}
+</style>
 <style lang="less" scoped>
 .h-report-wrapper {
   width: 100%;

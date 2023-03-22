@@ -20,6 +20,10 @@ export default {
       type: [String, Function],
       default: () => 'id'
     },
+    rowClassName: {
+      type: [String, Function],
+      default: () => ''
+    },
     rowId: {
       type: String,
       default: 'id'
@@ -605,6 +609,7 @@ export default {
       highlightCurrentRow: true,
       highlightCurrentColumn: true,
       highlightHoverColumn: true,
+      rowClassName: this.rowClassName,
       columnConfig: {
         resizable: true
       },
