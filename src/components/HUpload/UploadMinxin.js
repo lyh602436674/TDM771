@@ -34,7 +34,9 @@ export default {
         finished: '/MinioBusiness/finishUpload',
         detail: '/MinioBusiness/queryById',
       },
-      extendRecords:{}
+      extendRecords: {},
+      // 图片水印内容
+      watermarkInput: ""
     }
   },
   methods: {
@@ -47,9 +49,16 @@ export default {
      * @Author: 陈乾龙
      * @description: 从Input中获取文件
      */
-    beforeUpload(event) {
-      // 文件类型判断和文件大小判断
-      let files = event.target.files
+    async beforeUpload(event) {
+      let files, targetFiles = event.target.files
+      if (this.watermark) {
+        this.spinning = true
+        let imageList = await this.getOriginFileInfo(targetFiles)
+        files = this.addWatermark(imageList)
+        this.spinning = false
+      } else {
+        files = targetFiles
+      }
       let fileList = []
       let filesLength = files.length
       let fileTypeTxt = ''
@@ -336,7 +345,7 @@ export default {
      */
     getFileMd5(__file__) {
       let index = findIndex(this.fileList, obj => {
-        return obj.uuid == __file__.uuid
+        return obj.uuid === __file__.uuid
       })
       this.$set(this.fileList[index], 'status', 'normal')
       this.$set(this.fileList[index], 'pretreatment', 0)
@@ -428,15 +437,8 @@ export default {
         if (this.customParams && this.customParams.detail) {
           detailUrl = this.customParams.detail
         }
-        postAction(detailUrl, { id: id }).then((res) => {
+        postAction(detailUrl, {id: id}).then((res) => {
           if (res.code === 200 && res.data.status === 9) {
-            // let link = document.createElement('a')
-            // link.style.display = 'none'
-            // link.href = res.data.downloadPath || filePath
-            // link.setAttribute('download', fileName)
-            // document.body.appendChild(link)
-            // link.click()
-            // document.body.removeChild(link) //下载完成移除元素
             downloadFile(fileAccessUrl, fileName)
           } else {
             this.$message.warning(`文件[${fileName}]正在合并中，请稍后再点击下载`)

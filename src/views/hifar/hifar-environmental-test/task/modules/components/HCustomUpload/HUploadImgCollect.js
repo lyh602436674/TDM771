@@ -14,6 +14,7 @@ export default {
         collectImage: "/HfEnvPieceBusiness/takePhoto",
       },
       loading: false,
+      popoverVisible: false,
     }
   },
   props: {
@@ -21,6 +22,17 @@ export default {
       type: Object,
       default: () => ({})
     },
+  },
+  watch: {
+    propsData: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        if (val && Object.keys(val).length) {
+          this.watermarkInput = val.productAlias + '-' + val.pieceNo
+        }
+      }
+    }
   },
   methods: {
     autoCollectImage() {
@@ -144,36 +156,75 @@ export default {
       }
       return dom
     },
+    popoverCancel() {
+      this.popoverVisible = false
+    },
+    popoverSubmit() {
+      this.clickUpload()
+      this.popoverVisible = false
+    },
+    uploadBtnPopover(h, slot) {
+      return h('a-popover', {
+          props: {
+            placement: "topRight",
+            visible: this.popoverVisible,
+            title: "请输入水印内容",
+            trigger: "click",
+          }
+        }, [
+          slot,
+          h('div', {slot: "content"}, [
+              <hInput style={{width: '250px'}} value={this.watermarkInput} onBlur={e => {
+                this.watermarkInput = e.target.value;
+              }}/>,
+              <div style={{width: "100%", marginTop: "10px", display: "flex", justifyContent: "right"}}>
+                <a-button onClick={this.popoverCancel}>{'取消'}</a-button>
+                <a-button style={{marginLeft: "5px"}} type="primary"
+                          onClick={this.popoverSubmit}>{'确定'}</a-button>
+              </div>
+            ]
+          )
+        ]
+      )
+    },
     renderImageLoader(h) {
       let dom = null
       if (!this.fileList.length) {
-        dom = h('a-empty', {
-          class: "h-upload-img",
-          style: {
-            margin: 0
+        dom = h('a-spin', {
+          props: {
+            spinning: this.spinning,
+            tip: "生成水印中",
           }
         }, [
-          h('span', {
-            slot: 'description',
+          h('a-empty', {
+            class: "h-upload-img",
             style: {
-              color: '#bfbfbf'
+              margin: 0
             }
-          }, '上传.png,.jpg,.jpeg类型的图片'),
-          this.isEdit ?
-            h('a-button', {
-              props: {
-                type: "ghost-primary",
-                icon: 'upload',
-                size: "small"
-              },
-              on: {
-                click: this.clickUpload
+          }, [
+            h('span', {
+              slot: 'description',
+              style: {
+                color: '#bfbfbf'
               }
-            }, '点击上传') : null,
-          this.isEdit ?
-            <a-button style={{marginLeft: '10px'}} icon={this.loading ? 'loading' : 'video-camera'} size="small"
-                      type={"ghost-primary"}
-                      onClick={this.autoCollectImage}>{'自动采集'}</a-button> : null
+            }, '上传.png,.jpg,.jpeg类型的图片'),
+            this.isEdit ?
+              this.uploadBtnPopover(h, h('a-button', {
+                props: {
+                  type: "ghost-primary",
+                  icon: 'upload',
+                  size: "small"
+                },
+                on: {
+                  click: () => this.popoverVisible = true
+                }
+              }, '点击上传'))
+              : null,
+            this.isEdit ?
+              <a-button style={{marginLeft: '10px'}} icon={this.loading ? 'loading' : 'video-camera'} size="small"
+                        type={"ghost-primary"}
+                        onClick={this.autoCollectImage}>{'自动采集'}</a-button> : null
+          ])
         ])
       } else {
         dom = this.renderImgList(h)

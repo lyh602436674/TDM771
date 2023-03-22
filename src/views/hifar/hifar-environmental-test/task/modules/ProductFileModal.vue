@@ -17,6 +17,7 @@
           :isEdit="isEdit"
           :max="100"
           style="width: 100%;"
+          watermark
           :multiple="true"
           :isCollect="true"
           :is-write-remarks="true"
@@ -71,6 +72,7 @@ export default {
         pieceId: this.record.id,
         pieceNo: this.record.pieceNo,
         productName: this.record.productName,
+        productAlias: this.record.productAlias,
       }
     },
   },

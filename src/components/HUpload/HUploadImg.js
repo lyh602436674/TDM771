@@ -131,10 +131,19 @@ export default {
       type: Boolean,
       default: true
     },
-    isCollect:{
+    isCollect: {
       type: Boolean,
       default: false
-    }
+    },
+    /**
+     *  @Date: 2023-02-22 15:17:22
+     *  @Author: 雷宇航
+     *  @description: 是否给图片添加水印
+     */
+    watermark: {
+      type: Boolean,
+      default: false,
+    },
   },
   watch: {
     value: {
@@ -172,7 +181,9 @@ export default {
     return {
       inputConfig: {
         ref: "HUpload" + randomUUID()
-      }
+      },
+      // 上传图片组件的loading状态
+      spinning: false,
     }
   },
   methods: {
@@ -188,29 +199,36 @@ export default {
     renderImageLoader(h) {
       let dom = null
       if (!this.fileList.length) {
-        dom = h('a-empty', {
-          class: "h-upload-img",
-          style: {
-            margin: 0
+        dom = h("a-spin", {
+          props: {
+            spinning: this.spinning,
+            tip: "生成水印中",
           }
         }, [
-          h('span', {
-            slot: 'description',
+          h('a-empty', {
+            class: "h-upload-img",
             style: {
-              color: '#bfbfbf'
+              margin: 0
             }
-          }, '上传.png,.jpg,.jpeg类型的图片'),
-          this.isEdit ?
-            h('a-button', {
-              props: {
-                type: "ghost-primary",
-                icon: 'upload',
-                size: "small"
-              },
-              on: {
-                click: this.clickUpload
+          }, [
+            h('span', {
+              slot: 'description',
+              style: {
+                color: '#bfbfbf'
               }
-            }, '点击上传') : null
+            }, '上传.png,.jpg,.jpeg类型的图片'),
+            this.isEdit ?
+              h('a-button', {
+                props: {
+                  type: "ghost-primary",
+                  icon: 'upload',
+                  size: "small"
+                },
+                on: {
+                  click: this.clickUpload
+                }
+              }, '点击上传') : null
+          ])
         ])
       } else {
         dom = this.renderImgList(h)
@@ -365,7 +383,94 @@ export default {
       }
 
       return dom
-    }
+    },
+    // 获取图片原始对象
+    getOriginFileInfo(fileList) {
+      return Promise.all(Array.from(fileList).map((item) => {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const img = new Image();
+            img.onload = () => {
+              resolve(img);
+            };
+            img.onerror = reject;
+            img.src = reader.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(item);
+        });
+      })).then((res) => {
+        return res
+      });
+    },
+    // 添加水印
+    addWatermark(fileList) {
+      let imgResult = [];
+      for (let k = 0; k < fileList.length; k++) {
+        let fileItem = fileList[k]
+        let content = this.watermarkInput;
+        let canvas = document.createElement("canvas"); //创建canvas容器
+        canvas.width = fileItem.width; //设置canvas容器宽度
+        canvas.height = fileItem.height; //设置canvas容器高度
+        let ctx = canvas.getContext("2d"); //获取2d画笔
+        //在canvas画布上绘制图片 ctx.drawImage(图片, x位置, y位置,  图像宽度, 图像高度);
+        let height = fileItem.width * 0.08; //两个水印之间的垂直高度
+        let width = fileItem.width * 0.08; //两个水印之间的水平高度
+        let fontSize = fileItem.width * 0.02; //水印字体大小
+        ctx.drawImage(
+          fileItem,
+          0,
+          0,
+          fileItem.width,
+          fileItem.height,
+        );
+
+        //设置文本画笔样式
+        ctx.textAlign = "left"; //设置文本对齐方式
+        ctx.textBaseline = "top"; //设置文本基线
+        ctx.font = `${fontSize}px Microsoft Yahei`; //设置文本字体属性
+        ctx.fillStyle = "rgba(255, 255, 255,0.4)"; //设置文本字体颜色
+
+        //在canvas画布上绘制文字 ctx.fillText(文字内容, x位置, y位置, 文本最大宽度)
+        ctx.rotate((17 * Math.PI) / 180); //文本旋转角度设置
+        ctx.translate(-fileItem.width * 0.5, -fileItem.height * 0.2);
+        let i = 0,
+          j = 0,
+          waterMarkerWidth = content.split("").length * fontSize;
+        for (i = 0; i < fileItem.width / waterMarkerWidth; i++) {
+          for (j = 0; j < fileItem.height / (height - 20); j++) {
+            if (j === 0) {
+              ctx.fillText(
+                content,
+                i * (waterMarkerWidth + width),
+                -height,
+                fileItem.width
+              );
+            }
+            ctx.fillText(
+              content,
+              i * (waterMarkerWidth + width),
+              j * height,
+              fileItem.width
+            );
+          }
+        }
+        imgResult.push(this.dataURLtoFile(canvas.toDataURL("image/png", 0.5), fileItem.fileName))
+      }
+      return imgResult
+    },
+    dataURLtoFile(dataurl, filename) {
+      let arr = dataurl.split(","),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new File([u8arr], filename, {type: mime});
+    },
   },
   render(h) {
     return h('div', {

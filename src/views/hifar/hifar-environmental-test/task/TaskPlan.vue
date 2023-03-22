@@ -583,12 +583,13 @@ export default {
       this.selectedRowKeys = []
       this.selectedRows = []
       let data = {
-        c_status_2: '30', // 过滤掉已完成的
+        c_status_98: '20,30', // 过滤掉已完成
         ...params,
         ...this.queryParams
       }
-      if (data.c_status_1) { // if通过查询条件查询了状态，那就不要c_status_2
-        delete data.c_status_2
+      // if通过查询条件查询了状态，那就不要c_status_98
+      if (Object.keys(this.queryParams).length) {
+        delete data.c_status_98
       }
       switch (data.type) {
         case 'year':
