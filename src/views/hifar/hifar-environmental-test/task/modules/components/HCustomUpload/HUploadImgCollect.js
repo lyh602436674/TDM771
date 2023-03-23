@@ -2,6 +2,7 @@ import HUploadImg from '@comp/HUpload/HUploadImg'
 import {isNumber, isString} from "lodash";
 import {randomUUID} from "@/utils/util";
 import {postAction} from "@api/manage";
+import {Empty} from 'ant-design-vue';
 
 export default {
   name: "HUploadImgCollect",
@@ -29,7 +30,7 @@ export default {
       deep: true,
       handler(val) {
         if (val && Object.keys(val).length) {
-          this.watermarkInput = val.productAlias + '-' + val.pieceNo
+          this.watermarkInput = val.productAlias + '_' + val.pieceNo
         }
       }
     }
@@ -38,12 +39,13 @@ export default {
     autoCollectImage() {
       if (this.loading) return
       this.loading = true
-      let {equipId, pieceId, pieceNo, productName} = this.propsData
+      let {equipId, pieceId, pieceNo, productName, productAlias} = this.propsData
       let params = {
         equipId,
         pieceId: pieceId || randomUUID(),
         pieceNo,
         productName,
+        productAlias,
       }
       postAction(this.url.collectImage, params).then(res => {
         if (res.code === 200) {
@@ -81,7 +83,12 @@ export default {
           this.renderImgAction(file)
         ]))
       })
-      return h('div',
+      return h('a-spin', {
+        props: {
+          spinning: this.spinning,
+          tip: "生成水印中",
+        }
+      }, [h('div',
         {
           class: 'h-upload-img-list'
         },
@@ -90,7 +97,7 @@ export default {
           this.isEdit ? this.renderImgUpload(h) : '',
           this.isEdit ? this.renderAutoCollect(h) : ''
         ]
-      )
+      )])
     },
     renderAutoCollect(h) {
       return h('div', {
@@ -120,7 +127,7 @@ export default {
       ])
     },
     renderImgUpload(h) {
-      let dom = h('div', {
+      let dom = this.uploadBtnPopover(h, h('div', {
         class: "h-upload-com",
         style: {
           height: isNumber(this.height) ? this.height + 'px' : isString(this.height) ? this.height : 'auto',
@@ -128,7 +135,7 @@ export default {
           marginRight: "10px",
         },
         on: {
-          click: this.clickUpload
+          click: () => this.popoverVisible = true
         }
       }, [
         h('a-icon', {
@@ -144,7 +151,7 @@ export default {
             color: "#bfbfbf"
           }
         }, "点击上传图片")
-      ])
+      ]))
       if (this.multiple) {
         if (this.fileList.length >= Math.abs(this.max)) {
           dom = null
@@ -197,6 +204,9 @@ export default {
           }
         }, [
           h('a-empty', {
+            props: {
+              image: Empty.PRESENTED_IMAGE_SIMPLE
+            },
             class: "h-upload-img",
             style: {
               margin: 0

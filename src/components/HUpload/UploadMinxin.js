@@ -27,6 +27,8 @@ export default {
     return {
       h: this.$createElement,
       fileList: [],
+      // 每次上传时先把本次上传的文件保存到这里，可能会用到
+      originTargetFiles: [],
       // 分片大小 单位lkB
       chunkSize: 300 * 1024 * 1024,
       url: {
@@ -51,6 +53,7 @@ export default {
      */
     async beforeUpload(event) {
       let files, targetFiles = event.target.files
+      this.originTargetFiles = targetFiles
       if (this.watermark) {
         this.spinning = true
         let imageList = await this.getOriginFileInfo(targetFiles)

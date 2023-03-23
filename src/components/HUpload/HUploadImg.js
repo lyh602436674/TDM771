@@ -456,7 +456,7 @@ export default {
             );
           }
         }
-        imgResult.push(this.dataURLtoFile(canvas.toDataURL("image/png", 0.5), fileItem.fileName))
+        imgResult.push(this.dataURLtoFile(canvas.toDataURL("image/png", 0.5), this.originTargetFiles[k].name))
       }
       return imgResult
     },

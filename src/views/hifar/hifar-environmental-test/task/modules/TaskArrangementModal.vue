@@ -180,6 +180,8 @@ export default {
       gantt.config.end_date = global_end_date
       // 允许在出现意外行为时显示错误警报
       gantt.config.show_errors = false;
+      // 通过单击 +/- 按钮可以展开/折叠拆分任务
+      gantt.config.open_split_tasks = true;
       //甘特图自动延长时间刻度以适应所有显示的任务
       gantt.config.fit_tasks = true
       //设置工具提示隐藏之前的时间长度，以毫秒为单位
@@ -359,18 +361,19 @@ export default {
           {
             id: item.id,
             equipName,
-            resize: true,
-            // render: 'split',
+            render: 'split',
             text: this.getEquipTestInfoItem(item),
             isSubTask: item.equipTestInfo.length === 0,
             type: "equip",
             validFlag: item.validFlag,
+            open: false,
           }
         )
         item.equipTestInfo.length > 0 && item.equipTestInfo.forEach(target => {
           this.taskList.push(target)
           tasks.data.push({
             type: "task",
+            open: true,
             id: target.id,
             parent: target.equipId,
             text: target.testNames || '',

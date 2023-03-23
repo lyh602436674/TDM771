@@ -153,6 +153,8 @@ export default {
       gantt.config.end_date = global_end_date
       // 允许在出现意外行为时显示错误警报
       gantt.config.show_errors = false;
+      // 通过单击 +/- 按钮可以展开/折叠拆分任务
+      gantt.config.open_split_tasks = true;
       // 甘特图自动延长时间刻度以适应所有显示的任务
       gantt.config.fit_tasks = true
       // 设置工具提示隐藏之前的时间长度，以毫秒为单位
@@ -180,6 +182,8 @@ export default {
       ]
       // 默认打开所有分支
       gantt.config.open_tree_initially = true;
+      // 定义当网格为空时是否显示网格内部的占位符元素
+      // gantt.config.show_empty_state = true;
       gantt.templates.task_class = function (start, end, task) {
         switch (+task.statusFlag) {
           case 0:
@@ -220,14 +224,22 @@ export default {
                   <li>预计结束时间：${task.predictEndTime}</li>
                   <li>实际开始时间：${task.realStartTime}</li>
                   <li>实际结束时间：${task.realEndTime}</li>
-                   <li>预计时长：${task.predictUseTime || '--'}小时</li>
+                  <li>预计时长：${task.predictUseTime || '--'}小时</li>
                 </ul>`
       }
       //任务的点击方法
       gantt.attachEvent("onTaskClick", (id, e) => {
         let task = this.taskList.find(item => item.id === id)
-        if (!task) return
-        this.$refs.taskDetail.show(task, '2', '10px')
+        if (e.target.className.includes('gantt_tree_icon')) {
+          return true
+        }
+        if (task) {
+          if (!e.target.className.includes('gantt_tree_icon')) {
+            this.$refs.taskDetail.show(task, '2', '10px')
+          } else {
+            return true
+          }
+        }
         this.destroyTooltip()
         return true;
       }, {id: "myTaskClick"});
@@ -285,19 +297,20 @@ export default {
           {
             id: item.id,
             equipName,
-            resize: true,
             // start_date: this.dateTimeFormat(this.getMinMaxTime(item.equipTestInfo).minStartTime),
             // end_date: this.dateTimeFormat(this.getMinMaxTime(item.equipTestInfo).maxEndTime),
-            // render: 'split', // 如果不需要树展示,就放开此行代码和注释 tree:true
+            render: 'split',
             text: this.getEquipTestInfoItem(item),
             isSubTask: item.equipTestInfo.length === 0,
-            type: "equip"
+            type: "equip",
+            open: false,
           }
         )
         item.equipTestInfo.length > 0 && item.equipTestInfo.forEach(target => {
           this.taskList.push(target)
           tasks.data.push({
             type: "task",
+            open: true,
             id: target.id,
             parent: target.equipId,
             text: target.testNames || '',

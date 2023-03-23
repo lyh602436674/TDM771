@@ -10,6 +10,7 @@
   >
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     <div style="height: 100%; overflow: auto; padding: 0 20px">
+<!--      <h-collapse :activeKey="1" class="collapseStyle" title="试验条件结构化"></h-collapse>-->
       <h-desc :bordered="false" title="图片">
         <h-upload-img-collect
           v-model="modelImage"
@@ -18,10 +19,10 @@
           :max="100"
           style="width: 100%;"
           watermark
-          :multiple="true"
-          :isCollect="true"
-          :is-write-remarks="true"
-          :isInReport="true"
+          is-write-remarks
+          isCollect
+          isInReport
+          multiple
           :propsData="propsData"
           accept="image/png,image/gif,image/jpg,image/jpeg"
           @delete="handleDelete"
@@ -78,6 +79,9 @@ export default {
   },
   data() {
     return {
+      imageComponentList: [
+        {title: "试前-X向"}
+      ],
       moment,
       visible: false,
       refId: "",
