@@ -47,8 +47,8 @@
                     @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
             <a-icon class="primary-text" title="在线编辑" type="edit"
                     @click="webOfficeEdit(record.docxPathXh)"/>
-            <a :href="record.docxPathXh" title="下载word">
-              <a-icon class="primary-text" type="download"/>
+            <a title="下载word" @click="handleDownloadDocx(record.docxPathXh)">
+              <a-icon class="primary-text" type="download"></a-icon>
             </a>
             <h-upload-file-b
               v-model="swapFileList"
@@ -67,8 +67,8 @@
                     @click="handleReviewPdf('实施方案',record.pdfPathSs)"/>
             <a-icon class="primary-text" title="在线编辑" type="edit"
                     @click="webOfficeEdit(record.docxPathSs)"/>
-            <a :href="record.docxPathSs" title="下载word">
-              <a-icon class="primary-text" type="download"/>
+            <a title="下载word" @click="handleDownloadDocx(record.docxPathSs)">
+              <a-icon class="primary-text" type="download"></a-icon>
             </a>
             <h-upload-file-b
               v-model="swapFileList"
@@ -99,7 +99,7 @@
 </template>
 
 <script>
-import {downloadFile, postAction} from '@/api/manage'
+import {createLink, downloadFile, postAction} from '@/api/manage'
 import moment from 'moment'
 import TestTaskBaseInfoModal from '@/views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal'
 import TestCheckModal from "@views/hifar/hifar-environmental-test/task/checkModal/TestCheckModal";
@@ -437,6 +437,22 @@ export default {
           minWidth: 100,
         },
         {
+          title: '标准总价',
+          dataIndex: 'standardTotalPrice',
+          minWidth: 100,
+          customRender: text => {
+            return Number(text)
+          }
+        },
+        {
+          title: '折后总价',
+          dataIndex: 'totalExpenses',
+          minWidth: 100,
+          customRender: text => {
+            return Number(text)
+          }
+        },
+        {
           title: '操作',
           dataIndex: 'actions',
           align: 'center',
@@ -491,6 +507,11 @@ export default {
         this.swapFileList = []
       })
     },
+    handleDownloadDocx(filePath) {
+      if (!filePath) return this.$message.warning('暂无数据')
+      createLink(filePath)
+    },
+
     handleReviewPdf(title, path) {
       this.reviewPdfTitle = title
       this.$refs.reviewPdf.show(path)

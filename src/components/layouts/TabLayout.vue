@@ -26,7 +26,7 @@
             <a-icon type="vertical-left" />
           </a-tag>
           <!-- 非首页，可全屏 -->
-          <a-tag v-if="!['/largeScreenTY','/largeScreenKG','/home'].includes(activePage)" style="cursor: pointer"
+          <a-tag v-if="!['/largeScreenTY','/LargeScreenKG','/home'].includes(activePage)" style="cursor: pointer"
                  @click="handleFullScreen">
             <a-icon type="fullscreen"></a-icon>
           </a-tag>

@@ -47,12 +47,12 @@ export default {
           this.lixueText = ' 力学'
           this.qihouText = ' 气候'
           let lixue = [
-            { value: dynamics_run || 0, name: '空闲' },
-            { value: dynamics_step || 0, name: '占用' }
+            { value: dynamics_run || 0, name: '占用' },
+            { value: dynamics_step || 0, name: '空闲' }
           ]
           let qihou = [
-            { value: climate_run || 0, name: '空闲' },
-            { value: climate_step || 0, name: '占用' }
+            { value: climate_run || 0, name: '占用' },
+            { value: climate_step || 0, name: '空闲' }
           ]
           let option = {
             tooltip: {

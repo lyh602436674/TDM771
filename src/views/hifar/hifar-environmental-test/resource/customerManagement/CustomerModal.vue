@@ -30,8 +30,17 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import FeeListSelectModal from '../fee/modules/FeeListSelectModal.vue'
+import {isNumber} from "lodash";
+
+const validatorDiscount = (rule, value, callback) => {
+  const regMinMax = /^((\d|10)(\.\d{1,2})?)$/
+  if (value && (!regMinMax.test(value) || !isNumber(+value) || value < 0 || value > 10)) {
+    callback('折扣值只能在0到10范围内,并且保留两位小数')
+  }
+}
+
 export default {
   components: {
     FeeListSelectModal,
@@ -122,7 +131,7 @@ export default {
               onchange={(selectedRowKeys, selectedRows) => {
                 this.model.costId = selectedRowKeys
                 this.model.costName = selectedRows[0] ? selectedRows[0].costName : ''
-                this.$refs.userForm.form.setFieldsValue({ costName: selectedRows[0].costName })
+                this.$refs.userForm.form.setFieldsValue({costName: selectedRows[0].costName})
               }}
             />
           ),
@@ -134,17 +143,26 @@ export default {
           hidden: true,
         },
         {
+          title: "客户折扣",
+          key: "discount",
+          formType: 'input-number',
+          style: {width: '100%'},
+          validate: {
+            rules: [{required: false, message: "折扣值只能在0到10范围内,并且保留两位小数", validator: validatorDiscount},]
+          }
+        },
+        {
           title: '备注',
           key: 'remarks',
           formType: 'textarea',
           span: 2,
           validate: {
-          rules: [
-            {
-              max:200,message:"长度不能大于200"
-            },
-          ],
-        },
+            rules: [
+              {
+                max: 200, message: "长度不能大于200"
+              },
+            ],
+          },
         },
       ],
     }

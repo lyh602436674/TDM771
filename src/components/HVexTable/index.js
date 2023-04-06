@@ -357,7 +357,7 @@ export default {
     renderColumns(h) {
       let columns = []
       for (let i = 0, len = this.columns.length; i < len; i++) {
-        if (this.columns[i].hidden !== false) {
+        if (this.columns[i].hidden !== true) {
           let column = null
           column = this.renderColumn(this.columns[i])
           columns.push(column)

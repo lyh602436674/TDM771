@@ -51,7 +51,15 @@
             style="cursor: pointer"
             @click="() => handleEdit(record)"
           />
-          <a-divider type="vertical" />
+          <a-divider type="vertical"/>
+          <a-icon
+            class="primary-text"
+            style="cursor: pointer"
+            title="复制"
+            type="copy"
+            @click="() => handleCopy(record)"
+          />
+          <a-divider type="vertical"/>
           <a-icon
             type="eye"
             title="详情"
@@ -141,7 +149,7 @@ export default {
           title: '操作',
           dataIndex: 'action',
           align: 'center',
-          width: 120,
+          width: 150,
           scopedSlots: { customRender: 'action' },
         },
       ],
@@ -150,6 +158,7 @@ export default {
         delete: '/HfResCustCostBusiness/logicRemoveCostAndPriceById',
         importExcelUrl: 'HfResCustCostImport/importExcel',
         export: '/HfResCustCostExport/exportExcel',
+        copyById: 'HfResCustCostBusiness/copyById',
       },
       getLoadData: (params) => {
         let data = {
@@ -179,9 +188,17 @@ export default {
       this.$refs.custTable.refresh(bool)
       this.selectedRowKeys = []
     },
+    handleCopy(id) {
+      postAction(this.url.copyById, id).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('复制成功')
+          this.refresh(true)
+        }
+      })
+    },
     // 单个删除
     handleDelete(id) {
-      postAction(this.url.delete, { id: id }).then((res) => {
+      postAction(this.url.delete, {id: id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)

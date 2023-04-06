@@ -7,29 +7,33 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\task\modules\components\detail\TerminationRecordTable.vue
 -->
 <template>
-  <h-card fixed :bordered="false" class="terminationRecord">
-    <div class="termination-search">
+  <h-card :bordered="false" class="terminationRecord" fixed style="height: 100%">
+    <div slot="search-form" class="termination-search">
       <h-search
         v-model="queryParams"
-        slot="search-form"
         :data="searchForm"
         :showToggleButton="false"
         @change="refresh"
       />
     </div>
-    <div class="termination-table" style="margin-top: 10px">
-      <h-vex-table slot="content" ref="terminationRecordTable" :columns="columns" :data="loadData" style="width: 100%">
+    <div class="termination-table">
+      <h-vex-table ref="terminationRecordTable" slot="content" :columns="columns" :data="loadData" :height="500"
+                   style="width: 100%">
+        <template slot="filePath" slot-scope="text, record">
+          <a v-if="text" @click="handleDownloadFile(record)">点击下载</a>
+          <span v-else>暂无附件</span>
+        </template>
         <template slot="actions" slot-scope="text, record">
-            <a-icon class="primary-text" title="查看" type="eye" @click="handleShowDetail(record)"/>
+          <a-icon class="primary-text" title="查看" type="eye" @click="handleShowDetail(record)"/>
         </template>
       </h-vex-table>
     </div>
-    <task-force-end-detail ref="taskForceEndDetail" />
+    <task-force-end-detail ref="taskForceEndDetail"/>
   </h-card>
 </template>
 
 <script>
-import {postAction} from '@api/manage'
+import {createLink, postAction} from '@api/manage'
 import moment from 'moment'
 import TaskForceEndDetail from '../../TaskForceEndDetail'
 
@@ -44,9 +48,9 @@ export default {
       default: () => {
       },
     },
-    isReadOnly: {
-      type: Boolean,
-      default: false
+    listType: {
+      type: String,
+      default: 'task',
     }
   },
   watch: {
@@ -80,16 +84,23 @@ export default {
           minWidth: 180,
         },
         {
-          title: '操作',
-          dataIndex: 'action',
-          align: 'center',
-          fixed: 'right',
-          width: 80,
-          hidden: !this.isReadOnly,
+          title: '附件',
+          dataIndex: 'filePath',
+          minWidth: 180,
           scopedSlots: {
-            customRender: 'actions',
+            customRender: 'filePath',
           },
         },
+        // {
+        //   title: '操作',
+        //   dataIndex: 'actions',
+        //   align: 'center',
+        //   fixed: 'right',
+        //   width: 80,
+        //   scopedSlots: {
+        //     customRender: 'actions',
+        //   },
+        // },
       ]
     }
   },
@@ -108,16 +119,24 @@ export default {
         let data = {
           ...params,
           ...this.queryParams,
-          testId: this.records.id,
         }
-        return postAction(this.url.list, data).then((res) => {
+        if (this.listType === 'testForceEndList') {
+          data.testId = this.records.id
+        }
+        if (this.listType === 'taskForceEndList') {
+          data.taskId = this.records.id
+        }
+        return postAction(this.url[this.listType], data).then((res) => {
           if (res.code === 200) {
             return res.data
           }
         })
       },
       url: {
+        // 原始查询终止记录的接口，但是只能查询试验，不能查询任务
         list: '/HfEnvTestForceEndBusiness/queryByTestIdPage',
+        taskForceEndList: '/HfEnvTaskTestBusiness/listForceEndPage',
+        testForceEndList: '/HfEnvTestForceEndBusiness/listForceEndPage',
       },
     }
   },
@@ -126,6 +145,9 @@ export default {
       this.$nextTick(() => {
         this.$refs.terminationRecordTable.refresh(bool)
       })
+    },
+    handleDownloadFile(record) {
+      createLink(record.filePath, '', true)
     },
     handleShowDetail(record) {
       let testId = this.records.id
@@ -147,7 +169,6 @@ export default {
 
   .termination-search {
     width: 100%;
-    margin-top: -10px;
   }
 
   .termination-button {

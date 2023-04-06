@@ -59,8 +59,8 @@
               title="在线编辑"
               type="edit"
               @click="webOfficeEdit(record.docxPathXh)"/>
-            <a :href="record.docxPathXh" title="下载word">
-              <a-icon class="primary-text" type="download"/>
+            <a title="下载word" @click="handleDownloadDocx(record.docxPathXh)">
+              <a-icon class="primary-text" type="download"></a-icon>
             </a>
           </a-space>
         </template>
@@ -76,8 +76,8 @@
               title="在线编辑"
               type="edit"
               @click="webOfficeEdit(record.docxPathSs)"/>
-            <a :href="record.docxPathSs" title="下载word">
-              <a-icon class="primary-text" type="download"/>
+            <a title="下载word" @click="handleDownloadDocx(record.docxPathSs)">
+              <a-icon class="primary-text" type="download"></a-icon>
             </a>
           </a-space>
         </template>
@@ -93,7 +93,7 @@
 
 <script>
 import moment from 'moment'
-import {postAction} from '@api/manage'
+import {createLink, postAction} from '@api/manage'
 import mixin from '@views/hifar/hifar-environmental-test/mixin.js'
 import AbnormalDetailModal from '@views/hifar/hifar-environmental-test/task/modules/AbnormalDetailModal';
 import {ACCESS_TOKEN} from '@/store/mutation-types';
@@ -425,6 +425,10 @@ export default {
     handleTestOperator(type) {
       if (!this.handleValidate()) return this.$message.warning('请选择一条试验')
       this.$refs.testArchiveDetail.show(this.selectedRows[0], type)
+    },
+    handleDownloadDocx(filePath) {
+      if (!filePath) return this.$message.warning('暂无数据')
+      createLink(filePath)
     },
     handleReviewPdf(title, path) {
       if (!path) return

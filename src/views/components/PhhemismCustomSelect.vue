@@ -130,6 +130,12 @@ export default {
           formType: 'input',
         },
         {
+          title: '客户折扣',
+          dataIndex: 'discount',
+          key: 'c_discount_7',
+          formType: 'input',
+        },
+        {
           title: '联系人',
           dataIndex: 'linkName',
           key: 'c_linkName_7',

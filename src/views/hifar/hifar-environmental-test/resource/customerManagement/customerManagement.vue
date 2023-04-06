@@ -186,6 +186,11 @@ export default {
           dataIndex: 'custAddress',
         },
         {
+          title: '客户折扣 ',
+          align: 'left',
+          dataIndex: 'discount',
+        },
+        {
           title: '联系人 ',
           align: 'left',
           dataIndex: 'linkName',

@@ -3,7 +3,7 @@
  * @Date: 2021-08-02 14:23:46
  * @LastEditTime: 2021-11-10 15:54:57
  * @LastEditors: 马潭龙
- * @Descripttion: 
+ * @Descripttion:
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\resource\customerManagement\customerDetail.vue
 -->
 <template>
@@ -78,6 +78,11 @@ export default {
         {
           title: '费用标准',
           key: 'costName',
+          formType: 'input',
+        },
+        {
+          title: '客户折扣',
+          key: 'discount',
           formType: 'input',
         },
         {

@@ -15,7 +15,6 @@ export default {
         collectImage: "/HfEnvPieceBusiness/takePhoto",
       },
       loading: false,
-      popoverVisible: false,
     }
   },
   props: {
@@ -30,7 +29,7 @@ export default {
       deep: true,
       handler(val) {
         if (val && Object.keys(val).length) {
-          this.watermarkInput = val.productAlias + '_' + val.pieceNo
+          this.watermarkInput = val.productAlias + ' ' + val.pieceNo + ' ' + this.customParams.testDirection
         }
       }
     }
@@ -39,13 +38,14 @@ export default {
     autoCollectImage() {
       if (this.loading) return
       this.loading = true
-      let {equipId, pieceId, pieceNo, productName, productAlias} = this.propsData
+      let {equipId, pieceId, pieceNo, productName, productAlias, testDirection} = this.propsData
       let params = {
-        equipId,
         pieceId: pieceId || randomUUID(),
+        equipId,
         pieceNo,
         productName,
         productAlias,
+        testDirection,
       }
       postAction(this.url.collectImage, params).then(res => {
         if (res.code === 200) {
@@ -127,16 +127,13 @@ export default {
       ])
     },
     renderImgUpload(h) {
-      let dom = this.uploadBtnPopover(h, h('div', {
+      let dom = this.uploadBtnPopover(h, h('button', {
         class: "h-upload-com",
         style: {
           height: isNumber(this.height) ? this.height + 'px' : isString(this.height) ? this.height : 'auto',
           width: isNumber(this.width) ? this.width + 'px' : isString(this.width) ? this.width : 'auto',
           marginRight: "10px",
         },
-        on: {
-          click: () => this.popoverVisible = true
-        }
       }, [
         h('a-icon', {
           props: {
@@ -164,19 +161,17 @@ export default {
       return dom
     },
     popoverCancel() {
-      this.popoverVisible = false
     },
     popoverSubmit() {
       this.clickUpload()
-      this.popoverVisible = false
     },
     uploadBtnPopover(h, slot) {
+      // slot的父级标签必须能接受 mouseenter、mouseleave、focus、click 事件。
       return h('a-popover', {
           props: {
             placement: "topRight",
-            visible: this.popoverVisible,
             title: "请输入水印内容",
-            trigger: "click",
+            trigger: "focus",
           }
         }, [
           slot,
@@ -225,9 +220,6 @@ export default {
                   icon: 'upload',
                   size: "small"
                 },
-                on: {
-                  click: () => this.popoverVisible = true
-                }
               }, '点击上传'))
               : null,
             this.isEdit ?

@@ -255,6 +255,7 @@ export default {
               }
 
           }
+          this.$emit('finishUpload', this.fileList[fileIndex])
         } else {
           this.$set(this.fileList[fileIndex], "status", 'exception')
         }

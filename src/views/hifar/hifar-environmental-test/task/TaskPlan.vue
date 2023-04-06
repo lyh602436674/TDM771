@@ -93,15 +93,18 @@
               :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect }"
             >
               <template slot="status" slot-scope="text, record">
-                <a-badge v-if="record.status == 1" color="geekblue" text="未分配"/>
-                <a-badge v-else-if="record.status == 10" color="green" text="已分配"/>
-                <a-badge v-else-if="record.status == 15" color="cyan" text="执行中"/>
-                <a-badge v-else-if="record.status == 20" color="volcano" text="已终止"/>
-                <a-badge v-else-if="record.status == 30" color="grey" text="已完成"/>
-                <a-badge v-else-if="record.status == 99" color="red" text="删除"/>
-              </template>
-              <template slot="productNames" slot-scope="text, record">
-                <span>{{ record.productNames }}-{{ record.productAliass }}</span>
+                <template v-if="record.forceEndStatus === 10">
+                  <a-badge :color="taskStatusMap[+text] ? taskStatusMap[+text].color : ''"
+                           :text="taskStatusMap[+text] ? taskStatusMap[+text].text + '-终止申请中' : ''"/>
+                </template>
+                <template v-else>
+                  <a-badge :color="taskStatusMap[+text] ? taskStatusMap[+text].color : ''"
+                           :text="taskStatusMap[+text] ? taskStatusMap[+text].text : ''"/>
+                </template>
+                <a-tooltip v-if="record.forceEndStatus === 10 || text === 20" title="查看终止记录">
+                  <a-icon class="primary-text" style="margin-left:5px" type="eye"
+                          @click="$refs.TerminationDetailModal.show(record,record.unitName)"/>
+                </a-tooltip>
               </template>
               <span slot="entrustNo" slot-scope="text, record">
                 <a @click="$refs.taskDetail.show(record,'1')" v-if="text">
@@ -135,10 +138,12 @@
                     type="control"
                     @click="() => showTaskArrangement(record)"/>
                 </a-tooltip>
-                <a-divider type="vertical"/>
-                <a-tooltip title="终止">
-                  <a-icon class="primary-text" type="pause" @click="$refs.taskForceEnd.show('forceEnd', record)"/>
-                </a-tooltip>
+                <template v-if="record.status === 1">
+                  <a-divider type="vertical"/>
+                  <a-tooltip title="终止">
+                    <a-icon class="primary-text" type="pause" @click="$refs.taskForceEnd.show('forceEnd', record)"/>
+                  </a-tooltip>
+                </template>
               </template>
             </h-vex-table>
           </h-card>
@@ -154,6 +159,7 @@
       :forceEndUrl="url.forceEnd"
       :testDetailUrl="url.testDetail"
       @change="handleRefresh"/>
+    <termination-detail-modal ref="TerminationDetailModal" listType="taskForceEndList"></termination-detail-modal>
   </div>
 </template>
 
@@ -167,6 +173,7 @@ import TestInfoListModal from './modules/TestInfoListModal'
 import WorkCenterDetailModal from '../components/WorkCenterDetailModal.vue'
 import TaskForceEndModal from './modules/TaskForceEndModal.vue'
 import {find} from 'lodash'
+import TerminationDetailModal from "@views/hifar/hifar-environmental-test/task/modules/TerminationDetailModal";
 
 export default {
   provide() {
@@ -174,11 +181,26 @@ export default {
       getContainer: () => this.$refs.taskPlan
     }
   },
-  components: { HPie, TaskArrangement, TaskDetail, WorkCenterDetailModal, TestInfoListModal, TaskForceEndModal },
+  components: {
+    TerminationDetailModal,
+    HPie,
+    TaskArrangement,
+    TaskDetail,
+    WorkCenterDetailModal,
+    TestInfoListModal,
+    TaskForceEndModal
+  },
   data() {
     return {
       collapse: true,
       queryParams: {},
+      taskStatusMap: {
+        1: {color: "geekblue", text: "未分配"},
+        10: {color: "green", text: "已分配"},
+        15: {color: "cyan", text: "执行中"},
+        20: {color: "volcano", text: "已终止"},
+        30: {color: "grey", text: "已完成"},
+      },
       searchForm: [
         {
           title: '委托单号',
@@ -276,12 +298,12 @@ export default {
           scopedSlots: {
             customRender: 'status'
           },
-          minWidth: 100
+          minWidth: 190
         },
         {
           title: '试验项目',
           dataIndex: 'unitName',
-          minWidth: 100
+          minWidth: 125
         },
         {
           title: '试验',
@@ -322,7 +344,7 @@ export default {
         {
           title: '数量',
           dataIndex: 'productNums',
-          minWidth: 100,
+          minWidth: 80,
           align: 'center'
         },
         {

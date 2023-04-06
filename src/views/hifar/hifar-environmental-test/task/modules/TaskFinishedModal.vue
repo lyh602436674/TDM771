@@ -28,18 +28,20 @@
         <h-desc-item label="试验设备(设备编号)">{{ `${model.equipName}(${model.equipCode})` || '--' }}</h-desc-item>
         <h-desc-item label="温度范围">{{ model.temperatureRange || '--' }}</h-desc-item>
         <h-desc-item label="湿度">{{ model.humidityRange || '--' }}</h-desc-item>
-        <h-desc-item label="折扣">{{ model.discount || '--' }}</h-desc-item>
         <h-desc-item label="压力">{{ model.pressureRange || '--' }}</h-desc-item>
         <h-desc-item label="加速度">{{ model.accelerationRange || '--' }}</h-desc-item>
         <h-desc-item label="开机费">
-          <span slot="content" :style="{color: !isNumberEqual(model.startupCost) ? 'red' : ''}">
-            {{ model.startupCost || '--' }}
-          </span>
+          {{ model.startupCost || '--' }}
         </h-desc-item>
-        <h-desc-item label="单价">
-          <span slot="content" :style="{color: !isNumberEqual(model.unitPrice)? 'red' : ''}">
-            {{ model.unitPrice || '--' }}
-          </span>
+        <h-desc-item label="折扣">{{ model.discount || '--' }}</h-desc-item>
+        <h-desc-item label="标准单价">
+          {{ model.unitPrice || '--' }}
+        </h-desc-item>
+        <h-desc-item label="折扣单价">
+          {{ model.discountUnitPrice || '--' }}
+        </h-desc-item>
+        <h-desc-item label="客户折扣">
+          {{ model.customDiscount || '--' }}
         </h-desc-item>
       </h-desc>
       <h-card class="cost-type" title="计费方式">
@@ -122,15 +124,25 @@ export default {
               onChange={(val) => {
                 let form1 = this.$refs.taskForm1.form
                 let form3 = this.$refs.taskForm3.form
+                let {discountUnitPrice, unitPrice, startupCost, customDiscount} = this.model
                 let startTime = form1.getFieldsValue().realStartTime
                 let startTimeVal = startTime ? moment(startTime).valueOf() : 0
                 let endTime = val ? val.valueOf() : 0
-                let res = this.getTimeDiff(startTimeVal, endTime)
-                form1.setFieldsValue({realUseTime: res || 0})
-                if (this.radioValue === '1' && res && this.isNumberEqual(this.model.unitPrice) && this.isNumberEqual(this.model.startupCost)) {
-                  form3.setFieldsValue({totalExpenses: res * this.model.unitPrice + +this.model.startupCost})
+                let diff = this.getTimeDiff(startTimeVal, endTime)
+                form1.setFieldsValue({realUseTime: diff || 0})
+                if (this.radioValue === '1' && diff && this.isNumberEqual(unitPrice) && this.isNumberEqual(startupCost)) {
+                  form3.setFieldsValue({
+                    // 标准总价 = 时长 * 标准单价 + 开机费
+                    standardTotalPrice: (diff * unitPrice + +startupCost) || undefined,
+                  })
+                  if (this.isNumberEqual(discountUnitPrice) && this.isNumberEqual(customDiscount)) {
+                    form3.setFieldsValue({
+                      // 折后总价 = (时长 * (折后单价 || 标准单价) * 客户折扣) + 开机费
+                      totalExpenses: (((diff * (discountUnitPrice || unitPrice)) * customDiscount) + +startupCost) || undefined,
+                    })
+                  }
                 } else {
-                  form3.setFieldsValue({totalExpenses: undefined})
+                  form3.setFieldsValue({standardTotalPrice: undefined, totalExpenses: undefined})
                 }
               }}
             />
@@ -152,8 +164,19 @@ export default {
           min: 0,
           style: {width: '100%',},
           change: (val) => {
-            if (this.radioValue === '2' && this.isNumberEqual(this.model.unitPrice) && this.isNumberEqual(this.model.startupCost)) {
-              this.$refs.taskForm3.form.setFieldsValue({totalExpenses: (val * this.model.unitPrice + +this.model.startupCost) || undefined})
+            let {discountUnitPrice, unitPrice, startupCost, customDiscount} = this.model
+            if (this.radioValue === '2' && this.isNumberEqual(val) && this.isNumberEqual(unitPrice) && this.isNumberEqual(startupCost)) {
+              let form3 = this.$refs.taskForm3.form
+              form3.setFieldsValue({
+                // 标准总价 = 向次 * 标准单价 + 开机费
+                standardTotalPrice: (val * unitPrice + +startupCost) || undefined,
+              })
+              if (this.isNumberEqual(discountUnitPrice) && this.isNumberEqual(customDiscount)) {
+                form3.setFieldsValue({
+                  // 折后总价 = (向次 * (折后单价 || 标准单价) * 客户折扣) + 开机费
+                  totalExpenses: (((val * (discountUnitPrice || unitPrice)) * customDiscount) + +startupCost) || undefined,
+                })
+              }
             }
           }
         },
@@ -165,18 +188,53 @@ export default {
           hidden: true,
         },
         {
-          title: '试验费用',
+          title: '标准总价',
+          key: 'standardTotalPrice',
+          validate: {
+            rules: [
+              {
+                required: true,
+                message: ''
+              },
+              {
+                validator: (rule, value, cb) => {
+                  if (!this.isNumberEqual(value)) {
+                    cb('请输入正确格式的标准总价')
+                  } else {
+                    cb()
+                  }
+                }
+              }
+            ],
+          },
+          component: (
+            <a-input-search
+              v-decorator={['standardTotalPrice', {
+                rules: [{
+                  required: true,
+                  message: ''
+                }],
+              }, {initialValue: undefined}]}
+              placeholder={"根据计费方式自动计算"} onSearch={this.calcTotalCost}>
+              <a-button type="primary" icon={'redo'} slot="enterButton">
+                重置
+              </a-button>
+            </a-input-search>
+          ),
+        },
+        {
+          title: '折后总价',
           key: 'totalExpenses',
           validate: {
             rules: [
               {
                 required: true,
-                message: '请输入试验费用'
+                message: ''
               },
               {
                 validator: (rule, value, cb) => {
                   if (!this.isNumberEqual(value)) {
-                    cb('请输入正确格式的试验费用')
+                    cb('请输入正确格式的折后总价')
                   } else {
                     cb()
                   }
@@ -189,7 +247,7 @@ export default {
               v-decorator={['totalExpenses', {
                 rules: [{
                   required: true,
-                  message: '请输入试验费用'
+                  message: ''
                 }],
               }, {initialValue: undefined}]}
               placeholder={"根据计费方式自动计算"} onSearch={this.calcTotalCost}>
@@ -229,7 +287,8 @@ export default {
     getCalcCost(record) {
       postAction(this.url.calcCost, {id: record.id}).then(res => {
         if (res.code === 200) {
-          this.model = Object.assign({}, this.model, res.data)
+          const {data} = res
+          this.model = Object.assign({}, this.model, data)
           if (res.msg) {
             this.$message.warning(res.msg)
           }
@@ -249,10 +308,10 @@ export default {
       this.calcTotalCost()
     },
     isNumberEqual(value) {
-      return !isNaN(Number(value))
+      return !isNaN(Number(value)) && value !== '' && value >= 0
     },
     calcTotalCost() {
-      let {unitPrice, startupCost} = this.model
+      let {discountUnitPrice, unitPrice, startupCost, customDiscount} = this.model
       let form1 = this.$refs.taskForm1.form
       let form2 = this.$refs.taskForm2.form
       let form3 = this.$refs.taskForm3.form
@@ -262,16 +321,34 @@ export default {
         let realEndTime = form1.getFieldsValue().realEndTime
         let endTime = realEndTime ? moment(realEndTime).format('x') : 0
         let diff = this.getTimeDiff(startTime, endTime)
-        if (startTime && endTime) {
-          form3.setFieldsValue({totalExpenses: (diff * unitPrice + +startupCost) || undefined})
+        if (diff) {
+          form3.setFieldsValue({
+            // 标准总价 = 时长 * 标准单价 + 开机费
+            standardTotalPrice: (diff * unitPrice + +startupCost) || undefined,
+          })
+          if (this.isNumberEqual(discountUnitPrice) && this.isNumberEqual(customDiscount)) {
+            form3.setFieldsValue({
+              // 折后总价 = (时长 * (折后单价 || 标准单价) * 客户折扣) + 开机费
+              totalExpenses: (((diff * (discountUnitPrice || unitPrice)) * customDiscount) + +startupCost) || undefined,
+            })
+          }
         }
       } else if (this.radioValue === '2' && this.isNumberEqual(unitPrice) && this.isNumberEqual(startupCost)) {
         let testSecondary = form2.getFieldsValue().testSecondary
-        if (testSecondary >= 0) {
-          form3.setFieldsValue({totalExpenses: (testSecondary * unitPrice + +startupCost) || undefined})
+        if (this.isNumberEqual(testSecondary)) {
+          form3.setFieldsValue({
+            // 标准总价 = 向次 * 标准单价 + 开机费
+            standardTotalPrice: (testSecondary * unitPrice + +startupCost) || undefined,
+          })
+          if (this.isNumberEqual(discountUnitPrice) && this.isNumberEqual(customDiscount)) {
+            form3.setFieldsValue({
+              // 折后总价 = (向次 * (折后单价 || 标准单价) * 客户折扣) + 开机费
+              totalExpenses: (((testSecondary * (discountUnitPrice || unitPrice)) * customDiscount) + +startupCost) || undefined,
+            })
+          }
         }
       } else {
-        form3.setFieldsValue({totalExpenses: undefined})
+        form3.setFieldsValue({totalExpenses: undefined, standardTotalPrice: undefined})
         form2.setFieldsValue({testSecondary: undefined})
       }
     },

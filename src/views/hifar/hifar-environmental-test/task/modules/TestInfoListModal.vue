@@ -61,6 +61,12 @@ import {postAction} from '@/api/manage'
 
 export default {
   inject: ['getContainer'],
+  props: {
+    isReadOnly: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       visible: false,
@@ -174,6 +180,7 @@ export default {
           align: 'center',
           dataIndex: 'actions',
           fixed: 'right',
+          hidden: this.isReadOnly,
           scopedSlots: {
             customRender: 'actions'
           }

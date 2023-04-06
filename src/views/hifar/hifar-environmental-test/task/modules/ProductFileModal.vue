@@ -2,34 +2,36 @@
   <h-modal
     :getContainer='getContainer'
     :visible='visible'
-    :width="1200"
+    fullScreen
     destroyOnClose
     inner
     title="试件图片"
     @cancel='handleCancel'
   >
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭</a-button>
-    <div style="height: 100%; overflow: auto; padding: 0 20px">
-<!--      <h-collapse :activeKey="1" class="collapseStyle" title="试验条件结构化"></h-collapse>-->
-      <h-desc :bordered="false" title="图片">
-        <h-upload-img-collect
-          v-model="modelImage"
-          :customParams="{refType: 'hf_env_test_piece_img', refId,isInReport:1}"
-          :isEdit="isEdit"
-          :max="100"
-          style="width: 100%;"
-          watermark
-          is-write-remarks
-          isCollect
-          isInReport
-          multiple
-          :propsData="propsData"
-          accept="image/png,image/gif,image/jpg,image/jpeg"
-          @delete="handleDelete"
-          @success="loadImgData"
-          @collect="handleCollect"
-        />
-      </h-desc>
+    <div style="height: 100%; overflow: auto; padding: 10px 20px">
+      <h-collapse v-for="(item,index) in imageComponentList" :key="index" :title="item.title"
+                  class="collapseStyle">
+        <h-desc slot='content' :bordered="false">
+          <h-upload-img-collect
+            v-model="modelImage[item.direction]"
+            :customParams="{refType: 'hf_env_test_piece_img', refId, isInReport: item.isInReport, testDirection:item.title}"
+            :isEdit="isEdit"
+            :max="100"
+            :propsData="Object.assign({},propsData,{testDirection: item.direction})"
+            accept="image/png,image/gif,image/jpg,image/jpeg"
+            isCollect
+            isInReport
+            multiple
+            style="width: 100%;"
+            watermark
+            @collect="handleCollect"
+            @delete="handleDelete"
+            @finishUpload="file => handleUploadSuccess(file,item.direction)"
+            @success="loadImgData"
+          />
+        </h-desc>
+      </h-collapse>
       <h-desc :bordered="false" title="视频">
         <h-upload-file-collect
           v-model="modelVideo"
@@ -40,6 +42,7 @@
           @delete="handleDelete"
         />
       </h-desc>
+
     </div>
   </h-modal>
 </template>
@@ -80,7 +83,15 @@ export default {
   data() {
     return {
       imageComponentList: [
-        {title: "试前-X向"}
+        {title: "试前-X向", isInReport: 1, direction: "x_before"},
+        {title: "试前-Y向", isInReport: 1, direction: "y_before"},
+        {title: "试前-Z向", isInReport: 1, direction: "z_before"},
+        {title: "试中-X向", isInReport: 2, direction: "x_middle"},
+        {title: "试中-Y向", isInReport: 2, direction: "y_middle"},
+        {title: "试中-Z向", isInReport: 2, direction: "z_middle"},
+        {title: "试后-X向", isInReport: 2, direction: "x_after"},
+        {title: "试后-Y向", isInReport: 2, direction: "y_after"},
+        {title: "试后-Z向", isInReport: 2, direction: "z_after"},
       ],
       moment,
       visible: false,
@@ -95,7 +106,8 @@ export default {
         attachList: '/MinioBusiness/listByRefId',
         collectVideo: "/HfEnvPieceBusiness/recordVideo",
         collectImage: "/HfEnvPieceBusiness/takePhoto",
-        updateIsInReport: "/HfEnvTaskTestBusiness/updateFileStatus"
+        updateIsInReport: "/HfEnvTaskTestBusiness/updateFileStatus",
+        updateFileRefDirection: "/HfEnvTaskTestBusiness/updateFileRefDirection",
       },
     }
   },
@@ -113,6 +125,17 @@ export default {
       this.modelImage = []
       this.$emit('close')
     },
+    handleUploadSuccess(file, direction) {
+      /*
+      * 试验前：
+        x_before、y_before、z_before
+        试验中：
+        x_middle、y_middle、z_middle
+        试验后：
+        x_after、y_after、z_after
+      * */
+      postAction(this.url.updateFileRefDirection, {fileId: file.fileId, refDirection: direction})
+    },
     handleCollect(file) {
       let params = {
         refId: this.refId,
@@ -127,12 +150,20 @@ export default {
         }
       })
     },
+
     loadImgData() {
       postAction(this.url.attachList, {refType: 'hf_env_test_piece_img', refId: this.refId}).then((res) => {
         if (res.code === 200) {
           const {data} = res
           if (data && data.length) {
-            this.modelImage = this.dataFormat(data)
+            this.modelImage = data.reduce((acc, obj) => {
+              if (acc[obj.refDirection]) {
+                acc[obj.refDirection].push(this.fileObjFormat(obj));
+              } else {
+                acc[obj.refDirection] = [this.fileObjFormat(obj)];
+              }
+              return acc;
+            }, {});
           }
         }
       })
@@ -150,6 +181,21 @@ export default {
     handleDelete(file) {
       postAction(this.url.delete, {id: file.fileId}).then(() => {
         this.$message.success('删除成功')
+      })
+    },
+    fileObjFormat(obj) {
+      return Object.assign({}, obj, {
+        fileId: obj.id,
+        size: obj.fileSize,
+        status: obj.status === 9 ? 'success' : 'exception',
+        url: obj.filePath,
+        name: obj.fileName,
+        isInReport: obj.isInReport,
+        uuid: obj.id,
+        percent: 100,
+        uploadTime: obj.createTime,
+        type: obj.viewType === 2 ? 'image/jpeg' : 'text/plain',
+        refDirection: obj.refDirection
       })
     },
     dataFormat(arr) {
@@ -173,6 +219,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+.collapseStyle {
+  margin-bottom: 10px;
+}
 </style>

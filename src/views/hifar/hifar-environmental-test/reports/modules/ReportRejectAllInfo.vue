@@ -136,7 +136,7 @@ export default {
         {
           title: '试验项目',
           formType: 'input',
-          key: 'c_testNames_7'
+          key: 'c_testName_7'
         },
         {
           title: '驳回节点',

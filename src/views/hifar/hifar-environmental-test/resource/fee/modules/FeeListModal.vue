@@ -92,14 +92,22 @@
               title="加速度范围"
             ></vxe-table-column>
             <vxe-table-column
-              :edit-render="{ name: 'input', placeholder: '请输入折扣' }"
+              :edit-render="{ name: 'input', placeholder: '请输入折扣',events:{change:calcDiscountUnitPrice} }"
               field="discount"
               title="折扣"
             ></vxe-table-column>
             <vxe-table-column
-              :edit-render="{ name: '$input', props: { type: 'number', min: 0, placeholder: '请输入单价（元）' } }"
+              :edit-render="{
+                name: '$input',
+                props: { type: 'number', min: 0, placeholder: '请输入标准单价（元）' },
+                events:{change:calcDiscountUnitPrice}
+              }"
               field="unitPrice"
-              title="单价（元）"
+              title="标准单价（元）"
+            ></vxe-table-column>
+            <vxe-table-column
+              field="discountPrice"
+              title="折后单价（元）"
             ></vxe-table-column>
             <vxe-table-column
               field="startupCost"
@@ -142,7 +150,7 @@ export default {
         }
       })
     }
-    const regRange = /^(\d+)-([1-9]*[1-9][0-9]*)$/
+    const regRange = /^-?\d+(-\d*[1-9]\d*)$/
 
     return {
       dataSource: [],
@@ -157,7 +165,7 @@ export default {
           {required: false, trigger: 'blur'},
           {
             validator: ({cellValue}) => {
-              return validatorFields(cellValue, '请输入正确格式的速率，例：1-100', regRange)
+              return validatorFields(cellValue, '请输入正确格式的速率，例：-100-100', regRange)
             }
           }
         ],
@@ -165,7 +173,7 @@ export default {
           {required: false, trigger: 'blur'},
           {
             validator: ({cellValue}) => {
-              return validatorFields(cellValue, '请输入正确格式的温度范围，例：1-100', regRange)
+              return validatorFields(cellValue, '请输入正确格式的温度范围，例：-100-100', regRange)
             }
           }
         ],
@@ -173,7 +181,7 @@ export default {
           {required: false, trigger: 'blur'},
           {
             validator: ({cellValue}) => {
-              return validatorFields(cellValue, '请输入正确格式的湿度范围，例：1-100', regRange)
+              return validatorFields(cellValue, '请输入正确格式的湿度范围，例：-100-100', regRange)
             }
           }
         ],
@@ -181,7 +189,7 @@ export default {
           {required: false, trigger: 'blur'},
           {
             validator: ({cellValue}) => {
-              return validatorFields(cellValue, '请输入正确格式的压力范围，例：1-100', regRange)
+              return validatorFields(cellValue, '请输入正确格式的压力范围，例：-100-100', regRange)
             }
           }
         ],
@@ -189,7 +197,7 @@ export default {
           {required: false, trigger: 'blur'},
           {
             validator: ({cellValue}) => {
-              return validatorFields(cellValue, '请输入正确格式的加速度范围，例：1-100', regRange)
+              return validatorFields(cellValue, '请输入正确格式的加速度范围，例：-100-100', regRange)
             }
           }
         ],
@@ -257,8 +265,12 @@ export default {
       this.title = title
       this.editor(record)
     },
+    calcDiscountUnitPrice({row}) {
+      let res =  row.discount && row.unitPrice && !isNaN(Number(row.unitPrice)) && !isNaN(Number(row.discount)) ? row.discount * 0.1 * row.unitPrice : null
+      this.$set(row, 'discountPrice', res)
+    },
     loadUnitById(costId) {
-      postAction(this.url.priceUnit, { costId: costId }).then((res) => {
+      postAction(this.url.priceUnit, {costId: costId}).then((res) => {
         if (res.code === 200) {
           let record = res.data
           this.priceData = record && record.length && record.map((item) => {
@@ -344,6 +356,7 @@ export default {
           accelerationRange: item.accelerationRange,
           discount: item.discount,
           unitPrice: item.unitPrice,
+          discountPrice: item.discountPrice,
           remarks: item.remarks,
         }
       })

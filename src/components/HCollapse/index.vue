@@ -51,7 +51,7 @@ export default {
       type: Boolean,
       default: true
     },
-    // 是否展开第一项
+    // 默认展开哪一项
     activeKey: {
       type: [String, Number],
       default: ''

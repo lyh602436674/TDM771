@@ -163,12 +163,10 @@ export default {
   },
   methods: {
     show(record = {}, type) {
+      this.visible = true
       this.model = Object.assign({}, record)
       this.title = record.taskCode + '详情'
       this.getTaskDetail(type)
-      this.$nextTick(() => {
-        this.visible = true
-      })
     },
     getTaskDetail(type) {
       this.spinning = true
@@ -194,6 +192,10 @@ export default {
     handleCancel() {
       this.visible = false
       this.fullScreen = false
+      this.pieceInfo = []
+      this.equipTestInfo = []
+      this.projectInfo = []
+
     },
     fullScreenHandle() {
       this.fullScreen = !this.fullScreen

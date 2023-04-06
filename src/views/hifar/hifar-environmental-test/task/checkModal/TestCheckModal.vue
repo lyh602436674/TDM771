@@ -79,8 +79,13 @@
                 <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
-                {{ item.checkUserName || '--' }}
-                <div>{{ formatTime(item.checkTime) }}</div>
+                <template v-if="item.checkFlag === 2">
+                  <h-icon type='icon-xieti'/>
+                </template>
+                <template v-else>
+                  {{ item.checkUserName || '--' }}
+                  <div>{{ formatTime(item.checkTime) }}</div>
+                </template>
               </div>
               <a-popconfirm class='check-operate' title='确定删除吗?' @confirm='handleDelete(item,index,"beforeCheckInfo")'>
                 <a style='color: #ff4d4f'>删除</a>
@@ -146,8 +151,13 @@
                 <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
-                {{ item.checkUserName || '--' }}
-                <div>{{ formatTime(item.checkTime) }}</div>
+                <template v-if="item.checkFlag === 2">
+                  <h-icon type='icon-xieti'/>
+                </template>
+                <template v-else>
+                  {{ item.checkUserName || '--' }}
+                  <div>{{ formatTime(item.checkTime) }}</div>
+                </template>
               </div>
               <a-popconfirm class='check-operate' title='确定删除吗?' @confirm='handleDelete(item,index,"inCheckInfo")'>
                 <a style='color: #ff4d4f'>删除</a>
@@ -214,8 +224,13 @@
                 <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
-                {{ item.checkUserName || '--' }}
-                <div>{{ formatTime(item.checkTime) }}</div>
+                <template v-if="item.checkFlag === 2">
+                  <h-icon type='icon-xieti'/>
+                </template>
+                <template v-else>
+                  {{ item.checkUserName || '--' }}
+                  <div>{{ formatTime(item.checkTime) }}</div>
+                </template>
               </div>
               <a-popconfirm class='check-operate' title='确定删除吗?' @confirm='handleDelete(item,index,"afterCheckInfo")'>
                 <a style='color: #ff4d4f'>删除</a>
@@ -336,6 +351,7 @@ export default {
       records.itemRequire = ''
       records.isEdit = true
       records.itemRes = ''
+      records.checkFlag = '1'
       this[type].push(records)
     },
     show(record, title, type) {
@@ -431,6 +447,7 @@ export default {
       if (isArray(item)) {
         record.checkItemInfo = item
       } else if (isObject(item)) {
+        if (+item.checkFlag === 2) return this.$message.warning('无需审核')
         record.checkItemInfo.push({
           id: item.id
         })
@@ -497,6 +514,7 @@ export default {
       if (this[type].length === 0) {
         return this.$message.warning('请先新增检查项')
       }
+      if (this[type].map(item => +item.checkFlag === 2).length === this[type].length) return this.$message.warning('无需审核')
       let checkedList = this.filterCheckedList(type)
       if (checkedList.length) {
         let items = this.checkItem(checkedList, ['id'])
@@ -511,7 +529,7 @@ export default {
           content: '确认全部一键复核吗？',
           onOk: () => {
             let items = this.checkItem(this[type], ['id'])
-            if (items.length > 0) {
+            if (items.length) {
               this.handleFlagCheck(items)
             } else {
               return this.$message.warning('请填写检查项')

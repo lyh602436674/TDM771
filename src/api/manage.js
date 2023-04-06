@@ -149,11 +149,12 @@ export function downloadFile(url, fileName, parameter) {
     })
 }
 
-export function createLink(url, fileName) {
+export function createLink(url, fileName, bool) {
   let link = document.createElement('a')
   link.style.display = 'none'
   link.href = url
   link.setAttribute('download', fileName)
+  bool && link.setAttribute('target', '_blank')
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link) //下载完成移除元素

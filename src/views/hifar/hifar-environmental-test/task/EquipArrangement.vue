@@ -151,22 +151,14 @@
                       <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
                     </template>
                     <template slot="status" slot-scope="text,record">
-                      <div v-if="record.forceEndStatus == 10">
-                        <a-badge v-if="text == 1" color="geekblue" text="未开始-终止申请中"/>
-                        <a-badge v-else-if="text == 10" color="red" text="已撤销-终止申请中"/>
-                        <a-badge v-else-if="text == 20" color="green" text="进行中-终止申请中"/>
-                        <a-badge v-else-if="text == 30" color="volcano" text="暂停-终止申请中"/>
-                        <a-badge v-else-if="text == 40" color="red" text="终止-终止申请中"/>
-                        <a-badge v-else-if="text == 50" color="grey" text="已完成-终止申请中"/>
-                      </div>
-                      <div v-else>
-                        <a-badge v-if="text == 1" color="geekblue" text="未开始"/>
-                        <a-badge v-else-if="text == 10" color="red" text="已撤销"/>
-                        <a-badge v-else-if="text == 20" color="green" text="进行中"/>
-                        <a-badge v-else-if="text == 30" color="volcano" text="暂停"/>
-                        <a-badge v-else-if="text == 40" color="red" text="终止"/>
-                        <a-badge v-else-if="text == 50" color="grey" text="已完成"/>
-                      </div>
+                      <template v-if="record.forceEndStatus === 10">
+                        <a-badge :color="testStatusMap[text].color" :text="testStatusMap[text].text + '-终止申请中'"/>
+                      </template>
+                      <template v-else>
+                        <a-badge :color="testStatusMap[text].color" :text="testStatusMap[text].text"/>
+                      </template>
+                      <a-icon v-if="record.forceEndStatus === 10 || text === 40" class="primary-text" style="margin-left:5px" type="eye"
+                              @click="$refs.TerminationDetailModal.show(record,record.testNames)"/>
                     </template>
                     <template #archiveRecord="text,record">
                       <a-space style="cursor: pointer">
@@ -278,6 +270,7 @@
                               :selectRowId="selectedRow"
                               :selectedRow="selectedRow"></equip-basic-line-modal>
       <test-entrust-review-pdf ref="reviewPdf" :title="reviewPdfTitle"/>
+      <termination-detail-modal listType="testForceEndList"  ref="TerminationDetailModal"/>
     </div>
   </r-l-layout>
 </template>
@@ -304,6 +297,7 @@ import EquipBasicLineModal from "@views/hifar/hifar-environmental-test/task/modu
 import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
 import {ACCESS_TOKEN} from "@/store/mutation-types";
 import * as WebCtrl from "@/plugins/webOffice";
+import TerminationDetailModal from "@views/hifar/hifar-environmental-test/task/modules/TerminationDetailModal";
 // import {isHiddenColumns} from "@/utils/hasPermission";
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -331,7 +325,8 @@ export default {
     EquipBasicBar,
     EquipBasicLine,
     equipBasicVibration,
-    TestEntrustReviewPdf
+    TestEntrustReviewPdf,
+    TerminationDetailModal
   },
   data() {
     return {
@@ -341,6 +336,14 @@ export default {
       selectedKeys: [],
       selectedRows: [],
       queryParams: {},
+      testStatusMap: {
+        1: {color: "geekblue", text: "未开始"},
+        10: {color: "red", text: "已撤销"},
+        20: {color: "green", text: "进行中"},
+        30: {color: "volcano", text: "暂停"},
+        40: {color: "red", text: "终止"},
+        50: {color: "grey", text: "已完成"},
+      },
       selectedKey: [],
       reviewPdfTitle: '',
       validFlag: '',
@@ -547,7 +550,7 @@ export default {
           title: '状态',
           dataIndex: 'status',
           scopedSlots: {customRender: 'status'},
-          width: 100,
+          width: 190,
         },
         {
           title: '送试单位',
