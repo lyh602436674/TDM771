@@ -1,105 +1,56 @@
-<!--
- * @Author: 雷宇航
- * @Date: 2023-04-04 18:15:11
- * @fileName: InspectionRecordList.vue
- * @FilePath: tdm771-client\src\views\hifar\hifar-environmental-test\inspectionRecord\InspectionRecordList.vue
- * @Description: 巡检记录
--->
 <template>
-  <div ref="pollingRecord" style="position: relative;height: 100%">
-    <h-card fixed title="巡检记录">
-      <h-search
-        slot="search-form"
-        v-model="queryParams"
-        :data="searchData"
-        :showToggleButton="true"
-        size="small"
-        @change="refresh"
-      />
-      <div slot="table-operator" style="border-top: 5px">
-
-      </div>
-      <h-vex-table
-        ref="pollingRecordTable"
-        slot="content"
-        :columns="columns"
-        :data="loadData"
-        :rowKey="(record) => record.id"
-      >
-        <template #taskBeginQuantity="text,record">
-          <a @click="handleDetail(record,'beforeSnapshot')">{{ text }}</a>
-        </template>
-        <template #taskFinishQuantity="text,record">
-          <a @click="handleDetail(record,'afterSnapshot')">{{ text }}</a>
-        </template>
-      </h-vex-table>
-      <inspection-record-modal ref="inspectionRecordModal"></inspection-record-modal>
-    </h-card>
-  </div>
+  <h-modal
+    :getContainer="getContainer"
+    :title="title"
+    :visible="visible"
+    destroyOnClose
+    inner
+    width="90%"
+    @cancel="handleCancel"
+  >
+    <div slot='footer' class='footer'>
+      <a-button type='ghost-danger' @click='handleCancel'> 关闭</a-button>
+    </div>
+    <div style="padding:10px">
+      <h-tabs :activeKey="activeKey" :animated="true" fixed @change="handleTabsChange">
+        <a-tab-pane key="beforeSnapshot">
+          <a-badge slot="tab" :offset="offset">计划开始任务</a-badge>
+          <inspection-record-item-list ref="beforeSnapshotTable" :activeKey="activeKey"
+                                       :rowId="rowId"></inspection-record-item-list>
+        </a-tab-pane>
+        <a-tab-pane key="afterSnapshot">
+          <a-badge slot="tab" :offset="offset">计划结束任务</a-badge>
+          <inspection-record-item-list ref="afterSnapshotTable" :activeKey="activeKey"
+                                       :rowId="rowId"></inspection-record-item-list>
+        </a-tab-pane>
+      </h-tabs>
+    </div>
+  </h-modal>
 </template>
 
 <script>
 import moment from "moment";
 import {postAction} from "@api/manage";
-import InspectionRecordModal
-  from "@views/hifar/hifar-environmental-test/inspectionRecord/modules/InspectionRecordModal";
+import InspectionRecordItemList from "@views/hifar/hifar-environmental-test/inspectionRecord/InspectionRecordItemList";
 
 export default {
-  name: "InspectionRecordList",
-  components: {InspectionRecordModal},
-  provide() {
-    return {
-      getContainer: () => this.$refs.pollingRecord,
-    }
+  name: "InspectionRecordModal",
+  components: {InspectionRecordItemList},
+  inject: {
+    getContainer: {
+      default: () => document.body,
+    },
   },
   data() {
     return {
       moment,
-      searchData: [
-        {
-          title: '巡检编号',
-          key: 'number',
-          formType: 'input',
-        },
-        {
-          title: '巡检时间',
-          key: 'createTime',
-          formType: 'dateRangePick',
-        },
-      ],
+      offset: [10, 1],
+      title: '巡检记录快照',
+      visible: false,
       queryParams: {},
+      rowId: "",
+      activeKey: "beforeSnapshot",
       columns: [
-        {
-          title: '巡检编号',
-          dataIndex: 'number',
-          align: 'center',
-        },
-        {
-          title: '巡检时间',
-          dataIndex: 'createTime',
-          align: 'center',
-          customRender: (time) => {
-            return +time && +time !== 0 ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : '--'
-          },
-        },
-        {
-          title: '计划开始任务数量',
-          dataIndex: 'taskBeginQuantity',
-          align: 'center',
-          scopedSlots: {
-            customRender: 'taskBeginQuantity',
-          },
-        },
-        {
-          title: '实际结束任务数量',
-          dataIndex: 'taskFinishQuantity',
-          align: 'center',
-          scopedSlots: {
-            customRender: 'taskFinishQuantity',
-          },
-        },
-      ],
-      subColumns: [
         {
           title: '试验编号',
           dataIndex: 'testCode',
@@ -239,26 +190,35 @@ export default {
       loadData: (params) => {
         let data = {
           ...params,
-          ...this.queryParams,
+          ...this.queryParams
         }
-
-        return postAction(this.url.list, data).then((res) => {
+        return postAction(this.url.list, data).then(res => {
           if (res.code === 200) {
-            return res.data
+            return res.data[this.activeKey]
           }
         })
-      },
-      url: {
-        list: '/HfEnvTestPatrolRecordBusiness/listPage',
       },
     }
   },
   methods: {
-    handleDetail(record, activeKey) {
-      this.$refs.inspectionRecordModal.show(record.id, activeKey)
+    show(rowId, activeKey) {
+      this.visible = true
+      this.activeKey = activeKey
+      this.rowId = rowId
+      this.handleTabsChange(activeKey)
     },
-    refresh(bool = true) {
-      this.$refs.pollingRecordTable.refresh(bool)
+    handleTabsChange(val) {
+      this.activeKey = val
+      this.$nextTick(() => {
+        if (val === 'beforeSnapshot') {
+          this.$refs.beforeSnapshotTable.refresh(true)
+        } else if (val === 'afterSnapshot') {
+          this.$refs.afterSnapshotTable.refresh(true)
+        }
+      })
+    },
+    handleCancel() {
+      this.visible = false
     },
   }
 }

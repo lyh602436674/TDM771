@@ -181,9 +181,18 @@ export default {
           this.filterProjectByType = filterProjectByType
           this.equipData = obj.testEquipInfo && isArray(obj.testEquipInfo) ? obj.testEquipInfo : []
           if (obj.abilityRequire && obj.abilityRequire.length) {
-            obj.abilityRequire.forEach((item, index) => {
-              item.closable = index !== 0
-              item.highLowTemperature = item.highLowTemperature || "1"
+            obj.abilityRequire = obj.abilityRequire.map((item, index) => {
+              return {
+                ...item,
+                closable: index !== 0,
+                highLowTemperature: item.highLowTemperature || "1",
+                abilityInfo: item.abilityInfo && item.abilityInfo.map(a => {
+                  return {
+                    paramTypeText: filterDictTextByCache('hf_dev_param_type', a.paramType) || '-',
+                    ...a,
+                  }
+                }) || [],
+              }
             })
           } else {
             if (filterProjectByType) {
@@ -208,7 +217,8 @@ export default {
                   abilityInfo: obj.abilityInfo && obj.abilityInfo.map(a => {
                     return {
                       paramId: a.abilityParamId,
-                      ...a
+                      ...a,
+                      paramTypeText: filterDictTextByCache('hf_dev_param_type', a.paramType) || '-',
                     }
                   }) || []
                 }
@@ -219,11 +229,13 @@ export default {
                   title: "试验条件", type: "default", abilityInfo: obj.abilityInfo && obj.abilityInfo.map(a => {
                     return {
                       paramId: a.abilityParamId,
-                      ...a
+                      ...a,
+                      paramTypeText: filterDictTextByCache('hf_dev_param_type', a.paramType) || '-',
                     }
                   }) || []
                 }
               ]
+
             }
           }
           this.disabledIsShowUserInReport = obj.lastUser

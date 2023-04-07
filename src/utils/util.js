@@ -550,16 +550,25 @@ export function recursive(arr, title, id) {
 * field 根据那个字段进行去重
 * @return 返回去重后的数组
 * */
-
 export function uniqueArray(array1, field1, array2, field2) {
+  let field1Split = field1.split('-')
+  let field2Split = field2.split('-')
   if (!field1 || !field2) return
   let arr1 = cloneDeep(array1), arr2 = cloneDeep(array2)
   for (let i = 0; i < arr1.length; i++) {
     for (let j = 0; j < arr2.length; j++) {
-      if (arr1[i][field1] === arr2[j][field2]) {
-        arr2.splice(j, 1)
-        j--
-        break
+      if (field1Split.length > 1 && field2Split.length > 1) {
+        if ((arr1[i][field1Split[0]] + arr1[i][field1Split[1]]) === (arr2[j][field2Split[0]] + arr2[j][field2Split[1]])) {
+          arr2.splice(j, 1)
+          j--
+          break
+        }
+      } else {
+        if (arr1[i][field1] === arr2[j][field2]) {
+          arr2.splice(j, 1)
+          j--
+          break
+        }
       }
     }
   }

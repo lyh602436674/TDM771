@@ -22,8 +22,10 @@
 
 <script>
 import {postAction} from '@/api/manage'
+import systemAstrictMixin from "@views/hifar/hifar-environmental-test/systemAstrictMixin";
 
 export default {
+  mixins: [systemAstrictMixin],
   inject: {
     getContainer: {
       default: () => {
@@ -31,125 +33,116 @@ export default {
       },
     },
   },
+  computed: {
+    formData() {
+      return [
+        {
+          key: 'id',
+          formType: 'input',
+          hidden: true,
+        },
+        {
+          title: '参数编号',
+          key: 'paramCode',
+          formType: 'input',
+          disabled: this.isDisabled(this.model.paramCode),
+          validate: {
+            rules: [{required: true, message: '请输入参数编号'}],
+          },
+        },
+        {
+          title: '参数名称',
+          key: 'paramName',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入参数名称'}],
+          },
+        },
+        {
+          title: '参数类型',
+          key: 'paramType',
+          formType: 'dict',
+          dictCode: 'hf_dev_param_type',
+          validate: {
+            rules: [{required: true, message: '请选择参数类型'}],
+          },
+        },
+        {
+          title: "曲线类型",
+          key: 'curveType',
+          formType: 'select',
+          options: [
+            {
+              title: '温度/℃',
+              key: '1',
+              value: '1',
+            },
+            {
+              title: '湿度/RH',
+              key: '2',
+              value: '2',
+            },
+          ]
+        },
+        {
+          title: '数据类型',
+          key: 'dataType',
+          formType: 'select',
+          validate: {
+            rules: [{required: true, message: '请选择数据类型'}],
+          },
+          options: [
+            {
+              title: '字符型',
+              key: 'string',
+              value: 'string',
+            },
+            {
+              title: '数值型',
+              key: 'number',
+              value: 'number',
+            },
+            {
+              title: '日期型',
+              key: 'dateTime',
+              value: 'dateTime',
+            },
+          ],
+          change: (v, options) => {
+            let values = this.$refs.capabilityParameterForm.form.getFieldsValue()
+            this.model = Object.assign({}, this.model, values, {
+              dataType: v,
+            })
+          },
+        },
+        {
+          title: '单位',
+          key: 'unitCode',
+          formType: 'dict',
+          hidden: this.model.dataType !== 'number',
+          dictCode: 'hf_public_unit',
+          validate: {
+            rules: [{required: true, message: '请选择单位'}],
+          },
+          change: (v, option) => {
+            this.$refs.capabilityParameterForm.form.setFieldsValue({
+              unitName: option.title,
+            })
+          },
+        },
+        {
+          key: 'unitName',
+          formType: 'input',
+          hidden: true,
+        },
+      ]
+    },
+  },
   data() {
     return {
       visible: false,
       title: '操作',
       model: {},
-      baseFormData: [
-        [
-          {
-            key: 'id',
-            formType: 'input',
-            hidden: true,
-          },
-          {
-            title: '参数编号',
-            key: 'paramCode',
-            formType: 'input',
-            validate: {
-              rules: [{required: true, message: '请输入参数编号'}],
-            },
-          },
-          {
-            title: '参数名称',
-            key: 'paramName',
-            formType: 'input',
-            validate: {
-              rules: [{required: true, message: '请输入参数名称'}],
-            },
-          },
-          {
-            title: '参数类型',
-            key: 'paramType',
-            formType: 'dict',
-            dictCode: 'hf_dev_param_type',
-            validate: {
-              rules: [{required: true, message: '请选择参数类型'}],
-            },
-          },
-          {
-            title: "曲线类型",
-            key: 'curveType',
-            formType: 'select',
-            options: [
-              {
-                title: '温度/℃',
-                key: '1',
-                value: '1',
-              },
-              {
-                title: '湿度/RH',
-                key: '2',
-                value: '2',
-              },
-            ]
-          },
-          {
-            title: '数据类型',
-            key: 'dataType',
-            formType: 'select',
-            validate: {
-              rules: [{required: true, message: '请选择数据类型'}],
-            },
-            options: [
-              {
-                title: '字符型',
-                key: 'string',
-                value: 'string',
-              },
-              {
-                title: '数值型',
-                key: 'number',
-                value: 'number',
-              },
-              {
-                title: '日期型',
-                key: 'dateTime',
-                value: 'dateTime',
-              },
-            ],
-            change: (v, options) => {
-              let values = this.$refs.capabilityParameterForm.form.getFieldsValue()
-              this.model = Object.assign({}, this.model, values, {
-                dataType: v,
-              })
-              if (v == 'number') {
-                this.formData = [].concat([], this.baseFormData[0], this.baseFormData[1])
-              } else {
-                this.formData = [].concat([], this.baseFormData[0])
-              }
-            },
-          },
-        ],
-        [
-          {
-            title: '单位',
-            key: 'unitCode',
-            formType: 'dict',
-            dictCode: 'hf_public_unit',
-            validate: {
-              rules: [{required: true, message: '请选择单位'}],
-            },
-            change: (v, option) => {
-              this.$refs.capabilityParameterForm.form.setFieldsValue({
-                unitName: option.title,
-              })
-              // let values = this.$refs.capabilityParameterForm.form.getFieldsValue()
-              // this.model = Object.assign({}, this.model, values, {
-              //   unitCode: v,
-              //   unitName: option.title,
-              // })
-            },
-          },
-          {
-            key: 'unitName',
-            formType: 'input',
-            hidden: true,
-          },
-        ],
-      ],
-      formData: [],
       url: {
         add: '/HfEnvAbilityParamBusiness/add',
         edit: '/HfEnvAbilityParamBusiness/modifyById',
@@ -161,25 +154,13 @@ export default {
       this.edit({})
     },
     edit(record) {
+      this.visible = true
       this.model = Object.assign({}, record)
       if (this.model.id) {
         this.title = '编辑能力参数'
       } else {
         this.title = '新建能力参数'
       }
-
-      if (!this.model.dataType) {
-        this.model.dataType = 'number'
-      }
-      if (this.model.dataType == 'number') {
-        this.formData = [].concat([], this.baseFormData[0], this.baseFormData[1])
-      } else {
-        this.formData = [].concat([], this.baseFormData[0])
-      }
-
-      this.$nextTick(() => {
-        this.visible = true
-      })
     },
     submit(values) {
       let params = {
@@ -203,7 +184,6 @@ export default {
       this.$refs.capabilityParameterForm.validateForm()
     },
     handleCancel() {
-      this.formData = []
       this.visible = false
     },
   },

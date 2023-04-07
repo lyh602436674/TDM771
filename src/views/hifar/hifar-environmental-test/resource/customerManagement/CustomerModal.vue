@@ -38,6 +38,8 @@ const validatorDiscount = (rule, value, callback) => {
   const regMinMax = /^((\d|10)(\.\d{1,2})?)$/
   if (value && (!regMinMax.test(value) || !isNumber(+value) || value < 0 || value > 10)) {
     callback('折扣值只能在0到10范围内,并且保留两位小数')
+  }else{
+    callback()
   }
 }
 

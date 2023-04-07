@@ -171,7 +171,7 @@ export default {
           props: {
             placement: "topRight",
             title: "请输入水印内容",
-            trigger: "focus",
+            trigger: "click",
           }
         }, [
           slot,
@@ -180,7 +180,7 @@ export default {
                 this.watermarkInput = e.target.value;
               }}/>,
               <div style={{width: "100%", marginTop: "10px", display: "flex", justifyContent: "right"}}>
-                <a-button onClick={this.popoverCancel}>{'取消'}</a-button>
+                {/*<a-button onClick={this.popoverCancel}>{'取消'}</a-button>*/}
                 <a-button style={{marginLeft: "5px"}} type="primary"
                           onClick={this.popoverSubmit}>{'确定'}</a-button>
               </div>

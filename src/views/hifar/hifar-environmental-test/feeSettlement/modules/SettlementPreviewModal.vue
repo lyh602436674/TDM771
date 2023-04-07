@@ -24,6 +24,8 @@
         <h-desc-item label="结算单号">{{ model.billNumber }}</h-desc-item>
         <h-desc-item label="结算人">{{ model.createUserName }}</h-desc-item>
         <h-desc-item label="结算时间">{{ moment(+model.createTime).format('YYYY-MM-DD HH:mm:ss') }}</h-desc-item>
+        <h-desc-item label="标准总价">{{ model.standardTotalPrice }}</h-desc-item>
+        <h-desc-item label="折后总价">{{ model.discountTotalPrice }}</h-desc-item>
       </h-desc>
       <h-card fixed style="margin-top: 10px" title="结算项目">
         <h-vex-table

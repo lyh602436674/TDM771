@@ -78,6 +78,29 @@ export default {
           align: 'center'
         },
         {
+          title: '委托方',
+          dataIndex: 'custName',
+          align: 'center'
+        },
+        {
+          title: '标准总价',
+          dataIndex: 'standardTotalPrice',
+          align: 'center',
+          width: 100,
+          customRender: (text) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '折后总价',
+          dataIndex: 'discountTotalPrice',
+          align: 'center',
+          width: 100,
+          customRender: (text) => {
+            return text || '--'
+          },
+        },
+        {
           title: '结算时间',
           dataIndex: 'createTime',
           align: 'center',

@@ -133,8 +133,16 @@ export default {
           }
         },
         {
-          title: '单价（元）',
+          title: '标准单价（元）',
           dataIndex: 'unitPrice',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '折后单价（元）',
+          dataIndex: 'discountPrice',
           align: 'center',
           customRender: (t, row) => {
             return t || '--'

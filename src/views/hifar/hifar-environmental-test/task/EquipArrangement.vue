@@ -203,49 +203,52 @@
                       </a-space>
                     </template>
                     <a-space slot="actions" slot-scope="text, record">
-                      <!-- 开始 -->
-                      <a-tooltip v-if="[1, 30, 40, 50, 25].includes(+record.status)" title="开始">
-                        <h-icon v-has="'ArrangeMent:start'" class="h-icon-item" type="icon-jiediankaishi"
-                                @click="handleStart('start', record)"/>
-                      </a-tooltip>
-                      <!-- 暂停 -->
-                      <a-tooltip v-if="record.status == 20" title="暂停">
-                        <h-icon
-                          v-has="'ArrangeMent:suspend'"
-                          class="h-icon-item"
-                          type="icon-stop"
-                          @click="$refs.taskSuspendModal.show('suspend', record)"
-                        />
-                      </a-tooltip>
-                      <!-- 完成 -->
-                      <a-tooltip title="完成">
-                        <h-icon
-                          v-has="'ArrangeMent:finish'"
-                          class="h-icon-item"
-                          type="icon-wancheng1"
-                          @click="handleFinish(record)"
-                        />
-                      </a-tooltip>
-                      <!-- 更多 -->
-                      <a-dropdown>
-                        <a-tooltip title="更多">
-                          <h-icon class="h-icon-item" type="icon-gengduo1"/>
+                      <template v-if="![40,50].includes(record.status)">
+                        <!-- 开始 -->
+                        <a-tooltip v-if="[1, 30, 40, 50, 25].includes(+record.status)" title="开始">
+                          <h-icon v-has="'ArrangeMent:start'" class="h-icon-item" type="icon-jiediankaishi"
+                                  @click="handleStart('start', record)"/>
                         </a-tooltip>
-                        <a-menu slot="overlay">
-                          <!-- 异常 -->
-                          <a-menu-item v-has="'ArrangeMent:error'">
-                            <div @click="$refs.taskAbnormalModal.show('error', record)">异常</div>
-                          </a-menu-item>
-                          <!-- 终止 -->
-                          <a-menu-item v-has="'ArrangeMent:forceEnd'">
-                            <div @click="$refs.taskForceEnd.show('forceEnd', record)">终止</div>
-                          </a-menu-item>
-                          <!-- 撤销 -->
-                          <a-menu-item v-has="'ArrangeMent:recover'">
-                            <div @click="() => handleActions('recover', record)">撤销</div>
-                          </a-menu-item>
-                        </a-menu>
-                      </a-dropdown>
+                        <!-- 暂停 -->
+                        <a-tooltip v-if="record.status == 20" title="暂停">
+                          <h-icon
+                            v-has="'ArrangeMent:suspend'"
+                            class="h-icon-item"
+                            type="icon-stop"
+                            @click="$refs.taskSuspendModal.show('suspend', record)"
+                          />
+                        </a-tooltip>
+                        <!-- 完成 -->
+                        <a-tooltip title="完成">
+                          <h-icon
+                            v-has="'ArrangeMent:finish'"
+                            class="h-icon-item"
+                            type="icon-wancheng1"
+                            @click="handleFinish(record)"
+                          />
+                        </a-tooltip>
+                        <!-- 更多 -->
+                        <a-dropdown>
+                          <a-tooltip title="更多">
+                            <h-icon class="h-icon-item" type="icon-gengduo1"/>
+                          </a-tooltip>
+                          <a-menu slot="overlay">
+                            <!-- 异常 -->
+                            <a-menu-item v-has="'ArrangeMent:error'">
+                              <div @click="$refs.taskAbnormalModal.show('error', record)">异常</div>
+                            </a-menu-item>
+                            <!-- 终止 -->
+                            <a-menu-item v-if="record.status !== 40 && record.status === 20"
+                                         v-has="'ArrangeMent:forceEnd'">
+                              <div @click="$refs.taskForceEnd.show('forceEnd', record)">终止</div>
+                            </a-menu-item>
+                            <!-- 撤销 -->
+                            <a-menu-item v-if="record.status === 1" v-has="'ArrangeMent:recover'">
+                              <div @click="() => handleActions('recover', record)">撤销</div>
+                            </a-menu-item>
+                          </a-menu>
+                        </a-dropdown>
+                      </template>
                     </a-space>
                   </h-vex-table>
                 </h-card>
@@ -443,6 +446,9 @@ export default {
             if (!this.selectedRow.length) {
               this.$message.error('请至少选择一项')
             } else {
+              let row = this.selectedRow[0]
+              if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
+              if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
               this.$refs.testCheckModal.show(this.selectedRow[0], '试前', 'before')
             }
           },
@@ -458,6 +464,10 @@ export default {
             if (!this.selectedRow.length) {
               this.$message.error('请至少选择一项')
             } else {
+              let row = this.selectedRow[0]
+              if (row.status === 1) return this.$message.warning('试验未开始')
+              if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
+              if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
               this.$refs.testCheckModal.show(this.selectedRow[0], '试中', 'testMiddle')
             }
           },
@@ -473,6 +483,10 @@ export default {
             if (!this.selectedRow.length) {
               this.$message.error('请至少选择一项')
             } else {
+              let row = this.selectedRow[0]
+              if (row.status === 1) return this.$message.warning('试验未开始')
+              if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
+              if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
               this.$refs.testCheckModal.show(this.selectedRow[0], '试后', 'after')
             }
           },
@@ -488,7 +502,10 @@ export default {
             if (this.selectedRow.length === 0) {
               this.$message.error('请至少选择一项')
             } else {
-              this.records = this.selectedRow[0]
+              let row = this.selectedRow[0]
+              if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
+              if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
+              this.records = row
               this.$refs.TestBaseEdit.show(this.selectedRow[0])
             }
           },
@@ -504,6 +521,9 @@ export default {
             if (!this.selectedRow.length) {
               this.$message.error('请至少选择一项')
             } else {
+              let row = this.selectedRow[0]
+              if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
+              if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
               this.$refs.testDataAddModal.show(this.selectedRow[0])
             }
           },
@@ -519,6 +539,9 @@ export default {
             if (!this.selectedRow.length) {
               this.$message.error('请至少选择一项')
             } else {
+              let row = this.selectedRow[0]
+              if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
+              if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
               this.$refs.taskAbnormalModal.show('error', this.selectedRow[0])
             }
           },

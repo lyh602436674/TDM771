@@ -23,7 +23,7 @@
         :data="model"
         lableWidth="110px"
         style="margin: 0 0 20px 0"
-        title="适用计费准备详情">
+        title="适用计费标准详情">
         <h-desc-item label="试验项目">{{ model.unitName || '--' }}</h-desc-item>
         <h-desc-item label="试验设备(设备编号)">{{ `${model.equipName}(${model.equipCode})` || '--' }}</h-desc-item>
         <h-desc-item label="温度范围">{{ model.temperatureRange || '--' }}</h-desc-item>
@@ -54,7 +54,7 @@
           </a-radio>
         </a-radio-group>
       </h-card>
-      <h-form ref="taskForm3" v-model="model" :column="1" :formData="formData3"/>
+      <h-form ref="taskForm3" v-model="model" :column="2" :formData="formData3"/>
     </a-spin>
   </h-modal>
 </template>
@@ -261,6 +261,7 @@ export default {
           title: '备注',
           key: 'remarks',
           formType: 'textarea',
+          span: 2
         },
       ],
       url: {

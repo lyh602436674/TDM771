@@ -12,14 +12,27 @@
 </template>
 
 <script>
+import {filterDictTextByCache} from "@comp/_util/JDictSelectUtil";
+
 export default {
   name: "TestConditionTemplate",
   data() {
     return {
       columns: [
         {
+          title: '参数编号',
+          dataIndex: 'paramCode',
+        },
+        {
           title: '试验条件',
           dataIndex: 'paramName',
+        },
+        {
+          title: '参数类型',
+          dataIndex: 'paramType',
+          customRender: (text, record) => {
+            return filterDictTextByCache('hf_dev_param_type', text) || '-'
+          }
         },
         {
           title: '单位',

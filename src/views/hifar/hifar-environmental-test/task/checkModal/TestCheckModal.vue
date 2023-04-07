@@ -514,7 +514,7 @@ export default {
       if (this[type].length === 0) {
         return this.$message.warning('请先新增检查项')
       }
-      if (this[type].map(item => +item.checkFlag === 2).length === this[type].length) return this.$message.warning('无需审核')
+      if (this[type].map(item => +item.checkFlag === 2).filter(v => v === true).length === this[type].length) return this.$message.warning('无需审核')
       let checkedList = this.filterCheckedList(type)
       if (checkedList.length) {
         let items = this.checkItem(checkedList, ['id'])
@@ -528,7 +528,7 @@ export default {
           title: '提示',
           content: '确认全部一键复核吗？',
           onOk: () => {
-            let items = this.checkItem(this[type], ['id'])
+            let items = this.checkItem(this[type].filter(v => v.checkFlag === 1), ['id'])
             if (items.length) {
               this.handleFlagCheck(items)
             } else {

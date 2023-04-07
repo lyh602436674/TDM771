@@ -207,7 +207,8 @@ export default {
                   percent: 100,
                   url: finishedResult.data.filePath,
                   uploadTime: finishedResult.data.createTime, fileId: finishedResult.data.fileId,
-                  secretLevel: this.secretLevel
+                  secretLevel: this.secretLevel,
+                  isInReport: finishedResult.data.isInReport,
                 }))
                 resolve(true)
               } else {
@@ -223,7 +224,8 @@ export default {
                 url: authResult.data.filePath,
                 uploadTime: authResult.data.createTime,
                 fileId: authResult.data.fileId,
-                secretLevel: this.secretLevel
+                secretLevel: this.secretLevel,
+                isInReport: authResult.data.isInReport,
               }))
               this.$nextTick(() => {
                 resolve(true)
@@ -247,6 +249,7 @@ export default {
                   uploadTime: finishedResult.data.createTime,
                   fileId: finishedResult.data.fileId,
                   secretLevel: this.secretLevel,
+                  isInReport: finishedResult.data.isInReport,
                 }
                 this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], fileListRow))
                 resolve(cb)

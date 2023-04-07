@@ -92,7 +92,7 @@
               title="加速度范围"
             ></vxe-table-column>
             <vxe-table-column
-              :edit-render="{ name: 'input', placeholder: '请输入折扣',events:{change:calcDiscountUnitPrice} }"
+              :edit-render="{ name: '$input', placeholder: '请输入折扣',events:{change:calcDiscountUnitPrice} }"
               field="discount"
               title="折扣"
             ></vxe-table-column>
@@ -266,7 +266,7 @@ export default {
       this.editor(record)
     },
     calcDiscountUnitPrice({row}) {
-      let res =  row.discount && row.unitPrice && !isNaN(Number(row.unitPrice)) && !isNaN(Number(row.discount)) ? row.discount * 0.1 * row.unitPrice : null
+      let res =  row.discount && row.unitPrice && !isNaN(Number(row.unitPrice)) && !isNaN(Number(row.discount)) ? (row.discount * 0.1 * row.unitPrice).toFixed(2) : null
       this.$set(row, 'discountPrice', res)
     },
     loadUnitById(costId) {

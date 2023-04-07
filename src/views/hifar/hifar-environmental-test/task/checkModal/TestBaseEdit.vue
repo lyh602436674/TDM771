@@ -1289,16 +1289,16 @@ export default {
           dataIndex: 'productAlias',
           align: 'center'
         },
-        {
-          title: '规格大小',
-          dataIndex: 'productSpec',
-          align: 'center'
-        },
-        {
-          title: '送试单位',
-          dataIndex: 'custName',
-          align: 'center'
-        },
+        // {
+        //   title: '规格大小',
+        //   dataIndex: 'productSpec',
+        //   align: 'center'
+        // },
+        // {
+        //   title: '送试单位',
+        //   dataIndex: 'custName',
+        //   align: 'center'
+        // },
         {
           title: '操作',
           dataIndex: 'action',
@@ -1874,7 +1874,7 @@ export default {
           testPostCode: postInfo.postCode
         }
       }) || []
-      this.personArr = this.personArr.concat(uniqueArray(this.personArr, 'testUserId', newPerson, 'testUserId'))
+      this.personArr = this.personArr.concat(uniqueArray(this.personArr, 'testUserId-testPostId', newPerson, 'testUserId-testPostId'))
     },
     equipAdd() {
       this.$refs.equipHandleSelectModal.show(this.equipData)

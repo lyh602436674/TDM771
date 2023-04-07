@@ -89,16 +89,16 @@ export default {
           dataIndex: 'productAlias',
           align: 'center',
         },
-        {
-          title: '规格大小',
-          dataIndex: 'productSpec',
-          align: 'center',
-        },
-        {
-          title: '送试单位',
-          dataIndex: 'custName',
-          align: 'center',
-        },
+        // {
+        //   title: '规格大小',
+        //   dataIndex: 'productSpec',
+        //   align: 'center',
+        // },
+        // {
+        //   title: '送试单位',
+        //   dataIndex: 'custName',
+        //   align: 'center',
+        // },
       ],
     }
   },

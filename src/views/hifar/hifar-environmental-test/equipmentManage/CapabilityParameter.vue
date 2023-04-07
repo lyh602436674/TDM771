@@ -32,9 +32,11 @@
       >
         <template slot="actions" slot-scope="text, record">
           <a-icon class="primary-text" type="edit" @click="() => handleEdit(record)"/>
-          <a-divider type="vertical" v-has="'parameter:delete'"/>
+          <a-divider v-has="'parameter:delete'" type="vertical"/>
           <a-popconfirm title="确认删除" @confirm="() => handleDelete(record.id)">
-            <h-icon v-has="'parameter:delete'" class="danger-text" style="cursor:pointer" type="icon-shanchu"/>
+            <h-icon v-has="'parameter:delete'"
+                    :class="[isDisabled(record.paramCode) ? 'disabled-text nonePointerEvents' : 'danger-text']"
+                    style="cursor:pointer" type="icon-shanchu"/>
           </a-popconfirm>
         </template>
       </h-vex-table>
@@ -48,6 +50,7 @@ import moment from 'moment'
 import {postAction} from '@/api/manage'
 import CapabilityParameterModal from './modules/CapabilityParameterModal.vue'
 import mixin from '@/views/hifar/mixin.js'
+import systemAstrictMixin from "@views/hifar/hifar-environmental-test/systemAstrictMixin";
 
 export default {
   provide() {
@@ -56,7 +59,7 @@ export default {
     }
   },
   components: {CapabilityParameterModal},
-  mixins: [mixin],
+  mixins: [mixin, systemAstrictMixin],
   data() {
     return {
       queryParams: {},
@@ -185,8 +188,8 @@ export default {
         this.openNotificationWithIcon('error', '删除提示', '请至少选择一项')
       }
     },
-    handleDelete(ids) {
-      postAction(this.url.delete, {id: ids}).then((res) => {
+    handleDelete(id) {
+      postAction(this.url.delete, {id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh()

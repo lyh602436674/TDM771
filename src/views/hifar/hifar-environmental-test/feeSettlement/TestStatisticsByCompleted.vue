@@ -73,40 +73,36 @@ export default {
       queryParams: {},
       searchData: [
         {
+          title: '送试单位',
+          key: 'custName',
+          formType: 'input',
+        },
+        {
           title: '委托单号',
-          key: 'c_entrustNo_7',
-          formType: 'input'
+          key: 'entrustNo',
+          formType: 'input',
         },
         {
           title: '运行单号',
-          key: 'c_entrustCode_7',
-          formType: 'input'
+          key: 'entrustCode',
+          formType: 'input',
         },
         {
-          title: '送试单位',
-          key: 'c_custName_7',
-          formType: 'input'
+          title: '试验编号',
+          key: 'c_testCode_7',
+          formType: 'input',
         },
         {
-          title: '任务编号',
-          key: 'c_taskCode_7',
-          formType: 'input'
+          title: '试验编号',
+          key: 'taskCode',
+          formType: 'input',
         },
-        {
-          title: '产品名称',
-          key: 'productName',
-          formType: 'input'
-        },
-        {
-          title: '产品代号',
-          key: 'productAlias',
-          formType: 'input'
-        },
+
         {
           title: '试验项目',
-          key: 'c_unitName_7',
-          formType: 'input'
-        }
+          key: 'unitName',
+          formType: 'input',
+        },
       ],
       selectedRowKeys: [],
       selectedRows: [],
@@ -283,8 +279,6 @@ export default {
       this.selectedRows = selectedRows
     },
     refresh(bool = true) {
-      this.selectedRowKeys = []
-      this.selectedRows = []
       this.$refs.testSettlementTable.refresh(bool)
     },
   }
