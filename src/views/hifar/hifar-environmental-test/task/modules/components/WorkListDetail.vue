@@ -24,6 +24,7 @@
         :autoLoad="false"
         :columns="columns"
         :data="loadData"
+        historySelect
         :rowSelection="{
           columnWidth: 60,
           columnTitle: '#',
@@ -41,7 +42,7 @@
 </template>
 
 <script>
-import { getAction } from '@/api/manage'
+import {getAction} from '@/api/manage'
 
 export default {
   props: {

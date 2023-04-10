@@ -415,9 +415,9 @@ export default {
         canvas.height = fileItem.height; //设置canvas容器高度
         let ctx = canvas.getContext("2d"); //获取2d画笔
         //在canvas画布上绘制图片 ctx.drawImage(图片, x位置, y位置,  图像宽度, 图像高度);
-        let height = fileItem.width * 0.08; //两个水印之间的垂直高度
-        let width = fileItem.width * 0.08; //两个水印之间的水平高度
-        let fontSize = fileItem.width * 0.02; //水印字体大小
+        // let height = fileItem.width * 0.08; //两个水印之间的垂直高度
+        // let width = fileItem.width * 0.08; //两个水印之间的水平高度
+        let fontSize = fileItem.width * 0.03; //水印字体大小
         ctx.drawImage(
           fileItem,
           0,
@@ -430,36 +430,49 @@ export default {
         ctx.textAlign = "left"; //设置文本对齐方式
         ctx.textBaseline = "top"; //设置文本基线
         ctx.font = `${fontSize}px Microsoft Yahei`; //设置文本字体属性
-        ctx.fillStyle = "rgba(255, 255, 255,0.4)"; //设置文本字体颜色
+        ctx.fillStyle = "rgba(255, 0, 0, 1)"; //设置文本字体颜色
 
         //在canvas画布上绘制文字 ctx.fillText(文字内容, x位置, y位置, 文本最大宽度)
-        ctx.rotate((17 * Math.PI) / 180); //文本旋转角度设置
-        ctx.translate(-fileItem.width * 0.5, -fileItem.height * 0.2);
-        let i = 0,
-          j = 0,
-          waterMarkerWidth = content.split("").length * fontSize;
-        for (i = 0; i < fileItem.width / waterMarkerWidth; i++) {
-          for (j = 0; j < fileItem.height / (height - 20); j++) {
-            if (j === 0) {
-              ctx.fillText(
-                content,
-                i * (waterMarkerWidth + width),
-                -height,
-                fileItem.width
-              );
-            }
-            ctx.fillText(
-              content,
-              i * (waterMarkerWidth + width),
-              j * height,
-              fileItem.width
-            );
-          }
-        }
+        // 在图片左上角绘制一个水印
+        this.wrapText(ctx, content, 10, 10, fontSize + 10)
+        // 下面的示例是斜着绘制多个水印
+        // ctx.rotate((17 * Math.PI) / 180); //文本旋转角度设置
+        // ctx.translate(-fileItem.width * 0.5, -fileItem.height * 0.2);
+        // let i = 0,
+        //   j = 0,
+        //   waterMarkerWidth = content.split("").length * fontSize;
+        // for (i = 0; i < fileItem.width / waterMarkerWidth; i++) {
+        //   for (j = 0; j < fileItem.height / (height - 20); j++) {
+        //     if (j === 0) {
+        //       ctx.fillText(
+        //         content,
+        //         i * (waterMarkerWidth + width),
+        //         -height,
+        //         fileItem.width
+        //       );
+        //     }
+        //     ctx.fillText(
+        //       content,
+        //       i * (waterMarkerWidth + width),
+        //       j * height,
+        //       fileItem.width
+        //     );
+        //   }
+        // }
         imgResult.push(this.dataURLtoFile(canvas.toDataURL("image/png", 0.5), this.originTargetFiles[k].name))
       }
       return imgResult
     },
+    wrapText(ctx, text, x, y, lineHeight) {
+      let lines = text.split(' ');
+
+      for (let i = 0; i < lines.length; i++) {
+        ctx.fillText(lines[i], x, y);
+        y += lineHeight;
+      }
+    },
+
+
     dataURLtoFile(dataurl, filename) {
       let arr = dataurl.split(","),
         mime = arr[0].match(/:(.*?);/)[1],

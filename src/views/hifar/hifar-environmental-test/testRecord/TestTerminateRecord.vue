@@ -160,7 +160,7 @@ export default {
           minWidth: 100,
         },
         {
-          title: '记录时间',
+          title: '终止时间',
           dataIndex: 'recordTime',
           minWidth: 180,
           customRender: (time) => {

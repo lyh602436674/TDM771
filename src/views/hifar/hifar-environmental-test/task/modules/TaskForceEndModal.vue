@@ -71,10 +71,10 @@ export default {
           },
         },
         {
-          title: '记录时间',
+          title: '终止时间',
           key: 'recordTime',
           span: 1,
-          validate: {rules: [{required: false, message: '请选择记录时间'}]},
+          validate: {rules: [{required: false, message: '请选择终止时间'}]},
           component: (
             <h-time-select v-decorator={['recordTime', {rules: [{required: false, message: '请选择记录时间'}]}]}/>
           ),

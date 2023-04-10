@@ -9,29 +9,31 @@
     @cancel='handleCancel'
   >
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭</a-button>
-    <div style="height: 100%; overflow: auto; padding: 10px 20px">
-      <h-collapse v-for="(item,index) in imageComponentList" :key="index" :title="item.title"
-                  class="collapseStyle">
-        <h-desc slot='content' :bordered="false">
-          <h-upload-img-collect
-            v-model="modelImage[item.direction]"
-            :customParams="{refType: 'hf_env_test_piece_img', refId, isInReport: item.isInReport, testDirection:item.title}"
-            :isEdit="isEdit"
-            :max="100"
-            :propsData="Object.assign({},propsData,{testDirection: item.direction})"
-            accept="image/png,image/gif,image/jpg,image/jpeg"
-            isCollect
-            isInReport
-            multiple
-            style="width: 100%;"
-            watermark
-            @collect="handleCollect"
-            @delete="handleDelete"
-            @finishUpload="file => handleUploadSuccess(file,item.direction)"
-            @success="loadImgData"
-          />
-        </h-desc>
-      </h-collapse>
+    <div class="collapse-wrapper">
+      <a-collapse v-model="activeKey">
+        <a-collapse-panel v-for="(item,index) in imageComponentList" :key="item.direction"
+                          :header="item.title" class="collapseStyle">
+          <h-desc :bordered="false">
+            <h-upload-img-collect
+              v-model="modelImage[item.direction]"
+              :customParams="{refType: 'hf_env_test_piece_img', refId, isInReport: item.isInReport, testDirection:item.title}"
+              :isEdit="isEdit"
+              :max="100"
+              :propsData="Object.assign({},propsData,{testDirection: item.direction})"
+              accept="image/png,image/gif,image/jpg,image/jpeg"
+              isCollect
+              isInReport
+              multiple
+              style="width: 100%;"
+              watermark
+              @collect="handleCollect"
+              @delete="handleDelete"
+              @finishUpload="file => handleUploadSuccess(file,item.direction,item.isInReport)"
+              @success="loadImgData"
+            />
+          </h-desc>
+        </a-collapse-panel>
+      </a-collapse>
       <h-desc :bordered="false" title="视频">
         <h-upload-file-collect
           v-model="modelVideo"
@@ -99,6 +101,7 @@ export default {
       equipId: "",
       modelVideo: [],
       modelImage: [],
+      activeKey: [],
       record: {},
       popoverVisible: false,
       url: {
@@ -125,7 +128,7 @@ export default {
       this.modelImage = []
       this.$emit('close')
     },
-    handleUploadSuccess(file, direction) {
+    handleUploadSuccess(file, refDirection, isInReport) {
       /*
       * 试验前：
         x_before、y_before、z_before
@@ -134,7 +137,10 @@ export default {
         试验后：
         x_after、y_after、z_after
       * */
-      postAction(this.url.updateFileRefDirection, {fileId: file.fileId, refDirection: direction})
+      // 上传完成后，更新图片的试验方向和是否进报告
+      // 因为后台公共上传文件类没有接收这两个字段，只能上传完后再更新一下
+      postAction(this.url.updateFileRefDirection, {fileId: file.fileId, refDirection})
+      postAction(this.url.updateIsInReport, {refId: this.refId, fileId: file.fileId, isInReport,})
     },
     handleCollect(file) {
       let params = {
@@ -164,6 +170,7 @@ export default {
               }
               return acc;
             }, {});
+            this.activeKey = Object.keys(this.modelImage)
           }
         }
       })
@@ -220,7 +227,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.collapseStyle {
-  margin-bottom: 10px;
+/deep/ .collapse-wrapper {
+  height: 100%;
+  overflow: auto;
+  padding: 10px 20px;
+
+  .ant-collapse-item > .ant-collapse-header {
+    padding: 5px 5px 5px 40px;
+  }
+
+  .ant-collapse-content > .ant-collapse-content-box {
+    padding: 10px;
+  }
 }
+
 </style>

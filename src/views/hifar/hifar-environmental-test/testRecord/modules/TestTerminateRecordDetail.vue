@@ -47,7 +47,7 @@
     <h-card title="终止信息" fixed :showCollapse="true">
       <h-desc slot="content" size="small" labelWidth="120px">
         <h-desc-item label="记录人"> {{ detailData.recordUserName || '--' }}</h-desc-item>
-        <h-desc-item label="记录时间" :span="4">
+        <h-desc-item label="终止时间" :span="4">
           {{
             detailData.recordTime && detailData.recordTime != 0
               ? moment(parseInt(detailData.recordTime)).format('YYYY-MM-DD HH:mm')

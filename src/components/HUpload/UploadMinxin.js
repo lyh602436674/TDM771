@@ -203,13 +203,14 @@ export default {
               finishedResult = await this.finishUpload(uploadParams, authResult.data.fileId)
               if (finishedResult.code === 200) {
                 this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], {
-                  status: "success",
-                  percent: 100,
-                  url: finishedResult.data.filePath,
-                  uploadTime: finishedResult.data.createTime, fileId: finishedResult.data.fileId,
-                  secretLevel: this.secretLevel,
-                  isInReport: finishedResult.data.isInReport,
-                }))
+                    status: "success",
+                    percent: 100,
+                    url: finishedResult.data.filePath,
+                    uploadTime: finishedResult.data.createTime, fileId: finishedResult.data.fileId,
+                    secretLevel: this.secretLevel,
+                  },
+                  this.getIsInReport()
+                ))
                 resolve(true)
               } else {
                 resolve(false)
@@ -219,14 +220,15 @@ export default {
             case 9:
               console.log('服务器上已经存在相同的文件', authResult)
               this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], {
-                status: "success",
-                percent: 100,
-                url: authResult.data.filePath,
-                uploadTime: authResult.data.createTime,
-                fileId: authResult.data.fileId,
-                secretLevel: this.secretLevel,
-                isInReport: authResult.data.isInReport,
-              }))
+                  status: "success",
+                  percent: 100,
+                  url: authResult.data.filePath,
+                  uploadTime: authResult.data.createTime,
+                  fileId: authResult.data.fileId,
+                  secretLevel: this.secretLevel,
+                },
+                this.getIsInReport()
+              ))
               this.$nextTick(() => {
                 resolve(true)
               })
@@ -249,9 +251,8 @@ export default {
                   uploadTime: finishedResult.data.createTime,
                   fileId: finishedResult.data.fileId,
                   secretLevel: this.secretLevel,
-                  isInReport: finishedResult.data.isInReport,
                 }
-                this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], fileListRow))
+                this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], fileListRow, this.getIsInReport()))
                 resolve(cb)
               } else {
                 resolve(false)
@@ -264,6 +265,11 @@ export default {
         }
       })
 
+    },
+    getIsInReport() {
+      return {
+        isInReport: this.customParams.isInReport
+      }
     },
     /**
      * @Date: 2021-08-19 16:58:44
