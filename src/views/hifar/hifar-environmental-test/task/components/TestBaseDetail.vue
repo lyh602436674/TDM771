@@ -45,12 +45,14 @@
         title="试件信息"
         :dataSource="testPieceInfo"/>
       <!-- 项目信息 -->
-      <div v-for="(item,index) in projectInfo" id="project">
-        <project-detail-template
-          class="mg-t-20"
-          :key="index"
-          :model="item"
-          :title="'项目信息' + '(' + item.entrustCode + ')'"></project-detail-template>
+      <div id="project">
+        <div v-for="(item,index) in projectInfo">
+          <project-detail-template
+            :key="index"
+            :model="item"
+            :title="'项目信息' + '(' + item.entrustCode + ')'"
+            class="mg-t-20"></project-detail-template>
+        </div>
       </div>
       <!-- 实施过程 -->
       <h-desc
@@ -832,19 +834,19 @@ export default {
       postAction(this.url.detail, { id: id, type: this.viewDetailType }).then((res) => {
         if (res.code === 200) {
           const { data } = res
-          let testEquipInfoArr = data.testEquipInfo
+          // let testEquipInfoArr = data.testEquipInfo
           let testPersonInfoArr = data.testPersonInfo
           let entrustInfoArr = data.entrustInfo
-          let testEquipInfo = []
+          // let testEquipInfo = []
           let testPersonInfo = []
           this.detailData = data
           // this.projectInfo = data.testTaskInfo
           this.projectInfo = data.projectInfo
-          if (testEquipInfoArr.length) {
-            testEquipInfoArr.forEach((item) => {
-              testEquipInfo.push(item.equipName + (item.innerName ? '(' + item.innerName + ')' : ''))
-            })
-          }
+          // if (testEquipInfoArr.length) {
+          //   testEquipInfoArr.forEach((item) => {
+          //     testEquipInfo.push(item.equipName + (item.innerName ? '(' + item.innerName + ')' : ''))
+          //   })
+          // }
           if (testPersonInfoArr.length) {
             testPersonInfoArr.forEach((item) => {
               let res = item.testUserName ? (item.testUserName + (item.testPostName ? '(' + item.testPostName + ')' : '')) : '--'
@@ -853,7 +855,7 @@ export default {
           }
           // 试件信息
           this.testPieceInfo = data.testPieceInfo
-          this.testEquipInfo = testEquipInfo
+          // this.testEquipInfo = testEquipInfo
           this.testPersonInfo = testPersonInfo
           this.entrustInfoItem = entrustInfoArr[0]
           // 巡检记录

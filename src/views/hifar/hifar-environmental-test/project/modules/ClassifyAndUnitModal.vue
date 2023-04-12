@@ -28,6 +28,7 @@ import workCenterSelect from '../components/WorkCenterSelect'
 import pcClassifySelect from '../components/PcClassifySelect'
 import {postAction} from '@/api/manage'
 import {findIndex} from 'lodash'
+import {SYSTEM_CONSTANTS_PROJECT_CLASSIFY} from '@/views/hifar/constants.js'
 
 export default {
   components: {workCenterSelect, pcClassifySelect},
@@ -77,23 +78,7 @@ export default {
             title: '名称',
             key: 'classifyType',
             formType: 'select',
-            options: [
-              {
-                title: '气候试验',
-                key: 1,
-                value: 1,
-              },
-              {
-                title: '力学试验',
-                key: 2,
-                value: 2,
-              },
-              {
-                title: '环境试验',
-                key: 3,
-                value: 3,
-              },
-            ],
+            options: SYSTEM_CONSTANTS_PROJECT_CLASSIFY,
             change: (v, opt) => {
               this.$refs.projectForm.form.setFieldsValue({classifyName: opt.data.props.title})
             },
@@ -178,12 +163,12 @@ export default {
           },
           {
             title: '项目类别',
-            key: 'classifyId',
+            key: 'classifyType',
             component: (
               <pc-classify-select
                 placeholder="请选择项目类别"
                 showSearch
-                v-decorator={['classifyId', { rules: [{ required: true, message: '请选择项目类别' }] }]}
+                v-decorator={['classifyType', {rules: [{required: true, message: '请选择项目类别'}]}]}
               />
             ),
           },

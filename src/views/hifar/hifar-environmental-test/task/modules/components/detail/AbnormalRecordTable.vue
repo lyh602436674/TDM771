@@ -123,7 +123,7 @@ export default {
           dataIndex: 'action',
           align: 'center',
           fixed: 'right',
-          hidden: !this.isReadOnly,
+          hidden: this.isReadOnly,
           width: 80,
           scopedSlots: {
             customRender: 'actions',

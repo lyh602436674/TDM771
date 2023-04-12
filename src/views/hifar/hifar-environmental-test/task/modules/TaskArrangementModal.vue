@@ -83,6 +83,7 @@ export default {
       queryTime: [moment().startOf('day'), moment().endOf('day')],
       url: {
         equipList: '/HfEnvTaskBusiness/taskMatchEquipList',
+        getTestCondition: "HfEnvTaskBusiness/getEntrustTestCondition"
       },
       model: {},
       equipList: [],
@@ -103,26 +104,35 @@ export default {
     next();
   },
   methods: {
-    show(record = {}) {
-      this.localTaskId = record.id || ''
-      this.title = `${record.testName || record.unitName} (试品数量:${record.productNums})`
+    show(selectedRows = [], type) {
+      let record = selectedRows[0]
+      if (type === 'batch') {
+        this.localTaskId = selectedRows.map(item => item.id).toString() || ''
+        this.title = `${record.testName || record.unitName} (试品数量:${selectedRows.reduce((acc, next) => acc + next.productNums, 0)})`
+      } else {
+        this.localTaskId = record.id || ''
+        this.title = `${record.testName || record.unitName} (试品数量:${record.productNums})`
+      }
       this.model = Object.assign({}, record, {
         predictUseTime: record.predictDuration || 1,
-        sampleNum: record.productNums || 1,
-        // predictStartTime: moment().add(5, 'm'), //预计开始时间默认+5分钟
         predictStartTime: moment().format('YYYY-MM-DD'),
-        expectTime: moment(parseFloat(record.expectStartTime)).format('YYYY-MM-DD HH:mm:ss'),
-        checkValid:
-          record.checkValid == '0' && record.checkValid != undefined ? '--' : moment(parseFloat(record.checkValid)),
-        innerName: record.innerName || '--',
-        equipCode: record.equipCode || '--',
       })
+      this.getTestCondition(selectedRows)
       this.visible = true
       this.$nextTick(() => {
         this.getSupportEquip()
         this.$nextTick(() => {
           this.showIntro()
         })
+      })
+    },
+    getTestCondition(selectedRows) {
+      postAction(this.url.getTestCondition, {projectId: selectedRows.map(item => item.projectId).toString()}).then(res => {
+        if (res.code === 200) {
+          this.model = Object.assign({}, this.model, res.data)
+        } else {
+          this.$message.warning('查询试验条件参数失败')
+        }
       })
     },
     getDate(type) {
@@ -434,7 +444,7 @@ export default {
         taskId: this.model.id,
       })
       this.model.predictUseTime = this.model.predictUseTime == 0 ? 1 : this.model.predictUseTime
-      this.$refs.taskArrangementFormModal.show(this.model)
+      this.$refs.taskArrangementFormModal.show(this.model, this.taskPlanSelectedRows)
     },
     filterQueryType(type) {
       switch (type) {

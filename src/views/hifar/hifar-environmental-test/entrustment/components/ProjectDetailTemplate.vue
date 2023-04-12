@@ -53,7 +53,7 @@
         </a-tabs>
       </template>
     </h-desc-item>
-    <h-desc-item :span='3' label='测试设备'>
+    <h-desc-item :span='3' label='测试设备1'>
       <a-table
         slot='content'
         :columns="equipColumns"
@@ -114,7 +114,6 @@ export default {
       default: '项目信息'
     }
   },
-  watch: {},
   methods: {
     handleDownload(filePath, fileName) {
       let fileAccessUrl = getFileAccessHttpUrl(filePath)

@@ -8,6 +8,7 @@
  */
 import S from 'ant-design-vue/es/select'
 import { postAction } from '@/api/manage'
+import {SYSTEM_CONSTANTS_PROJECT_CLASSIFY} from '@/views/hifar/constants.js'
 export default {
   name: 'PcClassifySelect',
   props: Object.assign({}, S.props, {
@@ -22,7 +23,7 @@ export default {
   data() {
     return {
       url: '/HfPrjUnitClassifyBusiness/listByGroupCode',
-      selectOptions: [],
+      selectOptions: SYSTEM_CONSTANTS_PROJECT_CLASSIFY,
       initValue: undefined
     }
   },
@@ -35,7 +36,7 @@ export default {
     }
   },
   created() {
-    this.getClassifyList()
+    // this.getClassifyList()
   },
   methods: {
     async getClassifyList() {

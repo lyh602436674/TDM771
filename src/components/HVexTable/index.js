@@ -594,7 +594,7 @@ export default {
   render() {
     let vxeTableProps = {
       id: this.tableId,
-      rowId: this.rowId,
+      // rowId: this.rowId,
       height: this.height,
       autoResize: true,
       stripe: !this.isTreeTable,

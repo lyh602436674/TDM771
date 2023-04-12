@@ -280,6 +280,8 @@ export default {
     },
     refresh(bool = true) {
       this.$refs.testSettlementTable.refresh(bool)
+      this.selectedRowKeys = []
+      this.selectedRows = []
     },
   }
 }

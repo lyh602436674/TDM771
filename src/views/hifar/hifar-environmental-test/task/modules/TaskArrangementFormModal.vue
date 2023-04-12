@@ -40,7 +40,7 @@ export default {
         callback()
       }
     }
-    const regRange = /^(\d+)-([1-9]*[1-9][0-9]*)$/
+    const regRange = /^-?\d+(-\d*[1-9]\d*)$/
     return {
       visible: false,
       submitLoading: false,
@@ -155,7 +155,7 @@ export default {
             <phemism-user-select
               ref="PhemismUserSelect"
               type={'checkbox'}
-              placeholder={'请选择试验员'}
+              title={'请选择试验员'}
               v-decorator={['chargeUserId']}
               selectedName={() => {
                 return this.model.idName
@@ -167,11 +167,16 @@ export default {
         {
           title: '设备速率',
           key: 'testRate',
-          formType: 'input-number',
-          min: 0,
-          style: {
-            width: "100%"
-          }
+          formType: 'input',
+          validate: {
+            rules: [
+              {
+                validator: (rule, value, callback) => {
+                  return validatorFields(value, '请输入正确格式的设备速率，例：1-100', regRange, callback)
+                },
+              },
+            ],
+          },
         },
         {
           title: '温度范围',
@@ -216,18 +221,14 @@ export default {
           },
         },
         {
-          title: '加速度范围',
-          key: 'accelerationRange',
+          title: '加速度1',
+          key: 'speed1',
           formType: 'input',
-          validate: {
-            rules: [
-              {
-                validator: (rule, value, callback) => {
-                  return validatorFields(value, '请输入正确格式的加速度范围，例：1-100', regRange, callback)
-                },
-              },
-            ],
-          },
+        },
+        {
+          title: '加速度2',
+          key: 'speed2',
+          formType: 'input',
         },
         {
           title: '备注',
@@ -235,6 +236,7 @@ export default {
           formType: 'textarea',
         },
       ],
+      taskPlanSelectedRows: [],
       url: {
         distribute: '/HfEnvTaskTestBusiness/distributeTask',
         beforeDistributeTask: '/HfEnvTaskTestBusiness/beforeDistributeTask',
@@ -266,7 +268,6 @@ export default {
       this.model.idName = record.map(item => item.idName).toString()
     },
     handleSubmit() {
-      this.submitLoading = true
       this.$refs.taskArrangementForm.validateForm()
     },
     async beforeDistributeTask(params) {
@@ -291,8 +292,8 @@ export default {
         this.submitLoading = false
       })
     },
-    submit(values, res) {
-      if (!this.submitLoading) return
+    submit(values) {
+      if (this.submitLoading) return
       this.submitLoading = true
       let params = {
         ...values,
@@ -315,6 +316,7 @@ export default {
           this.distributeTask(params)
         }
       }).catch(err => {
+        this.submitLoading = false
         console.log(err, 'err')
       }).finally(() => {
         this.submitLoading = false

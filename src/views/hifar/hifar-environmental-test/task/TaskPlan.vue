@@ -90,7 +90,7 @@
               :columns="columns"
               :data="loadData"
               :height="!collapse ? '100%' : '345'"
-              :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect }"
+              :row-selection="{ selectedRowKeys, onChange: onSelect }"
             >
               <template slot="status" slot-scope="text, record">
                 <template v-if="record.forceEndStatus === 10">
@@ -640,7 +640,7 @@ export default {
     },
 
     showTaskArrangement(record) {
-      this.$refs.taskArrangement.show(record)
+      this.$refs.taskArrangement.show([record])
     },
     handleShowTaskArrangement() {
       if (!this.selectedRowKeys.length) {
@@ -650,13 +650,11 @@ export default {
       for (let i = 0, len = this.selectedRows.length; i < len; i++) {
         let task = this.selectedRows[i]
         if (i + 1 < len && task.unitId !== this.selectedRows[i + 1].unitId) {
-          this.$message.error('所选任务的试验项目必须为同一类试验项目')
+          this.$message.warning('所选任务的试验项目必须为同一类试验项目')
           return
         }
       }
-      let record = Object.assign({}, this.selectedRows[0])
-      record.id = this.selectedRowKeys.join(',')
-      this.$refs.taskArrangement.show(record)
+      this.$refs.taskArrangement.show(this.selectedRows,'batch')
     },
     handleQueryTaskList(value) {
       if (!this.queryParams.type) {

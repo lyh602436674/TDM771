@@ -209,7 +209,7 @@ export default {
                     uploadTime: finishedResult.data.createTime, fileId: finishedResult.data.fileId,
                     secretLevel: this.secretLevel,
                   },
-                  this.getIsInReport()
+                  this.isInReport ? this.getIsInReport() : {}
                 ))
                 resolve(true)
               } else {
@@ -227,7 +227,7 @@ export default {
                   fileId: authResult.data.fileId,
                   secretLevel: this.secretLevel,
                 },
-                this.getIsInReport()
+                this.isInReport ? this.getIsInReport() : {}
               ))
               this.$nextTick(() => {
                 resolve(true)
@@ -252,7 +252,7 @@ export default {
                   fileId: finishedResult.data.fileId,
                   secretLevel: this.secretLevel,
                 }
-                this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], fileListRow, this.getIsInReport()))
+                this.$set(this.fileList, fileIndex, Object.assign({}, this.fileList[fileIndex], fileListRow, this.isInReport ? this.getIsInReport() : {}))
                 resolve(cb)
               } else {
                 resolve(false)
@@ -424,8 +424,9 @@ export default {
      * @param {Object} file 文件
      * @return {null}
      */
-    handleDelete(file) {
-      this.fileList = this.fileList.filter((item) => item.uuid !== file.uuid)
+    handleDelete(file, index) {
+      this.fileList.splice(index, 1)
+      // this.fileList = this.fileList.filter((item) => item.uuid !== file.uuid)
       this.$emit('delete', file, this.fileList)
       // this.triggerChange()
     },

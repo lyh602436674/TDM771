@@ -110,8 +110,9 @@ export default {
               let values = this.$refs.terRecordForm.form.getFieldsValue()
               this.model = Object.assign({}, this.model, values, {
                 exceptionType: v,
+                dealStatus: 1,
               })
-              if (v == 2) {
+              if (v === 2) {
                 this.terFormData = [].concat([], this.terFormBackUp[1])
               } else {
                 this.terFormData = [].concat([], this.terFormBackUp[0])
@@ -207,8 +208,9 @@ export default {
               let values = this.$refs.terRecordForm.form.getFieldsValue()
               this.model = Object.assign({}, this.model, values, {
                 exceptionType: v,
+                dealStatus: 1,
               })
-              if (v == 2) {
+              if (v === 2) {
                 this.terFormData = [].concat([], this.terFormBackUp[1])
               } else {
                 this.terFormData = [].concat([], this.terFormBackUp[0])

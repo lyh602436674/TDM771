@@ -102,6 +102,7 @@ import TestEntrustReviewPdf from '@views/hifar/hifar-environmental-test/task/mod
 import TestArchiveDetail from '@views/hifar/hifar-environmental-test/testArchive/TestArchiveDetail';
 import TestTaskBaseInfoModal from '@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal';
 import TerminationTableModal from "@views/hifar/hifar-environmental-test/task/modules/TerminationTableModal";
+import {SYSTEM_CONSTANTS_PROJECT_CLASSIFY} from '@/views/hifar/constants.js'
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -202,23 +203,7 @@ export default {
           title: '试验类型',
           key: 'c_testType_1',
           formType: 'select',
-          options: [
-            {
-              title: '气候',
-              key: 1,
-              value: 1
-            },
-            {
-              title: '力学',
-              key: 2,
-              value: 2
-            },
-            {
-              title: '环境',
-              key: 3,
-              value: 3
-            }
-          ]
+          options: SYSTEM_CONSTANTS_PROJECT_CLASSIFY
         },
         {
           title: '委托编号',

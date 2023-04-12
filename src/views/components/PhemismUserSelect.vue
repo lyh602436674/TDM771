@@ -25,9 +25,8 @@
     <h-modal
       destroyOnClose
       inner
-      fullScreen
       :title="title"
-      :width="600"
+      width="60%"
       :visible="visible"
       :confirmLoading="loading"
       @submit="handleSubmit"
@@ -46,6 +45,7 @@
           slot="content"
           ref="customerSelectTable"
           :columns="columns"
+          :height="600"
           :data="loadData"
           :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect, type: type }"
           historySelect
@@ -60,6 +60,10 @@ import { getAction } from '@/api/manage'
 import { isString, isArray, isFunction } from 'lodash'
 export default {
   props: {
+    title: {
+      type: String,
+      default: '请选择人员',
+    },
     placeholder: {
       type: String,
       default: '请选择试验员单位',
@@ -111,7 +115,6 @@ export default {
     return {
       visible: false,
       queryParams: {},
-      title: '选择',
       loading: false,
       localSelectedName: this.selectedName || undefined,
       selectedRowKeys: [],

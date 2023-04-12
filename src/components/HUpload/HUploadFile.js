@@ -422,11 +422,11 @@ export default {
                   // <h-file-secret-level-select v-model={record.secretLevel}/>
                 )
               },
-              actions: (text, record) => {
+              actions: (text, record, index) => {
                 let btns = []
                 if (this.isEdit) {
                   btns.push(
-                    <a-popconfirm title="确定删除吗?" onconfirm={() => this.handleDelete(record)}>
+                    <a-popconfirm title="确定删除吗?" onconfirm={() => this.handleDelete(record,index)}>
                       <h-icon class="danger-text cursor-pointer" type="icon-shanchu"/>
                     </a-popconfirm>
                   )

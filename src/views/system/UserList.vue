@@ -137,6 +137,7 @@ import {frozenBatch, getUserList} from '@/api/api'
 import UserRecycleBinModal from './modules/UserRecycleBinModal'
 import {postAction} from '../../api/manage'
 import moment from 'moment'
+import {SYSTEM_CONSTANTS_PROJECT_CLASSIFY} from '@/views/hifar/constants.js'
 
 export default {
   name: 'UserList',
@@ -213,23 +214,7 @@ export default {
           title: '试验类型',
           key: 'c_testType_1',
           formType: 'select',
-          options: [
-            {
-              title: '气候',
-              key: 1,
-              value: 1,
-            },
-            {
-              title: '力学',
-              key: 2,
-              value: 2,
-            },
-            {
-              title: '环境',
-              key: 3,
-              value: 3
-            }
-          ],
+          options: SYSTEM_CONSTANTS_PROJECT_CLASSIFY,
         },
       ],
       recycleBinVisible: false,

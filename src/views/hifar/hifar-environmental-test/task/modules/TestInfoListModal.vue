@@ -36,6 +36,7 @@
           <a-badge v-else-if="text == 25" color="orange" text="异常" />
           <a-badge v-else-if="text == 30" color="volcano" text="暂停" />
           <a-badge v-else-if="text == 40" color="red" text="终止" />
+          <a-badge v-else-if="text == 45" color="grey" text="异常"/>
           <a-badge v-else-if="text == 50" color="grey" text="已完成" />
         </template>
         <span slot="actions" slot-scope="text, record">
@@ -221,6 +222,11 @@ export default {
               title: '终止',
               key: 40,
               value: 40
+            },
+            {
+              title: '异常',
+              key: 45,
+              value: 45
             },
             {
               title: '已完成',

@@ -219,6 +219,7 @@ export default {
                       paramId: a.abilityParamId,
                       ...a,
                       paramTypeText: filterDictTextByCache('hf_dev_param_type', a.paramType) || '-',
+                      delFlag: 0,  // 默认带入不可以删除
                     }
                   }) || []
                 }
@@ -231,6 +232,7 @@ export default {
                       paramId: a.abilityParamId,
                       ...a,
                       paramTypeText: filterDictTextByCache('hf_dev_param_type', a.paramType) || '-',
+                      delFlag: 0, // 默认带入不可以删除
                     }
                   }) || []
                 }
@@ -238,6 +240,7 @@ export default {
 
             }
           }
+          console.log(obj, 'objobjobjobjobj')
           this.disabledIsShowUserInReport = obj.lastUser
           this.disabledPowerUpTime = obj.isPowerUp
           if (filterProjectByType) {
@@ -825,7 +828,8 @@ export default {
           minValue: item.minValue,
           standardValue: item.standardValue,
           strValue: item.strValue,
-          curveType: item.curveType
+          curveType: item.curveType,
+          delFlag: 1, // 手动新增可以删除
         })
       })
     },

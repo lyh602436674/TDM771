@@ -1,0 +1,29 @@
+/**
+ * @Description 全局常量定义文件
+ * @Date 2023-4-11
+ * @Author 雷宇航
+ * */
+
+// 项目分类常量
+export const SYSTEM_CONSTANTS_PROJECT_CLASSIFY = [
+  {
+    title: '气候试验',
+    key: 1,
+    value: 1,
+  },
+  {
+    title: '力学试验',
+    key: 2,
+    value: 2,
+  },
+  {
+    title: '环境试验',
+    key: 3,
+    value: 3,
+  },
+]
+
+// 项目管理页面中添加的试验条件，会在填写委托单的时候，选择了项目信息会自动带入项目所关联的试验条件
+// 这个常量用来控制，自动带入的条件是否可以删除
+// false 不可以删除， true 可以删除
+export const PROJECT_RELEVANCY_TEST_CONDITION = false

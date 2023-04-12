@@ -278,6 +278,11 @@ export default {
               value: 40,
             },
             {
+              title: '异常',
+              key: 45,
+              value: 45,
+            },
+            {
               title: '已完成',
               key: 50,
               value: 50,

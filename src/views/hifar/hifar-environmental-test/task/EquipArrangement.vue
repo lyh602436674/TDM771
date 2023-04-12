@@ -210,7 +210,7 @@
                                   @click="handleStart('start', record)"/>
                         </a-tooltip>
                         <!-- 暂停 -->
-                        <a-tooltip v-if="record.status == 20" title="暂停">
+                        <a-tooltip v-if="record.status === 20" title="暂停">
                           <h-icon
                             v-has="'ArrangeMent:suspend'"
                             class="h-icon-item"
@@ -234,7 +234,7 @@
                           </a-tooltip>
                           <a-menu slot="overlay">
                             <!-- 异常 -->
-                            <a-menu-item v-has="'ArrangeMent:error'">
+                            <a-menu-item v-if="[20,45].includes(record.status)" v-has="'ArrangeMent:error'">
                               <div @click="$refs.taskAbnormalModal.show('error', record)">异常</div>
                             </a-menu-item>
                             <!-- 终止 -->
@@ -345,6 +345,7 @@ export default {
         20: {color: "green", text: "进行中"},
         30: {color: "volcano", text: "暂停"},
         40: {color: "red", text: "终止"},
+        45: {color: "yellow", text: "异常"},
         50: {color: "grey", text: "已完成"},
       },
       selectedKey: [],
@@ -404,6 +405,11 @@ export default {
               title: '终止',
               key: 40,
               value: 40,
+            },
+            {
+              title: '异常',
+              key: 45,
+              value: 45,
             },
             {
               title: '已完成',
@@ -722,6 +728,7 @@ export default {
   methods: {
     handleFinish(record) {
       if (record.status === 1) return this.$message.warning('试验未开始，不能完成')
+      if (record.status === 45) return this.$message.warning('试验异常中，请先解决异常')
       this.$refs.taskFinishedModal.show('finish', record)
     },
     /**

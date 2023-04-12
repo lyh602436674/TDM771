@@ -68,14 +68,12 @@
       </vxe-table-column>
       <vxe-table-column align="center" title="操作" width="100">
         <template #default="{ row,rowIndex }">
-          <a-popconfirm title="确定删除吗?" @confirm="() => removeEvent(row,rowIndex)">
+          <a-popconfirm :class="[getDelFlag(row) ? '' : 'nonePointerEvents']" title="确定删除吗?"
+                        @confirm="() => removeEvent(row,rowIndex)">
             <a-icon
-              v-if="row.paramName !== '初试类型'"
-              class="primary-text"
+              :class="[getDelFlag(row) ? 'danger-text' : 'disabled-text']"
               style="cursor: pointer"
-              theme="twoTone"
               title="删除"
-              two-tone-color="#ff4d4f"
               type="delete"
             />
           </a-popconfirm>
@@ -87,6 +85,7 @@
 
 <script>
 import entrustmentMixins from "@views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins";
+import {PROJECT_RELEVANCY_TEST_CONDITION} from "@views/hifar/constants"
 
 export default {
   name: "TestConditionTabItem",
@@ -129,6 +128,7 @@ export default {
   },
   data() {
     return {
+      sysDelFlag: PROJECT_RELEVANCY_TEST_CONDITION,
       selectOptionItem: [
         {label: "先高温", key: '1', value: '1'},
         {label: "先低温", key: '2', value: '2'},
@@ -138,6 +138,12 @@ export default {
     }
   },
   methods: {
+    getDelFlag(row) {
+      if (!this.sysDelFlag) {
+        return row.delFlag;
+      }
+      return true
+    },
     getSelectOption(row) {
       return this.selectOptionItem[+row.conditionTypeDesc - 1].title;
     },
@@ -158,6 +164,7 @@ export default {
       row.minValue = row.conditionTypeDesc
     },
     removeEvent(row, rowIndex) {
+      if (!this.getDelFlag(row)) return
       this.$refs['pointTable' + [this.projectIndex] + [this.itemIndex]].remove(row)
       this.$emit('delete', row, rowIndex, this.projectIndex, this.itemIndex)
     },
@@ -168,5 +175,9 @@ export default {
 <style scoped>
 >>> .conditionTypeDesc {
   position: relative
+}
+
+.nonePointerEvents {
+  pointer-events: none
 }
 </style>
