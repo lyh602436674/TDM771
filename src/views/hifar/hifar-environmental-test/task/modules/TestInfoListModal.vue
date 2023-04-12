@@ -33,7 +33,6 @@
           <a-badge v-else-if="text == 1" color="geekblue" text="已发布" />
           <a-badge v-else-if="text == 10" color="red" text="已撤销" />
           <a-badge v-else-if="text == 20" color="green" text="进行中" />
-          <a-badge v-else-if="text == 25" color="orange" text="异常" />
           <a-badge v-else-if="text == 30" color="volcano" text="暂停" />
           <a-badge v-else-if="text == 40" color="red" text="终止" />
           <a-badge v-else-if="text == 45" color="grey" text="异常"/>

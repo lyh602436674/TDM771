@@ -292,7 +292,8 @@ export default {
       }
 
       list.forEach(item => {
-        let equipName = item.equipCode + '[' + item.equipModel + ']'
+        // 内部名称[设备名称]
+        let equipName = item.innerName + '[' + item.equipName + ']'
         tasks.data.push(
           {
             id: item.id,

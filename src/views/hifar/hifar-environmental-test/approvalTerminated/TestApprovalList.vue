@@ -77,6 +77,7 @@
     <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
     <abnormal-detail-modal ref="abnormalDetailModal"/>
     <termination-detail-modal ref="TerminationDetailModal" listType="testForceEndList"></termination-detail-modal>
+    <test-entrust-review-pdf ref="reviewPdf" :title="reviewPdfTitle"/>
   </h-card>
 </template>
 
@@ -86,13 +87,15 @@ import {createLink, postAction} from "@api/manage";
 import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal";
 import AbnormalDetailModal from "@views/hifar/hifar-environmental-test/task/modules/AbnormalDetailModal";
 import TerminationDetailModal from "@views/hifar/hifar-environmental-test/task/modules/TerminationDetailModal";
+import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
 
 export default {
   name: "TestApprovalList",
   components: {
     TestTaskBaseInfoModal,
     AbnormalDetailModal,
-    TerminationDetailModal
+    TerminationDetailModal,
+    TestEntrustReviewPdf
   },
   data() {
     return {
@@ -120,43 +123,6 @@ export default {
           title: '试验编号',
           key: 'c_testCode_7',
           formType: 'input',
-        },
-        {
-          title: '试验状态',
-          key: 'c_status_1',
-          formType: 'select',
-          options: [
-            {
-              title: '未开始',
-              key: 1,
-              value: 1,
-            },
-            {
-              title: '已撤销',
-              key: 10,
-              value: 10,
-            },
-            {
-              title: '进行中',
-              key: 20,
-              value: 20,
-            },
-            {
-              title: '暂停',
-              key: 30,
-              value: 30,
-            },
-            {
-              title: '终止',
-              key: 40,
-              value: 40,
-            },
-            {
-              title: '已完成',
-              key: 50,
-              value: 50,
-            },
-          ],
         },
         {
           title: '任务编号',
@@ -319,6 +285,7 @@ export default {
           },
         },
       ],
+      reviewPdfTitle: "",
       loadData: (params) => {
         let data = {
           ...params,

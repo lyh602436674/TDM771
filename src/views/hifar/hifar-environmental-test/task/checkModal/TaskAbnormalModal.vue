@@ -25,7 +25,7 @@
           v-model="model"
           ref="terRecordForm"
           :column="2"
-          :formData="terFormData"
+          :formData="formData"
           @change="handleChange"
         />
       </h-card>
@@ -35,7 +35,7 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
 import PieceListSelect from '../../testRecord/components/PieceListSelect'
 
 export default {
@@ -53,6 +53,147 @@ export default {
       },
     }
   },
+  computed: {
+    formData() {
+      return [
+        {
+          key: 'id',
+          formType: 'input',
+          hidden: true,
+        },
+        {
+          title: '异常类型',
+          key: 'exceptionType',
+          formType: 'select',
+          validate: {rules: [{required: true, message: '请选择异常类型'}]},
+          options: [
+            {title: '设备异常', key: 1, value: 1},
+            {title: '样品异常', key: 2, value: 2},
+            {title: '动力异常', key: 3, value: 3},
+          ],
+          change: (v, options) => {
+            let values = this.$refs.terRecordForm.form.getFieldsValue()
+            this.model = Object.assign({}, this.model, values, {
+              exceptionType: v,
+              dealStatus: 1,
+            })
+          },
+        },
+        {
+          title: '处理状态',
+          key: 'dealStatus',
+          formType: 'select',
+          span: 1,
+          validate: {rules: [{required: true, message: '请选择处理状态'}]},
+          options: [
+            {
+              title: '未处理',
+              key: 1,
+              value: 1,
+            },
+            // {
+            //   title: '处理中',
+            //   key: 2,
+            //   value: 2,
+            // },
+            {
+              title: '已处理',
+              key: 3,
+              value: 3,
+            },
+          ],
+          change: (v, options) => {
+            let values = this.$refs.terRecordForm.form.getFieldsValue()
+            this.model = Object.assign({}, this.model, values, {
+              dealStatus: v,
+            })
+          },
+        },
+        {
+          title: '试验样品',
+          key: 'testPieceId',
+          validate: {rules: [{required: true, message: '请选择试验样品'}]},
+          component: (
+            <piece-list-select
+              ref="pieceListSelect"
+              v-decorator={['testPieceId', {initialValue: []}]}
+              placeholder="请选择试验样品"
+              type="checkbox"
+              selectedName={() => {
+                return this.model.pieceNo
+              }}
+              onchange={(selectedRowKeys, record) => {
+                let pieceNoArr = []
+                if (record.length) {
+                  record.forEach((item) => {
+                    pieceNoArr.push(item.pieceNo)
+                  })
+                }
+                this.model.pieceNo = pieceNoArr.length ? pieceNoArr.join(',') : ''
+                this.$refs.terRecordForm.form.setFieldsValue({
+                  pieceNo: pieceNoArr.length ? pieceNoArr.join(',') : '',
+                  testPieceId: selectedRowKeys ? selectedRowKeys : [],
+                })
+              }}
+            />
+          ),
+        },
+        {
+          title: '记录人',
+          key: 'recordUserName',
+          formType: 'input',
+          validate: {rules: [{required: true, message: '请输入记录人'}]},
+        },
+        {
+          title: '记录时间',
+          key: 'recordTime',
+          validate: {rules: [{required: true, message: '请选择记录时间'}]},
+          component: (
+            <h-time-select v-decorator={['recordTime', {rules: [{required: true, message: '请选择记录时间'}]}]}/>
+          ),
+        },
+        {
+          title: '异常说明',
+          key: 'exceptionDesc',
+          formType: 'textarea',
+          span: 2,
+          rows: 4,
+        },
+        {
+          title: '附件',
+          key: 'attachIds',
+          component: <h-upload-file v-decorator={['attachIds', {initialValue: []}]}/>,
+          span: 3,
+        },
+        {
+          title: '处理人',
+          key: 'dealUserName',
+          formType: 'input',
+          hidden: this.model.dealStatus === 1,
+          span: 1,
+          validate: {rules: [{required: this.model.dealStatus !== 1, message: '请输入处理人'}]},
+        },
+        {
+          title: '处理时间',
+          key: 'dealTime',
+          span: 1,
+          hidden: this.model.dealStatus === 1,
+          validate: {rules: [{required: this.model.dealStatus !== 1, message: '请选择处理时间'}]},
+          component: (
+            <h-time-select v-decorator={['dealTime', {rules: [{required: false, message: '请选择处理时间'}]}]}/>
+          ),
+        },
+        {
+          title: '处理结果',
+          key: 'dealDesc',
+          formType: 'textarea',
+          span: 3,
+          hidden: this.model.dealStatus === 1,
+          rows: 4,
+        },
+      ]
+    },
+  },
   data() {
     return {
       moment,
@@ -63,265 +204,6 @@ export default {
       type: null,
       testDetailData: {},
       testPieceIdArr: [],
-      dealForm: [
-        {
-          title: '处理人',
-          key: 'dealUserName',
-          formType: 'input',
-          span: 1,
-          validate: { rules: [{ required: true, message: '请输入处理人' }] },
-        },
-        {
-          title: '处理时间',
-          key: 'dealTime',
-          span: 1,
-          validate: { rules: [{ required: true, message: '请选择处理时间' }] },
-          component: (
-            <h-time-select v-decorator={['dealTime', { rules: [{ required: false, message: '请选择处理时间' }] }]} />
-          ),
-        },
-        {
-          title: '处理结果',
-          key: 'dealDesc',
-          formType: 'textarea',
-          span: 3,
-          rows: 4,
-        },
-      ],
-      terFormData: [],
-      terFormBackUp: [
-        [
-          {
-            key: 'id',
-            formType: 'input',
-            hidden: true,
-          },
-          {
-            title: '异常类型',
-            key: 'exceptionType',
-            formType: 'select',
-            validate: { rules: [{ required: true, message: '请选择异常类型' }] },
-            options: [
-              { title: '设备异常', key: 1, value: 1 },
-              { title: '样品异常', key: 2, value: 2 },
-              { title: '动力异常', key: 3, value: 3 },
-            ],
-            change: (v, options) => {
-              let values = this.$refs.terRecordForm.form.getFieldsValue()
-              this.model = Object.assign({}, this.model, values, {
-                exceptionType: v,
-                dealStatus: 1,
-              })
-              if (v === 2) {
-                this.terFormData = [].concat([], this.terFormBackUp[1])
-              } else {
-                this.terFormData = [].concat([], this.terFormBackUp[0])
-              }
-            },
-          },
-          {
-            title: '处理状态',
-            key: 'dealStatus',
-            formType: 'select',
-            span: 1,
-            validate: { rules: [{ required: true, message: '请选择处理状态' }] },
-            options: [
-              {
-                title: '未处理',
-                key: 1,
-                value: 1,
-              },
-              // {
-              //   title: '处理中',
-              //   key: 2,
-              //   value: 2,
-              // },
-              {
-                title: '已处理',
-                key: 3,
-                value: 3,
-              },
-            ],
-            change: (v, options) => {
-              let formData = []
-              let values = this.$refs.terRecordForm.form.getFieldsValue()
-              this.model = Object.assign({}, this.model, values, {
-                dealStatus: v,
-              })
-              if (this.model.exceptionType == 2) {
-                formData = this.terFormBackUp[1]
-              } else {
-                formData = this.terFormBackUp[0]
-              }
-              if (v == 3) {
-                this.terFormData = [].concat([], formData, this.dealForm)
-              } else {
-                this.terFormData = [].concat([], formData)
-              }
-            },
-          },
-          {
-            title: '记录人',
-            key: 'recordUserName',
-            formType: 'input',
-            validate: { rules: [{ required: true, message: '请输入记录人' }] },
-          },
-          {
-            title: '记录时间',
-            key: 'recordTime',
-            validate: { rules: [{ required: true, message: '请选择记录时间' }] },
-            component: (
-              <h-time-select v-decorator={['recordTime', { rules: [{ required: true, message: '请选择记录时间' }] }]} />
-            ),
-          },
-          {
-            title: '异常说明',
-            key: 'exceptionDesc',
-            formType: 'textarea',
-            span: 2,
-            rows: 4,
-          },
-          {
-            title: '附件',
-            key: 'attachIds',
-            component: <h-upload-file v-decorator={['attachIds', { initialValue: [] }]} />,
-            span: 3,
-          },
-        ],
-        [
-          {
-            key: 'id',
-            formType: 'input',
-            hidden: true,
-          },
-          {
-            title: '异常类型',
-            key: 'exceptionType',
-            formType: 'select',
-            validate: { rules: [{ required: true, message: '请选择异常类型' }] },
-            options: [
-              { title: '设备异常', key: 1, value: 1 },
-              { title: '样品异常', key: 2, value: 2 },
-              { title: '动力异常', key: 3, value: 3 },
-            ],
-            change: (v, options) => {
-              let values = this.$refs.terRecordForm.form.getFieldsValue()
-              this.model = Object.assign({}, this.model, values, {
-                exceptionType: v,
-                dealStatus: 1,
-              })
-              if (v === 2) {
-                this.terFormData = [].concat([], this.terFormBackUp[1])
-              } else {
-                this.terFormData = [].concat([], this.terFormBackUp[0])
-              }
-            },
-          },
-          {
-            title: '处理状态',
-            key: 'dealStatus',
-            formType: 'select',
-            span: 1,
-            validate: { rules: [{ required: true, message: '请选择处理状态' }] },
-            options: [
-              {
-                title: '未处理',
-                key: 1,
-                value: 1,
-              },
-              // {
-              //   title: '处理中',
-              //   key: 2,
-              //   value: 2,
-              // },
-              {
-                title: '已处理',
-                key: 3,
-                value: 3,
-              },
-            ],
-            change: (v, options) => {
-              let formData = []
-              let values = this.$refs.terRecordForm.form.getFieldsValue()
-              this.model = Object.assign({}, this.model, values, {
-                dealStatus: v,
-              })
-              if (this.model.exceptionType == 2) {
-                formData = this.terFormBackUp[1]
-              } else {
-                formData = this.terFormBackUp[0]
-              }
-              if (v == 3) {
-                this.terFormData = [].concat([], formData, this.dealForm)
-              } else {
-                this.terFormData = [].concat([], formData)
-              }
-            },
-          },
-          {
-            title: '试验样品',
-            key: 'testPieceId',
-            validate: { rules: [{ required: true, message: '请选择试验样品' }] },
-            component: (
-              <piece-list-select
-                ref="pieceListSelect"
-                v-decorator={['testPieceId', { initialValue: [] }]}
-                placeholder="请选择试验样品"
-                type="checkbox"
-                selectedName={() => {
-                  return this.model.pieceNo
-                }}
-                onchange={(selectedRowKeys, record) => {
-                  let pieceNoArr = []
-                  if (record.length) {
-                    record.forEach((item) => {
-                      pieceNoArr.push(item.pieceNo)
-                    })
-                  }
-                  this.model.pieceNo = pieceNoArr.length ? pieceNoArr.join(',') : ''
-                  this.$refs.terRecordForm.form.setFieldsValue({
-                    pieceNo: pieceNoArr.length ? pieceNoArr.join(',') : '',
-                    testPieceId: selectedRowKeys ? selectedRowKeys : [],
-                  })
-                }}
-              />
-            ),
-          },
-          {
-            title: '',
-            key: 'pieceNo',
-            formType: 'input',
-            hidden: true,
-          },
-          {
-            title: '记录人',
-            key: 'recordUserName',
-            formType: 'input',
-            validate: { rules: [{ required: true, message: '请输入记录人' }] },
-          },
-          {
-            title: '记录时间',
-            key: 'recordTime',
-            validate: { rules: [{ required: true, message: '请选择记录时间' }] },
-            component: (
-              <h-time-select v-decorator={['recordTime', { rules: [{ required: true, message: '请选择记录时间' }] }]} />
-            ),
-          },
-          {
-            title: '异常说明',
-            key: 'exceptionDesc',
-            formType: 'textarea',
-            span: 2,
-            rows: 4,
-          },
-          {
-            title: '附件',
-            key: 'attachIds',
-            component: <h-upload-file v-decorator={['attachIds', { initialValue: [] }]} />,
-            span: 3,
-          },
-        ],
-      ],
       url: {
         errAdd: '/HfEnvTestExceptionBusiness/add',
         edit: '/HfEnvTestExceptionBusiness/modifyById',
@@ -339,28 +221,16 @@ export default {
       this.equipId = record.equipId
       this.type = type
       this.title = '异常：' + (record.testNames || record.unitNames) + '-' + record.testCode
-      if (type == 'edit') {
-        if (record.exceptionType == 2 && record.dealStatus == 3) {
-          this.terFormData = [].concat([], this.terFormBackUp[1], this.dealForm)
-        } else if (record.exceptionType == 2 && record.dealStatus != 3) {
-          this.terFormData = this.terFormBackUp[1]
-        } else if (record.exceptionType != 2 && record.dealStatus == 3) {
-          this.terFormData = [].concat([], this.terFormBackUp[0], this.dealForm)
-        } else if (record.exceptionType != 2 && record.dealStatus != 3) {
-          this.terFormData = this.terFormBackUp[0]
-        }
+      if (type === 'edit') {
         this.testDetailData = record
         this.loadDetail(record.id)
       } else {
-        this.terFormData = this.terFormBackUp[0]
-        this.model.dealStatus = 1
-        this.getTestDetail()
+        this.$set(this.model, 'dealStatus', 1)
       }
     },
     handleCancel() {
       this.visible = false
       this.model = {}
-      this.terFormData = []
     },
     // 试验详情
     getTestDetail() {
@@ -377,7 +247,6 @@ export default {
               })
             })
           }
-          this.terFormBackUp[1][3].options = pieceInfoArr
           this.testDetailData = res.data
         }
       })

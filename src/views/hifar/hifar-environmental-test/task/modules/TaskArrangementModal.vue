@@ -207,7 +207,7 @@ export default {
           name: 'equipName',
           width: 300,
           align: 'left',
-          label: '设备编号[设备型号]',
+          label: '内部名称[设备名称]',
           resize: true,
           tree: true,
           onrender: (item, node) => {
@@ -217,12 +217,14 @@ export default {
             node.style.padding = '0 10px'
             node.style.display = 'flex'
             node.style.alignItems = 'center'
-            let checkIcon = item.validFlag == 2 ? checkValidIcon : unCheckValidIcon
-            let img = document.createElement('img')
-            img.setAttribute('src', checkIcon)
-            img.style.width = '18px'
-            img.style.height = '18px'
-            node.insertBefore(img, node.children[0])
+            if (item.type === "equip") {
+              let checkIcon = item.validFlag === 2 ? checkValidIcon : unCheckValidIcon
+              let img = document.createElement('img')
+              img.setAttribute('src', checkIcon)
+              img.style.width = '18px'
+              img.style.height = '18px'
+              node.insertBefore(img, node.children[0])
+            }
           }
         },
       ]
@@ -366,7 +368,8 @@ export default {
         data: []
       }
       list.forEach(item => {
-        let equipName = item.equipCode + '[' + item.equipModel + ']'
+        // 内部名称[设备名称]
+        let equipName = item.innerName + '[' + item.equipName + ']'
         tasks.data.push(
           {
             id: item.id,

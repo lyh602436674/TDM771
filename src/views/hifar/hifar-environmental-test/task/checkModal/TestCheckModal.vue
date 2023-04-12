@@ -364,6 +364,7 @@ export default {
       if (record.id) {
         this.getCheckDetail()
       }
+      this.$emit('change')
     },
     handleCancel() {
       this.visible = false

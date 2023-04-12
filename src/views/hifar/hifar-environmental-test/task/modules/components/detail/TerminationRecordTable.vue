@@ -50,7 +50,7 @@ export default {
     },
     listType: {
       type: String,
-      default: 'task',
+      default: '',
     }
   },
   watch: {
@@ -126,7 +126,7 @@ export default {
         if (this.listType === 'taskForceEndList') {
           data.taskId = this.records.id
         }
-        return postAction(this.url[this.listType], data).then((res) => {
+        return postAction(this.url[this.listType || 'list'], data).then((res) => {
           if (res.code === 200) {
             return res.data
           }

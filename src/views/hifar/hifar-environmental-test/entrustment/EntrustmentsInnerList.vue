@@ -161,6 +161,11 @@ export default {
               value: 10
             },
             {
+              title: '已审批',
+              key: 15,
+              value: 15
+            },
+            {
               title: '已通过',
               key: 20,
               value: 20

@@ -173,7 +173,7 @@
                           v-has="'archiveTem:edit'"
                           v-model="swapFileList"
                           :customParams="{id:record.id}"
-                          accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          accept=".doc,.docx"
                           isPublic
                           @beforeUpload="$refs.equipTaskList.localLoading = true"
                           @change="file => handleUploadCallback(file, record,'1')">
@@ -194,7 +194,7 @@
                           v-has="'embodimentTem:edit'"
                           v-model="swapFileList"
                           :customParams="{id:record.id}"
-                          accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                          accept=".doc,.docx"
                           isPublic
                           @beforeUpload="$refs.equipTaskList.localLoading = true"
                           @change="file => handleUploadCallback(file, record,'2')">
@@ -263,7 +263,7 @@
       <task-finished-modal ref="taskFinishedModal" @change="refreshEquipTaskList"/>
       <task-abnormal-modal ref="taskAbnormalModal" @change="refreshEquipTaskList"></task-abnormal-modal>
       <test-data-add-modal ref="testDataAddModal" @change="refreshEquipTaskList"></test-data-add-modal>
-      <test-check-modal ref="testCheckModal"/>
+      <test-check-modal ref="testCheckModal" @change="refreshEquipTaskList"/>
       <equip-basic-vibration ref="equipBasicVibration"></equip-basic-vibration>
       <test-base-edit ref="TestBaseEdit" :records="records" :selectedTreeRows="selectedRows"
                       @change="refreshEquipTaskList"/>
@@ -786,6 +786,7 @@ export default {
           item.scopedSlots = {
             title: 'customTitle',
           }
+          // 内部名称[设备名称]
           item.title = item.innerName + "-" + item.equipName
           // 这一步是证明当前数据为目录，当没有children时，则判断为文件
           item.children = []

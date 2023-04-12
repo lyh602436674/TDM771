@@ -83,7 +83,7 @@
                 <h-upload-file-b
                   v-model="reportFileList"
                   :customParams="{id:record.id}"
-                  accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                  accept=".doc,.docx"
                   isPublic
                   @beforeUpload="$refs.reportMakeTable.localLoading = true"
                   @change="file => handleUploadCallback(file,record,true)"
@@ -113,7 +113,7 @@
                      v-model="reportFileList"
                      v-has="'report:edit'"
                      :customParams="{id:record.id}"
-                     accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                     accept=".doc,.docx"
                      isPublic
                      @beforeUpload="$refs.reportMakeTable.localLoading = true"
                      @change="file => handleUploadCallback(file,record)">

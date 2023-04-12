@@ -63,7 +63,7 @@
             </tr>
             <tr>
               <th :width="120">检定周期</th>
-              <td colspan="3">
+              <td>
                 {{ detailData.checkPeriod ? detailData.checkPeriod : '--' }}
                 {{
                   detailData.checkUnit == 1
@@ -71,9 +71,13 @@
                     : detailData.checkUnit == 2
                     ? '月'
                     : detailData.checkUnit == 3
-                    ? '年'
-                    : ''
+                      ? '年'
+                      : ''
                 }}
+              </td>
+              <th :width="120">序号</th>
+              <td>
+                {{ detailData.orderNum }}
               </td>
             </tr>
             <tr>
@@ -82,7 +86,7 @@
                 <span v-if="detailData.technologyParam">
                   {{ detailData.technologyParam || '--' }}
                 </span>
-                <a-empty v-else description="此设备无技术参数说明" />
+                <a-empty v-else description="此设备无技术参数说明"/>
               </td>
             </tr>
             <tr>
@@ -104,7 +108,8 @@
 <script>
 import moment from 'moment'
 import mixin from '@/views/hifar/mixin.js'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
+
 export default {
   mixins: [mixin],
   inject: {

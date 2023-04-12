@@ -69,7 +69,7 @@ export default {
     handleTabsChange(v) {
       this.activeKey = v;
       if (v === '1') {
-        this.status = {'c_status_96': this.pageOption.typeNo === '1' ? '10,30' : '15'};
+        this.status = {'c_status_96': this.pageOption.typeNo === '1' ? '10,31' : '15'};
       } else {
         this.status = {'c_status_3': this.pageOption.typeNo === '1' ? '10' : '15'};
       }

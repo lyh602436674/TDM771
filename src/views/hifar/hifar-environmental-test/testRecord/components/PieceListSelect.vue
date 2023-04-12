@@ -27,9 +27,8 @@
     <h-modal
       destroyOnClose
       inner
-      fullScreen
       :title="title"
-      :width="600"
+      width="60%"
       :visible="visible"
       :confirmLoading="loading"
       :getContainer="getContainer"
@@ -122,28 +121,23 @@ export default {
       url: '/HfEnvTestPieceBusiness/listPage',
       searchData: [
         {
-          title: '试验名称',
-          key: 'c_testName_7',
-          formType: 'input',
-        },
-        {
           title: '样品名称',
           key: 'c_productName_7',
           formType: 'input',
         },
         {
-          title: '型号/规格',
-          key: 'c_productModel_7',
-          formType: 'input',
-        },
-        {
-          title: '图号',
+          title: '样品代号',
           key: 'c_productAlias_7',
           formType: 'input',
         },
         {
           title: '样品编号',
           dataIndex: 'c_pieceNo_7',
+          formType: 'input',
+        },
+        {
+          title: '试验名称',
+          key: 'c_testName_7',
           formType: 'input',
         },
       ],

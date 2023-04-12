@@ -67,6 +67,10 @@
             <vxe-table-column field="equipModel" title="设备型号"></vxe-table-column>
             <vxe-table-column field="assetsCode" title="资产编号"></vxe-table-column>
             <vxe-table-column
+              :edit-render="{ name: '$input', props:{readonly: true},  placeholder: '请选择试验项目',events:{click:handleProjectNameClick} }"
+              field="projectName" title="试验项目"></vxe-table-column>
+            <vxe-table-column :visible="false" field="projectId"></vxe-table-column>
+            <vxe-table-column
               :edit-render="{ name: 'input', placeholder: '请输入速率范围' }"
               field="rate"
               title="速率"
@@ -123,6 +127,7 @@
       </h-card>
     </div>
     <sys-fee-list-select-modal ref="SysFeeListSelectModal" @change="feeSelectHandle"></sys-fee-list-select-modal>
+    <project-add-modal ref='projectAddModal' @change='projectModalCallback'/>
   </h-modal>
 </template>
 
@@ -130,10 +135,12 @@
 import {postAction} from '@/api/manage'
 import {isArray, isNumber} from 'lodash'
 import SysFeeListSelectModal from '@/views/components/SysFeeListSelectModal'
+import ProjectAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal";
 
 export default {
   components: {
     SysFeeListSelectModal,
+    ProjectAddModal
   },
   inject: {
     getContainer: {
@@ -160,6 +167,7 @@ export default {
       title: '添加',
       selectedRowKeys: [],
       priceData: [],
+      projectData: [],
       validRules: {
         rate: [
           {required: false, trigger: 'blur'},
@@ -225,6 +233,7 @@ export default {
         priceUnit: '/HfResCustPriceBusiness/listAllByCostId',
         deletePrice: '/HfResCustPriceBusiness/logicRemoveById',
       },
+      selectProjectBefore: {},
       formData: [
         {
           key: 'id',
@@ -265,8 +274,17 @@ export default {
       this.title = title
       this.editor(record)
     },
+    handleProjectNameClick({row, rowIndex}) {
+      this.selectProjectBefore = {row, rowIndex}
+      this.$refs.projectAddModal.show(row.projectId ? row.projectId.split(',') : [])
+    },
+    projectModalCallback(recordId, record) {
+      let {row: {projectId}, rowIndex} = this.selectProjectBefore
+      this.$set(this.priceData[rowIndex], 'projectId', record.map(item => item.id).toString())
+      this.$set(this.priceData[rowIndex], 'projectName', record.map(item => item.unitName).toString())
+    },
     calcDiscountUnitPrice({row}) {
-      let res =  row.discount && row.unitPrice && !isNaN(Number(row.unitPrice)) && !isNaN(Number(row.discount)) ? (row.discount * 0.1 * row.unitPrice).toFixed(2) : null
+      let res = row.discount && row.unitPrice && !isNaN(Number(row.unitPrice)) && !isNaN(Number(row.discount)) ? (row.discount * 0.1 * row.unitPrice).toFixed(2) : null
       this.$set(row, 'discountPrice', res)
     },
     loadUnitById(costId) {
@@ -279,6 +297,8 @@ export default {
               ...item.equipData[0], // 设备信息全部从equipData中拿
               unitName: item.equipData[0].equipName,
               remarks: item.remarks,
+              projectId: item.projectId || '',
+              projectName: item.projectName || '',
             }
           }) || []
         }
@@ -315,6 +335,8 @@ export default {
           costId: this.model.id,
           unitId: item.id,
           id: '',
+          projectId: '',
+          projectName: '',
         }
       }) || [])
     },
@@ -349,6 +371,8 @@ export default {
           id: item.id,
           unitName: item.unitName,
           equipModel: item.equipModel,
+          projectName: item.projectName,
+          projectId: item.projectId,
           rate: item.rate,
           temperatureRange: item.temperatureRange,
           humidityRange: item.humidityRange,

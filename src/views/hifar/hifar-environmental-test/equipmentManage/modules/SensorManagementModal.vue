@@ -138,6 +138,11 @@ export default {
           key: 'checkCode',
         },
         {
+          title: '序号',
+          formType: 'input',
+          key: 'orderNum',
+        },
+        {
           title: '技术参数',
           formType: 'textarea',
           key: 'technologyParam',

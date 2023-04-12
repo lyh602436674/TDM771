@@ -1401,7 +1401,14 @@ export default {
           customRender: (text) => {
             return text || '--'
           }
-        }
+        },
+        {
+          title: '序号',
+          dataIndex: 'orderNum',
+          customRender: (text) => {
+            return text || '--'
+          }
+        },
       ],
       sensorColumns: [
         {
@@ -1414,7 +1421,7 @@ export default {
         },
         {
           title: '序号',
-          dataIndex: 'equipIndex',
+          dataIndex: 'orderNum',
           align: 'center',
           customRender: (t) => {
             return t || '--'
@@ -1886,7 +1893,7 @@ export default {
       this.equipData = this.equipData.concat(value)
     },
     toolsProductCallback(value) {
-      this.toolsProductData = Array.isArray(this.toolsProductData) ? this.toolsProductData.concat(value) : [].concat(value)
+      this.toolsProductData = this.toolsProductData.concat(uniqueArray(this.toolsProductData, 'id', value, 'id'))
     },
     changeControlMethod() {
       for (let i = 0; i < this.installControlTable.length; i++) {

@@ -85,7 +85,7 @@ export default {
           key: 'attachIds',
           component: (
             <h-upload-file
-              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              accept=".doc,.docx"
               multiple={false}
               v-decorator={['attachIds', {initialValue: []}]}
             />

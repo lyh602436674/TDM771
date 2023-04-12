@@ -85,6 +85,14 @@ export default {
           }
         },
         {
+          title: '试验项目',
+          dataIndex: 'projectName',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
           title: '速率',
           dataIndex: 'rate',
           align: 'center',

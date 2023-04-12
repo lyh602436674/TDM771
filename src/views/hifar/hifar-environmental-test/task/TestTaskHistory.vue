@@ -53,7 +53,7 @@
             <h-upload-file-b
               v-model="swapFileList"
               :customParams="{id:record.id}"
-              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              accept=".doc,.docx"
               isPublic
               @beforeUpload="$refs.taskHistoryTable.localLoading = true"
               @change="file => handleUploadCallback(file, record,'1')">
@@ -73,7 +73,7 @@
             <h-upload-file-b
               v-model="swapFileList"
               :customParams="{id:record.id}"
-              accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              accept=".doc,.docx"
               isPublic
               @beforeUpload="$refs.taskHistoryTable.localLoading = true"
               @change="file => handleUploadCallback(file, record,'2')">
@@ -88,7 +88,7 @@
         </template>
       </h-vex-table>
     </h-card>
-    <test-task-base-info-modal ref="TaskDetailModal" sshowExceptionAndEnd/>
+    <test-task-base-info-modal ref="TaskDetailModal" showExceptionAndEnd/>
     <task-abnormal-modal ref="taskAbnormalModal" @change="refreshEquipTaskList"></task-abnormal-modal>
     <test-data-add-modal ref="testDataAddModal" @change="refreshEquipTaskList"></test-data-add-modal>
     <test-check-modal ref="testCheckModal"/>

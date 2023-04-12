@@ -468,6 +468,7 @@ export default {
         entrustType: '1',
         secretLevelCode: 1,
         isBuildingReport: 1,
+        isPhotograph: 1,
         radioButton: 1,
       }
       this.tableData = []

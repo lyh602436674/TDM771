@@ -220,6 +220,14 @@ export default {
           },
         },
         {
+          title: '序号',
+          minWidth: 100,
+          dataIndex: 'orderNum',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
           title: '技术参数',
           minWidth: 140,
           dataIndex: 'technologyParam',

@@ -104,48 +104,6 @@ export default {
           formType: 'input'
         },
         {
-          title: '任务状态',
-          key: 'c_status_1',
-          formType: 'select',
-          options: [
-            {
-              title: '未分配',
-              key: '1',
-              value: '1'
-            },
-            {
-              title: '已分配',
-              key: '10',
-              value: '10'
-            },
-            {
-              title: '执行中',
-              key: '15',
-              value: '15'
-            },
-            {
-              title: '已终止',
-              key: '20',
-              value: '20'
-            },
-            {
-              title: '已完成',
-              key: '30',
-              value: '30'
-            }
-          ]
-        },
-        {
-          title: '产品名称',
-          key: 'productName',
-          formType: 'input'
-        },
-        {
-          title: '产品代号',
-          key: 'productAlias',
-          formType: 'input'
-        },
-        {
           title: '试验项目',
           key: 'c_unitName_7',
           formType: 'input'

@@ -190,8 +190,9 @@
           style="width: 100%; height: 200px"
         >
           <span slot="itemRes" slot-scope="text, record">
-            <h-icon v-if="record.itemRes === '2'" class="success-text" type="icon-wancheng1"/>
-            <h-icon v-else-if="record.itemRes === '3'" class="danger-text" type="icon-chacha"/>
+            <h-icon v-if="record.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+            <h-icon v-else-if="record.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-xieti'/>
             <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
           </span>
         </h-vex-table>
@@ -212,8 +213,9 @@
           style="width: 100%; height: 200px"
         >
           <span slot="itemRes" slot-scope="text, record">
-            <h-icon v-if="record.itemRes === '2'" class="success-text" type="icon-wancheng1"/>
-            <h-icon v-else-if="record.itemRes === '3'" class="danger-text" type="icon-chacha"/>
+            <h-icon v-if="record.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+            <h-icon v-else-if="record.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-xieti'/>
             <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
           </span>
         </h-vex-table>
@@ -234,8 +236,9 @@
           style="width: 100%; height: 200px"
         >
           <span slot="itemRes" slot-scope="text, record">
-            <h-icon v-if="record.itemRes === '2'" class="success-text" type="icon-wancheng1"/>
-            <h-icon v-else-if="record.itemRes === '3'" class="danger-text" type="icon-chacha"/>
+            <h-icon v-if="record.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+            <h-icon v-else-if="record.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-xieti'/>
             <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
           </span>
         </h-vex-table>

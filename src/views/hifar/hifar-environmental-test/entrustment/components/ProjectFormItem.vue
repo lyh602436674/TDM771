@@ -599,7 +599,7 @@ export default {
           span: 3,
           component: (
             <h-upload-file
-              accept={"application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
+              accept={".doc,.docx"}
               v-decorator={['attachIds', {initialValue: []}]}/>
           ),
         }

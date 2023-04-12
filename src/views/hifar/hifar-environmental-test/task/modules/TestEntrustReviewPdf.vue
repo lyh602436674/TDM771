@@ -22,11 +22,15 @@
       <iframe
         v-if="reportPath"
         ref='iframe'
-        :src='reportPath'
+        :src='reportPath + "#toolbar=0"'
         frameborder='0'
         height='100%'
         scrolling='auto'
         width='100%'
+        :toolbar='0'
+        name=''
+        referrerpolicy='no-referrer'
+        title=' '
       />
       <a-empty v-else/>
     </div>
