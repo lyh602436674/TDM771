@@ -32,7 +32,7 @@
         <span v-else>暂无附件</span>
       </div>
     </h-desc-item>
-    <h-desc-item :span='3' label='试验曲线'>
+    <h-desc-item v-if="filterUnitCode(model.classifyType)" :span='3' label='试验曲线'>
       <div slot='content' style="width: 100%;height: 100%;">
         <img v-if="model.curveUrl" :src="model.curveUrl" alt="试验曲线" style="width: 100%;height: 100%;">
         <span v-else>无</span>
@@ -72,10 +72,12 @@
 import moment from 'moment'
 import {downloadFile, getFileAccessHttpUrl} from "@api/manage";
 import TestConditionTemplate from "@views/hifar/hifar-environmental-test/components/TestConditionTemplate";
+import entrustmentMixins from "@views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins";
 
 export default {
   name: "ProjectDetailTemplate",
   components: {TestConditionTemplate},
+  mixins: [entrustmentMixins],
   data() {
     return {
       moment,

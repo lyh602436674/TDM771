@@ -63,29 +63,21 @@
         title="实施过程">
         <h-desc-item label="试验设备">{{ detailData.equipName + '-' + detailData.equipModel || '--' }}</h-desc-item>
         <h-desc-item label="设备速率">{{ detailData.testRate || '--' }}</h-desc-item>
-        <h-desc-item label="负责人">{{ detailData.chargeUserName || '--' }}</h-desc-item>
+        <h-desc-item label="试验人员">{{ detailData.chargeUserName || '--' }}</h-desc-item>
         <h-desc-item label="入场时间">{{
-            detailData.approachTime && detailData.approachTime != 0
-              ? moment(parseInt(detailData.approachTime)).format('YYYY-MM-DD HH:mm:ss')
-              : '--'
+            dateTimeFormatByStamp(detailData.approachTime)
           }}
         </h-desc-item>
         <h-desc-item label="离场时间">{{
-            detailData.departureTime && detailData.departureTime != 0
-              ? moment(parseInt(detailData.departureTime)).format('YYYY-MM-DD HH:mm:ss')
-              : '--'
+            dateTimeFormatByStamp(detailData.departureTime)
           }}
         </h-desc-item>
         <h-desc-item label="开始时间">{{
-            detailData.realStartTime && detailData.realStartTime != 0
-              ? moment(parseInt(detailData.realStartTime)).format('YYYY-MM-DD HH:mm:ss')
-              : '--'
+            dateTimeFormatByStamp(detailData.realStartTime)
           }}
         </h-desc-item>
         <h-desc-item label="结束时间">{{
-            detailData.realEndTime && detailData.realEndTime != 0
-              ? moment(parseInt(detailData.realEndTime)).format('YYYY-MM-DD HH:mm:ss')
-              : '--'
+            dateTimeFormatByStamp(detailData.realEndTime)
           }}
         </h-desc-item>
         <h-desc-item label="温度(°C)">{{ detailData.temperature || '--' }}</h-desc-item>
@@ -279,6 +271,7 @@ import DetailBaseInfo from '@views/hifar/hifar-environmental-test/entrustment/co
 import ProjectDetailTemplate from '@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate';
 import HfElevatorLayer from "@comp/HfElevatorLayer";
 import TestPieceDetail from "@views/hifar/hifar-environmental-test/task/components/TestPieceDetail";
+import {dateTimeFormatByStamp} from '@/utils/util'
 
 export default {
   components: {
@@ -312,6 +305,7 @@ export default {
   },
   data() {
     return {
+      dateTimeFormatByStamp,
       moment,
       layerColumns: [
         {

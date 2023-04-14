@@ -10,7 +10,6 @@ const seriesLabel = {
   show: true,
   fontWeight: "bold",
   formatter: (params) => {
-    console.log(params, 'params')
     let a = params.seriesName === '温度'
     return (a ? params.value[1] + '℃' : params.value[1] + 'RH%') + '\n' + momentFormat(params.value[0])
   }

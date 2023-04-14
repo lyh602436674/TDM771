@@ -34,6 +34,16 @@ export default {
   components: {workCenterSelect, pcClassifySelect},
   inject: ['groupCode'],
   data() {
+    const validateClassifyType = (rule, value, callback) => {
+      const bool = this.treeData.map(item => item.classifyType).includes(value)
+      if (bool) {
+        callback('该名称已创建')
+      } else if (!value) {
+        callback('请选择名称')
+      } else {
+        callback()
+      }
+    }
     return {
       title: '操作',
       visible: false,
@@ -80,9 +90,11 @@ export default {
             formType: 'select',
             options: SYSTEM_CONSTANTS_PROJECT_CLASSIFY,
             change: (v, opt) => {
-              this.$refs.projectForm.form.setFieldsValue({classifyName: opt.data.props.title})
+              if (opt) {
+                this.$refs.projectForm.form.setFieldsValue({classifyName: opt.data.props.title})
+              }
             },
-            validate: {rules: [{required: true, message: '请选择名称'}]},
+            validate: {rules: [{required: true, validator: validateClassifyType}]},
           },
           {
             title: '名称',
@@ -189,8 +201,9 @@ export default {
     }
   },
   methods: {
-    add(record) {
+    add(record, treeData) {
       this.model.id = null
+      this.treeData = treeData
       this.edit(record)
     },
     edit(record = {}) {
@@ -216,11 +229,7 @@ export default {
       let index = findIndex(formData, function (obj) {
         return obj.key === 'type'
       })
-      if (this.model.id) {
-        formData[index]['disabled'] = true
-      } else {
-        formData[index]['disabled'] = false
-      }
+      formData[index]['disabled'] = !!this.model.id;
       this.formData = formData
     },
     handleSubmit() {

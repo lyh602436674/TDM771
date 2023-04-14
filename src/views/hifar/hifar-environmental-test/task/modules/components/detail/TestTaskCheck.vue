@@ -43,8 +43,13 @@
                 <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class="check-flag-person">
-                {{ item.checkUserName || '--' }}
-                <div>{{ formatTime(item.checkTime) }}</div>
+                <template v-if="item.checkFlag === 2">
+                  <h-icon type='icon-xieti'/>
+                </template>
+                <template v-else>
+                  {{ item.checkUserName || '--' }}
+                  <div>{{ formatTime(item.checkTime) }}</div>
+                </template>
               </div>
             </div>
           </template>
@@ -83,8 +88,13 @@
                 <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class="check-flag-person">
-                {{ item.checkUserName || '--' }}
-                <div>{{ formatTime(item.checkTime) }}</div>
+                <template v-if="item.checkFlag === 2">
+                  <h-icon type='icon-xieti'/>
+                </template>
+                <template v-else>
+                  {{ item.checkUserName || '--' }}
+                  <div>{{ formatTime(item.checkTime) }}</div>
+                </template>
               </div>
             </div>
           </template>
@@ -123,8 +133,13 @@
                 <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class="check-flag-person">
-                {{ item.checkUserName || '--' }}
-                <div>{{ formatTime(item.checkTime) }}</div>
+                <template v-if="item.checkFlag === 2">
+                  <h-icon type='icon-xieti'/>
+                </template>
+                <template v-else>
+                  {{ item.checkUserName || '--' }}
+                  <div>{{ formatTime(item.checkTime) }}</div>
+                </template>
               </div>
             </div>
           </template>
@@ -137,6 +152,7 @@
 <script>
 import {postAction} from '@/api/manage'
 import {isArray} from 'lodash'
+import moment from "moment";
 
 export default {
   name: 'TestTaskCheck',
@@ -162,8 +178,10 @@ export default {
     this.getCheckDetail()
   },
   methods: {
+    formatTime(time) {
+      return (time && +time) ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : '--'
+    },
     getCheckDetail() {
-      console.log(this.testId)
       postAction(this.url.detail, {id: this.testId}).then((res) => {
         if (res.code === 200) {
           let {beforeCheckInfo, inCheckInfo, afterCheckInfo} = res.data

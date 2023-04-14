@@ -448,7 +448,7 @@ export default {
       if (isArray(item)) {
         record.checkItemInfo = item
       } else if (isObject(item)) {
-        if (+item.checkFlag === 2) return this.$message.warning('无需审核')
+        if (+item.checkFlag === 2) return this.$message.warning('无需复核')
         record.checkItemInfo.push({
           id: item.id
         })
@@ -515,7 +515,7 @@ export default {
       if (this[type].length === 0) {
         return this.$message.warning('请先新增检查项')
       }
-      if (this[type].map(item => +item.checkFlag === 2).filter(v => v === true).length === this[type].length) return this.$message.warning('无需审核')
+      if (this[type].map(item => +item.checkFlag === 2).filter(v => v === true).length === this[type].length) return this.$message.warning('无需复核')
       let checkedList = this.filterCheckedList(type)
       if (checkedList.length) {
         let items = this.checkItem(checkedList, ['id'])

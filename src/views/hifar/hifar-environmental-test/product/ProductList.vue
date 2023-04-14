@@ -15,7 +15,7 @@
             <template slot="extra"></template>
             <a-input-search
               slot="search-form"
-              v-model="queryTreeParams.keyWord"
+              v-model="queryTreeParams.categoryName"
               allowClear
               enter-button="搜索"
               placeholder="请输入分类名称"
@@ -117,7 +117,7 @@ export default {
       selectedTreeKeys: [],
       treeData: [],
       queryTreeParams: {
-        keyWord: "",
+        categoryName: "",
       },
       url: {
         list: '/HfProductBaseBusiness/listPage',
@@ -277,7 +277,7 @@ export default {
       })
     },
     loadLeftTree() {
-      getAction(this.url.tree).then((res) => {
+      getAction(this.url.tree, {...this.queryTreeParams}).then((res) => {
         if (res.code === 200) {
           this.treeData = this.recursive(res.data)
         }
@@ -321,7 +321,8 @@ export default {
     // 添加
     handleAdd() {
       let record = {
-        productEffect: 1
+        productEffect: 1,
+        classifyId: this.selectedTreeKeys
       }
       this.$refs.productModal.show(record, '添加')
     },

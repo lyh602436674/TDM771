@@ -75,12 +75,12 @@ export default {
           }
         },
         {
-          title: '工装规格 ',
+          title: '工装规格',
           formType: 'input',
           key: 'toolsSize',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请输入工装名称' }]
+            rules: [{ required: true, message: '请输入工装规格' }]
           }
         },
         {

@@ -173,7 +173,7 @@
                           v-has="'archiveTem:edit'"
                           v-model="swapFileList"
                           :customParams="{id:record.id}"
-                          accept=".doc,.docx"
+                          accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                           isPublic
                           @beforeUpload="$refs.equipTaskList.localLoading = true"
                           @change="file => handleUploadCallback(file, record,'1')">
@@ -194,7 +194,7 @@
                           v-has="'embodimentTem:edit'"
                           v-model="swapFileList"
                           :customParams="{id:record.id}"
-                          accept=".doc,.docx"
+                          accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                           isPublic
                           @beforeUpload="$refs.equipTaskList.localLoading = true"
                           @change="file => handleUploadCallback(file, record,'2')">
@@ -205,7 +205,7 @@
                     <a-space slot="actions" slot-scope="text, record">
                       <template v-if="![40,50].includes(record.status)">
                         <!-- 开始 -->
-                        <a-tooltip v-if="[1, 30, 40, 50, 25].includes(+record.status)" title="开始">
+                        <a-tooltip v-if="[1, 30, 40, 45, 50, 25].includes(+record.status)" title="开始">
                           <h-icon v-has="'ArrangeMent:start'" class="h-icon-item" type="icon-jiediankaishi"
                                   @click="handleStart('start', record)"/>
                         </a-tooltip>
@@ -726,6 +726,11 @@ export default {
     this.loadLeftTree()
   },
   methods: {
+    // 开始
+    handleStart(type, record) {
+      if (record.status === 45) return this.$message.warning('试验异常中，请先解决异常')
+      this.$refs.taskStartModal.show(type, record)
+    },
     handleFinish(record) {
       if (record.status === 1) return this.$message.warning('试验未开始，不能完成')
       if (record.status === 45) return this.$message.warning('试验异常中，请先解决异常')
@@ -804,11 +809,6 @@ export default {
         item.type = 'default'
       })
     },
-    // 开始
-    handleStart(type, record) {
-      this.$refs.taskStartModal.show(type, record)
-    },
-
     handleActions(type, record) {
       let params = {
         id: record.id,

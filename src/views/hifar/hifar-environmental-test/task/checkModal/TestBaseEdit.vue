@@ -3,13 +3,13 @@
  * @Date: 2021-11-15 10:24:06
  * @LastEditTime: 2021-11-17 09:47:10
  * @LastEditors: 赵峰
- * @Descripttion: 试验编辑
+ * @Descripttion: 试验结果
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\task\checkModal\TestBaseEdit.vue
 -->
 <template>
   <h-modal
     :getContainer="getContainer"
-    :title="'试验编辑(' + records.testCode + ')'"
+    :title="'试验结果(' + records.testCode + ')'"
     :visible="visible"
     destroyOnClose
     fullScreen
@@ -1806,10 +1806,6 @@ export default {
           this.personArr = model.testPersonInfo
           this.testTaskData = model.testTaskInfo
           this.projectData = model.testTaskInfo
-          this.productList.queryParams.projectPieceInfo = []
-          this.productTable.forEach((item) => {
-            this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
-          })
           this.equipData = model.testEquipInfo.length ? model.testEquipInfo : this.selectedTreeRows
           this.toolsProductData = model.testToolsProductInfo
           model.realStartTime = model.realStartTime && model.realStartTime !== '0' ? moment(+model.realStartTime) : null
@@ -1821,11 +1817,11 @@ export default {
       })
     },
     productAdd() {
-      this.$refs.productHandleSelectModal.show()
       this.productList.queryParams.projectPieceInfo = []
       this.productTable.forEach((item) => {
-        this.productList.queryParams.projectPieceInfo.push({ projectId: item.projectId, pieceId: item.productId })
+        this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
       })
+      this.$refs.productHandleSelectModal.show()
     },
     switchRecordingDelete(index) {
       this.switchRecordingTable.splice(index, 1)
@@ -1844,7 +1840,7 @@ export default {
       this.siteInspectionTable.splice(index, 1)
     },
     productCallback(value) {
-      this.productTable = this.productTable.concat(value)
+      this.productTable = this.productTable.concat(uniqueArray(this.productTable, 'pieceId', value, 'pieceId'))
     },
     personAdd() {
       this.$refs.PostionModal.show(this.personArr, '选择参试人员')

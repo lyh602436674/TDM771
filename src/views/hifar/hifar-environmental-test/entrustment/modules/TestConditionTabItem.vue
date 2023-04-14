@@ -30,7 +30,7 @@
       <vxe-table-column type="seq" width="60"></vxe-table-column>
       <vxe-table-column field="paramCode" title="参数编号"></vxe-table-column>
       <vxe-table-column field="paramName" title="试验条件"></vxe-table-column>
-      <vxe-table-column field="paramTypeText" title="参数类型"></vxe-table-column>
+      <vxe-table-column field="paramType_dictText" title="参数类型"></vxe-table-column>
       <vxe-table-column field="unitName" title="单位">
         <template #default="{ row }">
           {{ row.unitName || '--' }}

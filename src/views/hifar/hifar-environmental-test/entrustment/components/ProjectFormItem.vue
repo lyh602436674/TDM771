@@ -80,6 +80,7 @@
       ref="equipHandleSelectModal"
       :columns="addEquipColumns"
       :data-url="equipParams"
+      historySelect
       :searchData="equipSearchData"
       :title="'添加测试设备'"
       type="equip"
@@ -101,7 +102,6 @@ import drawCurveMixin from '@/views/hifar/hifar-environmental-test/entrustment/d
 import entrustmentMixins from '@/views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins'
 import ExperimentalCurveModal from './ExperimentalCurveModal'
 import sortable from 'sortablejs'
-import {filterDictTextByCache} from '@comp/_util/JDictSelectUtil'
 import SysUserSelect from '@/views/components/SysUserSelect'
 import HandleSelectModal from "@views/hifar/hifar-environmental-test/task/modules/components/HandleSelectModal";
 
@@ -109,7 +109,6 @@ const seriesLabel = {
   show: true,
   fontWeight: "bold",
   formatter: (params) => {
-    console.log(params, 'params')
     let a = params.seriesName === '温度'
     return (a ? params.value[1] + '℃' : params.value[1] + 'RH%') + '\n' + momentFormat(params.value[0])
   }
@@ -188,7 +187,7 @@ export default {
                 highLowTemperature: item.highLowTemperature || "1",
                 abilityInfo: item.abilityInfo && item.abilityInfo.map(a => {
                   return {
-                    paramTypeText: filterDictTextByCache('hf_dev_param_type', a.paramType) || '-',
+                    paramType_dictText: a.paramType_dictText,
                     ...a,
                   }
                 }) || [],
@@ -218,7 +217,7 @@ export default {
                     return {
                       paramId: a.abilityParamId,
                       ...a,
-                      paramTypeText: filterDictTextByCache('hf_dev_param_type', a.paramType) || '-',
+                      paramType_dictText: a.paramType_dictText,
                       delFlag: 0,  // 默认带入不可以删除
                     }
                   }) || []
@@ -231,7 +230,7 @@ export default {
                     return {
                       paramId: a.abilityParamId,
                       ...a,
-                      paramTypeText: filterDictTextByCache('hf_dev_param_type', a.paramType) || '-',
+                      paramType_dictText: a.paramType_dictText,
                       delFlag: 0, // 默认带入不可以删除
                     }
                   }) || []
@@ -240,7 +239,6 @@ export default {
 
             }
           }
-          console.log(obj, 'objobjobjobjobj')
           this.disabledIsShowUserInReport = obj.lastUser
           this.disabledPowerUpTime = obj.isPowerUp
           if (filterProjectByType) {
@@ -599,7 +597,7 @@ export default {
           span: 3,
           component: (
             <h-upload-file
-              accept={".doc,.docx"}
+              accept={".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
               v-decorator={['attachIds', {initialValue: []}]}/>
           ),
         }
@@ -818,7 +816,7 @@ export default {
           paramId: item.id,
           paramName: item.paramName,
           paramType: item.paramType,
-          paramTypeText: filterDictTextByCache('hf_dev_param_type', item.paramType) || '-',
+          paramType_dictText: item.paramType_dictText,
           paramCode: item.paramCode,
           dataType: item.dataType,
           unitCode: item.unitCode,

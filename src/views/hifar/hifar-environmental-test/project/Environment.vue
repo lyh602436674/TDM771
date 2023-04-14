@@ -149,7 +149,7 @@ export default {
       let record = {
         groupCode: this.groupCode,
       }
-      this.$refs.classifyAndUnitModal.add(record)
+      this.$refs.classifyAndUnitModal.add(record,this.treeData)
     },
     handleModify() {
       if (!this.selectedRows.length) {

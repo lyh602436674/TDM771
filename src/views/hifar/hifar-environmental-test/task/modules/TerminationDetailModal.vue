@@ -39,7 +39,7 @@ export default {
   props: {
     listType: {
       type: String,
-      default: 'task',
+      default: '',
     }
   },
   data() {

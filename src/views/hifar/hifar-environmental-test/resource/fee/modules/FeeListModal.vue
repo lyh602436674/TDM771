@@ -13,6 +13,7 @@
     :visible="visible"
     :getContainer="getContainer"
     fullScreen
+    destroyOnClose
     :confirm-loading="confirmLoading"
     @submit="handleClickSubmit"
     @cancel="handleCancel"
@@ -28,79 +29,92 @@
         @change="submitHandle"
       ></h-form>
       <h-card title="设备单价">
-        <a-button
-          icon="plus"
+        <h-search
+          v-model="queryParams"
+          :data="searchBar"
           size="small"
-          style="margin-right: 5px; margin-bottom: 4px"
-          type="ghost-primary"
-          @click="insertEventHandle"
-        >新增
-        </a-button
-        >
-        <a-button
-          v-if="hasSelected"
-          icon="minus"
-          size="small"
-          style="margin-bottom: 4px"
-          type="danger"
-          @click="handleDelete"
-        >
-          删除
-        </a-button>
-        <div class="wordRecordData">
+          @change="loadUnitById(rowId)"
+        />
+        <div style="margin-top: 10px">
+          <a-button icon="plus" size="small" style="margin-right: 5px; margin-bottom: 4px" type="ghost-primary"
+                    @click="insertEventHandle">新增
+          </a-button>
+          <a-popconfirm v-if="hasSelected" title="确定删除吗？" @confirm="handleDelete">
+            <a-button
+              icon="delete"
+              size="small"
+              style="margin-bottom: 4px"
+              type="danger"
+            >删除
+            </a-button>
+          </a-popconfirm>
+        </div>
+        <div>
           <vxe-table
             ref="priceDataTable"
             :data="priceData"
             :edit-config="{ key: 'id', trigger: 'click', mode: 'row', showStatus: true }"
             :edit-rules="validRules"
             :max-height="520"
+            :loading="tableLoading"
             border
             keep-source
+            resizable
+            rowId="id"
             show-all-overflow
             @checkbox-all="selectAllEvent"
             @checkbox-change="onSelectChange"
+            @edit-closed="handleEditClosed"
           >
             <vxe-table-column align="center" type="checkbox" width="40"></vxe-table-column>
-            <vxe-table-column align="center" type="seq" width="40"></vxe-table-column>
+            <vxe-table-column align="center" type="seq" width="60"></vxe-table-column>
             <vxe-table-column field="unitName" title="设备名称" width="160"></vxe-table-column>
             <vxe-table-column field="innerName" title="内部名称" width="160"></vxe-table-column>
-            <vxe-table-column field="equipModel" title="设备型号"></vxe-table-column>
-            <vxe-table-column field="assetsCode" title="资产编号"></vxe-table-column>
+            <vxe-table-column field="equipModel" title="设备型号" width="160"></vxe-table-column>
+            <vxe-table-column field="assetsCode" title="资产编号" width="160"></vxe-table-column>
             <vxe-table-column
+              width="160"
               :edit-render="{ name: '$input', props:{readonly: true},  placeholder: '请选择试验项目',events:{click:handleProjectNameClick} }"
               field="projectName" title="试验项目"></vxe-table-column>
             <vxe-table-column :visible="false" field="projectId"></vxe-table-column>
             <vxe-table-column
+              minWidth="80"
               :edit-render="{ name: 'input', placeholder: '请输入速率范围' }"
               field="rate"
               title="速率"
             ></vxe-table-column>
             <vxe-table-column
+              minWidth="120"
               :edit-render="{ name: 'input', placeholder: '请输入温度范围' }"
               field="temperatureRange"
               title="温度范围(℃)"
             ></vxe-table-column>
             <vxe-table-column
+              minWidth="130"
               :edit-render="{ name: 'input', placeholder: '请输入湿度范围' }"
               field="humidityRange"
               title="湿度范围(RH)"
             ></vxe-table-column>
             <vxe-table-column
+              minWidth="120"
               :edit-render="{ name: 'input', placeholder: '请输入压力范围' }"
               field="pressureRange"
               title="压力范围(Pa)"
             ></vxe-table-column>
             <vxe-table-column
+              minWidth="120"
               :edit-render="{ name: 'input', placeholder: '请输入加速度范围' }"
               field="accelerationRange"
               title="加速度范围"
             ></vxe-table-column>
             <vxe-table-column
+              minWidth="80"
               :edit-render="{ name: '$input', placeholder: '请输入折扣',events:{change:calcDiscountUnitPrice} }"
               field="discount"
               title="折扣"
             ></vxe-table-column>
             <vxe-table-column
+              minWidth="140"
               :edit-render="{
                 name: '$input',
                 props: { type: 'number', min: 0, placeholder: '请输入标准单价（元）' },
@@ -110,14 +124,17 @@
               title="标准单价（元）"
             ></vxe-table-column>
             <vxe-table-column
+              minWidth="120"
               field="discountPrice"
               title="折后单价（元）"
             ></vxe-table-column>
             <vxe-table-column
+              minWidth="120"
               field="startupCost"
               title="开机费（元）"
             ></vxe-table-column>
             <vxe-table-column
+              minWidth="150"
               :edit-render="{ name: '$input', props: { placeholder: '请输入单价描述' } }"
               field="remarks"
               title="单价描述"
@@ -133,7 +150,7 @@
 
 <script>
 import {postAction} from '@/api/manage'
-import {isArray, isNumber} from 'lodash'
+import {isNumber} from 'lodash'
 import SysFeeListSelectModal from '@/views/components/SysFeeListSelectModal'
 import ProjectAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal";
 
@@ -161,12 +178,42 @@ export default {
 
     return {
       dataSource: [],
+      searchBar: [
+        {
+          title: '设备型号',
+          key: 'equipModel',
+          formType: 'input',
+        },
+        {
+          title: '设备名称',
+          key: 'unitName',
+          formType: 'input',
+        },
+        {
+          title: '内部名称',
+          key: 'innerName',
+          formType: 'input',
+        },
+        {
+          title: '资产编号',
+          key: 'assetsCode',
+          formType: 'input',
+        },
+        {
+          title: '试验项目',
+          key: 'projectName',
+          formType: 'input',
+        },
+      ],
+      queryParams: {},
       visible: false,
       confirmLoading: false,
+      tableLoading: false,
       model: {},
       title: '添加',
-      selectedRowKeys: [],
+      selectedRows: [],
       priceData: [],
+      priceDataExtend: [],
       projectData: [],
       validRules: {
         rate: [
@@ -231,7 +278,7 @@ export default {
         edit: '/HfResCustCostBusiness/modifyCostAndPriceById',
         detailById: '/HfResCustCostBusiness/queryById',
         priceUnit: '/HfResCustPriceBusiness/listAllByCostId',
-        deletePrice: '/HfResCustPriceBusiness/logicRemoveById',
+        delete: '/HfResCustPriceBusiness/deleteCustPriceById',
       },
       selectProjectBefore: {},
       formData: [
@@ -257,22 +304,29 @@ export default {
           autoSize: {minRows: 1}
         },
       ],
+      rowId: "",
+      onceFlag: true,
     }
   },
 
   computed: {
     hasSelected() {
-      return this.selectedRowKeys.length > 0
+      return this.selectedRows.length > 0
     },
   },
   methods: {
     show(record, title) {
       this.visible = true
       if (record.id) {
+        this.rowId = record.id
         this.loadUnitById(record.id)
       }
       this.title = title
       this.editor(record)
+    },
+    handleEditClosed({row, rowIndex}) {
+      // 单元格编辑状态下被关闭时会触发该事件
+      this.priceDataExtend[rowIndex] = row
     },
     handleProjectNameClick({row, rowIndex}) {
       this.selectProjectBefore = {row, rowIndex}
@@ -284,24 +338,38 @@ export default {
       this.$set(this.priceData[rowIndex], 'projectName', record.map(item => item.unitName).toString())
     },
     calcDiscountUnitPrice({row}) {
-      let res = row.discount && row.unitPrice && !isNaN(Number(row.unitPrice)) && !isNaN(Number(row.discount)) ? (row.discount * 0.1 * row.unitPrice).toFixed(2) : null
+      let res = (row.discount && row.unitPrice && !isNaN(Number(row.unitPrice)) && !isNaN(Number(row.discount))) ? (row.discount * 0.1 * row.unitPrice).toFixed(2) : null
       this.$set(row, 'discountPrice', res)
     },
     loadUnitById(costId) {
-      postAction(this.url.priceUnit, {costId: costId}).then((res) => {
+      if (!costId) return
+      this.tableLoading = true
+      postAction(this.url.priceUnit, {costId: costId, ...this.queryParams}).then((res) => {
         if (res.code === 200) {
           let record = res.data
           this.priceData = record && record.length && record.map((item) => {
             return {
-              ...item,
               ...item.equipData[0], // 设备信息全部从equipData中拿
+              ...item,
               unitName: item.equipData[0].equipName,
               remarks: item.remarks,
               projectId: item.projectId || '',
               projectName: item.projectName || '',
             }
           }) || []
+          if (this.onceFlag) {
+            // 此变量用来判断页面进入第一次加载得到的数据
+            // 这里的逻辑比较乱，因为搜索查询后表格的数据会变，保存时，不能只拿查询出来的表格数据，要拿第一次加载的原始数据（时间紧急，先这样处理）
+            // 本来此表格数据不用查询，但是数据多的情况下还是得需要查询
+            // 当然了，编辑和删除时，也会更新原始数据
+            this.priceDataExtend = this.priceData
+            this.onceFlag = false
+          }
+
         }
+      }).finally(() => {
+        this.tableLoading = false
+        this.selectedRows = []
       })
     },
     editor(record) {
@@ -309,26 +377,30 @@ export default {
     },
     //  多选
     onSelectChange(records) {
-      this.selectedRowKeys = records.records
+      this.selectedRows = records.records
     },
     // 全选
     selectAllEvent(records) {
-      this.selectedRowKeys = records.records
+      this.selectedRows = records.records
     },
-    handleDelete() {
-      const $table = this.$refs.priceDataTable
-      const { removeRecords } = $table.getRecordset()
-      let tableData = this.priceData
-      $table.removeCheckboxRow()
-      this.selectedRowKeys = []
-      if (tableData.length > 0) {
-        this.priceData = tableData.filter((items) => {
-          if (!removeRecords.includes(items)) return items
-        })
+    async handleDelete() {
+      this.tableLoading = true
+      for (let i = 0; i < this.selectedRows.length; i++) {
+        for (let j = 0; j < this.priceDataExtend.length; j++) {
+          if (this.selectedRows[i].id === this.priceDataExtend[j].id) {
+            if (this.selectedRows[i].id && this.priceDataExtend[j].id) {
+              await postAction(this.url.delete, {ids: this.selectedRows.map(item => item.id).toString()})
+            }
+            this.priceDataExtend.splice(j, 1)
+            j--
+            break
+          }
+        }
       }
+      this.loadUnitById(this.rowId)
     },
     feeSelectHandle(selectedRowKeys, selectedRows) {
-      this.priceData = this.priceData.concat(selectedRows && selectedRows.length && selectedRows.map((item) => {
+      let result = selectedRows && selectedRows.length && selectedRows.map((item) => {
         return {
           ...item,
           unitName: item.equipName,
@@ -338,35 +410,27 @@ export default {
           projectId: '',
           projectName: '',
         }
-      }) || [])
+      }) || []
+      this.priceData = this.priceData.concat(result)
+      this.priceDataExtend = this.priceDataExtend.concat(result)
     },
     insertEventHandle() {
-      let selectedRowKeys = []
-      if (isArray(this.priceData)) {
-        selectedRowKeys = this.priceData.map((item) => {
-          return (item.id = item.unitId)
-        })
-      }
-      this.$refs.SysFeeListSelectModal.show(this.priceData, selectedRowKeys)
+      // let selectedRows = []
+      // if (isArray(this.priceData)) {
+      //   selectedRows = this.priceData.map((item) => {
+      //     return (item.id = item.unitId)
+      //   })
+      // }
+      // this.$refs.SysFeeListSelectModal.show(this.priceData, selectedRows)
+      this.$refs.SysFeeListSelectModal.show()
     },
     handleClickSubmit() {
       this.$refs.repairRecordForm.validateForm()
     },
-    // 删除项目单价
-    handleByIdDelete(id) {
-      postAction(this.url.deletePrice, { id: id }).then((res) => {})
-    },
-    // 提交
-    async submitHandle(values) {
-      if (this.confirmLoading) return
-      this.confirmLoading = false
-      const $table = this.$refs.priceDataTable
-      const errMap = await $table.validate().catch((errMap) => errMap)
-      let priceData = $table.getData() || []
-      let url = null
-      priceData = priceData.map((item) => {
+    formatPriceData(priceData) {
+      return priceData.map((item) => {
         return {
-          costId: item.costId ? item.costId : '',
+          costId: item.costId || '',
           unitId: item.unitId,
           id: item.id,
           unitName: item.unitName,
@@ -384,6 +448,16 @@ export default {
           remarks: item.remarks,
         }
       })
+    },
+    // 提交
+    async submitHandle(values) {
+      if (this.confirmLoading) return
+      this.confirmLoading = true
+      const $table = this.$refs.priceDataTable
+      const errMap = await $table.validate().catch((errMap) => errMap)
+      let priceData = this.priceDataExtend
+      let url = null
+      priceData = this.formatPriceData(priceData)
       if (values.id) {
         url = this.url.edit
       } else {
@@ -397,13 +471,19 @@ export default {
             this.$emit('change', true)
             this.handleCancel()
           }
+        }).finally(() => {
+          this.confirmLoading = false
         })
       }
     },
     handleCancel() {
       this.visible = false
+      this.onceFlag = true
       this.model = {}
+      this.rowId = ''
+      this.queryParams = {}
       this.priceData = []
+      this.priceDataExtend = []
     },
   },
 }

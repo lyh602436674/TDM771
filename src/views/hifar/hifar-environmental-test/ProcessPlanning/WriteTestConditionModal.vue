@@ -315,7 +315,7 @@ export default {
           paramId: item.id,
           paramName: item.paramName,
           paramType: item.paramType,
-          paramTypeText: filterDictTextByCache('hf_dev_param_type', item.paramType) || '-',
+          paramType_dictText: item.paramType_dictText,
           paramCode: item.paramCode,
           dataType: item.dataType,
           unitCode: item.unitCode,

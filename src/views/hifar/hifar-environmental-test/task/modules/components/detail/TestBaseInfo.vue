@@ -15,28 +15,60 @@
           :key="index"
           :label="item.title"
         >
-          {{
-            item.isTime
-              ? parseFloat(item.value) == 0
-                ? '--'
-                : moment(parseFloat(item.value)).format('YYYY-MM-DD HH:mm:ss')
-              : item.value
-                ? item.value
-                : '--'
-          }}
+          {{ item.isTime ? dateTimeFormatByStamp(item.value) : item.value ? item.value : '--' }}
         </h-desc-item>
       </h-desc>
     </h-card>
     <h-card title="样品信息" style="height: auto" :showCollapse="true">
       <div slot="content">
-        <piece-detail-template title="" :dataSource="productTable"
-                               :entrustType="entrustType"></piece-detail-template>
+        <test-piece-detail
+          :dataSource="productTable"
+          class="mg-t-20"
+          title=""/>
       </div>
     </h-card>
     <h-card title="项目信息" v-for="(item, index) in projectData" :key="index" style="margin-bottom: 10px">
       <project-detail-template title="" :model="item"/>
     </h-card>
 
+    <!-- 安装、控制方式 -->
+    <h-card :bordered='false' style='width: 100%' title='安装、控制方式'>
+      <a-table
+        :columns='installControlColumns'
+        :dataSource='installControlTable'
+        :pagination='false'
+        bordered
+        rowKey='id'
+        size='small'
+        style="width: 100%;"
+      >
+        <div slot="expandedRowRender" slot-scope="record,index">
+          <a-table
+            :columns='sensorColumns'
+            :dataSource='record.testSensorInfo'
+            :pagination='false'
+            bordered
+            rowKey='id'
+            size='small'
+            style="width: 100%;"
+          >
+          </a-table>
+        </div>
+      </a-table>
+    </h-card>
+    <!-- 试验设备开关机记录 -->
+    <h-card :bordered='false' style='width: 100%' title='试验设备开关机记录'>
+      <a-table
+        :columns='switchRecordingColumns'
+        :dataSource='switchRecordingTable'
+        :pagination='false'
+        bordered
+        rowKey='id'
+        size='small'
+        style="width: 100%;"
+      >
+      </a-table>
+    </h-card>
     <h-card title="参试人员" style="height: auto" :showCollapse="true">
       <div slot="content">
         <a-table
@@ -56,17 +88,15 @@
         </a-table>
       </div>
     </h-card>
-    <h-card title="传感器" :style="{ marginBottom: 0, height: 'auto' }" :showCollapse="true">
+    <h-card title="振动工装" :style="{ marginBottom: 0, height: 'auto' }" :showCollapse="true">
       <div slot="content">
-        <a-table size="small" :columns="sensorColumns" :dataSource="sensorData" :pagination="false" bordered>
+        <a-table :columns="toolsProductColumns" :dataSource="toolsProductData" :pagination="false" bordered
+                 size="small">
         </a-table>
       </div>
     </h-card>
-    <h-card title="振动工装" :style="{ marginBottom: 0, height: 'auto' }" :showCollapse="true">
-      <div slot="content">
-        <a-table size="small" :columns="toolsProductColumns" :dataSource="toolsProductData" :pagination="false" bordered>
-        </a-table>
-      </div>
+    <h-card style="height: auto" title="曲线图片">
+      <h-upload-file v-model="pictureData" :isEdit="false" isWriteRemarks style="width: 100%"></h-upload-file>
     </h-card>
   </div>
 </template>
@@ -75,6 +105,8 @@
 import moment from 'moment'
 import ProjectDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate";
 import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
+import {dateTimeFormatByStamp} from '@/utils/util'
+import TestPieceDetail from "@views/hifar/hifar-environmental-test/task/components/TestPieceDetail";
 
 export default {
   props: {
@@ -94,25 +126,28 @@ export default {
     },
     projectData: {
       type: [Array, Object],
-      default: () => {},
+      default: () => {
+      },
     },
     productTable: {
       type: [Array, Object],
-      default: () => {},
+      default: () => {
+      },
     },
-    carryOutProcessData: {
-      type: [Array, Object],
-      default: () => {},
+    installControlTable: {
+      type: Array,
+      default: () => [],
+    },
+    switchRecordingTable: {
+      type: Array,
+      default: () => [],
     },
     personArr: {
       type: [Array, Object],
-      default: () => {},
+      default: () => {
+      },
     },
     equipData: {
-      type: [Array, Object],
-      default: () => {},
-    },
-    sensorData: {
       type: [Array, Object],
       default: () => {
       },
@@ -121,11 +156,112 @@ export default {
       type: [Array],
       default: () => [],
     },
+    pictureData: {
+      type: [Array],
+      default: () => [],
+    },
   },
-  components: {ProjectDetailTemplate, PieceDetailTemplate},
+  components: {ProjectDetailTemplate, PieceDetailTemplate, TestPieceDetail},
   data() {
     return {
+      dateTimeFormatByStamp,
       moment,
+      installControlColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return index + 1
+          }
+        },
+        {
+          title: '安装方式',
+          dataIndex: 'installMethodName',
+          align: 'center',
+          width: 150,
+        },
+        {
+          title: '试验方向',
+          dataIndex: 'directionName',
+          align: 'center',
+          width: 250,
+        },
+        {
+          title: '几台/次',
+          dataIndex: 'installNum',
+          align: 'center',
+          width: 150,
+          scopedSlots: {customRender: 'installNum'},
+        },
+        {
+          title: '控制方式',
+          dataIndex: 'controlMethod',
+          align: 'center',
+          width: 100,
+        },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          align: 'center',
+        },
+      ],
+      switchRecordingColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return index + 1
+          }
+        },
+        {
+          title: '试验开始时间',
+          dataIndex: 'testStartTime',
+          align: 'center',
+          width: 200,
+          customRender: (t, row, index) => {
+            return dateTimeFormatByStamp(t)
+          }
+        },
+        {
+          title: '试验结束时间',
+          dataIndex: 'testEndTime',
+          align: 'center',
+          width: 200,
+          customRender: (t, row, index) => {
+            return dateTimeFormatByStamp(t)
+          }
+        },
+        {
+          title: '耗时',
+          dataIndex: 'useTime',
+          align: 'center',
+          width: 100,
+        },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          align: 'center',
+          customRender: (t, row) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '值班人员',
+          dataIndex: 'personName',
+          align: 'center',
+          width: 220,
+          customRender: (t, row) => {
+            let {personName, personSignTime} = row
+            return personName && personSignTime ? personName + ' ' + dateTimeFormatByStamp(personSignTime) : ''
+          }
+        },
+      ],
       toolsProductColumns: [
         {
           title: '#',
@@ -198,25 +334,25 @@ export default {
       ],
       sensorColumns: [
         {
-          title: '#',
-          dataIndex: '',
-          key: 'rowIndex',
-          width: 60,
+          title: '设备名称',
+          dataIndex: 'equipName',
           align: 'center',
-          customRender: function (t, r, index) {
-            return index + 1
-          },
-        },
-        {
-          title: '设备编号',
-          dataIndex: 'equipCode',
           customRender: (t) => {
             return t ? t : '--'
           }
         },
         {
-          title: '设备名称',
-          dataIndex: 'equipName',
+          title: '序号',
+          dataIndex: 'equipIndex',
+          align: 'center',
+          customRender: (t) => {
+            return t ? t : '--'
+          }
+        },
+        {
+          title: '内部名称',
+          dataIndex: 'innerName',
+          align: 'center',
           customRender: (t) => {
             return t ? t : '--'
           }
@@ -224,16 +360,32 @@ export default {
         {
           title: '计量有效期',
           dataIndex: 'checkValid',
+          align: 'center',
           customRender: (t, record) => {
             return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
           }
         },
         {
-          title: '设备型号',
-          dataIndex: 'equipModel',
-          customRender: (t) => {
-            return t ? t : '--'
-          }
+          title: '备注',
+          maxWidth: 150,
+          ellipsis: true,
+          align: 'center',
+          dataIndex: 'remarks',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '位置',
+          dataIndex: 'locationName',
+          align: 'center',
+          width: 150,
+        },
+        {
+          title: '用途',
+          dataIndex: 'usePurposeName',
+          align: 'center',
+          width: 150,
         },
       ],
       testTaskColumns: [

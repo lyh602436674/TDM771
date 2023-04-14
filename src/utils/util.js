@@ -1,6 +1,7 @@
 import * as api from '@/api/api'
 import {asyncRouterMap} from '@/config/router.config.js'
 import {cloneDeep} from 'lodash'
+import moment from "moment";
 
 //hifar add begin
 export function validateDuplicateMultiValueWithMsg(tableName, fieldNames, fieldVals, dataId, msg, callback) {
@@ -573,4 +574,16 @@ export function uniqueArray(array1, field1, array2, field2) {
     }
   }
   return arr2
+}
+
+/**
+ * @description 时间戳格式化时间
+ * @Author 雷宇航
+ * @date 2023-4-13
+ * **/
+
+
+export function dateTimeFormatByStamp(time, stamp = 'YYYY-MM-DD HH:mm:ss') {
+  if (['undefined', 'null', null, undefined, '', '0', 0].includes(time)) return '--'
+  return moment(+time).format(stamp)
 }

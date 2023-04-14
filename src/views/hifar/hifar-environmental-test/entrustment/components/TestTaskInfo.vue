@@ -22,7 +22,7 @@
         <a-badge v-else-if="text == 20" color="green" text="进行中" />
         <a-badge v-else-if="text == 30" color="volcano" text="暂停" />
         <a-badge v-else-if="text == 40" color="red" text="终止" />
-        <a-badge v-else-if="text == 45" color="orange" text="异常" />
+        <a-badge v-else-if="text == 45" color="yellow" text="异常" />
         <a-badge v-else-if="text == 50" color="grey" text="已完成" />
         <a-badge v-else-if="text == 60" color="grey" text="已出报告" />
       </template>

@@ -19,7 +19,7 @@
         <h-desc-item label="任务编号">{{ model.equipName + '-' + model.equipModel || '--' }}</h-desc-item>
         <h-desc-item label="记录编号">{{ model.recordNo || '--' }}</h-desc-item>
         <h-desc-item label="设备速率">{{ model.testRate || '--' }}</h-desc-item>
-        <h-desc-item label="负责人">{{ model.chargeUserName || '--' }}</h-desc-item>
+        <h-desc-item label="试验人员">{{ model.chargeUserName || '--' }}</h-desc-item>
         <h-desc-item label="入场时间">{{
             model.approachTime && model.approachTime != 0
               ? moment(parseInt(model.approachTime)).format('YYYY-MM-DD HH:mm:ss')

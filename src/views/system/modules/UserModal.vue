@@ -29,20 +29,23 @@
       <h-detail v-else>
         <h-descriptions title="用户信息" bordered size="small" :column="2">
           <a-descriptions-item v-if="!item.hidden" v-for="(item, index) in formData" :key="index" :label="item.title">
-            <span v-if="item.key == 'deptId'">
+            <span v-if="item.key === 'deptId'">
               {{ userInfo.deptName }}
             </span>
-            <span v-else-if="item.key == 'sex'">
+            <span v-if="item.key === 'testType'">
+              {{ (SYSTEM_CONSTANTS_PROJECT_CLASSIFY.filter(v => v.key === userInfo.testType)[0].title) || '--' }}
+            </span>
+            <span v-else-if="item.key === 'sex'">
               {{ userInfo.sex == 0 ? '保密' : userInfo.sex == 1 ? '男' : '女' }}
             </span>
-            <span v-else-if="item.key == 'avatar'">
+            <span v-else-if="item.key === 'avatar'">
               <!-- <img :src="userInfo[item.key]" alt=""> -->
               <a-avatar shape="square" :size="128" :src="userInfo[item.key]"/>
             </span>
-            <span v-else-if="item.key == 'userType'">
+            <span v-else-if="item.key === 'userType'">
               {{ userType[userInfo[item.key]] }}
             </span>
-            <span v-else-if="item.key == 'birthday'">
+            <span v-else-if="item.key === 'birthday'">
               {{ moment(userInfo[item.key]).format('YYYY-MM-DD') }}
             </span>
             <span v-else>
@@ -72,6 +75,7 @@ export default {
   components: {},
   data() {
     return {
+      SYSTEM_CONSTANTS_PROJECT_CLASSIFY,
       isPublic: false,
       userType: {
         base: "普通用户",
@@ -321,11 +325,10 @@ export default {
       this.edit()
     },
     edit(record = {}) {
-      console.log(record)
       this.userInfo = Object.assign({}, record, {
         avatar: record.headUrl,
         birthday: record.birthday == 0 || !record.birthday ? moment() : moment(record.birthday.toString()),
-        testType: Number(record.testType)
+        testType: isNaN(Number(record.testType)) || 3
       })
       // 根据数据中是否包含id这个字段，如果包含，那么创建的form中不包含密码字段
       if (this.userInfo.id) {

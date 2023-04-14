@@ -35,7 +35,7 @@
           <a-badge v-else-if="text == 20" color="green" text="进行中" />
           <a-badge v-else-if="text == 30" color="volcano" text="暂停" />
           <a-badge v-else-if="text == 40" color="red" text="终止" />
-          <a-badge v-else-if="text == 45" color="grey" text="异常"/>
+          <a-badge v-else-if="text == 45" color="yellow" text="异常"/>
           <a-badge v-else-if="text == 50" color="grey" text="已完成" />
         </template>
         <span slot="actions" slot-scope="text, record">
@@ -198,7 +198,12 @@ export default {
           formType: 'select',
           options: [
             {
-              title: '未开始',
+              title: '未发布',
+              key: 0,
+              value: 0
+            },
+            {
+              title: '已发布',
               key: 1,
               value: 1
             },

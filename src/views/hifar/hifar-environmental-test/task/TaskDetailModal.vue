@@ -21,9 +21,10 @@
     </div>
     <div class="equip-task-detail-wrapper">
       <a-tabs v-model="activeTab" style="width: 100%" type="card" @change="handleTabsChange">
-        <a-tab-pane :key="1" tab="基本信息"/>
+        <!--        <a-tab-pane :key="1" tab="基本信息"/>-->
+        <a-tab-pane :key="1" tab="试验记录"/>
         <a-tab-pane :key="2" tab="试验检查"/>
-        <a-tab-pane :key="3" tab="试验记录"/>
+        <!--        <a-tab-pane :key="3" tab="试验记录"/>-->
         <a-tab-pane :key="4" tab="试验数据"/>
         <a-tab-pane :key="5" tab="异常记录"/>
         <a-tab-pane :key="6" tab="终止记录"/>
@@ -38,14 +39,15 @@
             :testTaskData="testTaskData"
             :projectData="projectData"
             :productTable="productTable"
-            :carryOutProcessData="carryOutProcessData"
+            :installControlTable="installControlTable"
+            :switchRecordingTable="switchRecordingTable"
             :personArr="personArr"
             :equipData="equipData"
-            :sensorData="sensorData"
             :toolsProductData="toolsProductData"
+            :pictureData="pictureData"
           />
           <test-task-check v-if="activeTab === 2" ref="TestTaskCheck" :testId="testId"></test-task-check>
-          <vibration-table v-if="activeTab === 3" ref="VibrationTable" :record="records"></vibration-table>
+          <!--          <vibration-table v-if="activeTab === 3" ref="VibrationTable" :record="records"></vibration-table>-->
           <test-task-data v-if="activeTab === 4" ref="TestData" :testId="testId"></test-task-data>
           <abnormal-record-table v-if="activeTab === 5" ref="AbnormalRecordTable" :records="records" />
           <termination-record-table v-if="activeTab === 6" ref="TerminationRecordTable" :records="records" />
@@ -92,31 +94,30 @@ export default {
       activeTab: 1,
       url: {
         detail: '/HfEnvTaskTestBusiness/queryById',
+        attachList: '/MinioBusiness/listByRefId',
       },
       basicData: [
-        { title: '试验设备', key: 'equipName', value: '' },
-        {title: '实际开始时间', key: 'realStartTime', value: '', isTime: true},
-        {title: '实际结束时间', key: 'realEndTime', value: '', isTime: true},
-        {title: '试验结果', key: 'processDesc', value: '', span: 3},
-        {title: '备注', key: 'remarks', value: '', span: 3},
-      ],
-      carryOutProcessData: [
-        { title: '开始时间', key: 'realStartTime', value: '', isTime: true },
-        { title: '结束时间', key: 'realEndTime', value: '', isTime: true },
-        {title: '试验地点', key: 'workName', value: ''},
-        {title: '温度', key: 'temperature', value: ''},
-        {title: '湿度', key: 'humidity', value: ''},
-        {title: '试验结果', key: 'processDesc', value: ''},
+        {title: '试验设备', key: 'equipName', value: ''},
+        {title: '试验人员', key: 'chargeUserName', value: ''},
+        {title: '入场时间', key: 'approachTime', value: '', isTime: true},
+        {title: '离场时间', key: 'departureTime', value: '', isTime: true},
+        {title: '开始时间', key: 'realStartTime', value: '', isTime: true},
+        {title: '结束时间', key: 'realEndTime', value: '', isTime: true},
+        {title: '自检', key: 'selfInspection', value: ''},
+        {title: '互检', key: 'mutualInspection', value: ''},
+        {title: '实施过程', key: 'remarks', value: '', span: 3},
       ],
       records: {},
       testId: '',
       testTaskData: [],
       projectData: [],
       equipData: [],
-      sensorData: [],
       toolsProductData: [],
       productTable: [],
+      installControlTable: [],
+      switchRecordingTable: [],
       personArr: [],
+      pictureData: [],
     }
   },
   methods: {
@@ -127,6 +128,7 @@ export default {
       this.testId = record.id
       if (record.id) {
         this.getTestDetail(record.id)
+        this.loadImgData(record.id)
       }
     },
     handleDownload(filePath, fileName) {
@@ -139,21 +141,41 @@ export default {
     handleTabsChange(v) {
       this.activeTab = v
     },
-    getTestDetail(id) {
-      postAction(this.url.detail, { id: id }).then((res) => {
+    loadImgData(refId) {
+      postAction(this.url.attachList, {refType: 'test_picture', refId}).then((res) => {
         if (res.code === 200) {
-          const { data } = res
-          let productArr = []
+          const {data} = res
+          let fileArr = []
+          if (data && data.length > 0) {
+            data.forEach((item) => {
+              fileArr.push({
+                fileId: item.id,
+                size: item.fileSize,
+                status: item.status == 9 ? 'success' : 'exception',
+                url: item.filePath,
+                name: item.fileName,
+                uuid: item.id,
+                percent: 100,
+                uploadTime: item.createTime,
+                secretLevel: item.secretLevel,
+                remarks: item.remarks,
+                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
+              })
+            })
+          }
+          this.pictureData = fileArr
+        }
+      })
+    },
+    getTestDetail(id) {
+      postAction(this.url.detail, {id: id}).then((res) => {
+        if (res.code === 200) {
+          const {data} = res
           let personArr = []
           for (let item in res.data) {
             for (let i = 0; i < this.basicData.length; i++) {
               if (item === this.basicData[i].key) {
                 this.basicData[i].value = data[item]
-              }
-            }
-            for (let i = 0; i < this.carryOutProcessData.length; i++) {
-              if (item === this.carryOutProcessData[i].key) {
-                this.carryOutProcessData[i].value = data[item]
               }
             }
           }
@@ -166,36 +188,15 @@ export default {
               testUserName: item.testUserName,
             })
           })
-          data.testPieceInfo.forEach((item) => {
-            productArr.push({
-              id: item.id,
-              custName: item.custName,
-              entrustId: item.entrustId,
-              entrustCode: item.entrustCode,
-              projectId: item.projectId,
-              projectCode: item.projectCode,
-              taskId: item.taskId,
-              taskCode: item.taskCode,
-              pieceId: item.pieceId,
-              pieceNo: item.pieceNo,
-              pieceCode: item.pieceCode,
-              productId: item.productId,
-              productCode: item.productCode,
-              productName: item.productName,
-              productModel: item.productModel,
-              productAlias: item.productAlias,
-              pieceNum: item.pieceNum,
-              pieceCnum: item.pieceCnum,
-              intactStatus: item.intactStatus,
-              remarks: item.remarks,
-            })
-          })
-          this.productTable = productArr
+          this.productTable = data.testPieceInfo
           this.personArr = personArr
           this.testTaskData = data.testTaskInfo
           this.projectData = data.projectInfo
+          // 安装、控制方式 + 传感器
+          this.installControlTable = data.insertMethodInfo
+          // 设备开关机记录
+          this.switchRecordingTable = data.switchOnOffInfo
           this.equipData = data.testEquipInfo
-          this.sensorData = data.testSensorInfo
           this.toolsProductData = data.testToolsProductInfo
         }
       })

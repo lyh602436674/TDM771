@@ -112,7 +112,8 @@ export default {
         {
           title: '试验样品',
           key: 'testPieceId',
-          validate: {rules: [{required: true, message: '请选择试验样品'}]},
+          hidden: this.model.exceptionType !== 2,
+          validate: {rules: [{required: this.model.exceptionType === 2, message: '请选择试验样品'}]},
           component: (
             <piece-list-select
               ref="pieceListSelect"

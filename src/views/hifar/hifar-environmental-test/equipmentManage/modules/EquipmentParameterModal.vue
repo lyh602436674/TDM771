@@ -74,9 +74,9 @@ export default {
           title: '参数类型',
           formType: 'dict',
           dataIndex: 'paramType_dictText',
-          // customRender: (text, record) => {
-          //   return filterDictTextByCache('hf_dev_param_type', text) || '-'
-          // }
+          customRender: (text, record) => {
+            return text || '--'
+          }
         },
         {
           title: '数据类型',

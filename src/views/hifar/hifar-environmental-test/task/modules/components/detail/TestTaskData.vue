@@ -8,10 +8,7 @@
 -->
 <template>
   <div style="height: 100%; overflow: auto">
-    <h-card title="曲线图片" fixed style="height: auto">
-      <h-upload-file style="width: 100%" v-model="pictureData" isWriteRemarks :isEdit="false"></h-upload-file>
-    </h-card>
-    <h-card title="附件" fixed style="height: auto">
+    <h-card title="振动图谱" fixed style="height: auto">
       <h-form style="width: 100%" v-model="model_attach" ref="attachForm" :column="1" :formData="attachData"/>
     </h-card>
     <h-card title="视频" fixed style="height: auto">
@@ -28,7 +25,6 @@ export default {
   props: ['testId'],
   data() {
     return {
-      pictureData: [],
       model_attach: {},
       model_video: {},
       url: {
@@ -37,7 +33,7 @@ export default {
       },
       attachData: [
         {
-          title: '附件',
+          title: '振动图谱',
           key: 'attachIds',
           span: 1,
           component: (
@@ -70,36 +66,8 @@ export default {
   },
   methods: {
     loadData() {
-      this.loadImgData()
       this.loadAttachData()
       this.loadVideoData()
-    },
-    // 图片
-    loadImgData() {
-      postAction(this.url.attachList, { refType: 'test_picture', refId: this.testId }).then((res) => {
-        if (res.code === 200) {
-          const { data } = res
-          let fileArr = []
-          if (data && data.length > 0) {
-            data.forEach((item) => {
-              fileArr.push({
-                fileId: item.id,
-                size: item.fileSize,
-                status: item.status == 9 ? 'success' : 'exception',
-                url: item.filePath,
-                name: item.fileName,
-                uuid: item.id,
-                percent: 100,
-                uploadTime: item.createTime,
-                secretLevel: item.secretLevel,
-                remarks: item.remarks,
-                type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
-              })
-            })
-          }
-          this.pictureData = fileArr
-        }
-      })
     },
     // 附件
     loadAttachData() {

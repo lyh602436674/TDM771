@@ -29,7 +29,7 @@
         <span slot="status" slot-scope="text, record">
           <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter" />
         </span>
-        <span slot="action" slot-scope="text, record">
+        <a-space slot="action" slot-scope="text, record">
           <a-icon
             type="eye"
             title="详情"
@@ -37,7 +37,21 @@
             style="cursor: pointer"
             @click="() => handleDetail(record)"
           />
-        </span>
+          <template v-if="record.status >= 3">
+            <a-icon
+              :type="record.docxLoading ? 'loading' : 'file-word'"
+              class="primary-text cursor-pointer"
+              title="下载word"
+              @click="handleDownload(record, 'docx')"
+            />
+            <a-icon
+              :type="record.pdfLoading ? 'loading' : 'file-pdf'"
+              class="primary-text cursor-pointer"
+              title="下载pdf"
+              @click="handleDownload(record, 'pdf')"
+            />
+          </template>
+        </a-space>
       </h-vex-table>
     </h-card>
     <report-detail-modal ref="ReportDetailModal"></report-detail-modal>
@@ -46,9 +60,10 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@/api/manage'
+import {downloadFile, getAction, postAction} from '@/api/manage'
 import ReportDetailModal from './modules/ReportDetailModal'
 import mixin from './mixin.js'
+
 export default {
   mixins: [mixin],
   components: {
@@ -73,6 +88,7 @@ export default {
       title: '',
       url: {
         list: '/HfEnvReportBusiness/listPage',
+        download: '/HfEnvReportBusiness/download',
       },
       unitId: '',
       searchBar: [
@@ -222,7 +238,15 @@ export default {
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
-            return res.data
+            return Object.assign({}, res.data, {
+              data: res.data.data.map(item => {
+                return {
+                  ...item,
+                  docxLoading: false,
+                  pdfLoading: false,
+                }
+              })
+            })
           }
         })
       },
@@ -232,6 +256,28 @@ export default {
   methods: {
     refresh(bool = true) {
       this.$refs.dataCheckTable.refresh(bool)
+    },
+    handleDownload(record, type) {
+      let obj = {
+        docx: {
+          loading: 'docxLoading',
+        },
+        pdf: {
+          loading: 'pdfLoading',
+        },
+      }
+      this.$set(record, obj[type].loading, true)
+      getAction(this.url.download, {id: record.id, type}).then(res => {
+        if (res.code === 200) {
+          let filePath = res.data.url;
+          let fileName = res.data.fileName;
+          downloadFile(filePath, fileName)
+        } else {
+          this.$message.error('下载失败!')
+        }
+      }).finally(() => {
+        this.$set(record, obj[type].loading, false)
+      })
     },
     handleDetail(record) {
       let type = this.type

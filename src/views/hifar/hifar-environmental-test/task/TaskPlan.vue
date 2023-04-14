@@ -107,11 +107,11 @@
                 </a-tooltip>
               </template>
               <span slot="entrustNo" slot-scope="text, record">
-                <a @click="$refs.taskDetail.show(record,'1')" v-if="text">
-                  <h-icon :type="record.alert ? 'icon-jingbaobaojing2' : ''" style="font-size: 20px"/>
-                  <span :style="{ marginLeft: record.alert ? 0 : '20px' }">{{ text }}</span>
+                <a @click="$refs.taskDetail.show(record,'1')">
+<!--                  overFlag : 1 超期 2 没超期-->
+                  <h-icon :type="record.overFlag === '1' ? 'icon-jingbaobaojing2' : ''" style="font-size: 20px"/>
+                  <span :style="{marginLeft : record.overFlag === '1' ? 0 : '20px'}">{{ text }}</span>
                 </a>
-                <span v-else> -- </span>
               </span>
               <span slot="entrustCode" slot-scope="text, record">
                 <a @click="$refs.taskDetail.show(record)" v-if="text">{{ text ? text : '--' }}</a>
@@ -215,11 +215,6 @@ export default {
         {
           title: '送试单位',
           key: 'c_custName_7',
-          formType: 'input'
-        },
-        {
-          title: '任务编号',
-          key: 'c_taskCode_7',
           formType: 'input'
         },
         {

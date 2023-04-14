@@ -143,15 +143,15 @@
             >
               项目添加
             </a-button>
-            <a-button
-              icon='plus'
-              size='small'
-              style='margin-left:10px'
-              type='ghost-primary'
-              @click='handleAddHistory'
-            >
-              历史库新增
-            </a-button>
+<!--            <a-button-->
+<!--              icon='plus'-->
+<!--              size='small'-->
+<!--              style='margin-left:10px'-->
+<!--              type='ghost-primary'-->
+<!--              @click='handleAddHistory'-->
+<!--            >-->
+<!--              历史库新增-->
+<!--            </a-button>-->
             <project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
                           style="margin-bottom:20px"
                           @change='projectFormChange'

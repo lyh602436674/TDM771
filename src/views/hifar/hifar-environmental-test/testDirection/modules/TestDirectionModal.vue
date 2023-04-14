@@ -113,11 +113,11 @@ export default {
       this.visible = false
     },
     handleSubmit() {
-      this.confirmLoading = true
       this.$refs.productModalForm.validateForm()
     },
     submitHandle(values) {
-      if (!values) return this.confirmLoading = false
+      if (!values || this.confirmLoading) return
+      this.confirmLoading = true
       const {add, edit} = this.url
       postAction(!values.id ? add : edit, values).then((res) => {
         if (res.code === 200) {

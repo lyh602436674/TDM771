@@ -33,13 +33,17 @@
           {{ record.testCode || '--' }}
         </a>
         <template slot="status" slot-scope="text">
-          <a-badge v-if="text == 1" color="geekblue" text="未开始"/>
-          <a-badge v-else-if="text == 10" color="red" text="已撤销"/>
-          <a-badge v-else-if="text == 20" color="green" text="进行中"/>
-          <a-badge v-else-if="text == 30" color="volcano" text="暂停"/>
-          <a-badge v-else-if="text == 40" color="red" text="终止"/>
-          <a-badge v-else-if="text == 50" color="grey" text="已完成"/>
-          <a-badge v-else-if="text == 60" color="grey" text="已出报告"/>
+          <a-badge v-if="text === 1" color="geekblue" text="未开始"/>
+          <a-badge v-else-if="text === 10" color="red" text="已撤销"/>
+          <a-badge v-else-if="text === 20" color="green" text="进行中"/>
+          <a-badge v-else-if="text === 30" color="volcano" text="暂停"/>
+          <a-badge v-else-if="text === 40" color="red" text="终止"/>
+          <a-badge v-else-if="text === 45" color="red" text="异常"/>
+          <a-badge v-else-if="text === 50" color="grey" text="已完成"/>
+          <a-badge v-else-if="text === 60" color="grey" text="已出报告"/>
+        </template>
+        <template #exceptionNum="text, record">
+          <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
         </template>
         <template #archiveRecord="text,record">
           <a-space style="cursor: pointer">
@@ -53,7 +57,7 @@
             <h-upload-file-b
               v-model="swapFileList"
               :customParams="{id:record.id}"
-              accept=".doc,.docx"
+              accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               isPublic
               @beforeUpload="$refs.taskHistoryTable.localLoading = true"
               @change="file => handleUploadCallback(file, record,'1')">
@@ -73,7 +77,7 @@
             <h-upload-file-b
               v-model="swapFileList"
               :customParams="{id:record.id}"
-              accept=".doc,.docx"
+              accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               isPublic
               @beforeUpload="$refs.taskHistoryTable.localLoading = true"
               @change="file => handleUploadCallback(file, record,'2')">
@@ -95,6 +99,7 @@
     <test-base-edit ref="TestBaseEdit" :records="records" :selectedTreeRows="selectedRows"
                     @change="refreshEquipTaskList"/>
     <test-entrust-review-pdf ref="reviewPdf" :title="reviewPdfTitle"/>
+    <abnormal-detail-modal ref="abnormalDetailModal"/>
   </div>
 </template>
 
@@ -109,6 +114,7 @@ import TaskAbnormalModal from "@views/hifar/hifar-environmental-test/task/checkM
 import {ACCESS_TOKEN} from "@/store/mutation-types";
 import * as WebCtrl from "@/plugins/webOffice";
 import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
+import AbnormalDetailModal from "@views/hifar/hifar-environmental-test/task/modules/AbnormalDetailModal";
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -118,7 +124,8 @@ export default {
     }
   },
   components: {
-    TestTaskBaseInfoModal, TestCheckModal, TestBaseEdit, testDataAddModal, TaskAbnormalModal, TestEntrustReviewPdf
+    TestTaskBaseInfoModal, TestCheckModal, TestBaseEdit, testDataAddModal, TaskAbnormalModal, TestEntrustReviewPdf,
+    AbnormalDetailModal
   },
   data() {
     return {
@@ -400,6 +407,13 @@ export default {
           title: '试验设备',
           dataIndex: 'equipName',
           minWidth: 150,
+        },
+        {
+          title: '异常数量',
+          dataIndex: 'exceptionNum',
+          width: 80,
+          align: 'center',
+          scopedSlots: {customRender: 'exceptionNum'},
         },
         {
           title: '巡检记录',

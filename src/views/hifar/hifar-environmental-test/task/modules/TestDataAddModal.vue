@@ -24,7 +24,7 @@
           v-model="attachIds"
           :customParams="{refType: 'test_attach', refId: this.testId}"
           :isVarSeq="true"
-          accept=".doc,.docx"
+          accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           style="width: 100%"
           @change="this.handleFilesChange"
           @delete="this.handleDelete"

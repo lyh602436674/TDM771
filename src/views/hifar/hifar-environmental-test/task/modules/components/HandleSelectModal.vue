@@ -25,6 +25,7 @@
         :checkMethod="checkMethod"
         :columns="columns"
         :data="loadData"
+        :historySelect="historySelect"
         :rowKey="(record) => record.id"
         :rowSelection="{ selectedRowKeys, onSelect: tableSelectChange, type: multiple ? 'checkbox' : 'radio' }"
         style="width: 100%"
@@ -91,6 +92,10 @@ export default {
     checkMethod: {
       type: Function,
       default: () => true
+    },
+    historySelect: {
+      type: Boolean,
+      default: false
     },
   },
   data() {
