@@ -44,6 +44,12 @@ export default {
       formData: [
         {
           title: '场地名称',
+          key: 'placeName_dictText',
+          formType: 'input',
+          span: 2,
+        },
+        {
+          title: '场地别名',
           key: 'placeFullName',
           formType: 'input',
           span: 2,

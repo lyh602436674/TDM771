@@ -13,16 +13,25 @@
       <r-l-layout class="h-custom-layout" :leftMinWidth="240">
         <div slot="left" class="em-left">
           <h-card :bordered="true">
-            <a-input-search
-              v-model="queryParam.c_placeName_7"
-              allowClear
-              slot="search-form"
-              size="small"
-              placeholder="请输入"
-              enter-button="搜索"
-              @keyup.enter.native="handleRefresh"
-              @search="handleRefresh"
-            />
+            <h-dict-select
+              v-model="queryParam.c_placeName_1"
+              dictCode="hf_res_equip_address"
+              placeholder="请选择场地"
+              style="margin-bottom: 10px"
+              @change="handleSelect"
+            >
+
+            </h-dict-select>
+            <!--            <a-input-search-->
+            <!--              v-model="queryParam.placeName_dictText"-->
+            <!--              allowClear-->
+            <!--              slot="search-form"-->
+            <!--              size="small"-->
+            <!--              placeholder="请输入场地名称"-->
+            <!--              enter-button="搜索"-->
+            <!--              @keyup.enter.native="handleRefresh"-->
+            <!--              @search="handleRefresh"-->
+            <!--            />-->
             <div
               class="ant-list-split"
               v-for="(item, index) in venueListData"
@@ -30,17 +39,17 @@
               @mouseout="handleListMouseout"
             >
               <div
-                :class="rowIndex == index ? 'ant-list-item list-item-active' : 'ant-list-item'"
+                :class="rowIndex === index ? 'ant-list-item list-item-active' : 'ant-list-item'"
                 @click="handleItem(item, index)"
                 @mouseover="handleMouseover(index)"
                 @mouseout="handleMouseout(index)"
               >
-                <a-badge class="item" :color="colors[index % colors.length]" :text="item.placeName" />
+                <a-badge :color="colors[index % colors.length]" :text="item.placeName_dictText" class="item"/>
                 <a-icon
-                  v-show="hoverIndex == index"
+                  v-show="hoverIndex === index"
                   style="margin-right: 10px"
                   type="edit"
-                  @click="handleAddEditor(item)"
+                  @click.stop="handleAddEditor(item)"
                 />
               </div>
             </div>
@@ -163,12 +172,7 @@ export default {
       }
       return postAction(this.url.venueList, data).then((res) => {
         if (res.code === 200) {
-          let dataArr = res.data.data
-          this.venueListData = dataArr
-          this.placeId = dataArr.length > 0 ? dataArr[0].id : ''
-          this.$nextTick(() => {
-            this.refresh(true)
-          })
+          this.venueListData = res.data.data
         }
       })
     },
@@ -180,8 +184,7 @@ export default {
       }
       return postAction(this.url.list, data).then((res) => {
         if (res.code === 200) {
-          let data = res.data.data
-          res.data.data = data.map((item) => {
+          let data = res.data.data.map((item) => {
             return {
               id: item.id,
               humidityMax: item.humidityMax / 10000,
@@ -193,13 +196,13 @@ export default {
               createTime: item.createTime,
             }
           })
-          this.dataSource = res.data.data
-          if (res.data.data.length > 0) {
+          this.dataSource = data
+          if (data.length > 0) {
             this.$nextTick(() => {
               this.drawLine()
             })
           }
-          return res.data
+          return data
         }
       })
     },
@@ -304,8 +307,13 @@ export default {
       let data = {
         placeId: record.id,
         placeName: record.placeName,
+        placeName_dictText: record.placeName_dictText,
       }
       this.$refs.EnvironmentalMonitorModal.show(data)
+    },
+    handleSelect(value) {
+      this.queryParam.c_placeName_1 = value
+      this.loadData()
     },
     onChange(date, dateString) {
       let startTime = date[0] ? date[0] : null

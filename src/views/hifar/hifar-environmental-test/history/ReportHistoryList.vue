@@ -22,6 +22,7 @@
         slot="content"
         :columns="columns"
         :data="loadData"
+        historySelect
         :rowSelection="{ selectedRowKeys: selectedRowKeys, onSelect: onSelect }"
       >
         <template v-slot:status="text, record">
@@ -45,6 +46,7 @@ import {downloadFile, postAction} from '@api/manage'
 import mixin from '@views/hifar/hifar-environmental-test/mixin.js'
 import ReportDownloadHistoryModal
   from '@views/hifar/hifar-environmental-test/history/modules/ReportDownloadHistoryModal'
+import {SYSTEM_CONSTANTS_PROJECT_CLASSIFY} from '@/views/hifar/constants.js'
 
 export default {
   provide() {
@@ -291,12 +293,7 @@ export default {
           dataIndex: 'testtype',
           minWidth: 100,
           customRender: (text) => {
-            let obj = {
-              1: "气候",
-              2: "力学",
-              3: "环境",
-            }
-            return obj[text] || '--'
+            return SYSTEM_CONSTANTS_PROJECT_CLASSIFY.filter(item => item.key === text)[0].title || '--'
           }
         },
         {

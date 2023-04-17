@@ -122,7 +122,7 @@ export default {
           hidden: this.model.dataType !== 'number',
           dictCode: 'hf_public_unit',
           validate: {
-            rules: [{required: true, message: '请选择单位'}],
+            rules: [{required: this.model.dataType === 'number', message: '请选择单位'}],
           },
           change: (v, option) => {
             this.$refs.capabilityParameterForm.form.setFieldsValue({
@@ -157,9 +157,9 @@ export default {
       this.visible = true
       this.model = Object.assign({}, record)
       if (this.model.id) {
-        this.title = '编辑能力参数'
+        this.title = '编辑'
       } else {
-        this.title = '新建能力参数'
+        this.title = '新建'
       }
     },
     submit(values) {

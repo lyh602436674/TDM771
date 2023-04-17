@@ -444,10 +444,10 @@ export default {
         innerName: equip.innerName || '--',
         equipCode: equip.equipCode || '--',
         equipName: equip.equipName,
-        taskId: this.model.id,
+        taskId: this.localTaskId,
       })
       this.model.predictUseTime = this.model.predictUseTime == 0 ? 1 : this.model.predictUseTime
-      this.$refs.taskArrangementFormModal.show(this.model, this.taskPlanSelectedRows)
+      this.$refs.taskArrangementFormModal.show(this.model)
     },
     filterQueryType(type) {
       switch (type) {

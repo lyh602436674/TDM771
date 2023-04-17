@@ -21,8 +21,7 @@
       <h-desc-item label="接班人"> {{ headDetail.receiveUserName || '--' }}</h-desc-item>
       <h-desc-item label="交接时间">
         {{ moment(parseInt(headDetail.handoverTime)).format('YYYY-MM-DD HH:mm') || '--' }}
-      </h-desc-item
-      >
+      </h-desc-item>
       <h-desc-item label="环境状态"> {{ headDetail.envStatus == 1 ? '正常' : '异常' || '--' }}</h-desc-item>
       <h-desc-item label="测试状态"> {{ headDetail.testStatus == 1 ? '有错误' : '无错误' || '--' }}</h-desc-item>
       <h-desc-item label="工具状态"> {{ headDetail.toolStatus == 1 ? '齐全' : '缺失' || '--' }}</h-desc-item>
@@ -77,8 +76,17 @@ export default {
           {
             title: '委托单号',
             align: 'left',
-            dataIndex: 'entrustNo',
-            minWidth: 10,
+            width: 130,
+            dataIndex: 'entrustNos',
+            customRender: (text, record) => {
+              return text || '--'
+            }
+          },
+          {
+            title: '运行单号',
+            align: 'left',
+            width: 170,
+            dataIndex: 'entrustCodes',
             customRender: (text, record) => {
               return text || '--'
             }
@@ -110,22 +118,22 @@ export default {
               return text || '--'
             }
           },
-          {
-            title: '试验地点',
-            align: 'left',
-            dataIndex: 'workName',
-            customRender: (text, record) => {
-              return text || '--'
-            }
-          },
-          {
-            title: '过程描述',
-            align: 'left',
-            dataIndex: 'processDesc',
-            customRender: (text, record) => {
-              return text || '--'
-            }
-          },
+          // {
+          //   title: '试验地点',
+          //   align: 'left',
+          //   dataIndex: 'workName',
+          //   customRender: (text, record) => {
+          //     return text || '--'
+          //   }
+          // },
+          // {
+          //   title: '过程描述',
+          //   align: 'left',
+          //   dataIndex: 'processDesc',
+          //   customRender: (text, record) => {
+          //     return text || '--'
+          //   }
+          // },
           {
             title: '开始时间',
             align: 'left',

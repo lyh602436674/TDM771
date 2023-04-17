@@ -52,8 +52,6 @@ export default {
         detailById: '/HfResPlaceBusiness/queryById',
         getPlace: "/HfResPlaceBusiness/listSysDictEquipAddress"
       },
-      placeList: [],
-
     }
   },
   computed: {
@@ -91,13 +89,6 @@ export default {
         },
       ]
     }
-  },
-  created() {
-    getAction(this.url.getPlace).then(res => {
-      if (res.code === 200) {
-        this.placeList = res.data.sort((a, b) => a.rowSort - b.rowSort)
-      }
-    })
   },
   methods: {
     show(record, title) {

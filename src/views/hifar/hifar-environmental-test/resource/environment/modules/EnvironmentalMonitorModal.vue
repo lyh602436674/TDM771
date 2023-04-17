@@ -54,7 +54,7 @@ export default {
         },
         {
           title: '场地名称',
-          key: 'placeName',
+          key: 'placeName_dictText',
           formType: 'input',
           validate: {
             rules: [{ required: true, message: '请输入场地名称' }],

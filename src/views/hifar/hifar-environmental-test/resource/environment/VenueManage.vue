@@ -32,12 +32,12 @@
         :columns="columns"
         :data="loadData"
         :rowKey="(record) => record.id"
-        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        :row-selection="{ selectedRowKeys, onChange: onSelectChange }"
       >
         <!-- 点击场地名称跳转详情 -->
-        <span slot="placeFullName" slot-scope="text, record">
+        <span slot="placeName" slot-scope="text, record">
           <a @click="handleDetailCode(record)">
-            {{ record.placeName ? record.placeName : '--' }}
+            {{ text || '--' }}
           </a>
         </span>
         <span slot="action" slot-scope="text, record">
@@ -48,14 +48,14 @@
             style="cursor: pointer"
             @click="() => handleEdit(record)"
           />
-          <a-divider type="vertical" />
-          <a-icon
-            type="eye"
-            title="详情"
-            class="primary-text"
-            style="cursor: pointer"
-            @click="() => detailHandle(record)"
-          />
+          <!--          <a-divider type="vertical" />-->
+          <!--          <a-icon-->
+          <!--            type="eye"-->
+          <!--            title="详情"-->
+          <!--            class="primary-text"-->
+          <!--            style="cursor: pointer"-->
+          <!--            @click="() => detailHandle(record)"-->
+          <!--          />-->
           <a-divider type="vertical" v-has="'site:delete'"/>
           <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
             <a-icon
@@ -80,7 +80,7 @@
 <script>
 import moment from 'moment'
 import mixin from '@/views/hifar/mixin.js'
-import { downloadFile, postAction } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import VenueManageModal from './modules/VenueManageModal'
 import VenueManageDetail from './modules/VenueManageDetail'
 
@@ -101,49 +101,25 @@ export default {
       moment,
       selectedRowKeys: [],
       queryParam: {},
-      formData: [
-        {
-          title: '模板名称',
-          key: 'name',
-          formType: 'input',
-          span: 2,
-          validate: {
-            rules: [{ required: true, message: '请输入模板名称', trigger: 'blur' }],
-          },
-        },
-        {
-          title: '模版分组',
-          key: 'groupCode',
-          formType: 'input',
-          span: 2,
-          hidden: true,
-        },
-        {
-          title: '备注',
-          key: 'remarks',
-          formType: 'textarea',
-          span: 2,
-        },
-        {
-          title: '附件',
-          key: 'attachIds',
-          span: 2,
-          component: <h-upload-file v-decorator={['attachIds', { initialValue: [] }]} />,
-        },
-      ],
       searchBar: [
         {
           title: '场地名称',
-          key: 'c_placeName_7',
-          formType: 'input',
+          key: 'c_placeName_1',
+          formType: "dict",
+          dictCode: "hf_res_equip_address",
         },
       ],
       columns: [
         {
           title: '场地名称',
           align: 'left',
+          dataIndex: 'placeName_dictText',
+          scopedSlots: {customRender: "placeName"},
+        },
+        {
+          title: '场地别名',
+          align: 'left',
           dataIndex: 'placeFullName',
-          scopedSlots: { customRender: 'placeFullName' },
         },
         {
           title: '创建人 ',

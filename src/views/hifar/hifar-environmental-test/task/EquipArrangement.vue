@@ -76,8 +76,8 @@
                         <h-desc-item label="设备型号"> {{ equipDetail.equipModel || '--' }}</h-desc-item>
                         <h-desc-item label="检定日期">
                           {{
-                            equipDetail.checkTime && equipDetail.checkTime != 0
-                              ? moment(parseFloat(equipDetail.checkTime)).format('YYYY-MM-DD HH:mm:ss')
+                            equipDetail.verifyTime && equipDetail.verifyTime != 0
+                              ? moment(parseFloat(equipDetail.verifyTime)).format('YYYY-MM-DD HH:mm:ss')
                               : '--'
                           }}
                         </h-desc-item>
@@ -629,7 +629,7 @@ export default {
           minWidth: 100,
         },
         {
-          title: '备注',
+          title: '实施过程',
           dataIndex: 'remarks',
           minWidth: 150,
         },

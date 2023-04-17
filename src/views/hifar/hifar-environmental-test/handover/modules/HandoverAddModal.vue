@@ -32,15 +32,36 @@
     </h-desc>
     <!-- 执行任务总览 -->
     <h-desc title='执行任务总览' :bordered="false">
-      <h-vex-table
-        ref='handoverTask'
-        bordered
-        :pagination='false'
-        :columns='columns'
-        :data='loadData'
-        style='width: 100%; height: 300px'
+      <!--      <h-vex-table-->
+      <!--        ref='handoverTask'-->
+      <!--        bordered-->
+      <!--        :pagination='false'-->
+      <!--        :autoLoad="false"-->
+      <!--        :columns='columns'-->
+      <!--        :data='operType === "edit" ? loadDetailData : loadAddData'-->
+      <!--        style='width: 100%; height: 300px'-->
+      <!--      >-->
+      <!--      </h-vex-table>-->
+      <vxe-table
+        ref="priceDataTable"
+        :data="runningEquipData"
+        :loading="tableLoading"
+        :max-height="350"
+        border
+        keep-source
+        resizable
+        rowId="id"
+        show-all-overflow
+        show-overflow
+        size="mini"
+        style="width: 100%"
       >
-      </h-vex-table>
+        <vxe-table-column align="center" type="seq" width="60"></vxe-table-column>
+        <template v-for="(item,index) in columns">
+          <vxe-table-column :key="item.id" :field="item.dataIndex" :minWidth="item.minWidth"
+                            :title="item.title"></vxe-table-column>
+        </template>
+      </vxe-table>
     </h-desc>
   </h-modal>
 </template>
@@ -49,6 +70,7 @@
 import {postAction} from '@/api/manage'
 import moment from 'moment'
 import SysUserSelect from '@/views/components/SysUserSelect'
+import {dateTimeFormatByStamp} from '@/utils/util'
 
 export default {
   components: {
@@ -59,8 +81,9 @@ export default {
       model: {},
       confirmLoading: false,
       visible: false,
-      runNum: '',
+      tableLoading: false,
       title: '',
+      runningEquipData: [],
       url: {
         taskListAll: '/HfEnvTestHandoverRecordBusiness/taskTestListAll',
         add: '/HfEnvTestHandoverRecordBusiness/add',
@@ -97,7 +120,7 @@ export default {
               multiple={true}
               v-decorator={['surrenderUserId', {initialValue: []}]}
               v-on:change={this.surrenUserChange}
-            ></sys-user-select>
+            />
           )
         },
         {
@@ -112,7 +135,7 @@ export default {
               multiple={true}
               v-decorator={['receiveUserId', {initialValue: []}]}
               v-on:change={this.receiveUserChange}
-            ></sys-user-select>
+            />
           )
         },
         {
@@ -185,8 +208,17 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          width: 100,
+          minWidth: 130,
           dataIndex: 'entrustNos',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '运行单号',
+          align: 'left',
+          minWidth: 170,
+          dataIndex: 'entrustCodes',
           customRender: (text, record) => {
             return text || '--'
           }
@@ -194,7 +226,7 @@ export default {
         {
           title: '试验项目',
           align: 'left',
-          width: 100,
+          minWidth: 100,
           dataIndex: 'unitNames',
           customRender: (text, record) => {
             return text || '--'
@@ -203,7 +235,7 @@ export default {
         {
           title: '使用设备',
           align: 'left',
-          width: 100,
+          minWidth: 100,
           dataIndex: 'equipName',
           customRender: (text, record) => {
             return text || '--'
@@ -211,18 +243,9 @@ export default {
         },
         {
           title: '试件数量(件)',
-          align: 'left',
+          align: 'center',
           dataIndex: 'sampleNum',
           minWidth: 100,
-          customRender: (text, record) => {
-            return text || '--'
-          }
-        },
-        {
-          title: '过程描述',
-          align: 'left',
-          minWidth: 200,
-          dataIndex: 'processDesc',
           customRender: (text, record) => {
             return text || '--'
           }
@@ -239,7 +262,7 @@ export default {
         {
           title: '预计用时',
           align: 'left',
-          width: 80,
+          minWidth: 80,
           dataIndex: 'predictUseTime',
         },
         {
@@ -252,24 +275,15 @@ export default {
           }
         },
         {
-          title: '备注',
+          title: '实施过程',
           align: 'left',
-          width: 200,
+          minWidth: 200,
           dataIndex: 'remarks',
           customRender: (text, record) => {
             return text || '--'
           }
         }
       ],
-      loadData: () => {
-        return postAction(this.url.taskListAll).then((res) => {
-          if (res.code === 200) {
-            this.model = Object.assign({}, this.model, {runNum: res.data.length})
-            // this.$refs.handoverAddForm.form.setFieldsValue({ runNum: this.model.runNum })
-            return res.data
-          }
-        })
-      }
     }
   },
   methods: {
@@ -282,16 +296,33 @@ export default {
         } else {
           this.editor(record)
         }
+        this.loadAddData()
       })
     },
-    // 更新
-    refresh(bool = true) {
-      this.$refs.handover.refresh(bool)
+    loadAddData() {
+      this.tableLoading = true
+      postAction(this.url.taskListAll).then((res) => {
+        if (res.code === 200) {
+          this.model = Object.assign({}, this.model, {
+            runNum: Array.from(new Set(res.data.map(item => item.equipName))).length,
+          })
+          this.runningEquipData = res.data.map(item => {
+            return {
+              ...item,
+              realStartTime: dateTimeFormatByStamp(item.realStartTime),
+              predictEndTime: dateTimeFormatByStamp(item.predictEndTime),
+            }
+          })
+        }
+      }).finally(() => {
+        this.tableLoading = false
+      })
     },
     // 取消
     handleCancel() {
       this.model = {}
       this.visible = false
+      this.rowId = ''
     },
     // 保存
     handleSubmit() {
@@ -326,7 +357,8 @@ export default {
       if (this.confirmLoading) return
       this.confirmLoading = false
       let params = {
-        ...values
+        ...values,
+        runNum: this.model.runNum,
       }
       let url = null
       // 根据id判断编辑和添加

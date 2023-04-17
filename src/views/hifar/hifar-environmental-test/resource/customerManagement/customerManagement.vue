@@ -86,7 +86,7 @@
 
 <script>
 import mixin from '@/views/hifar/mixin.js'
-import { downloadFile, postAction } from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import CustomerDetail from './customerDetail'
 import CustomerModal from './CustomerModal'
 
@@ -293,6 +293,7 @@ export default {
         ...model,
         ids: this.selectedRowKeys.join(','),
       }
+      if (!data.ids) delete data.ids;
       let url = this.url.export
       let params = data
       let fileName = name + '.xls'

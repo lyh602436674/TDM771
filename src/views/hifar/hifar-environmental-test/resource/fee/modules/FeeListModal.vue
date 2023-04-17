@@ -150,7 +150,7 @@
 
 <script>
 import {postAction} from '@/api/manage'
-import {isNumber} from 'lodash'
+import {cloneDeep, isNumber} from 'lodash'
 import SysFeeListSelectModal from '@/views/components/SysFeeListSelectModal'
 import ProjectAddModal from "@views/hifar/hifar-environmental-test/entrustment/modules/ProjectAddModal";
 
@@ -180,6 +180,11 @@ export default {
       dataSource: [],
       searchBar: [
         {
+          title: '资产编号',
+          key: 'assetsCode',
+          formType: 'input',
+        },
+        {
           title: '设备型号',
           key: 'equipModel',
           formType: 'input',
@@ -192,11 +197,6 @@ export default {
         {
           title: '内部名称',
           key: 'innerName',
-          formType: 'input',
-        },
-        {
-          title: '资产编号',
-          key: 'assetsCode',
           formType: 'input',
         },
         {
@@ -326,7 +326,13 @@ export default {
     },
     handleEditClosed({row, rowIndex}) {
       // 单元格编辑状态下被关闭时会触发该事件
-      this.priceDataExtend[rowIndex] = row
+      for (let i = 0; i < this.priceDataExtend.length; i++) {
+        let item = this.priceDataExtend[i]
+        if (item.id === row.id) {
+          this.priceDataExtend[i] = row
+          return
+        }
+      }
     },
     handleProjectNameClick({row, rowIndex}) {
       this.selectProjectBefore = {row, rowIndex}
@@ -362,7 +368,7 @@ export default {
             // 这里的逻辑比较乱，因为搜索查询后表格的数据会变，保存时，不能只拿查询出来的表格数据，要拿第一次加载的原始数据（时间紧急，先这样处理）
             // 本来此表格数据不用查询，但是数据多的情况下还是得需要查询
             // 当然了，编辑和删除时，也会更新原始数据
-            this.priceDataExtend = this.priceData
+            this.priceDataExtend = cloneDeep(this.priceData)
             this.onceFlag = false
           }
 
@@ -456,6 +462,7 @@ export default {
       const $table = this.$refs.priceDataTable
       const errMap = await $table.validate().catch((errMap) => errMap)
       let priceData = this.priceDataExtend
+      console.log(priceData, 'priceData')
       let url = null
       priceData = this.formatPriceData(priceData)
       if (values.id) {

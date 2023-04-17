@@ -21,7 +21,9 @@
       <template slot="title">交班记录</template>
       <!-- 新增删除 -->
       <div slot="table-operator" style="border-top: 5px">
-        <a-button v-has="'handover:add'" size="small" @click="handoverAdd" type="ghost-primary" icon="plus">新增</a-button>
+        <a-button v-has="'handover:add'" icon="plus" size="small" type="ghost-primary" @click="handoverAdd({})">
+          新增
+        </a-button>
         <a-button v-has="'handover:delete'" type="danger" size="small" icon="delete" @click="delet">
           批量删除
         </a-button>
@@ -65,12 +67,11 @@
           />
         </span>
         <!-- 操作 -->
-        <template slot="actions" slot-scope="text, record">
+        <a-space slot="actions" slot-scope="text, record">
           <!-- 编辑 -->
-          <a-tooltip title="编辑">
-            <a-icon type="edit" class="primary-text" @click="() => handleEdit(record)" />
+          <a-tooltip v-if="validateIsEdit(record)" title="编辑">
+            <a-icon class="primary-text" type="edit" @click="handleEdit(record)"/>
           </a-tooltip>
-          <a-divider type="vertical" />
           <!-- 详情 -->
           <a-tooltip title="详情">
             <a-icon
@@ -81,13 +82,12 @@
               @click="() => handleDetail(record)"
             />
           </a-tooltip>
-          <a-divider v-has="'handover:delete'" type="vertical"/>
           <!-- 删除 -->
-            <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-              <h-icon v-has="'handover:delete'" class="danger-text" style="cursor: pointer" title="删除"
-                      type="icon-shanchu"/>
-            </a-popconfirm>
-        </template>
+          <a-popconfirm v-if="validateIsEdit(record)" title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+            <h-icon v-has="'handover:delete'" class="danger-text" style="cursor: pointer" title="删除"
+                    type="icon-shanchu"/>
+          </a-popconfirm>
+        </a-space>
       </h-vex-table>
     </h-card>
     <handover-add-modal ref="handoverAddModal" @change="refresh(true)"></handover-add-modal>
@@ -281,6 +281,16 @@ export default {
     }
   },
   methods: {
+    validateIsEdit(row) {
+      // 校验是否可以编辑
+      // 如果创建时间是当天时间之前就不可编辑和删除
+      const todayStart = moment().startOf('day').valueOf();
+      const createTime = +row.createTime
+      if (!createTime) {
+        return false
+      }
+      return createTime > todayStart
+    },
     // 更新
     refresh(bool = true) {
       this.$refs.handover.refresh(bool)
@@ -289,16 +299,13 @@ export default {
     // 添加
     handoverAdd(record) {
       let title = '新增交接班记录'
-      let groupCode = 'handoverAdd'
-      this.$refs.handoverAddModal.show(record, title, groupCode)
+      this.$refs.handoverAddModal.show(record, title)
       this.refresh()
     },
     // 编辑
     handleEdit(record) {
       let title = '编辑交接班记录'
-      let groupCode = 'handoverAdd'
-      this.$refs.handoverAddModal.show(record, title, groupCode)
-      this.refresh()
+      this.$refs.handoverAddModal.show(record, title)
     },
     // 批量删除
     delet() {
