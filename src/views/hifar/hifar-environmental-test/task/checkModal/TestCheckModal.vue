@@ -351,7 +351,7 @@ export default {
       records.itemRequire = ''
       records.isEdit = true
       records.itemRes = ''
-      records.checkFlag = '1'
+      records.checkFlag = 1
       this[type].push(records)
     },
     show(record, title, type) {
