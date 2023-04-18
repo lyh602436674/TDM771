@@ -140,23 +140,7 @@ export default {
           title: '试验类型',
           key: 'c_testType_1',
           formType: 'select',
-          options: [
-            {
-              title: '气候',
-              key: 1,
-              value: 1
-            },
-            {
-              title: '力学',
-              key: 2,
-              value: 2
-            },
-            {
-              title: '环境',
-              key: 3,
-              value: 3
-            }
-          ]
+          options: SYSTEM_CONSTANTS_PROJECT_CLASSIFY
         },
         {
           title: '移交状态',
@@ -293,7 +277,8 @@ export default {
           dataIndex: 'testtype',
           minWidth: 100,
           customRender: (text) => {
-            return SYSTEM_CONSTANTS_PROJECT_CLASSIFY.filter(item => item.key === text)[0].title || '--'
+            let filterRes = SYSTEM_CONSTANTS_PROJECT_CLASSIFY.filter(item => item.key === +text)
+            return filterRes && filterRes.length ? filterRes[0].title : '--'
           }
         },
         {

@@ -26,45 +26,20 @@
 </template>
 
 <script>
-  import moment from 'moment'
-  import { postAction, downFile } from '@/api/manage'
+import moment from 'moment'
+import {downFile, postAction} from '@/api/manage'
 
-  export default {
-    data() {
-      return {
-        activeTab: 1,
-        queryParams: {},
-        dateTime: [moment().subtract(2, 'days'), moment()],
-        searchData: [
-          {
-            title: '日志内容',
-            key: 'c_logContent_7',
-            formType: 'input'
-          },
-          {
-            title: '操作人',
-            key: 'c_createUserName_7',
-            formType: 'input'
-          },
-          {
-            title: '操作时间',
-            key: 'c_createTime_1',
-            formType: 'dateRangePick',
-            showTime: true,
-            format: 'YYYY-MM-DD'
-          },
-          {
-            title: '操作类型',
-            key: 'c_optType_1',
-            formType: 'dict',
-            dictCode: 'hf_sys_log_opt_type'
-          }
-        ],
-        columns: [
-          {
-            title: '日志内容',
-            dataIndex: 'logContent',
-            customRender: (text) => {
+export default {
+  data() {
+    return {
+      activeTab: 1,
+      queryParams: {},
+      dateTime: [moment().subtract(2, 'days'), moment()],
+      columns: [
+        {
+          title: '日志内容',
+          dataIndex: 'logContent',
+          customRender: (text) => {
               return text || '--'
             }
           },
@@ -121,26 +96,56 @@
             }
           })
         }
-      }
+    }
+  },
+  computed: {
+    searchData() {
+      return [
+        {
+          title: '日志内容',
+          key: 'c_logContent_7',
+          formType: 'input'
+        },
+        {
+          title: '操作人',
+          key: 'c_createUserName_7',
+          formType: 'input'
+        },
+        {
+          title: '操作时间',
+          key: 'c_createTime_1',
+          formType: 'dateRangePick',
+          showTime: true,
+          format: 'YYYY-MM-DD'
+        },
+        {
+          title: '操作类型',
+          key: 'c_optType_1',
+          formType: 'dict',
+          hidden: this.activeTab === 1,
+          dictCode: 'hf_sys_log_opt_type'
+        }
+      ]
     },
-    methods: {
-      refresh(bool = false) {
-        this.$refs.logTable.refresh(bool)
-      },
+  },
+  methods: {
+    refresh(bool = false) {
+      this.$refs.logTable.refresh(bool)
+    },
 
-      handleTabsChange(v) {
-        this.activeTab = v
-        if (v == 2 && this.columns.length < 5) {
-          let optTypeColumn = {
-            title: '操作类型',
-            dataIndex: 'optType',
-            customRender: (text) => {
-              switch (text) {
-                case '1':
-                  return '查询'
-                case '2':
-                  return '添加'
-                case '3':
+    handleTabsChange(v) {
+      this.activeTab = v
+      if (v === 2 && this.columns.length < 5) {
+        let optTypeColumn = {
+          title: '操作类型',
+          dataIndex: 'optType',
+          customRender: (text) => {
+            switch (text) {
+              case '1':
+                return '查询'
+              case '2':
+                return '添加'
+              case '3':
                   return '修改'
                 case '4':
                   return '删除'

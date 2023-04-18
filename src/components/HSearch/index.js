@@ -317,7 +317,9 @@ export default {
     },
     renderToggleTrue(h) {
       return this.data.map(item => {
-        return h('a-col', { attrs: { ...this.colAttrs } }, [this.renderFormItem(h, item)])
+        if(!item.hidden) {
+         return h('a-col', { attrs: { ...this.colAttrs } }, [this.renderFormItem(h, item)])
+        }
       })
     },
     renderToggleFalse(h) {

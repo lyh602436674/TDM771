@@ -62,12 +62,17 @@ export default {
       default: () => document.body,
     }
   },
+  props: {
+    allowEmpty: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {HEditTree},
   data() {
     return {
       // 添加弹窗相关
       visible: false,
-      allowEmpty: false,
       queryParams: {},
       selectedRowKeys: [],
       selectedRows: [],
@@ -156,16 +161,23 @@ export default {
     handleCancel() {
       this.queryParams = {}
       this.visible = false
-      this.allowEmpty = false
       this.selectedRowKeys = []
+      this.selectedRows = []
     },
     handleSubmit() {
       if (!this.selectedRowKeys.length && !this.allowEmpty) {
-        this.$message.warning('请先选择项目!')
-        return
+        return this.$message.warning('请先选择项目!')
       }
+      /**
+       * 这里解释一下
+       * 如果没有重新选择表格数据，那么应该拿的是checkboxRecords，因为默认没有带入具体选中的行数据，只有rowId
+       * 如果重新选择了表格数据，那么直接拿this.selectedRows就可以，因为操作表格后，this.selectedRows永远是最新选中行数据
+       * */
+      let checkboxRecords = this.$refs.projectTable.getCheckboxRecords(true)
+      let currSelectedRows = this.selectedRows
+      let selectedRows = currSelectedRows.length ? currSelectedRows : checkboxRecords
+      this.$emit('change', this.selectedRowKeys, selectedRows)
       this.handleCancel()
-      this.$emit('change', this.selectedRowKeys, this.selectedRows)
     },
   },
 }

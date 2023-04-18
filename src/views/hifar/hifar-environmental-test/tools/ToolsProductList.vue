@@ -200,7 +200,7 @@ export default {
         {
           title: '责任人',
           formType: 'input',
-          key: 'c_personName_7'
+          key: 'c_person_7'
         },
         {
           title: '存放地点',

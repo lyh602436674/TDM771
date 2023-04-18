@@ -144,7 +144,7 @@
       </h-card>
     </div>
     <sys-fee-list-select-modal ref="SysFeeListSelectModal" @change="feeSelectHandle"></sys-fee-list-select-modal>
-    <project-add-modal ref='projectAddModal' @change='projectModalCallback'/>
+    <project-add-modal ref='projectAddModal' allowEmpty @change='projectModalCallback'/>
   </h-modal>
 </template>
 
@@ -174,7 +174,10 @@ export default {
         }
       })
     }
+    // 整数-整数
     const regRange = /^-?\d+(-\d*[1-9]\d*)$/
+    // 浮点数或者整数-浮点数或者整数
+    const accelerationRange = /^-?\d+(?:\.\d+)?-\d+(?:\.\d+)?$/
 
     return {
       dataSource: [],
@@ -252,7 +255,7 @@ export default {
           {required: false, trigger: 'blur'},
           {
             validator: ({cellValue}) => {
-              return validatorFields(cellValue, '请输入正确格式的加速度范围，例：-100-100', regRange)
+              return validatorFields(cellValue, '请输入正确格式的加速度范围，例：-100-100', accelerationRange)
             }
           }
         ],

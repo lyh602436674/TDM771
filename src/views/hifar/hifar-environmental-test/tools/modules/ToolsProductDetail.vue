@@ -16,70 +16,70 @@
                  style='width:100%;height:100%;cursor:pointer'/>
           </viewer>
         </div>
-        <h-descriptions :column='2' bordered class='right' title='基本信息'>
-          <a-descriptions-item label='工装名称'>
+        <h-desc :column='2' :data="detailData" bordered class='right' title='基本信息'>
+          <h-desc-item label='工装名称'>
             {{ detailData.toolsName ? detailData.toolsName : '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='工装编号'>
+          </h-desc-item>
+          <h-desc-item label='工装编号'>
             {{ detailData.toolsCode ? detailData.toolsCode : '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='工装规格'>
+          </h-desc-item>
+          <h-desc-item label='工装规格'>
             {{ detailData.toolsSize ? detailData.toolsSize : '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='借用部门'>
+          </h-desc-item>
+          <h-desc-item label='借用部门'>
             {{ detailData.borrwoDeptName ? detailData.borrwoDeptName : '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='借用人'>
+          </h-desc-item>
+          <h-desc-item label='借用人'>
             {{ detailData.borrowPersonName ? detailData.borrowPersonName : '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='借用日期'>
+          </h-desc-item>
+          <h-desc-item label='借用日期'>
             {{
               detailData.borrowDate && detailData.borrowDate != 0
                 ? moment(parseInt(detailData.borrowDate)).format('YYYY-MM-DD')
                 : '--'
             }}
-          </a-descriptions-item>
-          <a-descriptions-item label='检定日期'>
+          </h-desc-item>
+          <h-desc-item label='检定日期'>
             {{
               detailData.verificationDate && detailData.verificationDate != 0
                 ? moment(parseInt(detailData.verificationDate)).format('YYYY-MM-DD')
                 : '--'
             }}
-          </a-descriptions-item>
-          <a-descriptions-item label='在库状态'>
+          </h-desc-item>
+          <h-desc-item label='在库状态'>
             {{ detailData.larbaryStatus_dictText || '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='存放地点'>
+          </h-desc-item>
+          <h-desc-item label='存放地点'>
             {{ detailData.location ? detailData.location : '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='责任人'>
+          </h-desc-item>
+          <h-desc-item label='责任人'>
             {{ detailData.person ? detailData.person : '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='责任部门'>
+          </h-desc-item>
+          <h-desc-item label='责任部门'>
             {{ detailData.deptName ? detailData.deptName : '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='生产厂家'>
+          </h-desc-item>
+          <h-desc-item label='生产厂家'>
             {{ detailData.factory ? detailData.factory : '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='启用日期'>
+          </h-desc-item>
+          <h-desc-item label='启用日期'>
             {{
               detailData.activeDate && detailData.activeDate != 0
                 ? moment(parseInt(detailData.activeDate)).format('YYYY-MM-DD')
                 : '--'
             }}
-          </a-descriptions-item>
-          <a-descriptions-item label='设备状态'>
+          </h-desc-item>
+          <h-desc-item label='设备状态'>
             {{ detailData.toolsStatus_dictText || '--' }}
-          </a-descriptions-item>
-          <a-descriptions-item label='工装分类'>
+          </h-desc-item>
+          <h-desc-item :span='2' label='工装分类'>
             {{
               detailData.classify_dictText || '--'
             }}
-          </a-descriptions-item>
-          <a-descriptions-item :span='2' label='备注'>
-            <a-textarea v-model='detailData.remake' readOnly/>
-          </a-descriptions-item>
-        </h-descriptions>
+          </h-desc-item>
+          <h-desc-item :span='2' label='备注'>
+            {{ detailData.remake }}
+          </h-desc-item>
+        </h-desc>
       </div>
     </div>
     <div slot='footer' class='footer'>
@@ -132,10 +132,14 @@ export default {
 .info_containter {
   display: flex;
 
+  /deep/ .desc .desc-row {
+    height: auto !important;
+  }
+
   .left {
     width: 300px;
     height: 300px;
-    margin-top: 41px;
+    margin: 40px 15px 0 0;
   }
 
   .right {

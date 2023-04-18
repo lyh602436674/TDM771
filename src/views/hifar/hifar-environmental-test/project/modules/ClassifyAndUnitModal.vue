@@ -185,7 +185,7 @@ export default {
             ),
           },
           {
-            title: '备注',
+            title: '过程描述',
             key: 'remarks',
             formType: 'textarea',
           },
@@ -211,6 +211,7 @@ export default {
       if (!this.model.type) {
         this.model.type = 'classify'
       }
+      console.log(this.model.type, 'this.model.type')
       let formData = this.expFormData[this.model.type]
       let index = findIndex(formData, function (obj) {
         return obj.key === 'type'

@@ -326,15 +326,13 @@ export default {
         ...this.queryParam,
       }
       this.loading = true
-      return getUserList(data)
-        .then((res) => {
-          if (res.code === 200) {
-            return res.data
-          }
-        })
-        .finally(() => {
-          this.loading = false
-        })
+      return getUserList(data).then((res) => {
+        if (res.code === 200) {
+          return res.data
+        }
+      }).finally(() => {
+        this.loading = false
+      })
     },
     getAvatarView: function (avatar) {
       return getFileAccessHttpUrl(avatar)

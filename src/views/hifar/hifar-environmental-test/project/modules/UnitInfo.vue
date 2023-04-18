@@ -15,7 +15,7 @@
             <a-descriptions-item label="项目名称"> {{ unitInfo.unitName || '--' }}</a-descriptions-item>
             <a-descriptions-item label="项目编码"> {{ unitInfo.unitCode || '--' }}</a-descriptions-item>
             <a-descriptions-item label="所属分类">{{ unitInfo.classifyName || '--' }}</a-descriptions-item>
-            <a-descriptions-item :span="2" label="备注">{{ unitInfo.remarks || '--' }}</a-descriptions-item>
+            <a-descriptions-item :span="2" label="过程描述">{{ unitInfo.remarks || '--' }}</a-descriptions-item>
           </a-descriptions>
         </h-card>
       </a-tab-pane>

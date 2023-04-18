@@ -17,7 +17,7 @@
           </a-tag>
         </template>
       </a-descriptions-item>
-      <a-descriptions-item label="备注信息">{{ classifyInfo.remarks || '--' }}</a-descriptions-item>
+      <a-descriptions-item label="备注">{{ classifyInfo.remarks || '--' }}</a-descriptions-item>
     </a-descriptions>
   </h-card>
 </template>

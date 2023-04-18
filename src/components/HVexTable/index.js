@@ -426,26 +426,62 @@ export default {
                    }) {
       // records 为当前选中的行数据数组 reserves 为历史选中的数组，但是会出现重复的情况，所以对外输出需要处理掉重复的数据
       // console.log('多选触发的事件', 'records:', records, 'reserves:', reserves, 'indeterminates:', indeterminates, 'checked:', checked, 'row:', row, 'rowIndex:', rowIndex, '$row:', $row, '$rowIndex:', $rowIndex)
-      let selectedRows = []
+      // let selectedRows = []
       // selectedRows 被组装成HashArray，对外输出时需要修改成IndexArray
-      records.map(item => {
-        if (isString(this.rowKey)) {
-          selectedRows[item[this.rowKey]] = item
-        } else if (isFunction(this.rowKey)) {
-          selectedRows[this.rowKey(item)] = item
-        }
-      })
-      if (this.historySelect) {
-        reserves.map(item => {
-          if (isString(this.rowKey)) {
-            selectedRows[item[this.rowKey]] = item
-          } else if (isFunction(this.rowKey)) {
-            selectedRows[this.rowKey(item)] = item
+      // records.map(item => {
+      //   if (isString(this.rowKey)) {
+      //     selectedRows[item[this.rowKey]] = item
+      //   } else if (isFunction(this.rowKey)) {
+      //     selectedRows[this.rowKey(item)] = item
+      //   }
+      // })
+      // if (this.historySelect) {
+      //   reserves.map(item => {
+      //     if (isString(this.rowKey)) {
+      //       selectedRows[item[this.rowKey]] = item
+      //     } else if (isFunction(this.rowKey)) {
+      //       selectedRows[this.rowKey(item)] = item
+      //     }
+      //   })
+      // }
+      // this.selectedRowKeys = Object.keys(selectedRows)
+      // this.selectedRows = selectedRows
+
+      //勾选选中时
+      if (checked) {
+        //第一次选数据，还未进行翻页时
+        if (reserves.length === 0) {
+          this.selectedRowKeys = records.map(v => v.id);
+          this.selectedRows = records;
+        } else {
+          if (this.historySelect) {
+            //id集合，翻页存在已选中的数据时,拼接新选中的数据
+            this.selectedRowKeys = [...reserves.map(v => v.id), ...records.map(v => v.id)];
+            //数据集合，翻页存在已选中的数据时,拼接新选中的数据
+            this.selectedRows = [...reserves, ...records];
+          } else {
+            this.selectedRowKeys = records.map(v => v.id);
+            this.selectedRows = records;
           }
-        })
+        }
+      } else {
+        //取消选中时
+        let idIndex = this.selectedRowKeys.indexOf(row.id);
+        if (idIndex > -1) {
+          //删除取消选中删除指定元素id
+          this.selectedRowKeys.splice(idIndex, 1);
+        }
+
+        let dataIndex = null;
+        for (let i = 0; i < this.selectedRows.length; i++) {
+          if (this.selectedRows[i].id === row.id) {
+            dataIndex = i;
+            break;
+          }
+        }
+        //删除取消选中的元素整个对象
+        this.selectedRows.splice(dataIndex, 1);
       }
-      this.selectedRowKeys = Object.keys(selectedRows)
-      this.selectedRows = selectedRows
       this.triggerChange()
     },
     // checkbox 全选时
@@ -462,25 +498,48 @@ export default {
                      $columnIndex,
                      $event
                    }) {
-      let selectedRows = []
-      records.map(item => {
-        if (isString(this.rowKey)) {
-          selectedRows[item[this.rowKey]] = item
-        } else if (isFunction(this.rowKey)) {
-          selectedRows[this.rowKey(item)] = item
-        }
-      })
-      if (this.historySelect) {
-        reserves.map(item => {
-          if (isString(this.rowKey)) {
-            selectedRows[item[this.rowKey]] = item
-          } else if (isFunction(this.rowKey)) {
-            selectedRows[this.rowKey(item)] = item
+      // let selectedRows = []
+      // records.map(item => {
+      //   if (isString(this.rowKey)) {
+      //     selectedRows[item[this.rowKey]] = item
+      //   } else if (isFunction(this.rowKey)) {
+      //     selectedRows[this.rowKey(item)] = item
+      //   }
+      // })
+      // if (this.historySelect) {
+      //   reserves.map(item => {
+      //     if (isString(this.rowKey)) {
+      //       selectedRows[item[this.rowKey]] = item
+      //     } else if (isFunction(this.rowKey)) {
+      //       selectedRows[this.rowKey(item)] = item
+      //     }
+      //   })
+      // }
+      // this.selectedRowKeys = Object.keys(selectedRows)
+      // this.selectedRows = selectedRows
+
+      //全选中时
+      if (checked) {
+        //第一次选数据，还未进行翻页时
+        if (reserves.length === 0) {
+          this.selectedRowKeys = records.map(v => v.id);
+          this.selectedRows = records;
+        } else {
+          if (this.historySelect) {
+            //id集合，翻页存在已选中的数据时,拼接新选中的数据
+            this.selectedRowKeys = [...reserves.map(v => v.id), ...records.map(v => v.id)];
+            //数据集合，翻页存在已选中的数据时,拼接新选中的数据
+            this.selectedRows = [...reserves, ...records];
+          } else {
+            this.selectedRowKeys = records.map(v => v.id);
+            this.selectedRows = records;
           }
-        })
+        }
+      } else {
+        //取消全选时,直接将翻页数据赋值，当前页数据不用加上
+        this.selectedRows = reserves;
+        this.selectedRowKeys = reserves.map(v => v.id)
       }
-      this.selectedRowKeys = Object.keys(selectedRows)
-      this.selectedRows = selectedRows
       this.triggerChange()
     },
     /**
@@ -560,6 +619,12 @@ export default {
     },
     setAllTreeExpand(checked) {
       this.$refs[this.tableId].setAllTreeExpand(checked)
+    },
+    getCheckboxRecords(isFull) {
+      return this.$refs[this.tableId].getCheckboxRecords(isFull)
+    },
+    getCheckboxReserveRecords(isFull) {
+      return this.$refs[this.tableId].getCheckboxReserveRecords(isFull)
     },
     setCheckboxStatus() {
       // 因为当前表格数据刷新后 vxe-table的row-id属性发生了变化，导致selectedRows中的数据与当前table的数据不一致，导致数据无法正常更新上去，所以这里做了一次数据查询
