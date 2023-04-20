@@ -60,7 +60,6 @@ export default {
         file:base64Data,
         testIds:this.selectRowId.map(item=>item.id).join(",")
       }
-      console.log("data",data)
       postAction(this.url.saveCurve,data).then(res=>{
         if (res.code === 200) {
           this.$message.success("保存成功")

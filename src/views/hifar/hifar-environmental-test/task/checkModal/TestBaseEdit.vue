@@ -970,12 +970,6 @@ export default {
           key: 'c_equipName_7'
         },
         {
-          title: '设备类型',
-          formType: 'dict',
-          key: 'c_equipTypeCode_1',
-          dictCode: 'hf_res_equip_type'
-        },
-        {
           title: '设备型号',
           formType: 'input',
           key: 'c_equipModel_7'
@@ -1026,7 +1020,7 @@ export default {
         }
       ],
       equipList: {
-        list: '/HfResEquipBusiness/listPage',
+        list: '/HfResEquipBusiness/listPageForEntrust',
         queryParams: {
           c_equipUse_1: "2", // 只查询测试设备
         }
@@ -1123,7 +1117,7 @@ export default {
         },
         {
           title: '试件编号',
-          dataIndex: 'pieceCode',
+          dataIndex: 'pieceNo',
           customRender: (t) => {
             return t || '--'
           }
@@ -1182,13 +1176,6 @@ export default {
         {
           title: '设备用途',
           dataIndex: 'equipUse_dictText',
-          customRender: (t) => {
-            return t || '--'
-          }
-        },
-        {
-          title: '设备类型',
-          dataIndex: 'equipTypeName',
           customRender: (t) => {
             return t || '--'
           }
@@ -1922,6 +1909,7 @@ export default {
     },
     // 保存
     handleSave() {
+      if (this.submitLoading) return
       this.submitLoading = true
       const {$refs: {carryOutProcessForm}} = this
       const carryOutProcess_form = new Promise((resolve, reject) => {
@@ -1957,8 +1945,8 @@ export default {
           pieceArr: this.productTable.map(item => {
             return {
               ...item,
-              attachIds: item.attachInfo.map(item => item.id).toString(),
-              imgAttachIds: item.imgAttachInfo.map(item => item.id).toString(),
+              attachIds: item.attachInfo && item.attachInfo.length ? item.attachInfo.map(item => item.id).toString() : '',
+              imgAttachIds: item.imgAttachInfo && item.imgAttachInfo.length ? item.imgAttachInfo.map(item => item.id).toString() : '',
             }
           }),
           // 被试件(试件)集合

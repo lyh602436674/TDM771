@@ -22,7 +22,10 @@
         <a @click="$refs.testTaskBaseInfoModal.show(record,'1','20px')">{{ text }}</a>
       </template>
       <template #entrustCodes="text, record">
-        <a @click="$refs.testTaskBaseInfoModal.show(record,null,'20px')">{{ text }}</a>
+        <a @click="$refs.testTaskBaseInfoModal.show(record,'2','20px')">{{ text }}</a>
+      </template>
+      <template #testCode="text, record">
+        <a @click="$refs.testTaskBaseInfoModal.show(record,'3','20px')">{{ text }}</a>
       </template>
       <template #exceptionNum="text, record">
         <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
@@ -110,6 +113,11 @@ export default {
       },
       searchData: [
         {
+          title: '试验编号',
+          key: 'c_testCode_7',
+          formType: 'input',
+        },
+        {
           title: '委托单号',
           key: 'entrustNo',
           formType: 'input',
@@ -117,11 +125,6 @@ export default {
         {
           title: '运行单号',
           key: 'entrustCode',
-          formType: 'input',
-        },
-        {
-          title: '试验编号',
-          key: 'c_testCode_7',
           formType: 'input',
         },
         {
@@ -160,6 +163,7 @@ export default {
           title: '试验编号',
           dataIndex: 'testCode',
           minWidth: 140,
+          scopedSlots: {customRender: 'testCode'},
         },
         {
           title: '状态',
@@ -202,11 +206,6 @@ export default {
         {
           title: '试验项目',
           dataIndex: 'unitNames',
-          minWidth: 100,
-        },
-        {
-          title: '设备速率',
-          dataIndex: 'testRate',
           minWidth: 100,
         },
         {
@@ -273,6 +272,9 @@ export default {
           title: '实际用时(h)',
           dataIndex: 'realUseTime',
           minWidth: 100,
+          customRender: text => {
+            return Number(text).toFixed(2) || '--'
+          }
         },
         {
           title: '操作',

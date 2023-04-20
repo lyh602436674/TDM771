@@ -436,6 +436,13 @@ export default {
           },
         },
         {
+          title: '参数类型',
+          dataIndex: 'paramType_dictText',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
           title: '数据类型',
           dataIndex: 'dataType',
           customRender: (text) => {
@@ -932,6 +939,12 @@ export default {
               key: 'c_paramCode_7',
               formType: 'input',
             },
+            {
+              title: '参数类型',
+              key: 'c_paramType_7',
+              formType: 'dict',
+              dictCode: "hf_dev_param_type"
+            },
           ]
           title = '新增能力参数'
           columns = [
@@ -942,6 +955,13 @@ export default {
             {
               title: '参数名称',
               dataIndex: 'paramName',
+            },
+            {
+              title: '参数类型',
+              dataIndex: 'paramType_dictText',
+              customRender: (text, record) => {
+                return text || '--'
+              }
             },
             {
               title: '数据类型',
@@ -1173,15 +1193,13 @@ export default {
           params.checkIds = ids
           break
       }
-      console.log(url, params)
-      postAction(url, params)
-        .then((res) => {
-          if (res.code === 200) {
-            this.$message.success('添加成功')
-            this.$refs.hSelectModal.handleCancel()
-            this.show(this.activeKey, this.id)
-          }
-        })
+      postAction(url, params).then((res) => {
+        if (res.code === 200) {
+          this.$message.success('添加成功')
+          this.$refs.hSelectModal.handleCancel()
+          this.show(this.activeKey, this.id)
+        }
+      })
         .finally((res) => {
           this.$refs.hSelectModal.confirmLoading = false
         })
@@ -1257,7 +1275,6 @@ export default {
         templateType: type,
         templateId: record.id,
       }
-      console.log('record', record, params)
       postAction(this.url.templateDefault, params).then((res) => {
         if (res.code === 200) {
           this.$message.success(record.name + ',设置默认成功')

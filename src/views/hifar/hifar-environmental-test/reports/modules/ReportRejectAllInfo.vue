@@ -80,13 +80,8 @@
 import {downloadFile, postAction} from "@api/manage";
 import HEditTree from "@views/components/HEditTree";
 import ReportRejectAllInfoModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportRejectAllInfoModal";
+import {REPORT_REJECT_TYPE} from "@views/hifar/constants";
 
-const rejectType = [
-  {title: "报告生成", key: "1", value: "1"},
-  {title: "报告审核", key: "2", value: "2"},
-  {title: "报告批准", key: "3", value: "3"},
-  {title: "修改审批", key: "4", value: "4"},
-]
 export default {
   name: "ReportRejectAllInfo",
   inject: {
@@ -142,7 +137,7 @@ export default {
           title: '驳回节点',
           formType: 'select',
           key: 'rejectType',
-          options: rejectType,
+          options: REPORT_REJECT_TYPE,
         },
         {
           title: '问题类型',
@@ -205,7 +200,7 @@ export default {
           minWidth: 120,
           dataIndex: 'rejectType',
           customRender: (text, record) => {
-            let [res] = rejectType.filter(item => item.key === text)
+            let [res] = REPORT_REJECT_TYPE.filter(item => item.key === text)
             return (res && res.title) || '--'
           }
         },

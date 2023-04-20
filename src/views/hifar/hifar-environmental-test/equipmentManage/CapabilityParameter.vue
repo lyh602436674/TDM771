@@ -74,6 +74,12 @@ export default {
           key: 'c_paramCode_7',
           formType: 'input',
         },
+        {
+          title: '参数类型',
+          key: 'c_paramType_7',
+          formType: 'dict',
+          dictCode: "hf_dev_param_type"
+        },
       ],
       columns: [
         {
@@ -86,7 +92,6 @@ export default {
         },
         {
           title: '参数类型',
-          formType: 'dict',
           dataIndex: 'paramType_dictText',
           customRender: (text, record) => {
             return text || '--'

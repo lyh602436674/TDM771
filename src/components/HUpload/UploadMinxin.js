@@ -34,7 +34,6 @@ export default {
       url: {
         auth: '/MinioBusiness/authUpload',
         finished: '/MinioBusiness/finishUpload',
-        detail: '/MinioBusiness/queryById',
       },
       extendRecords: {},
       // 图片水印内容
@@ -447,7 +446,7 @@ export default {
     handleDownload(filePath, fileName, id) {
       let fileAccessUrl = getFileAccessHttpUrl(filePath)
       if (id) {
-        let detailUrl = this.url.detail
+        let detailUrl = '/MinioBusiness/queryById'
         if (this.customParams && this.customParams.detail) {
           detailUrl = this.customParams.detail
         }

@@ -53,7 +53,7 @@
         </a-tabs>
       </template>
     </h-desc-item>
-    <h-desc-item :span='3' label='测试设备1'>
+    <h-desc-item :span='3' label='测试设备'>
       <a-table
         slot='content'
         :columns="equipColumns"

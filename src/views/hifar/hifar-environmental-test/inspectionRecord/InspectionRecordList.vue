@@ -83,7 +83,7 @@ export default {
           },
         },
         {
-          title: '计划开始任务数量',
+          title: '实际开始任务数量',
           dataIndex: 'taskBeginQuantity',
           align: 'center',
           scopedSlots: {
@@ -91,7 +91,7 @@ export default {
           },
         },
         {
-          title: '实际结束任务数量',
+          title: '计划结束任务数量',
           dataIndex: 'taskFinishQuantity',
           align: 'center',
           scopedSlots: {
@@ -208,6 +208,9 @@ export default {
           title: '实际用时(h)',
           dataIndex: 'realUseTime',
           minWidth: 100,
+          customRender: text => {
+            return Number(text).toFixed(2) || '--'
+          }
         },
         {
           title: '标准总价',

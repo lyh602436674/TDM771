@@ -32,7 +32,7 @@
         ref="pointTable"
         :columns="columns"
         :data="loadData"
-        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect, type: type }"
+        :rowSelection="{ selectedRowKeys, onChange: onSelect, type }"
         style="width: 100%"
       ></h-vex-table>
     </h-card>
@@ -59,7 +59,7 @@ export default {
   data() {
     return {
       moment,
-      title: '选择设备能力要求',
+      title: '选择试验条件',
       type: 'checkbox',
       visible: false,
       loading: false,
@@ -81,9 +81,9 @@ export default {
           title: '参数类型',
           key: 'c_paramType_7',
           formType: 'dict',
-          dataIndex: 'paramType',
+          dataIndex: 'paramType_dictText',
           customRender: (text, record) => {
-            return filterDictTextByCache('hf_dev_param_type', text) || '-'
+            return text || '--'
           }
         },
         {

@@ -29,18 +29,18 @@
       </div>
       <h-vex-table ref="taskHistoryTable" slot="content" :columns="columns" :data="loadData"
                    :rowSelection='{ selectedRowKeys, onSelect }'>
-        <a slot="testCode" slot-scope="text, record" @click="handleShowDetail(record)">
-          {{ record.testCode || '--' }}
-        </a>
+        <template #entrustNos="text, record">
+          <a @click="$refs.TaskDetailModal.show(record,'1','20px')">{{ text }}</a>
+        </template>
+        <template #entrustCodes="text, record">
+          <a @click="$refs.TaskDetailModal.show(record,'2','20px')">{{ text }}</a>
+        </template>
+        <template #testCode="text, record">
+          <a @click="$refs.TaskDetailModal.show(record,'3','20px')">{{ text }}</a>
+        </template>
         <template slot="status" slot-scope="text">
-          <a-badge v-if="text === 1" color="geekblue" text="未开始"/>
-          <a-badge v-else-if="text === 10" color="red" text="已撤销"/>
-          <a-badge v-else-if="text === 20" color="green" text="进行中"/>
-          <a-badge v-else-if="text === 30" color="volcano" text="暂停"/>
-          <a-badge v-else-if="text === 40" color="red" text="终止"/>
-          <a-badge v-else-if="text === 45" color="red" text="异常"/>
-          <a-badge v-else-if="text === 50" color="grey" text="已完成"/>
-          <a-badge v-else-if="text === 60" color="grey" text="已出报告"/>
+          <a-badge :color="testStatusMap[text] ? testStatusMap[text].color : ''"
+                   :text="testStatusMap[text] ? testStatusMap[text].text : ''"/>
         </template>
         <template #exceptionNum="text, record">
           <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
@@ -85,11 +85,6 @@
             </h-upload-file-b>
           </a-space>
         </template>
-        <template slot="actions" slot-scope="text, record">
-          <a-tooltip title="查看">
-            <a-icon class="primary-text" type="eye" @click="() => handleShowDetail(record)"/>
-          </a-tooltip>
-        </template>
       </h-vex-table>
     </h-card>
     <test-task-base-info-modal ref="TaskDetailModal" showExceptionAndEnd/>
@@ -130,6 +125,17 @@ export default {
   data() {
     return {
       reviewPdfTitle: '',
+      testStatusMap: {
+        0: {color: "grey", text: "未发布"},
+        1: {color: "geekblue", text: "未开始"},
+        10: {color: "red", text: "已撤销"},
+        20: {color: "green", text: "进行中"},
+        30: {color: "volcano", text: "暂停"},
+        40: {color: "red", text: "终止"},
+        45: {color: "yellow", text: "异常"},
+        50: {color: "grey", text: "已完成"},
+        60: {color: "grey", text: "已出报告"},
+      },
       queryParams: {},
       records: {},
       swapFileList: [],
@@ -348,12 +354,14 @@ export default {
         {
           title: '运行单号',
           dataIndex: 'entrustCodes',
-          minWidth: 140,
+          scopedSlots: {customRender: 'entrustCodes'},
+          minWidth: 160,
         },
         {
           title: '委托单号',
           dataIndex: 'entrustNos',
-          minWidth: 120,
+          scopedSlots: {customRender: 'entrustNos'},
+          minWidth: 140,
         },
         {
           title: '报告编号',
@@ -454,13 +462,16 @@ export default {
           title: '实际用时(h)',
           dataIndex: 'realUseTime',
           minWidth: 100,
+          customRender: text => {
+            return Number(text).toFixed(2) || '--'
+          }
         },
         {
           title: '标准总价',
           dataIndex: 'standardTotalPrice',
           minWidth: 100,
           customRender: text => {
-            return Number(text)
+            return (Number(text) / 1000) || '--'
           }
         },
         {
@@ -468,18 +479,8 @@ export default {
           dataIndex: 'totalExpenses',
           minWidth: 100,
           customRender: text => {
-            return Number(text)
+            return (Number(text) / 1000) || '--'
           }
-        },
-        {
-          title: '操作',
-          dataIndex: 'actions',
-          align: 'center',
-          fixed: 'right',
-          width: 80,
-          scopedSlots: {
-            customRender: 'actions',
-          },
         },
       ],
       loadData: (params) => {
@@ -563,7 +564,7 @@ export default {
       let fileName = name + '.xls'
       await downloadFile(url, fileName, params)
     },
-    onSelect(selectedRowKeys, selectedRows){
+    onSelect(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
     }

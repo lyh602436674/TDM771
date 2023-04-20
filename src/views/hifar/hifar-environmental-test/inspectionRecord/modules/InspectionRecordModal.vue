@@ -14,7 +14,7 @@
     <div style="padding:10px">
       <h-tabs :activeKey="activeKey" :animated="true" fixed @change="handleTabsChange">
         <a-tab-pane key="beforeSnapshot">
-          <a-badge slot="tab" :offset="offset">计划开始任务</a-badge>
+          <a-badge slot="tab" :offset="offset">实际开始任务</a-badge>
           <inspection-record-item-list ref="beforeSnapshotTable" :activeKey="activeKey"
                                        :rowId="rowId"></inspection-record-item-list>
         </a-tab-pane>
@@ -159,6 +159,9 @@ export default {
           title: '实际用时(h)',
           dataIndex: 'realUseTime',
           minWidth: 100,
+          customRender: text => {
+            return Number(text).toFixed(2) || '--'
+          }
         },
         {
           title: '标准总价',

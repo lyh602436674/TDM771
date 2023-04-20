@@ -125,6 +125,9 @@ export default {
           title: '实际用时(h)',
           dataIndex: 'realUseTime',
           minWidth: 80,
+          customRender: text => {
+            return Number(text).toFixed(2) || '--'
+          }
         },
       ],
     }

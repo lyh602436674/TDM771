@@ -236,6 +236,15 @@ export default {
           }
         },
         {
+          title: '工序编号',
+          align: 'center',
+          dataIndex: 'processno',
+          minWidth: 120,
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
           title: '创建人 ',
           align: 'left',
           minWidth: 100,
@@ -275,8 +284,8 @@ export default {
         this.$refs.dataCheckTable.refresh(bool);
       })
     },
-    handleDetail(record,type) {
-      this.$refs.EntrustDetailModal.show(record,type);
+    handleDetail(record, type) {
+      this.$refs.EntrustDetailModal.show(record, type);
     },
     // 提交--需要下一处理人
     handleSubmit(record) {

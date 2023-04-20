@@ -24,6 +24,7 @@ export default {
     return {
       url: '/HfPrjUnitClassifyBusiness/listByGroupCode',
       selectOptions: SYSTEM_CONSTANTS_PROJECT_CLASSIFY,
+      // selectOptions: [],
       initValue: undefined
     }
   },

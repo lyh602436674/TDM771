@@ -409,7 +409,6 @@ export function simpleDebounce(fn, delay = 100) {
 * */
 
 export function debounceAsync(fn, delay) {
-  console.log(fn, delay, 'fn, delay')
   let timer = null;
   return async function () {
     let args = arguments;

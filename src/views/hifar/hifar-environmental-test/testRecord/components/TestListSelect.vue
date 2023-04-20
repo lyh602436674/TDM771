@@ -188,6 +188,9 @@ export default {
           title: '实际用时(h)',
           dataIndex: 'realUseTime',
           minWidth: 100,
+          customRender: text => {
+            return Number(text).toFixed(2) || '--'
+          }
         },
       ],
       url: '/HfEnvTaskTestBusiness/listPageForEquip',

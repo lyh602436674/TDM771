@@ -7,68 +7,69 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\task\modules\TaskDetail.vue
 -->
 <template>
-    <h-modal
-      :fullScreen="fullScreen"
-      :getContainer="getContainer"
-      destroyOnClose
-      :visible="visible"
-      title="委托任务详情"
-      width="90%"
-      @cancel="handleCancel"
-    >
-      <div class="fullscreenIcon" @click="fullScreenHandle">
-        <a-icon :type="!fullScreen ? 'fullscreen' : 'fullscreen-exit'" class="primary-text" style="font-size: 16px"/>
-      </div>
-      <a-spin :spinning="spinning">
-        <div class="task-detail-wrapper">
-          <div id="entrust" class="task-info">
-            <detail-base-info showPreviewBtn :detailDataObj="model.entrustData" :attachInfo="model.attachInfo"></detail-base-info>
-          </div>
-          <div id="product" class="piece-info">
-            <piece-detail-template :dataSource="pieceInfo"
-                                   :entrust-type="model.entrustData && model.entrustData.entrustType || 1 "/>
-          </div>
-          <div id="project" class="piece-info">
-            <h-desc :bordered="false" size="small" title="项目信息">
-              <h-card v-for="(item, index) in projectInfo" :id="'projectItem' + index" :key="index"
-                      style="margin-bottom: 10px">
-                <div slot="title">{{ item.unitName }}</div>
-                <template slot="content">
-                  <project-detail-template :model="item" title=""></project-detail-template>
-                </template>
-              </h-card>
-            </h-desc>
-          </div>
-          <div id="testInfo" class="test-info">
-            <h-desc title="试验信息">
-              <a-table
-                :columns="equipColumns"
-                :dataSource="equipTestInfo"
-                :pagination="false"
-                bordered
-                rowKey="id"
-                size="small"
-                style="width: 100%; height: 100%"
-              >
-                <a-icon
-                  slot="record"
-                  slot-scope="text, record"
-                  class="primary-text"
-                  type="carry-out"
-                  @click="showRecord(record)"
-                />
-              </a-table>
-            </h-desc>
-          </div>
+  <h-modal
+    :fullScreen="fullScreen"
+    :getContainer="getContainer"
+    destroyOnClose
+    :visible="visible"
+    title="委托任务详情"
+    width="90%"
+    @cancel="handleCancel"
+  >
+    <div class="fullscreenIcon" @click="fullScreenHandle">
+      <a-icon :type="!fullScreen ? 'fullscreen' : 'fullscreen-exit'" class="primary-text" style="font-size: 16px"/>
+    </div>
+    <a-spin :spinning="spinning">
+      <div class="task-detail-wrapper">
+        <div id="entrust" class="task-info">
+          <detail-base-info showPreviewBtn :detailDataObj="model.entrustData"
+                            :attachInfo="model.attachInfo"></detail-base-info>
         </div>
-      </a-spin>
-      <div slot="footer">
-        <a-button type="ghost-danger" @click="handleCancel">关闭</a-button>
+        <div id="product" class="piece-info">
+          <piece-detail-template :dataSource="pieceInfo"
+                                 :entrust-type="model.entrustData && model.entrustData.entrustType || 1 "/>
+        </div>
+        <div id="project" class="piece-info">
+          <h-desc :bordered="false" size="small" title="项目信息">
+            <h-card v-for="(item, index) in projectInfo" :id="'projectItem' + index" :key="index"
+                    style="margin-bottom: 10px">
+              <div slot="title">{{ item.unitName }}</div>
+              <template slot="content">
+                <project-detail-template :model="item" title=""></project-detail-template>
+              </template>
+            </h-card>
+          </h-desc>
+        </div>
+        <div id="testInfo" class="test-info">
+          <h-desc title="试验信息">
+            <a-table
+              :columns="equipColumns"
+              :dataSource="equipTestInfo"
+              :pagination="false"
+              bordered
+              rowKey="id"
+              size="small"
+              style="width: 100%; height: 100%"
+            >
+              <a-icon
+                slot="record"
+                slot-scope="text, record"
+                class="primary-text"
+                type="carry-out"
+                @click="showRecord(record)"
+              />
+            </a-table>
+          </h-desc>
+        </div>
       </div>
-      <pieces-record ref="piecesRecord"/>
-      <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
-      <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
-    </h-modal>
+    </a-spin>
+    <div slot="footer">
+      <a-button type="ghost-danger" @click="handleCancel">关闭</a-button>
+    </div>
+    <pieces-record ref="piecesRecord"/>
+    <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
+    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
+  </h-modal>
 </template>
 
 <script>
@@ -81,6 +82,7 @@ import DetailBaseInfo from "@views/hifar/hifar-environmental-test/entrustment/co
 import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
 import ProjectDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/ProjectDetailTemplate";
 import HfElevatorLayer from "@comp/HfElevatorLayer";
+import {dateTimeFormatByStamp} from "@/utils/util";
 
 export default {
   mixins: [mixin],
@@ -137,16 +139,12 @@ export default {
         {
           title: '实际开始时间',
           dataIndex: 'realStartTime',
-          customRender(text) {
-            return text != 0 ? moment(parseFloat(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          },
+          customRender: text => dateTimeFormatByStamp(text)
         },
         {
           title: '实际结束时间',
           dataIndex: 'realEndTime',
-          customRender(text) {
-            return text != 0 ? moment(parseFloat(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          },
+          customRender: text => dateTimeFormatByStamp(text)
         },
         {
           title: '流转记录',

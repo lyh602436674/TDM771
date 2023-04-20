@@ -19,14 +19,7 @@
 import HEditTree from "@views/components/HEditTree";
 import SysUserSelect from "@views/components/SysUserSelect";
 import {postAction} from "@api/manage";
-
-const rejectType = [
-  {title: "报告生成", key: "1", value: "1"},
-  {title: "报告审核", key: "2", value: "2"},
-  {title: "报告批准", key: "3", value: "3"},
-  {title: "修改审批", key: "4", value: "4"},
-]
-
+import {REPORT_REJECT_TYPE} from "@views/hifar/constants";
 export default {
   name: "ReportRejectAllInfoModal",
   inject: {
@@ -95,7 +88,7 @@ export default {
         {
           title: '试验项目',
           formType: 'input',
-          key: 'testNames',
+          key: 'unitName',
           readOnly: true,
         },
         {
@@ -109,7 +102,7 @@ export default {
           formType: 'select',
           key: 'rejectType',
           disabled: true,
-          options: rejectType
+          options: REPORT_REJECT_TYPE
         },
         {
           title: '问题类型',
@@ -164,7 +157,7 @@ export default {
             entrustCode: selectedTreeRows.entrustCode,
             entrustNo: selectedTreeRows.entrustNo,
             testCode: selectedTreeRows.testCode,
-            unitNames: selectedTreeRows.unitNames,
+            unitName: selectedTreeRows.unitName,
             custName: selectedTreeRows.custName,
           })
         })
@@ -177,9 +170,9 @@ export default {
       this.submitLoading = true
       let url, params
       if (this.model.id) {
-        url = this.url.edit
+        url = this.url.edit;
       } else {
-        url = this.url.add
+        url = this.url.add;
       }
       params = {
         ...values,

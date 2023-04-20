@@ -34,226 +34,246 @@
         class="autoHeight"/>
     </template>
     <template v-else>
-      <!-- 基本信息 -->
-      <div id="basicInfo" :style="{ marginTop: top ? top : '50px' }">
-        <detail-base-info showPreviewBtn :detailDataObj="entrustInfoItem"></detail-base-info>
-      </div>
-      <!--      试件信息-->
-      <test-piece-detail
-        id="piece"
-        class="mg-t-20"
-        title="试件信息"
-        :dataSource="testPieceInfo"/>
-      <!-- 项目信息 -->
-      <div id="project">
-        <div v-for="(item,index) in projectInfo">
-          <project-detail-template
-            :key="index"
-            :model="item"
-            :title="'项目信息' + '(' + item.entrustCode + ')'"
-            class="mg-t-20"></project-detail-template>
+      <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
+      <template v-if="isBase">
+        <!-- 基本信息 -->
+        <div id="basicInfo" :style="{ marginTop: top ? top : '50px' }">
+          <detail-base-info showPreviewBtn :detailDataObj="entrustInfoItem"></detail-base-info>
         </div>
-      </div>
-      <!-- 实施过程 -->
-      <h-desc
-        id="processForm"
-        :data="detailData"
-        lableWidth="110px"
-        class="mg-t-20"
-        title="实施过程">
-        <h-desc-item label="试验设备">{{ detailData.equipName + '-' + detailData.equipModel || '--' }}</h-desc-item>
-        <h-desc-item label="设备速率">{{ detailData.testRate || '--' }}</h-desc-item>
-        <h-desc-item label="试验人员">{{ detailData.chargeUserName || '--' }}</h-desc-item>
-        <h-desc-item label="入场时间">{{
-            dateTimeFormatByStamp(detailData.approachTime)
-          }}
-        </h-desc-item>
-        <h-desc-item label="离场时间">{{
-            dateTimeFormatByStamp(detailData.departureTime)
-          }}
-        </h-desc-item>
-        <h-desc-item label="开始时间">{{
-            dateTimeFormatByStamp(detailData.realStartTime)
-          }}
-        </h-desc-item>
-        <h-desc-item label="结束时间">{{
-            dateTimeFormatByStamp(detailData.realEndTime)
-          }}
-        </h-desc-item>
-        <h-desc-item label="温度(°C)">{{ detailData.temperature || '--' }}</h-desc-item>
-        <h-desc-item label="湿度(RH)">{{ detailData.humidity || '--' }}</h-desc-item>
-        <h-desc-item label="自检">{{ detailData.selfInspection || '--' }}</h-desc-item>
-        <h-desc-item label="互检">{{ detailData.mutualInspection || '--' }}</h-desc-item>
-        <h-desc-item :span="3" label="参试人员">
-          {{ testPersonInfo.length ? testPersonInfo.join(',') : '--' }}
-        </h-desc-item>
-<!--        <h-desc-item :span="3" label="测试设备">-->
-<!--          {{ testEquipInfo.length ? testEquipInfo.join(',') : '&#45;&#45;' }}-->
-<!--        </h-desc-item>-->
-        <h-desc-item :span="3" label="实施过程">{{ detailData.remarks || '--' }}</h-desc-item>
-      </h-desc>
-      <!-- 安装、控制方式 -->
-      <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>
-        <h-card :bordered='false' style='width: 100%'>
-          <a-table
-            :columns='installControlColumns'
-            :dataSource='installControlTable'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-            style="width: 100%;"
-          >
-            <div slot="expandedRowRender" slot-scope="record,index">
-              <a-table
-                :columns='sensorColumns'
-                :dataSource='record.testSensorInfo'
-                :pagination='false'
-                bordered
-                rowKey='id'
-                size='small'
-                style="width: 100%;"
-              >
-              </a-table>
-            </div>
-          </a-table>
-        </h-card>
-      </h-desc>
-      <!-- 试验设备开关机记录 -->
-      <h-desc id="switchRecording" class="mg-t-20" title='试验设备开关机记录'>
-        <h-card :bordered='false' style='width: 100%'>
-          <a-table
-            :columns='switchRecordingColumns'
-            :dataSource='switchRecordingTable'
-            :pagination='false'
-            bordered
-            rowKey='id'
-            size='small'
-            style="width: 100%;"
-          >
-          </a-table>
-        </h-card>
-      </h-desc>
-      <!-- 巡检记录 -->
-      <!--      <h-desc id="siteInspection" class="mg-t-20" title='巡检记录'>-->
-      <!--        <h-card :bordered='false' style='width: 100%'>-->
-      <!--          <a-table-->
-      <!--            :columns='siteInspectionColumns'-->
-      <!--            :dataSource='siteInspectionTable'-->
-      <!--            :pagination='false'-->
-      <!--            bordered-->
-      <!--            rowKey='id'-->
-      <!--            size='small'-->
-      <!--            style="width: 100%;"-->
-      <!--          ></a-table>-->
-      <!--        </h-card>-->
-      <!--      </h-desc>-->
-      <h-desc id="toolsProduct" class="mg-t-20" title='振动工装'>
-        <h-card :bordered='false' style='width: 100%'>
-          <div slot='content'>
+        <div id="piece">
+          <!-- 试件信息 -->
+          <test-piece-detail
+            v-if="viewDetailType === '2'"
+            :dataSource="testPieceInfo"
+            class="mg-t-20"
+            title="试件信息"/>
+          <piece-detail-template titlle="试件信息" v-else :dataSource="testPieceInfo"/>
+        </div>
+        <!-- 项目信息 -->
+        <div id="project">
+          <div v-for="(item,index) in getProjectItemByEntrustId">
+            <project-detail-template
+              :key="index"
+              :model="item"
+              :title="'项目信息' + '(' + item.entrustCode + ')'"
+              class="mg-t-20"></project-detail-template>
+          </div>
+        </div>
+      </template>
+      <!-- 以委托单和运行单的维度查看时，之查看委托单信息，不包含试验相关信息 -->
+      <template v-else>
+        <!-- 实施过程 -->
+        <h-desc
+          id="processForm"
+          :data="detailData"
+          class="mg-t-20"
+          lableWidth="110px"
+          title="实施过程">
+          <h-desc-item label="试验设备">{{ detailData.equipName + '-' + detailData.equipModel || '--' }}</h-desc-item>
+          <h-desc-item label="设备速率">{{ detailData.testRate || '--' }}</h-desc-item>
+          <h-desc-item label="试验人员">{{ detailData.chargeUserName || '--' }}</h-desc-item>
+          <h-desc-item label="入场时间">{{
+              dateTimeFormatByStamp(detailData.approachTime)
+            }}
+          </h-desc-item>
+          <h-desc-item label="离场时间">{{
+              dateTimeFormatByStamp(detailData.departureTime)
+            }}
+          </h-desc-item>
+          <h-desc-item label="开始时间">{{
+              dateTimeFormatByStamp(detailData.realStartTime)
+            }}
+          </h-desc-item>
+          <h-desc-item label="结束时间">{{
+              dateTimeFormatByStamp(detailData.realEndTime)
+            }}
+          </h-desc-item>
+          <h-desc-item label="温度(°C)">{{ detailData.temperature || '--' }}</h-desc-item>
+          <h-desc-item label="湿度(RH)">{{ detailData.humidity || '--' }}</h-desc-item>
+          <h-desc-item label="自检">{{ detailData.selfInspection || '--' }}</h-desc-item>
+          <h-desc-item label="互检">{{ detailData.mutualInspection || '--' }}</h-desc-item>
+          <h-desc-item :span="3" label="参试人员">
+            {{ testPersonInfo.length ? testPersonInfo.join(',') : '--' }}
+          </h-desc-item>
+          <h-desc-item :span="3" label="实施过程">{{ detailData.remarks || '--' }}</h-desc-item>
+        </h-desc>
+        <!-- 安装、控制方式 -->
+        <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>
+          <h-card :bordered='false' style='width: 100%'>
             <a-table
-              :columns='toolsProductColumns'
-              :dataSource='toolsProductData'
+              :columns='installControlColumns'
+              :dataSource='installControlTable'
               :pagination='false'
               bordered
               rowKey='id'
               size='small'
-            ></a-table>
+              style="width: 100%;"
+            >
+              <div slot="expandedRowRender" slot-scope="record,index">
+                <a-table
+                  :columns='sensorColumns'
+                  :dataSource='record.testSensorInfo'
+                  :pagination='false'
+                  bordered
+                  rowKey='id'
+                  size='small'
+                  style="width: 100%;"
+                >
+                </a-table>
+              </div>
+            </a-table>
+          </h-card>
+        </h-desc>
+        <!-- 测试设备 -->
+        <h-desc id="testEquip" class="mg-t-20" title='测试设备'>
+          <h-card :bordered='false' style='width: 100%'>
+            <a-table
+              :columns='testEquipColumns'
+              :dataSource='testEquipInfo'
+              :pagination='false'
+              bordered
+              rowKey='id'
+              size='small'
+              style="width: 100%;"
+            >
+            </a-table>
+          </h-card>
+        </h-desc>
+        <!-- 试验设备开关机记录 -->
+        <h-desc id="switchRecording" class="mg-t-20" title='试验设备开关机记录'>
+          <h-card :bordered='false' style='width: 100%'>
+            <a-table
+              :columns='switchRecordingColumns'
+              :dataSource='switchRecordingTable'
+              :pagination='false'
+              bordered
+              rowKey='id'
+              size='small'
+              style="width: 100%;"
+            >
+            </a-table>
+          </h-card>
+        </h-desc>
+        <!-- 巡检记录 -->
+        <!--      <h-desc id="siteInspection" class="mg-t-20" title='巡检记录'>-->
+        <!--        <h-card :bordered='false' style='width: 100%'>-->
+        <!--          <a-table-->
+        <!--            :columns='siteInspectionColumns'-->
+        <!--            :dataSource='siteInspectionTable'-->
+        <!--            :pagination='false'-->
+        <!--            bordered-->
+        <!--            rowKey='id'-->
+        <!--            size='small'-->
+        <!--            style="width: 100%;"-->
+        <!--          ></a-table>-->
+        <!--        </h-card>-->
+        <!--      </h-desc>-->
+        <h-desc id="toolsProduct" class="mg-t-20" title='振动工装'>
+          <h-card :bordered='false' style='width: 100%'>
+            <div slot='content'>
+              <a-table
+                :columns='toolsProductColumns'
+                :dataSource='toolsProductData'
+                :pagination='false'
+                bordered
+                rowKey='id'
+                size='small'
+              ></a-table>
+            </div>
+          </h-card>
+        </h-desc>
+        <!-- 曲线图片 -->
+        <h-desc id="picture" class="mg-t-20" title="曲线图片">
+          <h-upload-file v-model="pictureData" :isEdit="false" isWriteRemarks style="width: 100%"></h-upload-file>
+        </h-desc>
+        <!-- 试前检查 -->
+        <h-desc
+          id="testBeforeCheck"
+          :bordered="false"
+          class="mg-t-20"
+          lableWidth="110px"
+          title="试前检查">
+          <h-vex-table
+            ref="beforeCheckInfo"
+            :columns="columns"
+            :data="beforeCheckInfo"
+            :pagination="false"
+            bordered
+            style="width: 100%; height: 200px"
+          >
+          <span slot="itemRes" slot-scope="text, record">
+            <h-icon v-if="record.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+            <h-icon v-else-if="record.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-xieti'/>
+            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
+          </span>
+          </h-vex-table>
+        </h-desc>
+        <!-- 试中检查 -->
+        <h-desc
+          id="testInCheck"
+          :bordered="false"
+          class="mg-t-20"
+          lableWidth="110px"
+          title="试中检查">
+          <h-vex-table
+            ref="inCheckInfo"
+            :columns="columns"
+            :data="inCheckInfo"
+            :pagination="false"
+            bordered
+            style="width: 100%; height: 200px"
+          >
+          <span slot="itemRes" slot-scope="text, record">
+            <h-icon v-if="record.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+            <h-icon v-else-if="record.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-xieti'/>
+            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
+          </span>
+          </h-vex-table>
+        </h-desc>
+        <!-- 试后检查 -->
+        <h-desc
+          id="testAfterCheck"
+          :bordered="false"
+          class="mg-t-20"
+          lableWidth="110px"
+          title="试后检查">
+          <h-vex-table
+            ref="afterCheckInfo"
+            :columns="columns"
+            :data="afterCheckInfo"
+            :pagination="false"
+            bordered
+            style="width: 100%; height: 200px"
+          >
+          <span slot="itemRes" slot-scope="text, record">
+            <h-icon v-if="record.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+            <h-icon v-else-if="record.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-xieti'/>
+            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
+          </span>
+          </h-vex-table>
+        </h-desc>
+        <!-- 试验数据 -->
+        <h-desc id="testData" class="mg-t-20" title="试验数据">
+          <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
+            <h-desc id="attachForm" :bordered="false">
+              <h-form
+                ref="attachForm"
+                v-model="model_attach"
+                :column="1"
+                :formData="attachData"
+                style="width: 100%"/>
+            </h-desc>
+            <h-desc id="videoForm" :bordered="false">
+              <h-form v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
+            </h-desc>
           </div>
-        </h-card>
-      </h-desc>
-      <!-- 曲线图片 -->
-      <h-desc id="picture" class="mg-t-20" title="曲线图片">
-        <h-upload-file style="width: 100%" v-model="pictureData" isWriteRemarks :isEdit="false"></h-upload-file>
-      </h-desc>
-      <!-- 试前检查 -->
-      <h-desc
-        id="testBeforeCheck"
-        :bordered="false"
-        lableWidth="110px"
-        class="mg-t-20"
-        title="试前检查">
-        <h-vex-table
-          ref="beforeCheckInfo"
-          :columns="columns"
-          :data="beforeCheckInfo"
-          :pagination="false"
-          bordered
-          style="width: 100%; height: 200px"
-        >
-          <span slot="itemRes" slot-scope="text, record">
-            <h-icon v-if="record.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
-            <h-icon v-else-if="record.itemRes === '2'" class='danger-text' type='icon-chacha'/>
-            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-xieti'/>
-            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
-          </span>
-        </h-vex-table>
-      </h-desc>
-      <!-- 试中检查 -->
-      <h-desc
-        id="testInCheck"
-        :bordered="false"
-        lableWidth="110px"
-        class="mg-t-20"
-        title="试中检查">
-        <h-vex-table
-          ref="inCheckInfo"
-          :columns="columns"
-          :data="inCheckInfo"
-          :pagination="false"
-          bordered
-          style="width: 100%; height: 200px"
-        >
-          <span slot="itemRes" slot-scope="text, record">
-            <h-icon v-if="record.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
-            <h-icon v-else-if="record.itemRes === '2'" class='danger-text' type='icon-chacha'/>
-            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-xieti'/>
-            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
-          </span>
-        </h-vex-table>
-      </h-desc>
-      <!-- 试后检查 -->
-      <h-desc
-        id="testAfterCheck"
-        :bordered="false"
-        lableWidth="110px"
-        class="mg-t-20"
-        title="试后检查">
-        <h-vex-table
-          ref="afterCheckInfo"
-          :columns="columns"
-          :data="afterCheckInfo"
-          :pagination="false"
-          bordered
-          style="width: 100%; height: 200px"
-        >
-          <span slot="itemRes" slot-scope="text, record">
-            <h-icon v-if="record.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
-            <h-icon v-else-if="record.itemRes === '2'" class='danger-text' type='icon-chacha'/>
-            <h-icon v-else-if="record.itemRes === '3'" class='danger-text' type='icon-xieti'/>
-            <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="record.itemRes"></span>
-          </span>
-        </h-vex-table>
-      </h-desc>
-      <!-- 试验数据 -->
-      <h-desc class="mg-t-20" id="testData" title="试验数据">
-        <div style="height: 100%; width: 100%; overflow: auto; padding: 20px">
-          <h-desc id="attachForm" :bordered="false">
-            <h-form
-              ref="attachForm"
-              v-model="model_attach"
-              :column="1"
-              :formData="attachData"
-              style="width: 100%"/>
-          </h-desc>
-          <h-desc id="videoForm" :bordered="false">
-            <h-form v-model="model_video" :column="1" :formData="videoData" style="width: 100%"/>
-          </h-desc>
-        </div>
-      </h-desc>
+        </h-desc>
+      </template>
     </template>
     <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
-    <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
   </div>
 </template>
 
@@ -272,9 +292,11 @@ import ProjectDetailTemplate from '@views/hifar/hifar-environmental-test/entrust
 import HfElevatorLayer from "@comp/HfElevatorLayer";
 import TestPieceDetail from "@views/hifar/hifar-environmental-test/task/components/TestPieceDetail";
 import {dateTimeFormatByStamp} from '@/utils/util'
+import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
 
 export default {
   components: {
+    PieceDetailTemplate,
     ProjectDetailTemplate,
     TestPieceDetail,
     TestEntrustReviewPdf,
@@ -292,7 +314,7 @@ export default {
     },
     viewDetailType: {
       type: String,
-      default: ''
+      default: null
     },
     top: {
       type: String,
@@ -307,60 +329,7 @@ export default {
     return {
       dateTimeFormatByStamp,
       moment,
-      layerColumns: [
-        {
-          title: "基本信息",
-          id: "basicInfo"
-        },
-        {
-          title: "试件信息",
-          id: "piece"
-        },
-        {
-          title: "项目信息",
-          id: "project"
-        },
-        {
-          title: "实施过程",
-          id: "processForm"
-        },
-        {
-          title: "安装控制方式",
-          id: "installControl"
-        },
-        {
-          title: "开关机记录",
-          id: "switchRecording"
-        },
-        // {
-        //   title: "巡检记录",
-        //   id: "siteInspection"
-        // },
-        {
-          title: "振动工装",
-          id: "toolsProduct"
-        },
-        {
-          title: "曲线图片",
-          id: "picture"
-        },
-        {
-          title: "试前检查",
-          id: "testBeforeCheck"
-        },
-        {
-          title: "试中检查",
-          id: "testInCheck"
-        },
-        {
-          title: "试后检查",
-          id: "testAfterCheck"
-        },
-        {
-          title: "试验数据",
-          id: "testData"
-        },
-      ],
+      layerColumns: [],
       activeTab: 0,
       checkId: '',
       url: {
@@ -373,7 +342,6 @@ export default {
       detailData: {},
       testPieceInfo: [],
       projectInfo: [],
-      testEquipInfo: [],
       testPersonInfo: [],
       entrustInfo: [{flag: false}],
       entrustInfoItem: {},
@@ -437,6 +405,29 @@ export default {
           align: 'center',
           width: 150,
         },
+      ],
+      testEquipInfo: [],
+      testEquipColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return index + 1
+          }
+        },
+        {title: '设备编号', dataIndex: 'equipCode'},
+        {title: '设备名称', dataIndex: 'equipName'},
+        {
+          title: '计量有效期',
+          dataIndex: 'checkValid',
+          customRender: (t, record) => {
+            return dateTimeFormatByStamp(record.checkValid, 'YYYY-MM-DD')
+          }
+        },
+        {title: '设备型号', dataIndex: 'equipModel'},
       ],
       installControlColumns: [
         {
@@ -723,7 +714,7 @@ export default {
           align: 'left',
           dataIndex: 'itemRes',
           minWidth: 10,
-          scopedSlots: { customRender: 'itemRes' }
+          scopedSlots: {customRender: 'itemRes'}
         },
         {
           title: '试验员',
@@ -744,7 +735,7 @@ export default {
       ],
       // 试前检查
       beforeCheckInfo: () => {
-        return postAction(this.url.CheckInfo, { id: this.checkId }).then((res) => {
+        return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
           if (res.code === 200) {
             return res.data.beforeCheckInfo
           }
@@ -752,7 +743,7 @@ export default {
       },
       // 试中检查
       inCheckInfo: () => {
-        return postAction(this.url.CheckInfo, { id: this.checkId }).then((res) => {
+        return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
           if (res.code === 200) {
             return res.data.inCheckInfo
           }
@@ -760,7 +751,7 @@ export default {
       },
       // 试后检查
       afterCheckInfo: () => {
-        return postAction(this.url.CheckInfo, { id: this.checkId }).then((res) => {
+        return postAction(this.url.CheckInfo, {id: this.checkId}).then((res) => {
           if (res.code === 200) {
             return res.data.afterCheckInfo
           }
@@ -792,8 +783,8 @@ export default {
           component: (
             <h-upload-file
               isEdit={false}
-              v-decorator={['attachIds', { initialValue: [] }]}
-              customParams={{ refType: 'test_video', refId: this.checkId }}
+              v-decorator={['attachIds', {initialValue: []}]}
+              customParams={{refType: 'test_video', refId: this.checkId}}
             />
           )
         }
@@ -809,11 +800,86 @@ export default {
           this.loadImgData()
           this.loadAttachData()
           this.loadVideoData()
+          this.buildLayerColumns()
         }
       }
     }
   },
+  computed: {
+    isBase() {
+      return ['1', '2'].includes(this.viewDetailType)
+    },
+    getProjectItemByEntrustId() {
+      return this.projectInfo.filter(item => item.entrustId === this.entrustInfo[this.activeTab].id)
+    },
+  },
   methods: {
+    buildLayerColumns() {
+      let layerColumnsBase = [
+        {
+          title: "基本信息",
+          id: "basicInfo"
+        },
+        {
+          title: "试件信息",
+          id: "piece"
+        },
+        {
+          title: "项目信息",
+          id: "project"
+        }]
+      let layerColumnsTest = [
+        {
+          title: "实施过程",
+          id: "processForm"
+        },
+        {
+          title: "安装控制方式",
+          id: "installControl"
+        },
+        {
+          title: "测试设备",
+          id: "testEquip"
+        },
+        {
+          title: "开关机记录",
+          id: "switchRecording"
+        },
+        // {
+        //   title: "巡检记录",
+        //   id: "siteInspection"
+        // },
+        {
+          title: "振动工装",
+          id: "toolsProduct"
+        },
+        {
+          title: "曲线图片",
+          id: "picture"
+        },
+        {
+          title: "试前检查",
+          id: "testBeforeCheck"
+        },
+        {
+          title: "试中检查",
+          id: "testInCheck"
+        },
+        {
+          title: "试后检查",
+          id: "testAfterCheck"
+        },
+        {
+          title: "试验数据",
+          id: "testData"
+        },
+      ]
+      if (this.isBase) {
+        this.layerColumns = layerColumnsBase
+      } else {
+        this.layerColumns = layerColumnsTest
+      }
+    },
     momentFormatFun(value, format) {
       return value && value !== '0' && moment(+value).format(format) || null
     },
@@ -828,22 +894,15 @@ export default {
     },
     loadDetailData(id) {
       this.checkId = id
-      postAction(this.url.detail, { id: id, type: this.viewDetailType }).then((res) => {
+      postAction(this.url.detail, {id: id, type: this.viewDetailType}).then((res) => {
         if (res.code === 200) {
-          const { data } = res
-          // let testEquipInfoArr = data.testEquipInfo
+          const {data} = res
           let testPersonInfoArr = data.testPersonInfo
           let entrustInfoArr = data.entrustInfo
-          // let testEquipInfo = []
           let testPersonInfo = []
           this.detailData = data
           // this.projectInfo = data.testTaskInfo
           this.projectInfo = data.projectInfo
-          // if (testEquipInfoArr.length) {
-          //   testEquipInfoArr.forEach((item) => {
-          //     testEquipInfo.push(item.equipName + (item.innerName ? '(' + item.innerName + ')' : ''))
-          //   })
-          // }
           if (testPersonInfoArr.length) {
             testPersonInfoArr.forEach((item) => {
               let res = item.testUserName ? (item.testUserName + (item.testPostName ? '(' + item.testPostName + ')' : '')) : '--'
@@ -852,7 +911,6 @@ export default {
           }
           // 试件信息
           this.testPieceInfo = data.testPieceInfo
-          // this.testEquipInfo = testEquipInfo
           this.testPersonInfo = testPersonInfo
           this.entrustInfoItem = entrustInfoArr[0]
           // 巡检记录
@@ -861,6 +919,8 @@ export default {
           this.switchRecordingTable = data.switchOnOffInfo
           // 安装、控制方式 + 传感器
           this.installControlTable = data.insertMethodInfo
+          // 测试设备
+          this.testEquipInfo = data.testEquipInfo
           // 振动工装
           this.toolsProductData = data.testToolsProductInfo
           let entrustInfo = entrustInfoArr
@@ -905,9 +965,9 @@ export default {
     },
     // 振动图谱
     loadAttachData() {
-      postAction(this.url.attachList, { refType: 'test_attach', refId: this.checkId }).then((res) => {
+      postAction(this.url.attachList, {refType: 'test_attach', refId: this.checkId}).then((res) => {
         if (res.code === 200) {
-          const { data } = res
+          const {data} = res
           let fileArr = []
           let obj = {}
           if (data && data.length > 0) {
@@ -920,9 +980,9 @@ export default {
     },
     // 视频
     loadVideoData() {
-      postAction(this.url.attachList, { refType: 'test_video', refId: this.checkId }).then((res) => {
+      postAction(this.url.attachList, {refType: 'test_video', refId: this.checkId}).then((res) => {
         if (res.code === 200) {
-          const { data } = res
+          const {data} = res
           let fileArr = []
           let obj = {}
           if (data && data.length > 0) {
@@ -947,6 +1007,7 @@ export default {
 .mg-t-20 {
   margin-top: 20px !important;
 }
+
 ///deep/ .ant-tabs-bar {
 //  margin: 0;
 //}

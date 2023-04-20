@@ -33,17 +33,21 @@
           {{ text === '1' ? '已结算' : '未结算' }}
         </a-tag>
       </template>
-      <template slot="entrustNos" slot-scope="text, record">
+      <template #entrustNos="text, record">
         <a @click="$refs.testTaskBaseInfoModal.show(record,'1','20px')">{{ text }}</a>
       </template>
-      <template slot="entrustCodes" slot-scope="text, record">
-        <a @click="$refs.testTaskBaseInfoModal.show(record,null,'20px')">{{ text }}</a>
+      <template #entrustCodes="text, record">
+        <a @click="$refs.testTaskBaseInfoModal.show(record,'2','20px')">{{ text }}</a>
+      </template>
+      <template #testCode="text, record">
+        <a @click="$refs.testTaskBaseInfoModal.show(record,'3','20px')">{{ text }}</a>
       </template>
       <template #exceptionNum="text, record">
         <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
       </template>
       <span slot="actions" slot-scope="text, record">
-        <a-popconfirm v-if="record.isSettled === '0'" title="确定进行结算吗?" @confirm="() => handleSettlement(record.id)">
+        <a-popconfirm v-if="record.isSettled === '0'" title="确定进行结算吗?"
+                      @confirm="() => handleSettlement(record.id)">
           <a>结算</a>
         </a-popconfirm>
       </span>
@@ -60,6 +64,7 @@ import {postAction} from "@api/manage";
 import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal";
 import AbnormalDetailModal from "@views/hifar/hifar-environmental-test/task/modules/AbnormalDetailModal";
 import SettlementPreviewModal from "@views/hifar/hifar-environmental-test/feeSettlement/modules/SettlementPreviewModal";
+import {dateTimeFormatByStamp} from '@/utils/util'
 
 export default {
   name: "TestStatisticsByCompleted",
@@ -73,35 +78,26 @@ export default {
       queryParams: {},
       searchData: [
         {
-          title: '送试单位',
-          key: 'custName',
-          formType: 'input',
-        },
-        {
-          title: '委托单号',
-          key: 'entrustNo',
-          formType: 'input',
-        },
-        {
-          title: '运行单号',
-          key: 'entrustCode',
-          formType: 'input',
-        },
-        {
           title: '试验编号',
           key: 'c_testCode_7',
           formType: 'input',
         },
         {
-          title: '试验编号',
-          key: 'taskCode',
-          formType: 'input',
-        },
-
-        {
           title: '试验项目',
           key: 'unitName',
           formType: 'input',
+        },
+        {
+          title: '实际开始时间',
+          key: 'realStartTime',
+          showTime: true,
+          formType: 'dateRangePick',
+        },
+        {
+          title: '实际结束时间',
+          key: 'realEndTime',
+          showTime: true,
+          formType: 'dateRangePick',
         },
       ],
       selectedRowKeys: [],
@@ -120,16 +116,17 @@ export default {
           scopedSlots: {customRender: 'entrustNos'},
         },
         {
+          title: '试验编号',
+          dataIndex: 'testCode',
+          minWidth: 140,
+          scopedSlots: {customRender: 'testCode'},
+        },
+        {
           title: '是否结算',
           dataIndex: 'isSettled',
           minWidth: 100,
           align: 'center',
           scopedSlots: {customRender: 'isSettled'},
-        },
-        {
-          title: '试验编号',
-          dataIndex: 'testCode',
-          minWidth: 140,
         },
         {
           title: '送试单位',
@@ -169,11 +166,6 @@ export default {
           minWidth: 100,
         },
         {
-          title: '设备速率',
-          dataIndex: 'testRate',
-          minWidth: 100,
-        },
-        {
           title: '试验人员',
           dataIndex: 'chargeUserName',
           minWidth: 100,
@@ -193,10 +185,14 @@ export default {
         {
           title: '期望开始时间',
           dataIndex: 'predictStartTime',
-          customRender: (time) => {
-            return time && time != 0 ? moment(parseFloat(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          },
+          customRender: time => dateTimeFormatByStamp(time),
           minWidth: 150,
+        },
+        {
+          title: '预计结束时间',
+          dataIndex: 'taskEndTime',
+          minWidth: 150,
+          customRender: time => dateTimeFormatByStamp(time),
         },
         {
           title: '预计用时(h)',
@@ -204,32 +200,31 @@ export default {
           minWidth: 100,
         },
         {
-          title: '预计结束时间',
-          dataIndex: 'taskEndTime',
-          minWidth: 150,
-          customRender: (text, record) => {
-            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          }
-        },
-        {
           title: '实际开始时间',
           dataIndex: 'realStartTime',
-          customRender: (time) => {
-            return time && time != 0 ? moment(parseFloat(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          },
+          customRender: time => dateTimeFormatByStamp(time),
+          minWidth: 150,
+        },
+        {
+          title: '实际结束时间',
+          dataIndex: 'realEndTime',
+          customRender: time => dateTimeFormatByStamp(time),
           minWidth: 150,
         },
         {
           title: '实际用时(h)',
           dataIndex: 'realUseTime',
           minWidth: 100,
+          customRender: text => {
+            return Number(text).toFixed(2) || '--'
+          }
         },
         {
           title: '标准总价',
           dataIndex: 'standardTotalPrice',
           minWidth: 100,
           customRender: text => {
-            return Number(text)
+            return (Number(text) / 1000) || '--'
           }
         },
         {
@@ -237,7 +232,7 @@ export default {
           dataIndex: 'totalExpenses',
           minWidth: 100,
           customRender: text => {
-            return Number(text)
+            return (Number(text) / 1000) || '--'
           }
         },
         // {

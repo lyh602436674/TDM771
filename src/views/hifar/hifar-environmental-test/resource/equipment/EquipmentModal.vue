@@ -30,7 +30,7 @@
         @change="submit"
       ></h-form>
     </h-card>
-    <project-add-modal ref="projectAddModal" @change="projectModalCallback"></project-add-modal>
+    <project-add-modal allowEmpty ref="projectAddModal" @change="projectModalCallback"></project-add-modal>
   </h-modal>
 </template>
 
@@ -238,7 +238,6 @@ export default {
           readOnly: true,
           click: () => {
             this.$refs.projectAddModal.visible = true
-            this.$refs.projectAddModal.allowEmpty = true
             this.$refs.projectAddModal.getProjectTree()
             let equipBaseProjectIds = this.$refs.equipmentForm.form.getFieldsValue().equipBaseProjectIds
             this.$refs.projectAddModal.selectedRowKeys = equipBaseProjectIds && equipBaseProjectIds.split(',') || []

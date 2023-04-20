@@ -143,15 +143,15 @@
             >
               项目添加
             </a-button>
-<!--            <a-button-->
-<!--              icon='plus'-->
-<!--              size='small'-->
-<!--              style='margin-left:10px'-->
-<!--              type='ghost-primary'-->
-<!--              @click='handleAddHistory'-->
-<!--            >-->
-<!--              历史库新增-->
-<!--            </a-button>-->
+            <!--            <a-button-->
+            <!--              icon='plus'-->
+            <!--              size='small'-->
+            <!--              style='margin-left:10px'-->
+            <!--              type='ghost-primary'-->
+            <!--              @click='handleAddHistory'-->
+            <!--            >-->
+            <!--              历史库新增-->
+            <!--            </a-button>-->
             <project-form ref='ProjectForm' :entrustType="entrustType" :formInfoData='projectInfoData'
                           style="margin-bottom:20px"
                           @change='projectFormChange'
@@ -461,6 +461,20 @@ export default {
         this.handleAdd()
       }
     },
+    handleScroll() {
+      const viewportTop = window.pageYOffset || document.documentElement.scrollTop;
+      const viewportBottom = viewportTop + window.innerHeight;
+      console.log(viewportTop, viewportBottom, 'viewportBottom')
+      this.layerColumns.forEach((column) => {
+        const element = document.getElementById(column.id);
+        if (!element) return;
+
+        const elementTop = element.getBoundingClientRect().top + viewportTop;
+        const elementBottom = elementTop + element.offsetHeight;
+
+        column.active = elementTop <= viewportBottom && elementBottom >= viewportTop;
+      });
+    },
     // 新增默认值
     handleAdd() {
       this.entrustModel = {
@@ -475,7 +489,6 @@ export default {
       this.projectInfoData = []
       this.$nextTick(() => {
         this.buildLayer()
-        this.handleScroll()
       })
     },
     handleEdit(id) {
@@ -491,7 +504,6 @@ export default {
           this.tableData = obj.pieceInfo
           this.projectInfoData = obj.projectInfo
           this.buildLayer(obj.projectInfo)
-          this.handleScroll()
           this.pieceSorting(this.tableData)
         }
       }).finally(() => {
@@ -500,12 +512,6 @@ export default {
     },
     initiatorChange(value, option) {
       this.$refs.entrustFrom.form.setFieldsValue({phone: option.mobile})
-    },
-    handleScroll() {
-      // 滚动条滚动时电梯层自动定位，暂时先不做
-      // document.addEventListener('scroll', (e) => {
-      //   console.log(e, 'e')
-      // }, true)
     },
     buildLayer(column) {
       let defaultLayer = [
@@ -748,6 +754,8 @@ export default {
     },
     //暂存 不需要验证任何表单和表格
     handleTransientSubmit() {
+      if (this.submitLoading) return
+      this.submitLoading = true
       this.submitStatus = 1
       this.validateEntrustForm(false).then(res => {
         let entrustModelInfo = cloneDeep(res)
@@ -760,6 +768,8 @@ export default {
     },
     //提交
     handleSubmit() {
+      if (this.submitLoading) return
+      this.submitLoading = true
       this.submitStatus = 10
       this.validateEntrustForm(true).then(res => {
         let entrustModelInfo = cloneDeep(res)
@@ -816,6 +826,9 @@ export default {
               // 这里需要删除多余没有用到的产品
               // fn.call(this, pieceIds)
               fn.call(this)
+            },
+            onCancel: () => {
+              this.submitLoading = false
             }
           })
         } else {
@@ -828,7 +841,6 @@ export default {
       function fn(pieceIds) {
         let params = {entrustModelInfo, pieceModelInfo, projectModelInfo, status,}
         params.pieceModelInfo = pieceIds && pieceIds.length ? params.pieceModelInfo.filter(item => !pieceIds.toString().includes(item.id)) : params.pieceModelInfo
-        this.submitLoading = true
         postAction(this.url.save, params).then(res => {
           if (res.code === 200) {
             this.$message.success(status === 1 ? '暂存成功' : "提交成功")

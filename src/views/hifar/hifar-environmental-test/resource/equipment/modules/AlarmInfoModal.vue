@@ -10,7 +10,8 @@
   >
     <template slot="footer">
       <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
-      <a-button :loading="submitLoading" type="primary" @click="handleSave">保存</a-button>
+      <a-button v-if="['add','edit'].includes(type)" :loading="submitLoading" type="primary" @click="handleSave">保存
+      </a-button>
     </template>
     <h-form
       v-if="['add','edit'].includes(type)"
@@ -21,7 +22,9 @@
       @change="handleSubmit"
     ></h-form>
     <h-desc v-if="type === 'detail'" :column="1" :data="model">
-      <h-desc-item v-for="item in formData" :key="item.key" :label="item.title">{{ model[item.key] }}</h-desc-item>
+      <template v-for="item in formData">
+        <h-desc-item v-if="!item.hidden" :key="item.key" :label="item.title">{{ model[item.key] }}</h-desc-item>
+      </template>
     </h-desc>
   </h-modal>
 </template>

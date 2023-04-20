@@ -57,7 +57,7 @@ export default {
       title: '',
       visible: false,
       testId: '',
-      viewDetailType: '',
+      viewDetailType: null,
       testCode: '',
       top: '',
       url: {

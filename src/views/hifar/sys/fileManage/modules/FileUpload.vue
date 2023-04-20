@@ -20,7 +20,7 @@
     <h-upload-file
       ref="folderFiles"
       v-model="filesList"
-      :customParams="{ pid: pid, publicFlag: publicFlag }"
+      :customParams="{ pid: pid, publicFlag: publicFlag,detail:'/BaseFolderFileBusiness/queryById' }"
       @change="handleFilesChange"
       @delete="deleteHandle"
     />
@@ -28,7 +28,8 @@
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
+
 export default {
   inject: {
     getContainer: {
@@ -73,14 +74,12 @@ export default {
       this.$emit('change', true)
     },
     deleteHandle(file) {
-      console.log('deleteHandle>>>>>>>>>>>', file)
       this.handleDelete(file.fileId)
     },
     // 删除文件
     handleDelete(ids) {
-      postAction(this.url.delete, { id: ids }).then((res) => {
+      postAction(this.url.delete, {id: ids}).then((res) => {
         if (res.code === 200) {
-          console.log('delete finished')
           this.$emit('change', true)
         }
       })

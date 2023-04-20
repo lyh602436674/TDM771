@@ -129,11 +129,11 @@ export default {
             formType: 'input',
             hidden: true,
           },
-          {
-            key: 'classifyId',
-            formType: 'input',
-            hidden: true,
-          },
+          // {
+          //   key: 'classifyId',
+          //   formType: 'input',
+          //   hidden: true,
+          // },
           {
             key: 'groupCode',
             formType: 'input',

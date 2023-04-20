@@ -62,197 +62,193 @@
       <h-card fixed style="height: 100%">
         <div ref="epContent" slot="content" class="ep-content">
           <div class="ea-equip-info-wrapper">
-              <div class="ea-equip-info" v-if="selectedKeys.length">
-                <h-card fixed style="width: 100%">
-                  <a-tabs v-model="basickey" style="height: 100%;">
-                    <a-tab-pane :key="1" style="display: flex" tab="基本信息">
-                      <!-- 图片 -->
-                      <div class="ea-equip-image">
-                        <img v-if="equipDetail.imgUrl" :src="equipDetail.imgUrl" alt=""/>
-                        <img v-else alt="" src="@/assets/shebei.png" srcset=""/>
-                      </div>
-                      <h-desc :column="2" bordered class="ea-equip-desc" size="small">
-                        <h-desc-item label="设备名称"> {{ equipDetail.equipName || '--' }}</h-desc-item>
-                        <h-desc-item label="设备型号"> {{ equipDetail.equipModel || '--' }}</h-desc-item>
-                        <h-desc-item label="检定日期">
-                          {{
-                            equipDetail.verifyTime && equipDetail.verifyTime != 0
-                              ? moment(parseFloat(equipDetail.verifyTime)).format('YYYY-MM-DD HH:mm:ss')
-                              : '--'
-                          }}
-                        </h-desc-item>
-                        <h-desc-item label="检定有效期">
-                          {{
-                            equipDetail.checkValid && equipDetail.checkValid != 0
-                              ? moment(parseFloat(equipDetail.checkValid)).format('YYYY-MM-DD HH:mm:ss')
-                              : '--'
-                          }}
-                        </h-desc-item>
-                      </h-desc>
-                    </a-tab-pane>
-                    <!-- 曲线 -->
-                    <a-tab-pane :key="2" :forceRender="true" style="display: flex;height: 100%;" tab="曲线">
-                      <div class="h-echarts-line">
-                        <equip-basic-line ref="equipBasicLine"
-                                          :equipCode="equipDetail.equipCode"
-                                          :selectedRow="selectedRow"
-                                          :selectedTreeRows="selectedRows"
-                                          @open="handleEnlargement"/>
-                      </div>
-                    </a-tab-pane>
-                  </a-tabs>
-                </h-card>
-              </div>
-              <div style="width: 100%">
-                <h-search
-                  slot="search-form"
-                  v-model="queryParams"
-                  :data="searchForm"
-                  style="margin-top: 10px"
-                  @change="refresh"
-                />
-              </div>
-              <div class="task-list">
-                <h-card :bordered="false" fixed title="试验列表">
-                  <!-- 按钮 -->
-                  <a-space slot="extra">
-                    <a-button
-                      v-for="(item, index) in buttons"
-                      :key="item.key"
-                      :size="item.size"
-                      :type="item.type"
-                      :v-has="item.has"
-                      @click="() => item.click(item, index)"
-                    >
-                      <a-icon v-if="item.icon.indexOf('icon-') === -1" :type="item.icon"></a-icon>
-                      <h-icon v-else :type="item.icon"/>
-                      {{ item.title }}
-                    </a-button>
-                  </a-space>
-                  <h-vex-table
-                    ref="equipTaskList"
-                    slot="content"
-                    :columns="taskColumns"
-                    :data="loadData"
-                    :rowSelection="{
+            <div class="ea-equip-info" v-if="selectedKeys.length">
+              <h-card fixed style="width: 100%">
+                <a-tabs v-model="basickey" style="height: 100%;">
+                  <a-tab-pane :key="1" style="display: flex" tab="基本信息">
+                    <!-- 图片 -->
+                    <div class="ea-equip-image">
+                      <img v-if="equipDetail.imgUrl" :src="equipDetail.imgUrl" alt=""/>
+                      <img v-else alt="" src="@/assets/shebei.png" srcset=""/>
+                    </div>
+                    <h-desc :column="2" bordered class="ea-equip-desc" size="small">
+                      <h-desc-item label="设备名称"> {{ equipDetail.equipName || '--' }}</h-desc-item>
+                      <h-desc-item label="设备型号"> {{ equipDetail.equipModel || '--' }}</h-desc-item>
+                      <h-desc-item label="检定日期">
+                        {{ dateTimeFormatByStamp(equipDetail.verifyTime) }}
+                      </h-desc-item>
+                      <h-desc-item label="检定有效期">
+                        {{ dateTimeFormatByStamp(equipDetail.checkValid) }}
+                      </h-desc-item>
+                    </h-desc>
+                  </a-tab-pane>
+                  <!-- 曲线 -->
+                  <a-tab-pane :key="2" :forceRender="true" style="display: flex;height: 100%;" tab="曲线">
+                    <div class="h-echarts-line">
+                      <equip-basic-line ref="equipBasicLine"
+                                        :equipCode="equipDetail.equipCode"
+                                        :selectedRow="selectedRow"
+                                        :selectedTreeRows="selectedRows"
+                                        @open="handleEnlargement"/>
+                    </div>
+                  </a-tab-pane>
+                </a-tabs>
+              </h-card>
+            </div>
+            <div style="width: 100%">
+              <h-search
+                slot="search-form"
+                v-model="queryParams"
+                :data="searchForm"
+                style="margin-top: 10px"
+                @change="refresh"
+              />
+            </div>
+            <div class="task-list">
+              <h-card :bordered="false" fixed title="试验列表">
+                <!-- 按钮 -->
+                <a-space slot="extra">
+                  <a-button
+                    v-for="(item, index) in buttons"
+                    :key="item.key"
+                    :size="item.size"
+                    :type="item.type"
+                    :v-has="item.has"
+                    @click="() => item.click(item, index)"
+                  >
+                    <a-icon v-if="item.icon.indexOf('icon-') === -1" :type="item.icon"></a-icon>
+                    <h-icon v-else :type="item.icon"/>
+                    {{ item.title }}
+                  </a-button>
+                </a-space>
+                <h-vex-table
+                  ref="equipTaskList"
+                  slot="content"
+                  :columns="taskColumns"
+                  :data="loadData"
+                  :rowSelection="{
                       type: 'radio',
                       onSelect: Select,
                       visible: false,
                     }"
-                    style="width: 100%"
-                  >
-                    <template #entrustNos="text, record">
-                      <a @click="$refs.testTaskBaseInfoModal.show(record,'1','20px')">{{ text }}</a>
+                  style="width: 100%"
+                >
+                  <template #entrustNos="text, record">
+                    <a @click="$refs.testTaskBaseInfoModal.show(record,'1','20px')">{{ text }}</a>
+                  </template>
+                  <template #entrustCodes="text, record">
+                    <a @click="$refs.testTaskBaseInfoModal.show(record,'2','20px')">{{ text }}</a>
+                  </template>
+                  <template #testCode="text, record">
+                    <a @click="$refs.testTaskBaseInfoModal.show(record,'3','20px')">{{ text }}</a>
+                  </template>
+                  <template #exceptionNum="text, record">
+                    <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
+                  </template>
+                  <template slot="status" slot-scope="text,record">
+                    <template v-if="record.forceEndStatus === 10">
+                      <a-badge :color="testStatusMap[text].color" :text="testStatusMap[text].text + '-终止申请中'"/>
                     </template>
-                    <template #entrustCodes="text, record">
-                      <a @click="$refs.testTaskBaseInfoModal.show(record,null,'20px')">{{ text }}</a>
+                    <template v-else>
+                      <a-badge :color="testStatusMap[text].color" :text="testStatusMap[text].text"/>
                     </template>
-                    <template #exceptionNum="text, record">
-                      <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
-                    </template>
-                    <template slot="status" slot-scope="text,record">
-                      <template v-if="record.forceEndStatus === 10">
-                        <a-badge :color="testStatusMap[text].color" :text="testStatusMap[text].text + '-终止申请中'"/>
-                      </template>
-                      <template v-else>
-                        <a-badge :color="testStatusMap[text].color" :text="testStatusMap[text].text"/>
-                      </template>
-                      <a-icon v-if="record.forceEndStatus === 10 || text === 40" class="primary-text" style="margin-left:5px" type="eye"
-                              @click="$refs.TerminationDetailModal.show(record,record.testNames)"/>
-                    </template>
-                    <template #archiveRecord="text,record">
-                      <a-space style="cursor: pointer">
-                        <a-icon class="primary-text" title="查看" type="eye"
-                                @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
-                        <a-icon v-has="'archiveTem:edit'" class="primary-text" title="在线编辑" type="edit"
-                                @click="webOfficeEdit(record.docxPathXh)"></a-icon>
-                        <a title="下载word" @click="handleDownloadDocx(record.docxPathXh)">
-                          <a-icon class="primary-text" type="download"></a-icon>
-                        </a>
-                        <h-upload-file-b
-                          v-has="'archiveTem:edit'"
-                          v-model="swapFileList"
-                          :customParams="{id:record.id}"
-                          accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                          isPublic
-                          @beforeUpload="$refs.equipTaskList.localLoading = true"
-                          @change="file => handleUploadCallback(file, record,'1')">
-                          <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
-                        </h-upload-file-b>
-                      </a-space>
-                    </template>
-                    <template #embodiment="text,record">
-                      <a-space style="cursor: pointer">
-                        <a-icon class="primary-text" title="查看" type="eye"
-                                @click="handleReviewPdf('实施方案',record.pdfPathSs)"></a-icon>
-                        <a-icon v-has="'embodimentTem:edit'" class="primary-text" title="在线编辑" type="edit"
-                                @click="webOfficeEdit(record.docxPathSs)"></a-icon>
-                        <a title="下载word" @click="handleDownloadDocx(record.docxPathSs)">
-                          <a-icon class="primary-text" type="download"></a-icon>
-                        </a>
-                        <h-upload-file-b
-                          v-has="'embodimentTem:edit'"
-                          v-model="swapFileList"
-                          :customParams="{id:record.id}"
-                          accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                          isPublic
-                          @beforeUpload="$refs.equipTaskList.localLoading = true"
-                          @change="file => handleUploadCallback(file, record,'2')">
-                          <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
-                        </h-upload-file-b>
-                      </a-space>
-                    </template>
-                    <a-space slot="actions" slot-scope="text, record">
-                      <template v-if="![40,50].includes(record.status)">
-                        <!-- 开始 -->
-                        <a-tooltip v-if="[1, 30, 40, 45, 50, 25].includes(+record.status)" title="开始">
-                          <h-icon v-has="'ArrangeMent:start'" class="h-icon-item" type="icon-jiediankaishi"
-                                  @click="handleStart('start', record)"/>
-                        </a-tooltip>
-                        <!-- 暂停 -->
-                        <a-tooltip v-if="record.status === 20" title="暂停">
-                          <h-icon
-                            v-has="'ArrangeMent:suspend'"
-                            class="h-icon-item"
-                            type="icon-stop"
-                            @click="$refs.taskSuspendModal.show('suspend', record)"
-                          />
-                        </a-tooltip>
-                        <!-- 完成 -->
-                        <a-tooltip title="完成">
-                          <h-icon
-                            v-has="'ArrangeMent:finish'"
-                            class="h-icon-item"
-                            type="icon-wancheng1"
-                            @click="handleFinish(record)"
-                          />
-                        </a-tooltip>
-                        <!-- 更多 -->
-                        <a-dropdown>
-                          <a-tooltip title="更多">
-                            <h-icon class="h-icon-item" type="icon-gengduo1"/>
-                          </a-tooltip>
-                          <a-menu slot="overlay">
-                            <!-- 异常 -->
-                            <a-menu-item v-if="[20,45].includes(record.status)" v-has="'ArrangeMent:error'">
-                              <div @click="$refs.taskAbnormalModal.show('error', record)">异常</div>
-                            </a-menu-item>
-                            <!-- 终止 -->
-                            <a-menu-item v-if="record.status !== 40 && record.status === 20"
-                                         v-has="'ArrangeMent:forceEnd'">
-                              <div @click="$refs.taskForceEnd.show('forceEnd', record)">终止</div>
-                            </a-menu-item>
-                            <!-- 撤销 -->
-                            <a-menu-item v-if="record.status === 1" v-has="'ArrangeMent:recover'">
-                              <div @click="() => handleActions('recover', record)">撤销</div>
-                            </a-menu-item>
-                          </a-menu>
-                        </a-dropdown>
-                      </template>
+                    <a-icon v-if="record.forceEndStatus === 10 || text === 40" class="primary-text"
+                            style="margin-left:5px" type="eye"
+                            @click="$refs.TerminationDetailModal.show(record,record.testNames)"/>
+                  </template>
+                  <template #archiveRecord="text,record">
+                    <a-space style="cursor: pointer">
+                      <a-icon class="primary-text" title="查看" type="eye"
+                              @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
+                      <a-icon v-has="'archiveTem:edit'" class="primary-text" title="在线编辑" type="edit"
+                              @click="webOfficeEdit(record.docxPathXh)"></a-icon>
+                      <a title="下载word" @click="handleDownloadDocx(record.docxPathXh)">
+                        <a-icon class="primary-text" type="download"></a-icon>
+                      </a>
+                      <h-upload-file-b
+                        v-has="'archiveTem:edit'"
+                        v-model="swapFileList"
+                        :customParams="{id:record.id}"
+                        accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        isPublic
+                        @beforeUpload="$refs.equipTaskList.localLoading = true"
+                        @change="file => handleUploadCallback(file, record,'1')">
+                        <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+                      </h-upload-file-b>
                     </a-space>
-                  </h-vex-table>
-                </h-card>
-              </div>
+                  </template>
+                  <template #embodiment="text,record">
+                    <a-space style="cursor: pointer">
+                      <a-icon class="primary-text" title="查看" type="eye"
+                              @click="handleReviewPdf('实施方案',record.pdfPathSs)"></a-icon>
+                      <a-icon v-has="'embodimentTem:edit'" class="primary-text" title="在线编辑" type="edit"
+                              @click="webOfficeEdit(record.docxPathSs)"></a-icon>
+                      <a title="下载word" @click="handleDownloadDocx(record.docxPathSs)">
+                        <a-icon class="primary-text" type="download"></a-icon>
+                      </a>
+                      <h-upload-file-b
+                        v-has="'embodimentTem:edit'"
+                        v-model="swapFileList"
+                        :customParams="{id:record.id}"
+                        accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        isPublic
+                        @beforeUpload="$refs.equipTaskList.localLoading = true"
+                        @change="file => handleUploadCallback(file, record,'2')">
+                        <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+                      </h-upload-file-b>
+                    </a-space>
+                  </template>
+                  <a-space slot="actions" slot-scope="text, record">
+                    <template v-if="![40,50].includes(record.status)">
+                      <!-- 开始 -->
+                      <a-tooltip v-if="[1, 30, 40, 45, 50, 25].includes(+record.status)" title="开始">
+                        <h-icon v-has="'ArrangeMent:start'" class="h-icon-item" type="icon-jiediankaishi"
+                                @click="handleStart('start', record)"/>
+                      </a-tooltip>
+                      <!-- 暂停 -->
+                      <a-tooltip v-if="record.status === 20" title="暂停">
+                        <h-icon
+                          v-has="'ArrangeMent:suspend'"
+                          class="h-icon-item"
+                          type="icon-stop"
+                          @click="$refs.taskSuspendModal.show('suspend', record)"
+                        />
+                      </a-tooltip>
+                      <!-- 完成 -->
+                      <a-tooltip title="完成">
+                        <h-icon
+                          v-has="'ArrangeMent:finish'"
+                          class="h-icon-item"
+                          type="icon-wancheng1"
+                          @click="handleFinish(record)"
+                        />
+                      </a-tooltip>
+                      <!-- 更多 -->
+                      <a-dropdown>
+                        <a-tooltip title="更多">
+                          <h-icon class="h-icon-item" type="icon-gengduo1"/>
+                        </a-tooltip>
+                        <a-menu slot="overlay">
+                          <!-- 异常 -->
+                          <a-menu-item v-if="[20,45].includes(record.status)" v-has="'ArrangeMent:error'">
+                            <div @click="$refs.taskAbnormalModal.show('error', record)">异常</div>
+                          </a-menu-item>
+                          <!-- 终止 -->
+                          <a-menu-item v-if="record.status !== 40 && record.status === 20"
+                                       v-has="'ArrangeMent:forceEnd'">
+                            <div @click="$refs.taskForceEnd.show('forceEnd', record)">终止</div>
+                          </a-menu-item>
+                          <!-- 撤销 -->
+                          <a-menu-item v-if="record.status === 1" v-has="'ArrangeMent:recover'">
+                            <div @click="() => handleActions('recover', record)">撤销</div>
+                          </a-menu-item>
+                        </a-menu>
+                      </a-dropdown>
+                    </template>
+                  </a-space>
+                </h-vex-table>
+              </h-card>
+            </div>
           </div>
         </div>
       </h-card>
@@ -273,7 +269,7 @@
                               :selectRowId="selectedRow"
                               :selectedRow="selectedRow"></equip-basic-line-modal>
       <test-entrust-review-pdf ref="reviewPdf" :title="reviewPdfTitle"/>
-      <termination-detail-modal listType="testForceEndList"  ref="TerminationDetailModal"/>
+      <termination-detail-modal listType="testForceEndList" ref="TerminationDetailModal"/>
     </div>
   </r-l-layout>
 </template>
@@ -301,6 +297,7 @@ import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/mod
 import {ACCESS_TOKEN} from "@/store/mutation-types";
 import * as WebCtrl from "@/plugins/webOffice";
 import TerminationDetailModal from "@views/hifar/hifar-environmental-test/task/modules/TerminationDetailModal";
+import {dateTimeFormatByStamp} from "@/utils/util";
 // import {isHiddenColumns} from "@/utils/hasPermission";
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -334,6 +331,7 @@ export default {
   data() {
     return {
       moment,
+      dateTimeFormatByStamp,
       treeSpinning: false,
       swapFileList: [],
       selectedKeys: [],
@@ -574,6 +572,7 @@ export default {
           title: '试验编号',
           dataIndex: 'testCode',
           minWidth: 140,
+          scopedSlots: {customRender: 'testCode'},
         },
         {
           title: '状态',
@@ -619,11 +618,6 @@ export default {
           minWidth: 100,
         },
         {
-          title: '设备速率',
-          dataIndex: 'testRate',
-          minWidth: 100,
-        },
-        {
           title: '试验人员',
           dataIndex: 'chargeUserName',
           minWidth: 100,
@@ -657,9 +651,7 @@ export default {
         {
           title: '期望开始时间',
           dataIndex: 'predictStartTime',
-          customRender: (time) => {
-            return time && time != 0 ? moment(parseFloat(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          },
+          customRender: time => dateTimeFormatByStamp(time),
           minWidth: 150,
         },
         {
@@ -671,22 +663,27 @@ export default {
           title: '预计结束时间',
           dataIndex: 'taskEndTime',
           minWidth: 150,
-          customRender: (text, record) => {
-            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          }
+          customRender: time => dateTimeFormatByStamp(time),
         },
         {
           title: '实际开始时间',
           dataIndex: 'realStartTime',
-          customRender: (time) => {
-            return time && time != 0 ? moment(parseFloat(time)).format('YYYY-MM-DD HH:mm:ss') : '--'
-          },
+          customRender: time => dateTimeFormatByStamp(time),
+          minWidth: 150,
+        },
+        {
+          title: '实际结束时间',
+          dataIndex: 'realEndTime',
+          customRender: time => dateTimeFormatByStamp(time),
           minWidth: 150,
         },
         {
           title: '实际用时(h)',
           dataIndex: 'realUseTime',
           minWidth: 100,
+          customRender: text => {
+            return Number(text).toFixed(2) || '--'
+          }
         },
         {
           title: '操作',
@@ -1009,7 +1006,7 @@ export default {
 </style>
 <style lang="less" scoped>
 /deep/ .h-edit-tree {
- .ant-tree-node-content-wrapper {
+  .ant-tree-node-content-wrapper {
     width: 100% !important;
   }
 }

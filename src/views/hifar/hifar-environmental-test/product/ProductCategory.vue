@@ -122,7 +122,7 @@ export default {
       searchBar: [
         {
           title: '分类名称',
-          key: 'c_categoryName_7',
+          key: 'categoryName',
           formType: 'input'
         },
 

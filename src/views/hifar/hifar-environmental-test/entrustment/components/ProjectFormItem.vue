@@ -318,13 +318,6 @@ export default {
           dataIndex: 'equipUse_dictText',
         },
         {
-          title: '设备类型',
-          dataIndex: 'equipTypeName',
-          customRender: (t) => {
-            return t || '--'
-          }
-        },
-        {
           title: '计量有效期',
           dataIndex: 'checkValid',
           scopedSlots: {
@@ -361,12 +354,6 @@ export default {
           key: 'c_equipName_7'
         },
         {
-          title: '设备类型',
-          formType: 'dict',
-          key: 'c_equipTypeCode_1',
-          dictCode: 'hf_res_equip_type'
-        },
-        {
           title: '设备型号',
           formType: 'input',
           key: 'c_equipModel_7'
@@ -378,7 +365,7 @@ export default {
         }
       ],
       equipParams: {
-        list: '/HfResEquipBusiness/listPage',
+        list: '/HfResEquipBusiness/listPageForEntrust',
         queryParams: {c_equipUse_1: '2'},
       },
       equipData: [],

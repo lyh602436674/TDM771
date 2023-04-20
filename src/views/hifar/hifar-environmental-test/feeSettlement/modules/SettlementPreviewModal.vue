@@ -24,8 +24,8 @@
         <h-desc-item label="结算单号">{{ model.billNumber }}</h-desc-item>
         <h-desc-item label="结算人">{{ model.createUserName }}</h-desc-item>
         <h-desc-item label="结算时间">{{ moment(+model.createTime).format('YYYY-MM-DD HH:mm:ss') }}</h-desc-item>
-        <h-desc-item label="标准总价">{{ model.standardTotalPrice }}</h-desc-item>
-        <h-desc-item label="折后总价">{{ model.discountTotalPrice }}</h-desc-item>
+        <h-desc-item label="标准总价">{{ Number(model.standardTotalPrice).toFixed(2) || '--' }}</h-desc-item>
+        <h-desc-item label="折后总价">{{ Number(model.discountTotalPrice).toFixed(2) || '--' }}</h-desc-item>
       </h-desc>
       <h-card fixed style="margin-top: 10px" title="结算项目">
         <h-vex-table
@@ -151,9 +151,9 @@ export default {
           dataIndex: 'realUseTime',
           align: 'center',
           width: 100,
-          customRender: (text) => {
-            return text || '--'
-          },
+          customRender: text => {
+            return Number(text).toFixed(2) || '--'
+          }
         },
         {
           title: '单价/小时',
@@ -179,7 +179,7 @@ export default {
           align: 'center',
           width: 100,
           customRender: (text) => {
-            return text || '--'
+            return (Number(text) / 1000) || '--'
           },
         },
         {
@@ -197,7 +197,7 @@ export default {
           align: 'center',
           width: 100,
           customRender: (text) => {
-            return text || '--'
+            return (Number(text) / 1000) || '--'
           },
         },
         {
