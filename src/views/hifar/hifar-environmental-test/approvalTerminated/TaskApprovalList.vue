@@ -21,7 +21,7 @@
       <template slot="status" slot-scope="text, record">
         <a-badge :color="taskStatusMap[+text].color"
                  :text="taskStatusMap[+text].text + (record.forceEndStatus === 10 ? '-终止申请中' : '')"/>
-        <a-tooltip v-if="text === 20" title="查看终止记录">
+        <a-tooltip v-if="text === 20 || record.forceEndStatus === 10" title="查看终止记录">
           <a-icon class="primary-text" style="margin-left:5px" type="eye"
                   @click="$refs.TerminationDetailModal.show(record,record.unitName)"/>
         </a-tooltip>
@@ -32,17 +32,15 @@
                   <span :style="{ marginLeft: record.alert ? 0 : '20px' }">{{ text }}</span>
                 </a>
                 <span v-else> -- </span>
-              </span>
+      </span>
       <span slot="entrustCode" slot-scope="text, record">
                 <a v-if="text" @click="$refs.taskDetail.show(record)">{{ text ? text : '--' }}</a>
                 <span v-else> -- </span>
-              </span>
+      </span>
       <span slot="testNum" slot-scope="text, record">
-                <a v-if="text" @click="$refs.TestInfoListModal.show(record)">
-                  {{ text }}
-                </a>
+                <a v-if="text" @click="$refs.TestInfoListModal.show(record)"> {{ text }}</a>
                 <span v-else> -- </span>
-              </span>
+      </span>
       <span slot="actions" slot-scope="text, record">
         <template v-if="record.forceEndStatus === 10">
           <a-popconfirm title="确定通过吗?" @confirm="() => handleApproval(record.id,'ProcessEnd')">

@@ -9,6 +9,7 @@
   <h-desc size="small" lableWidth="130px" :data="model" :title="title">
     <h-desc-item label="项目名称">{{ model.unitName || '--' }}</h-desc-item>
     <h-desc-item label="试验名称">{{ model.testName || '--' }}</h-desc-item>
+    <h-desc-item label="已选样品">{{ model.pieceNos || '--' }}</h-desc-item>
     <h-desc-item label="试验标准">{{ model.standardCode + model.standardName || '--' }}</h-desc-item>
     <h-desc-item label="最终用户">{{ model.lastUser_dictText || '--' }}</h-desc-item>
     <h-desc-item label="是否加电">{{ model.isPowerUp === '1' ? '是' : '否' }}</h-desc-item>

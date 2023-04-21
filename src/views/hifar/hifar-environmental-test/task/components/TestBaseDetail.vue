@@ -44,14 +44,14 @@
           <!-- 试件信息 -->
           <test-piece-detail
             v-if="viewDetailType === '2'"
-            :dataSource="testPieceInfo"
+            :dataSource="getPieceDataByEntrustId"
             class="mg-t-20"
             title="试件信息"/>
-          <piece-detail-template titlle="试件信息" v-else :dataSource="testPieceInfo"/>
+          <piece-detail-template titlle="试件信息" v-else :dataSource="getPieceDataByEntrustId"/>
         </div>
         <!-- 项目信息 -->
         <div id="project">
-          <div v-for="(item,index) in getProjectItemByEntrustId">
+          <div v-for="(item,index) in getProjectItemByEntrustNo">
             <project-detail-template
               :key="index"
               :model="item"
@@ -809,8 +809,13 @@ export default {
     isBase() {
       return ['1', '2'].includes(this.viewDetailType)
     },
-    getProjectItemByEntrustId() {
-      return this.projectInfo.filter(item => item.entrustId === this.entrustInfo[this.activeTab].id)
+    getProjectItemByEntrustNo() {
+      // 这里不能拿id匹配，因为多个项目的委托单拆分后就会拆分成两个委托单，id就不一样了，所以只能拿委托单号匹配
+      return this.projectInfo.filter(item => item.entrustNo === this.entrustInfo[this.activeTab].entrustNo)
+    },
+    getPieceDataByEntrustId() {
+      // 这里拿到当前激活的页签下的委托单id从样品里面匹配对应委托单id的样品
+      return this.testPieceInfo.filter(item => item.entrustId === this.entrustInfo[this.activeTab].id)
     },
   },
   methods: {

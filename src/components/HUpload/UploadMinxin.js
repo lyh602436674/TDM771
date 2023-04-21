@@ -75,7 +75,7 @@ export default {
       }
       for (let i = 0; i < filesLength; i++) {
         let UUID = null
-        let { size, type, name } = files[i]
+        let {size, type, name} = files[i]
         if (this.maxSize && size / 1000 > this.maxSize) {
           this.$message.error(`${name}文件大小大于最大限制${this.maxSize}kB`)
           return
@@ -106,7 +106,7 @@ export default {
             status: 'normal',
             uuid: UUID,
             file: files[i],
-            replaceStatus:2
+            replaceStatus: 2
           }
         } else {
           fileList[i] = {
@@ -160,7 +160,7 @@ export default {
           })
           this.fileList.splice(oldIndex, 1)
           this.handleDelete(this.extendRecords)
-          this.fileList.sort((o1,o2)=>o1.rowSort-o2.rowSort)
+          this.fileList.sort((o1, o2) => o1.rowSort - o2.rowSort)
         }
         this.triggerChange()
       }).catch(err => {
@@ -408,11 +408,13 @@ export default {
         fileReader.onerror = function () {
           console.warn('oops, something went wrong.');
         };
+
         function loadNext() {
           var start = currentChunk * chunkSize,
             end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize;
           fileReader.readAsArrayBuffer(blobSlice.call(file, start, end));
         }
+
         loadNext();
       })
     },
@@ -433,7 +435,8 @@ export default {
     renderInput(config = {}) {
       return (
         <div class="h-upload-input">
-          <input type="file" ref={config.ref} closeable={config.closeable || false} accept={config.accept || '*'} multiple={config.multiple || false} onchange={this.beforeUpload}></input>
+          <input type="file" ref={config.ref} closeable={config.closeable || false} accept={config.accept || '*'}
+                 multiple={config.multiple || false} onchange={this.beforeUpload}></input>
         </div>
       )
     },

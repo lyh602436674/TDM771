@@ -49,7 +49,8 @@
           <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
         </span>
         <span slot="mesPushStatus" slot-scope="text, record">
-          <a-badge :color="record.mesPushStatus | mesPushStatusColorFilter" :text="record.mesPushStatus | mesPushStatusFilter"/>
+          <a-badge :color="record.mesPushStatus | mesPushStatusColorFilter"
+                   :text="record.mesPushStatus | mesPushStatusFilter"/>
         </span>
         <template slot="downloadNum" slot-scope="text,record">
           <a @click="downloadRecord(record)">查看下载记录</a>
@@ -72,14 +73,14 @@
             <span v-if="record.status === 1">
               <a-space>
 <!--                <a-popconfirm-->
-<!--                  title="确定生成报告吗?"-->
-<!--                  @confirm="() => handleMakeReport(record)">-->
-<!--                  <a-icon-->
-<!--                    v-has="'report:make'"-->
-<!--                    class="primary-text cursor-pointer"-->
-<!--                    title="生成"-->
-<!--                    type="check-square"/>-->
-<!--                </a-popconfirm>-->
+                <!--                  title="确定生成报告吗?"-->
+                <!--                  @confirm="() => handleMakeReport(record)">-->
+                <!--                  <a-icon-->
+                <!--                    v-has="'report:make'"-->
+                <!--                    class="primary-text cursor-pointer"-->
+                <!--                    title="生成"-->
+                <!--                    type="check-square"/>-->
+                <!--                </a-popconfirm>-->
                 <h-upload-file-b
                   v-model="reportFileList"
                   :customParams="{id:record.id}"
@@ -218,16 +219,6 @@ export default {
       selectedRows: [],
       searchBar: [
         {
-          title: '委托单号',
-          key: 'c_entrustNo_7',
-          formType: 'input'
-        },
-        {
-          title: '运行单号',
-          key: 'c_entrustCode_7',
-          formType: 'input'
-        },
-        {
           title: '报告编号',
           key: 'c_reportCode_7',
           formType: 'input'
@@ -235,6 +226,16 @@ export default {
         {
           title: '试验编号',
           key: 'c_testCode_7',
+          formType: 'input'
+        },
+        {
+          title: '委托单号',
+          key: 'c_entrustNo_7',
+          formType: 'input'
+        },
+        {
+          title: '运行单号',
+          key: 'c_entrustCode_7',
           formType: 'input'
         },
         {
@@ -478,7 +479,7 @@ export default {
     addReportchange() {
       this.refresh(true)
     },
-    fileChange({ file }) {
+    fileChange({file}) {
       this.$refs.reportMakeTable.localLoading = true
       if ((file.response && file.response.code === 200) || file.status === 'done') {
         this.refresh()
@@ -526,7 +527,7 @@ export default {
     // 单个删除
     handleDelete(id, status) {
       let delInfo = [{id, status}]
-      postAction(this.url.delete, { delInfo: delInfo }).then((res) => {
+      postAction(this.url.delete, {delInfo: delInfo}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)

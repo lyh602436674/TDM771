@@ -6,13 +6,14 @@
  * @Description: 费用结算页面
 -->
 <template>
-  <div ref="approval" style="height: 100%; position: relative">
+  <div ref="approval" class="approvalPage">
     <h-card>
       <template slot="title"> 费用结算</template>
       <h-tabs :activeKey="activeKey" :animated="true" fixed @change="handleTabsChange">
         <a-tab-pane key="1">
           <a-badge slot="tab" :offset="offset">试验结算</a-badge>
-          <test-statistics-by-completed ref="testStatisticsByCompleted"></test-statistics-by-completed>
+          <test-statistics-by-completed
+            ref="testStatisticsByCompleted"></test-statistics-by-completed>
         </a-tab-pane>
         <a-tab-pane key="2">
           <a-badge slot="tab" :offset="offset">结算记录</a-badge>
@@ -60,6 +61,15 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+.approvalPage {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  /deep/ .ant-tabs-content {
+    height: calc(100% - 60px);
+  }
+}
 
 </style>

@@ -6,7 +6,7 @@
  * @Description: 费用结算：显示已完成的试验（未结算和已结算）
 -->
 <template>
-  <h-card :bordered="true" fixed>
+  <h-card :bordered="true" fixed class="testStatistics" style="height: 100%">
     <h-search
       slot="search-form"
       v-model="queryParams"

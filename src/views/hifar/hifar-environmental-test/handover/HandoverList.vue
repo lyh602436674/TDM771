@@ -24,7 +24,7 @@
         <a-button v-has="'handover:add'" icon="plus" size="small" type="ghost-primary" @click="handoverAdd({})">
           新增
         </a-button>
-        <a-button v-has="'handover:delete'" type="danger" size="small" icon="delete" @click="delet">
+        <a-button v-has="'handover:delete'" type="danger" size="small" icon="delete" @click="batchDelete">
           批量删除
         </a-button>
       </div>
@@ -120,7 +120,7 @@ export default {
       queryParams: {},
       url: {
         tableList: '/HfEnvTestHandoverRecordBusiness/listPage',
-        delet: '/HfEnvTestHandoverRecordBusiness/logicRemoveById',
+        batchDelete: '/HfEnvTestHandoverRecordBusiness/logicRemoveById',
         delete: '/HfEnvTestHandoverRecordBusiness/logicRemoveById',
       },
       // 搜索
@@ -300,7 +300,6 @@ export default {
     handoverAdd(record) {
       let title = '新增交接班记录'
       this.$refs.handoverAddModal.show(record, title)
-      this.refresh()
     },
     // 编辑
     handleEdit(record) {
@@ -308,14 +307,14 @@ export default {
       this.$refs.handoverAddModal.show(record, title)
     },
     // 批量删除
-    delet() {
+    batchDelete() {
       let _this = this
       if (_this.selectedRowKeys.length) {
         this.$confirm({
           title: '确认删除',
           content: '删除后不可恢复，确认删除？',
           onOk: function () {
-            postAction(_this.url.delet, { ids: _this.selectedRowKeys.join() }).then((res) => {
+            postAction(_this.url.batchDelete, { ids: _this.selectedRowKeys.join() }).then((res) => {
               if (res.code === 200) {
                 _this.$message.success('删除成功')
                 _this.refresh()
@@ -345,7 +344,6 @@ export default {
     // 单个删除
     handleDelete(id) {
       postAction(this.url.delete, { ids: id }).then((res) => {
-        console.log('id===', id)
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)

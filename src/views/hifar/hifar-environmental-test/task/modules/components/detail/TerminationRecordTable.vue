@@ -120,11 +120,10 @@ export default {
           ...params,
           ...this.queryParams,
         }
-        if (this.listType === 'testForceEndList') {
-          data.testId = this.records.id
-        }
         if (this.listType === 'taskForceEndList') {
           data.taskId = this.records.id
+        } else {
+          data.testId = this.records.id
         }
         return postAction(this.url[this.listType || 'list'], data).then((res) => {
           if (res.code === 200) {
