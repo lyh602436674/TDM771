@@ -74,7 +74,7 @@
         </a-table>
       </div>
     </h-collapse>
-    <point-list ref="PointList" @change="pointSelectChange"></point-list>
+    <point-list ref="PointList" historySelect @change="pointSelectChange"></point-list>
     <experimental-curve-modal ref="ExperimentalCurveModal" @change="curveUrlChange"></experimental-curve-modal>
     <handle-select-modal
       ref="equipHandleSelectModal"

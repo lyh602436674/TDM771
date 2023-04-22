@@ -123,7 +123,7 @@
                   style="cursor: pointer;margin-left: 10px"
                   title="添加传感器"
                   type="plus"
-                  @click="sensorAdd(record,index)" />
+                  @click="sensorAdd(record,index)"/>
               </template>
             </a-table>
           </h-card>
@@ -161,37 +161,37 @@
           </h-card>
         </h-desc>
         <!--巡检记录-->
-<!--        <h-desc id="siteInspection" class="mg-t-20" title="巡检记录">-->
-<!--          <h-card :bordered="false" style="width: 100%">-->
-<!--            <template slot="table-operator">-->
-<!--              <a-button icon="plus" size="small" type="primary" @click="siteInspectionAdd">-->
-<!--                添加-->
-<!--              </a-button>-->
-<!--            </template>-->
-<!--            <a-table-->
-<!--              :columns="siteInspectionColumns"-->
-<!--              :dataSource="siteInspectionTable"-->
-<!--              :pagination="false"-->
-<!--              bordered-->
-<!--              rowKey="id"-->
-<!--              size="small"-->
-<!--              style="width: 100%;"-->
-<!--            >-->
-<!--              <template #action="text, record,index">-->
-<!--                <a-popconfirm title="确定删除吗?" @confirm="() => siteInspectionDelete(index)">-->
-<!--                  <a-icon-->
-<!--                    class="primary-text"-->
-<!--                    style="cursor: pointer"-->
-<!--                    theme="twoTone"-->
-<!--                    title="删除"-->
-<!--                    two-tone-color="#ff4d4f"-->
-<!--                    type="delete"-->
-<!--                  />-->
-<!--                </a-popconfirm>-->
-<!--              </template>-->
-<!--            </a-table>-->
-<!--          </h-card>-->
-<!--        </h-desc>-->
+        <!--        <h-desc id="siteInspection" class="mg-t-20" title="巡检记录">-->
+        <!--          <h-card :bordered="false" style="width: 100%">-->
+        <!--            <template slot="table-operator">-->
+        <!--              <a-button icon="plus" size="small" type="primary" @click="siteInspectionAdd">-->
+        <!--                添加-->
+        <!--              </a-button>-->
+        <!--            </template>-->
+        <!--            <a-table-->
+        <!--              :columns="siteInspectionColumns"-->
+        <!--              :dataSource="siteInspectionTable"-->
+        <!--              :pagination="false"-->
+        <!--              bordered-->
+        <!--              rowKey="id"-->
+        <!--              size="small"-->
+        <!--              style="width: 100%;"-->
+        <!--            >-->
+        <!--              <template #action="text, record,index">-->
+        <!--                <a-popconfirm title="确定删除吗?" @confirm="() => siteInspectionDelete(index)">-->
+        <!--                  <a-icon-->
+        <!--                    class="primary-text"-->
+        <!--                    style="cursor: pointer"-->
+        <!--                    theme="twoTone"-->
+        <!--                    title="删除"-->
+        <!--                    two-tone-color="#ff4d4f"-->
+        <!--                    type="delete"-->
+        <!--                  />-->
+        <!--                </a-popconfirm>-->
+        <!--              </template>-->
+        <!--            </a-table>-->
+        <!--          </h-card>-->
+        <!--        </h-desc>-->
         <!-- 参试人员 -->
         <h-desc id="person" class="mg-t-20" title="参试人员">
           <h-card :bordered="false" style="width: 100%">
@@ -341,7 +341,7 @@
       :searchData="toolSearchBar"
       @callback="toolsProductCallback"
     />
-    <postion-modal ref="PostionModal" :title="'添加参试人员'" @change="selectPersonHandle" />
+    <postion-modal ref="PostionModal" :title="'添加参试人员'" @change="selectPersonHandle"/>
     <check-ensure-modal ref="checkEnsureModal"></check-ensure-modal>
     <product-file-modal @close="getTestDetail(testId)" ref="productFileModal"></product-file-modal>
   </h-modal>
@@ -424,11 +424,11 @@ export default {
         }
       ],
       moment,
-      productStatusOptions: [{ key: '1', value: '1', label: '完好' }, { key: '2', value: '2', label: '损坏' }],
+      productStatusOptions: [{key: '1', value: '1', label: '完好'}, {key: '2', value: '2', label: '损坏'}],
       siteRunningStatus: [
-        { key: '1', value: '1', label: '正常' },
-        { key: '2', value: '2', label: '异常' },
-        { key: '3', value: '3', label: '未知' }
+        {key: '1', value: '1', label: '正常'},
+        {key: '2', value: '2', label: '异常'},
+        {key: '3', value: '3', label: '未知'}
       ],
       switchRecordingColumns: [
         {
@@ -454,7 +454,7 @@ export default {
                 showTime: true,
                 value: row.testStartTime
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (val) => {
                   this.$set(row, 'testStartTime', val)
@@ -486,7 +486,7 @@ export default {
                 showTime: true,
                 value: row.testEndTime
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (val) => {
                   this.$set(row, 'testEndTime', val)
@@ -519,10 +519,10 @@ export default {
             return this.$createElement('a-textarea', {
               props: {
                 placeholder: '请输入备注',
-                autoSize: { minRows: 1 },
+                autoSize: {minRows: 1},
                 value: row.remarks
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (e) => {
                   row.remarks = e.target.value
@@ -537,7 +537,7 @@ export default {
           align: 'center',
           width: 220,
           customRender: (t, row) => {
-            let { personName, personSignTime } = row
+            let {personName, personSignTime} = row
             return this.$createElement('a-input', {
               props: {
                 readOnly: true,
@@ -552,7 +552,7 @@ export default {
                     }
                     postAction('/BaseUserBusiness/sign', loginParams).then(res => {
                       if (res.code === 200) {
-                        let { data } = res
+                        let {data} = res
                         this.$set(row, 'personName', data.idName)
                         this.$set(row, 'personId', data.id)
                         this.$set(row, 'personSignTime', moment().valueOf())
@@ -570,7 +570,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
           width: 60,
           align: 'center'
         }
@@ -600,7 +600,7 @@ export default {
                 dictCode: 'install_control_method',
                 value: row.installMethodCode
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (v, option) => {
                   row.installMethodCode = v
@@ -629,7 +629,7 @@ export default {
                 },
                 value: row.directionId ? row.directionId.split(',') : []
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (v, option, extra) => {
                   if (extra.triggerNode && extra.triggerNode.isLeaf === false) {
@@ -663,7 +663,7 @@ export default {
           dataIndex: 'installNum',
           align: 'center',
           width: 150,
-          scopedSlots: { customRender: 'installNum' },
+          scopedSlots: {customRender: 'installNum'},
           customRender: (t, row, index) => {
             return this.$createElement('a-input', {
               props: {
@@ -671,7 +671,7 @@ export default {
                 allowClear: true,
                 value: row.installNum
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (e) => {
                   row.installNum = e.target.value
@@ -694,10 +694,10 @@ export default {
             return this.$createElement('a-textarea', {
               props: {
                 placeholder: '请输入备注',
-                autoSize: { minRows: 1 },
+                autoSize: {minRows: 1},
                 value: row.remarks
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (e) => {
                   row.remarks = e.target.value
@@ -709,7 +709,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
           width: 60,
           align: 'center'
         }
@@ -745,7 +745,7 @@ export default {
                 },
                 value: row.testDirectionId ? row.testDirectionId.split(',') : []
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (v, option, extra) => {
                   if (extra.triggerNode && extra.triggerNode.isLeaf === false) {
@@ -786,7 +786,7 @@ export default {
                 allowClear: true,
                 value: row.directionNum
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (e) => {
                   row.directionNum = e.target.value
@@ -808,7 +808,7 @@ export default {
                 showTime: true,
                 value: row.inspectionTime
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (val) => {
                   this.$set(row, 'inspectionTime', val)
@@ -829,7 +829,7 @@ export default {
                 allowClear: true,
                 value: row.setUpValue
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (value) => {
                   this.$set(row, 'setUpValue', value)
@@ -850,7 +850,7 @@ export default {
                 allowClear: true,
                 value: row.measuredValue
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (value) => {
                   this.$set(row, 'measuredValue', value)
@@ -872,7 +872,7 @@ export default {
                 options: this.siteRunningStatus,
                 value: row.runStatus
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (value) => {
                   row.runStatus = value
@@ -887,7 +887,7 @@ export default {
           align: 'center',
           width: 220,
           customRender: (t, row) => {
-            let { operationPerson, operationTime } = row
+            let {operationPerson, operationTime} = row
             return this.$createElement('a-input', {
               props: {
                 readOnly: true,
@@ -902,7 +902,7 @@ export default {
                     }
                     postAction('/BaseUserBusiness/sign', loginParams).then(res => {
                       if (res.code === 200) {
-                        let { data } = res
+                        let {data} = res
                         this.$set(row, 'operationPerson', data.idName)
                         this.$set(row, 'operationPersonId', data.id)
                         this.$set(row, 'operationTime', moment().valueOf())
@@ -926,10 +926,10 @@ export default {
             return this.$createElement('a-textarea', {
               props: {
                 placeholder: '请输入备注',
-                autoSize: { minRows: 1 },
+                autoSize: {minRows: 1},
                 value: row.remarks
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (e) => {
                   row.remarks = e.target.value
@@ -1041,37 +1041,37 @@ export default {
         {
           title: '入场时间',
           key: 'approachTime',
-          validate: { rules: [{ required: false, validator: this.validateStartTime }] },
+          validate: {rules: [{required: false, validator: this.validateStartTime}]},
           component: (
             <h-time-select
-              v-decorator={['approachTime', { rules: [{ required: false, message: '请选择入场时间' }] }]}
+              v-decorator={['approachTime', {rules: [{required: false, message: '请选择入场时间'}]}]}
             />
           )
         },
         {
           title: '离场时间',
           key: 'departureTime',
-          validate: { rules: [{ required: false, validator: this.validateEndTime }] },
+          validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
-            <h-time-select v-decorator={['departureTime', { rules: [{ required: false, message: '请选择离场时间' }] }]} />
+            <h-time-select v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
           )
         },
         {
           title: '开始时间',
           key: 'realStartTime',
-          validate: { rules: [{ required: false, validator: this.validateStartTime }] },
+          validate: {rules: [{required: false, validator: this.validateStartTime}]},
           component: (
             <h-time-select
-              v-decorator={['realStartTime', { rules: [{ required: false, message: '请选择开始时间' }] }]}
+              v-decorator={['realStartTime', {rules: [{required: false, message: '请选择开始时间'}]}]}
             />
           )
         },
         {
           title: '结束时间',
           key: 'realEndTime',
-          validate: { rules: [{ required: false, validator: this.validateEndTime }] },
+          validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
-            <h-time-select v-decorator={['realEndTime', { rules: [{ required: false, message: '请选择结束时间' }] }]} />
+            <h-time-select v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
           )
         },
         {
@@ -1289,7 +1289,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
           width: 60,
           align: 'center'
         }
@@ -1302,16 +1302,16 @@ export default {
           key: 'rowIndex',
           width: 60,
           align: 'center',
-          customRender: function(t, r, index) {
+          customRender: function (t, r, index) {
             return index + 1
           }
         },
-        { title: '参试人员岗位', dataIndex: 'testPostName' },
-        { title: '参试人员姓名', dataIndex: 'testUserName' },
+        {title: '参试人员岗位', dataIndex: 'testPostName'},
+        {title: '参试人员姓名', dataIndex: 'testUserName'},
         {
           title: '操作',
           key: 'action',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
           width: 60,
           align: 'center'
         }
@@ -1324,12 +1324,12 @@ export default {
           key: 'rowIndex',
           width: 60,
           align: 'center',
-          customRender: function(t, r, index) {
+          customRender: function (t, r, index) {
             return index + 1
           }
         },
-        { title: '设备编号', dataIndex: 'equipCode' },
-        { title: '设备名称', dataIndex: 'equipName' },
+        {title: '设备编号', dataIndex: 'equipCode'},
+        {title: '设备名称', dataIndex: 'equipName'},
         {
           title: '计量有效期',
           dataIndex: 'checkValid',
@@ -1337,11 +1337,11 @@ export default {
             return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
           }
         },
-        { title: '设备型号', dataIndex: 'equipModel' },
+        {title: '设备型号', dataIndex: 'equipModel'},
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
           width: 60,
           align: 'center'
         }
@@ -1453,7 +1453,7 @@ export default {
                 dictCode: 'sensing_equipment_location',
                 value: row.locationCode
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (v, option) => {
                   row.locationCode = v
@@ -1476,7 +1476,7 @@ export default {
                 dictCode: 'sensing_equipment_purpose',
                 value: row.usePurposeCode
               },
-              style: { width: '100%' },
+              style: {width: '100%'},
               on: {
                 change: (v, option) => {
                   row.usePurposeCode = v
@@ -1490,7 +1490,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
           width: 60,
           align: 'center'
         }
@@ -1632,7 +1632,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
           width: 60,
           align: 'center'
         }
@@ -1656,7 +1656,7 @@ export default {
       this.visible = true
       this.getTestDetail(record.id)
       this.$nextTick(() => {
-        this.productList.queryParams = { id: record.id, projectPieceInfo: [] }
+        this.productList.queryParams = {id: record.id, projectPieceInfo: []}
       })
       this.loadImgData()
       this.getTestDirectionTreeData()
@@ -1693,9 +1693,9 @@ export default {
       this.$refs.productFileModal.show(row, this.testRecordInfo.equipId)
     },
     loadImgData() {
-      postAction(this.url.attachList, { refType: 'test_picture', refId: this.testId }).then((res) => {
+      postAction(this.url.attachList, {refType: 'test_picture', refId: this.testId}).then((res) => {
         if (res.code === 200) {
-          const { data } = res
+          const {data} = res
           let fileArr = []
           let obj = {}
           if (data && data.length > 0) {
@@ -1726,7 +1726,7 @@ export default {
     },
     // 图片删除
     handleDeleteImg(file) {
-      postAction(this.url.deleteImg, { id: file.fileId }).then(() => {
+      postAction(this.url.deleteImg, {id: file.fileId}).then(() => {
         this.$message.success('删除成功')
       })
     },
@@ -1764,7 +1764,7 @@ export default {
       }
     },
     getTestDetail(id) {
-      postAction(this.url.detail, { id: id }).then((res) => {
+      postAction(this.url.detail, {id: id}).then((res) => {
         if (res.code === 200) {
           let model = Object.assign({}, res.data)
           this.productTable = model.testPieceInfo.map(item => {
@@ -1851,17 +1851,14 @@ export default {
     personHandleDelete(index) {
       this.personArr.splice(index, 1)
     },
-    selectPersonHandle(val, postVal) {
-      let [postInfo] = postVal
+    selectPersonHandle(val) {
       let newPerson = val.length && val.map((item, index) => {
         return {
-          id: '',
-          rowId: index + 1,
           testUserId: item.id,
           testUserName: item.idName,
-          testPostId: postInfo.id,
-          testPostName: postInfo.postName,
-          testPostCode: postInfo.postCode
+          testPostId: item.postId,
+          testPostName: item.postName,
+          testPostCode: item.postCode
         }
       }) || []
       this.personArr = this.personArr.concat(uniqueArray(this.personArr, 'testUserId-testPostId', newPerson, 'testUserId-testPostId'))
@@ -1876,7 +1873,13 @@ export default {
       this.equipData = this.equipData.concat(value)
     },
     toolsProductCallback(value) {
-      this.toolsProductData = this.toolsProductData.concat(uniqueArray(this.toolsProductData, 'id', value, 'id'))
+      let setToolsIdValue = value.map(item => {
+        return {
+          ...item,
+          toolsId: item.id, // 后台需要生成新的id，所以得需要这个字段去保存原始id
+        }
+      })
+      this.toolsProductData = this.toolsProductData.concat(uniqueArray(this.toolsProductData, 'toolsId', setToolsIdValue, 'toolsId'))
     },
     changeControlMethod() {
       for (let i = 0; i < this.installControlTable.length; i++) {
@@ -1992,6 +1995,7 @@ export default {
 /deep/ .ant-table-small > .ant-table-content > .ant-table-body {
   margin: 0;
 }
+
 .mg-t-20 {
   margin-top: 20px !important;
 }

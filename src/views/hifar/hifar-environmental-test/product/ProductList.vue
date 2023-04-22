@@ -301,8 +301,8 @@ export default {
         this.$confirm({
           title: '确认删除',
           content: '删除后不可恢复，确认删除？',
-          onOk: function() {
-            postAction(_this.url.delete, { id: _this.selectedRowKeys.join() }).then((res) => {
+          onOk: function () {
+            postAction(_this.url.delete, {id: _this.selectedRowKeys.join()}).then((res) => {
               if (res.code === 200) {
                 _this.$message.success('删除成功')
                 _this.refresh()
@@ -322,7 +322,7 @@ export default {
     handleAdd() {
       let record = {
         productEffect: 1,
-        classifyId: this.selectedTreeKeys
+        classifyId: this.selectedTreeKeys.toString()
       }
       this.$refs.productModal.show(record, '添加')
     },

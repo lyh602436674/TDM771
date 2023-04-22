@@ -53,7 +53,11 @@ export default {
     type: {
       type: String,
       default: 'checkbox'
-    }
+    },
+    selectedTreeRows: {
+      type: [Array, Object],
+      default: () => []
+    },
   },
   watch: {
     postId(val) {
@@ -143,7 +147,18 @@ export default {
         }
         return getAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
-            return res.data
+            let selectedTreeRows = {
+              postId: this.selectedTreeRows[0].id,
+              postName: this.selectedTreeRows[0].postName
+            }
+            return Object.assign({}, res.data, {
+              data: res.data.data.map(item => {
+                return {
+                  ...item,
+                  ...selectedTreeRows,
+                }
+              })
+            })
           }
         })
       },

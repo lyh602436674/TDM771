@@ -241,11 +241,10 @@ export default {
           hidden: true
         },
         {
-          title: '运行单号',
-          key: 'entrustCode',
+          title: '委托单号',
+          key: 'entrustNo',
           formType: 'input',
-          disabled: true,
-          hidden: this.handleType !== 'edit'
+          hidden: true
         },
         {
           title: '委托日期',

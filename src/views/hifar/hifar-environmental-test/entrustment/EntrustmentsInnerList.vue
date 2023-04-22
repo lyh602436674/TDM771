@@ -6,7 +6,8 @@
       <template slot="table-operator">
         <a-button v-has="'entrustment:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd"> 新增
         </a-button>
-        <a-button v-has="'entrustment:export'" icon="export" size="small" type="ghost-warning" @click="handleExportXls('委托单信息')">
+        <a-button v-has="'entrustment:export'" icon="export" size="small" type="ghost-warning"
+                  @click="handleExportXls('委托单信息')">
           导出
         </a-button>
         <template v-if="selectedRowKeys.length">
@@ -51,7 +52,7 @@
               </a>
             </a-tooltip>
             <a-menu slot="overlay">
-              <a-menu-item v-has="'entrustment:edit'" v-if="record.status == 1 || record.status == 30">
+              <a-menu-item v-has="'entrustment:edit'" v-if="[1,30].includes(record.status)">
                 <a @click="handleEdit(record)">编辑</a>
               </a-menu-item>
               <!-- 草稿，已提交，已驳回 状态只能复制委托单，因为还没有运行单 -->
@@ -467,7 +468,7 @@ export default {
     },
     // 删除
     handleDelete(id) {
-      postAction(this.url.delete, { id: id }).then((res) => {
+      postAction(this.url.delete, {id: id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)
@@ -482,7 +483,7 @@ export default {
           title: '确认删除',
           content: '删除后不可恢复，确认删除？',
           onOk: function () {
-            postAction(_this.url.delete, { id: _this.selectedRowKeys.join() }).then((res) => {
+            postAction(_this.url.delete, {id: _this.selectedRowKeys.join()}).then((res) => {
               if (res.code === 200 && res.data.num) {
                 _this.$message.success('删除成功')
                 _this.refresh()

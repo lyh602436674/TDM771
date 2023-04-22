@@ -53,7 +53,7 @@
       </span>
     </h-vex-table>
     <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
-    <abnormal-detail-modal ref="abnormalDetailModal"/>
+    <abnormal-detail-modal ref="abnormalDetailModal" isReadOnly/>
     <settlement-preview-modal ref="settlementPreviewModal" isEdit @change="refresh"/>
   </h-card>
 </template>

@@ -31,6 +31,7 @@
       <h-vex-table
         ref="pointTable"
         :columns="columns"
+        :historySelect="historySelect"
         :data="loadData"
         :rowSelection="{ selectedRowKeys, onChange: onSelect, type }"
         style="width: 100%"
@@ -54,6 +55,12 @@ export default {
     },
     craftUnitId: {
       default: () => null,
+    },
+  },
+  props: {
+    historySelect: {
+      type: Boolean,
+      default: false
     },
   },
   data() {
@@ -114,10 +121,6 @@ export default {
           dataIndex: 'unitName',
           key: 'c_unitName_7',
           formType: 'input',
-        },
-        {
-          title: '备注',
-          dataIndex: 'remarks',
         },
       ],
       url: {

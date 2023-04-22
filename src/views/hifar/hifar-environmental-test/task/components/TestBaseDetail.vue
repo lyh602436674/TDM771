@@ -42,12 +42,13 @@
         </div>
         <div id="piece">
           <!-- 试件信息 -->
+          <!-- :dataSource="getPieceDataByEntrustId" -->
           <test-piece-detail
             v-if="viewDetailType === '2'"
-            :dataSource="getPieceDataByEntrustId"
+            :dataSource="testPieceInfo"
             class="mg-t-20"
             title="试件信息"/>
-          <piece-detail-template titlle="试件信息" v-else :dataSource="getPieceDataByEntrustId"/>
+          <piece-detail-template titlle="试件信息" v-else :dataSource="testPieceInfo"/>
         </div>
         <!-- 项目信息 -->
         <div id="project">

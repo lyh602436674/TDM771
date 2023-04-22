@@ -29,10 +29,7 @@ export default {
         },
         {
           title: '参数类型',
-          dataIndex: 'paramType',
-          customRender: (text, record) => {
-            return filterDictTextByCache('hf_dev_param_type', text) || '-'
-          }
+          dataIndex: 'paramType_dictText',
         },
         {
           title: '单位',

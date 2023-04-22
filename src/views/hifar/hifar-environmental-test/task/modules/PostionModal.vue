@@ -46,6 +46,7 @@
         <work-list-detail
           ref="WorkListDetail"
           :post-id="selectedKeys.toString()"
+          :selectedTreeRows="selectedRows"
           :type="type"
           @change="selectPersonChange"></work-list-detail>
       </div>
@@ -143,8 +144,11 @@ export default {
           item.children = []
           return item
         })
-        this.selectedRows = [this.treeData[0]]
-        this.selectedKeys = [this.treeData[0].id]
+        try {
+          this.selectedRows = [this.treeData[0]]
+          this.selectedKeys = [this.treeData[0].id]
+        } catch {
+        }
         this.$refs.WorkListDetail.refresh()
       }
     },
@@ -152,7 +156,7 @@ export default {
       this.selectedPersonRows = arrVal
     },
     handleSubmit() {
-      this.$emit('change', this.selectedPersonRows, this.selectedRows)
+      this.$emit('change', this.selectedPersonRows)
       this.handleCancel()
     }
   }
@@ -161,10 +165,12 @@ export default {
 <style lang="less" scoped>
 .h-custom-layout {
   height: 100%;
+
   .actions-icon {
     cursor: pointer;
   }
 }
+
 /deep/ .ant-tree li span.ant-tree-switcher.ant-tree-switcher-noop {
   display: none;
 }
