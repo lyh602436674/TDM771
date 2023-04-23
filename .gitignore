@@ -5,7 +5,7 @@ node_modules
 /dist_env
 /src/views/hifar/test
 /src/views/hifar/demo
-
+/dist-*
 
 # local env files
 .env.local

@@ -104,7 +104,7 @@ export default {
             let abilityInfo = _item_.getData()
             if (abilityInfo && isArray(abilityInfo) && abilityInfo.length) {
               let validRes = this.validAbilityInfoItemValue(abilityInfo)
-              if (validRes.length) {
+              if (validRes.length && bool) {
                 this.$emit('emptyData')
                 return this.$message.warning(h => h('div', {}, validRes.map(_item_ =>
                   <div>{'第' + (i + 1) + '个试验项目结构化条件的第' + _item_.index + '个' + _item_.name + '未填写条件'}</div>)))
@@ -127,7 +127,7 @@ export default {
           let abilityInfo = that.$refs.testConditionTabItem.$refs['pointTable' + [i] + 0].getData()
           if (abilityInfo && isArray(abilityInfo) && abilityInfo.length) {
             let validRes = this.validAbilityInfoItemValue(abilityInfo)
-            if (validRes.length) {
+            if (validRes.length && bool) {
               this.$emit('emptyData')
               return this.$message.warning(h => h('div', {}, validRes.map(_item_ =>
                 <div>{'第' + (i + 1) + '个试验项目结构化条件的第' + _item_.index + '个' + _item_.name + '未填写条件'}</div>)))

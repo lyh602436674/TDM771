@@ -15,8 +15,11 @@
     inner
     title="添加项目"
     @cancel="handleCancel"
-    @submit="handleSubmit"
   >
+    <template slot="footer">
+      <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
+      <a-button :loading="submitLoading" type="primary" @click="handleSubmit">保存</a-button>
+    </template>
     <r-l-layout :leftMinWidth="150" style="height: 100%">
       <template slot="left">
         <h-card fixed>
@@ -71,8 +74,8 @@ export default {
   components: {HEditTree},
   data() {
     return {
-      // 添加弹窗相关
       visible: false,
+      submitLoading: false,
       queryParams: {},
       selectedRowKeys: [],
       selectedRows: [],
@@ -165,6 +168,8 @@ export default {
       this.selectedRows = []
     },
     handleSubmit() {
+      if (this.submitLoading) return
+      this.submitLoading = true
       if (!this.selectedRowKeys.length && !this.allowEmpty) {
         return this.$message.warning('请先选择项目!')
       }
@@ -176,8 +181,9 @@ export default {
       let checkboxRecords = this.$refs.projectTable.getCheckboxRecords(true)
       let currSelectedRows = this.selectedRows
       let selectedRows = currSelectedRows.length ? currSelectedRows : checkboxRecords
-      this.$emit('change', this.selectedRowKeys, selectedRows)
       this.handleCancel()
+      this.$emit('change', this.selectedRowKeys, selectedRows)
+      this.submitLoading = false
     },
   },
 }

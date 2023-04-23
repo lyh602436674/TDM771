@@ -103,23 +103,26 @@
                       title="提交"
                       type="icon-tijiao"/>
                   </a-popconfirm>
-                  <a-icon
-                    v-if="record.filePath"
-                    v-has="'report:edit'"
-                    class="primary-text cursor-pointer"
-                    type="edit"
-                    title="编辑"
-                    @click="handleEdit(record)"/>
-                   <h-upload-file-b
-                     v-model="reportFileList"
-                     v-has="'report:edit'"
-                     :customParams="{id:record.id}"
-                     accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                     isPublic
-                     @beforeUpload="$refs.reportMakeTable.localLoading = true"
-                     @change="file => handleUploadCallback(file,record)">
-                       <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
-                   </h-upload-file-b>
+                   <template v-if="!([80].includes(record.status))">
+                    <!-- 修改审批被驳回后不能修改和替换-->
+                     <a-icon
+                       v-if="record.filePath"
+                       v-has="'report:edit'"
+                       class="primary-text cursor-pointer"
+                       type="edit"
+                       title="编辑"
+                       @click="handleEdit(record)"/>
+                     <h-upload-file-b
+                       v-model="reportFileList"
+                       v-has="'report:edit'"
+                       :customParams="{id:record.id}"
+                       accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                       isPublic
+                       @beforeUpload="$refs.reportMakeTable.localLoading = true"
+                       @change="file => handleUploadCallback(file,record)">
+                         <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
+                     </h-upload-file-b>
+                   </template>
                  </a-space>
               </span>
               <template v-if="record.status >= 3">

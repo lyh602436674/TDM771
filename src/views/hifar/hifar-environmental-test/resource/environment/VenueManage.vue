@@ -9,7 +9,7 @@
 <template>
   <div ref="pageWrapper" class="h-custom-layout" style="height: 100%; position: relative">
     <h-card fixed :bordered="true">
-      <template slot="title"> 场地管理 </template>
+      <template slot="title"> 场地管理</template>
       <h-search
         v-model="queryParam"
         slot="search-form"
@@ -20,9 +20,13 @@
       />
       <div slot="table-operator" style="border-top: 5px">
         <a-button v-has="'site:add'" size="small" @click="handleAdd" type="ghost-primary" icon="plus">新增</a-button>
-        <a-button v-has="'site:privice'" size="small" type="ghost-warning" icon="export" @click="handleExportXls('场地管理')">导出</a-button>
-        <a-button v-has="'site:import'" size="small" type="ghost-success" icon="import" @click="handleImportExcel">导入</a-button>
-        <a-button v-has="'site:delete'" type="danger" size="small" icon="delete" @click="batchDel()">批量删除</a-button>
+        <a-button v-has="'site:privice'" size="small" type="ghost-warning" icon="export"
+                  @click="handleExportXls('场地管理')">导出
+        </a-button>
+        <!--        <a-button v-has="'site:import'" size="small" type="ghost-success" icon="import" @click="handleImportExcel">导入</a-button>-->
+        <a-button v-if="selectedRowKeys.length" v-has="'site:delete'" type="danger" size="small" icon="delete"
+                  @click="batchDel">批量删除
+        </a-button>
       </div>
 
       <h-vex-table
@@ -72,7 +76,7 @@
       </h-vex-table>
       <venue-manage-modal ref="VenueManageModal" @change="refresh(true)"></venue-manage-modal>
       <venue-manage-detail ref="VenueManageDetail"></venue-manage-detail>
-      <h-file-import ref="HFileImport" @change="refresh(true)" @downloadExcel="downloadChange" />
+      <h-file-import ref="HFileImport" @change="refresh(true)" @downloadExcel="downloadChange"/>
     </h-card>
   </div>
 </template>
@@ -142,7 +146,7 @@ export default {
           dataIndex: 'action',
           width: 100,
           align: 'center',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
         },
       ],
       url: {
@@ -188,7 +192,7 @@ export default {
 
     // 单个删除
     handleDelete(id) {
-      postAction(this.url.delete, { id: id }).then((res) => {
+      postAction(this.url.delete, {id: id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh(true)
@@ -206,7 +210,7 @@ export default {
           title: '确认删除',
           content: '是否要继续删除?',
           onOk: function () {
-            postAction(_this.url.delete, { id: _this.selectedRowKeys.join() }).then((res) => {
+            postAction(_this.url.delete, {id: _this.selectedRowKeys.join()}).then((res) => {
               if (res.code === 200) {
                 _this.$message.success('删除成功')
                 _this.refresh(true)
@@ -247,14 +251,14 @@ export default {
     // 导入
     handleImportExcel(info) {
       let type = '场地管理'
-      let { importExcelUrl } = this.url
+      let {importExcelUrl} = this.url
       let record = {
-        importCode:'HfResPlaceImport'
+        importCode: 'HfResPlaceImport'
       }
       this.$refs.HFileImport.show(type, importExcelUrl, record)
     },
     downloadChange() {
-      this.handleExportXls('场地管理', { type: 'template' })
+      this.handleExportXls('场地管理', {type: 'template'})
     },
   },
 }

@@ -29,6 +29,7 @@
         :pagination="false"
         bordered
         rowKey="id"
+        :scroll="{ x: true, y:470 }"
         size="small"
         style="width: 100%"
       ></a-table>
@@ -64,6 +65,7 @@ export default {
           title: '设备名称',
           dataIndex: 'unitName',
           align: 'center',
+          width: 120,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -72,6 +74,7 @@ export default {
           title: '设备型号',
           dataIndex: 'equipModel',
           align: 'center',
+          width: 120,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -80,6 +83,7 @@ export default {
           title: '资产编号',
           dataIndex: 'assetsCode',
           align: 'center',
+          width: 120,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -88,6 +92,7 @@ export default {
           title: '试验项目',
           dataIndex: 'projectName',
           align: 'center',
+          width: 150,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -96,6 +101,7 @@ export default {
           title: '速率',
           dataIndex: 'rate',
           align: 'center',
+          width: 80,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -104,6 +110,7 @@ export default {
           title: '温度范围(℃)',
           dataIndex: 'temperatureRange',
           align: 'center',
+          width: 120,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -112,6 +119,7 @@ export default {
           title: '湿度范围(RH)',
           dataIndex: 'humidityRange',
           align: 'center',
+          width: 120,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -120,6 +128,7 @@ export default {
           title: '压力范围(Pa)',
           dataIndex: 'pressureRange',
           align: 'center',
+          width: 120,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -128,6 +137,7 @@ export default {
           title: '加速度范围',
           dataIndex: 'accelerationRange',
           align: 'center',
+          width: 120,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -136,30 +146,34 @@ export default {
           title: '折扣',
           dataIndex: 'discount',
           align: 'center',
+          width: 80,
           customRender: (t, row) => {
             return t || '--'
           }
         },
         {
-          title: '标准单价（元）',
+          title: '标准单价(元)',
           dataIndex: 'unitPrice',
           align: 'center',
+          width: 120,
           customRender: (t, row) => {
             return t || '--'
           }
         },
         {
-          title: '折后单价（元）',
+          title: '折后单价(元)',
           dataIndex: 'discountPrice',
           align: 'center',
+          width: 120,
           customRender: (t, row) => {
             return t || '--'
           }
         },
         {
-          title: '开机费（元）',
+          title: '开机费(元)',
           dataIndex: 'startupCost',
           align: 'center',
+          width: 100,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -168,6 +182,7 @@ export default {
           title: '单价描述',
           dataIndex: 'remarks',
           align: 'center',
+          width: 150,
           customRender: (t, row) => {
             return t || '--'
           }
@@ -194,7 +209,7 @@ export default {
       }
     },
     loadDetail(id) {
-      postAction(this.url.detail, { id: id }).then((res) => {
+      postAction(this.url.detail, {id: id}).then((res) => {
         if (res.code === 200) {
           this.detailData = res.data
           this.loadUnitById(id)
@@ -202,7 +217,7 @@ export default {
       })
     },
     loadUnitById(costId) {
-      postAction(this.url.priceUnit, { costId: costId }).then((res) => {
+      postAction(this.url.priceUnit, {costId: costId}).then((res) => {
         if (res.code === 200) {
           let record = res.data
           this.priceData = record && record.length && record.map((item) => {

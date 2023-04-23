@@ -1,10 +1,15 @@
 const path = require('path')
 const CompressionPlugin = require('compression-webpack-plugin')
 const webpack = require('webpack')
+const generateVersion = require('./public/build/version')
+const {date, count} = generateVersion()
+console.log(date, count, 'count')
+console.log("打包后，请在build-chang-log.md 文件中写上本次打包修改内容，切记！！！！！")
 
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
+
 // vue.config.js
 module.exports = {
   /*
@@ -24,11 +29,15 @@ module.exports = {
   // },
   // 打包app时放开该配置
   // publicPath:'./',
+  outputDir: `dist-${date}-v${count}`,
+  filenameHashing: false,
   configureWebpack: config => {
     // 生产环境取消 console.log
     if (process.env.NODE_ENV === 'production') {
       config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
     }
+    config.output.filename = `js/[name]-${date}-v${count}.js`;
+    config.output.chunkFilename = `js/[name]-${date}-v${count}.js`;
   },
   chainWebpack: (config) => {
     config.resolve.alias

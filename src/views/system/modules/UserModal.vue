@@ -70,6 +70,28 @@ import {addUser, duplicateCheck, editUser} from '@/api/api'
 import moment from 'moment'
 import {SYSTEM_CONSTANTS_PROJECT_CLASSIFY} from '@/views/hifar/constants.js'
 
+const userTypeListMap = [
+  {
+    title: '普通用户',
+    key: 'base',
+    value: 'base',
+  },
+  {
+    title: '系统管理员',
+    key: 'sys',
+    value: 'sys',
+  },
+  {
+    title: '安全保密管理员',
+    key: 'security',
+    value: 'security',
+  },
+  {
+    title: '安全审计管理员',
+    key: 'audit',
+    value: 'audit',
+  },
+]
 export default {
   name: 'UserModal',
   components: {},
@@ -167,28 +189,7 @@ export default {
             title: '用户类型',
             key: 'userType',
             formType: 'select',
-            options: [
-              {
-                title: '普通用户',
-                key: 'base',
-                value: 'base',
-              },
-              {
-                title: '系统管理员',
-                key: 'sys',
-                value: 'sys',
-              },
-              {
-                title: '安全保密管理员',
-                key: 'security',
-                value: 'security',
-              },
-              {
-                title: '安全审计管理员',
-                key: 'audit',
-                value: 'audit',
-              },
-            ],
+            options: userTypeListMap,
             placeholder: '请选择用户类型',
             validate: {
               rules: [
@@ -328,9 +329,9 @@ export default {
       this.userInfo = Object.assign({}, record, {
         avatar: record.headUrl,
         birthday: record.birthday == 0 || !record.birthday ? moment() : moment(record.birthday.toString()),
-        testType: !isNaN(Number(record.testType)) ? +record.testType : undefined
+        testType: SYSTEM_CONSTANTS_PROJECT_CLASSIFY.map(v => v.key).includes(+record.testType) ? +record.testType : undefined,
+        userType: userTypeListMap.map(v => v.key).includes(record.userType) ? record.userType : undefined
       })
-      console.log(this.userInfo, 'this.userInfo')
       // 根据数据中是否包含id这个字段，如果包含，那么创建的form中不包含密码字段
       if (this.userInfo.id) {
         this.formData = reduceRight(
