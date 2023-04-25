@@ -90,7 +90,7 @@
     <test-task-base-info-modal ref="TaskDetailModal" showExceptionAndEnd/>
     <task-abnormal-modal ref="taskAbnormalModal" @change="refreshEquipTaskList"></task-abnormal-modal>
     <test-data-add-modal ref="testDataAddModal" @change="refreshEquipTaskList"></test-data-add-modal>
-    <test-check-modal ref="testCheckModal"/>
+    <test-check-modal ref="testCheckModal" buildWord/>
     <test-base-edit ref="TestBaseEdit" :records="records" :selectedTreeRows="selectedRows"
                     @change="refreshEquipTaskList"/>
     <test-entrust-review-pdf ref="reviewPdf" :title="reviewPdfTitle"/>
