@@ -307,6 +307,7 @@ export default {
     },
     handleBlurSave(item) {
       if (item.itemContent || item.itemName || item.itemRequire) {
+        item.isdel=this.buildWord ? '1' : "0";
         postAction(this.url.updateCheckItem, item).then(res => {
           if (res.code === 200) {
             this.$message.success('保存成功')
