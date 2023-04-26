@@ -26,6 +26,7 @@
       <a-table
         :columns="columns"
         :dataSource="priceData"
+        :loading="loading"
         :pagination="false"
         bordered
         rowKey="id"
@@ -190,6 +191,7 @@ export default {
       ],
       title: '计费标准详情',
       visible: false,
+      loading: false,
       url: {
         detail: '/HfResCustCostBusiness/queryById',
         priceUnit: '/HfResCustPriceBusiness/listAllByCostId',
@@ -217,6 +219,7 @@ export default {
       })
     },
     loadUnitById(costId) {
+      this.loading = true
       postAction(this.url.priceUnit, {costId: costId}).then((res) => {
         if (res.code === 200) {
           let record = res.data
@@ -229,6 +232,8 @@ export default {
             }
           }) || []
         }
+      }).finally(() => {
+        this.loading = false
       })
     },
   },

@@ -18,6 +18,7 @@
               v-model="modelImage[item.direction]"
               :customParams="{refType: 'hf_env_test_piece_img', refId, isInReport: item.isInReport, testDirection:item.title}"
               :isEdit="isEdit"
+              :selectedTreeRows="selectedTreeRows"
               :max="100"
               :propsData="Object.assign({},propsData,{testDirection: item.direction})"
               accept="image/png,image/gif,image/jpg,image/jpeg"
@@ -44,7 +45,6 @@
           @delete="handleDelete"
         />
       </h-desc>
-
     </div>
   </h-modal>
 </template>
@@ -103,6 +103,7 @@ export default {
       modelImage: [],
       activeKey: [],
       record: {},
+      selectedTreeRows: {},
       popoverVisible: false,
       url: {
         delete: '/MinioBusiness/logicRemoveById',
@@ -115,10 +116,11 @@ export default {
     }
   },
   methods: {
-    show(record, equipId) {
+    show(record, equipId,selectedTreeRows) {
       this.visible = true
       this.refId = record.id
       this.record = record
+      this.selectedTreeRows = selectedTreeRows
       this.equipId = equipId
       this.loadImgData()
       this.loadVideoData()
@@ -126,6 +128,7 @@ export default {
     handleCancel() {
       this.visible = false
       this.modelImage = []
+      this.activeKey = []
       this.$emit('close')
     },
     handleUploadSuccess(file, refDirection, isInReport) {

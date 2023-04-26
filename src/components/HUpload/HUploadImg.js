@@ -242,7 +242,7 @@ export default {
      */
     renderImgList(h) {
       let imgList = []
-      this.fileList.map(file => {
+      this.fileList.map((file, index) => {
         imgList.push(h('div', {
           class: "h-upload-img-wrapper",
           style: {
@@ -252,7 +252,7 @@ export default {
           directives: [
             {
               name: 'viewer',
-              value: { inline: false }
+              value: {inline: false}
             }
           ]
         }, [
@@ -262,7 +262,7 @@ export default {
             }
           }),
           file.url ? null : this.renderImgMask(file),
-          this.renderImgAction(file)
+          this.renderImgAction(file, index)
         ]))
       })
       return h('div',
@@ -329,7 +329,7 @@ export default {
         ]
       )
     },
-    renderImgAction(file) {
+    renderImgAction(file, index) {
       let btns = []
       if (this.isEdit) {
         if (this.isCollect) {
@@ -341,7 +341,7 @@ export default {
                               onclick={() => this.handleCollect(file)}/>)
           }
         }
-        btns.push(<h-icon type="icon-shanchu" class="danger-text" onclick={() => this.handleDelete(file)} />)
+        btns.push(<h-icon type="icon-shanchu" class="danger-text" onclick={() => this.handleDelete(file, index)}/>)
       }
       return this.h('div', {
         class: "h-upload-img-action"

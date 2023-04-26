@@ -21,28 +21,12 @@
     <a-spin :spinning="loading">
       <h-desc
         :data="model"
-        lableWidth="110px"
+        lableWidth="200px"
         style="margin: 0 0 20px 0"
-        title="适用计费标准详情">
+        column="2"
+      >
         <h-desc-item label="试验项目">{{ model.unitName || '--' }}</h-desc-item>
         <h-desc-item label="试验设备(设备编号)">{{ `${model.equipName}(${model.equipCode})` || '--' }}</h-desc-item>
-        <h-desc-item label="温度范围">{{ model.temperatureRange || '--' }}</h-desc-item>
-        <h-desc-item label="湿度">{{ model.humidityRange || '--' }}</h-desc-item>
-        <h-desc-item label="压力">{{ model.pressureRange || '--' }}</h-desc-item>
-        <h-desc-item label="加速度">{{ model.accelerationRange || '--' }}</h-desc-item>
-        <h-desc-item label="开机费">
-          {{ model.startupCost || '--' }}
-        </h-desc-item>
-        <h-desc-item label="折扣">{{ model.discount || '--' }}</h-desc-item>
-        <h-desc-item label="标准单价">
-          {{ model.unitPrice || '--' }}
-        </h-desc-item>
-        <h-desc-item label="折扣单价">
-          {{ model.discountUnitPrice || '--' }}
-        </h-desc-item>
-        <h-desc-item label="客户折扣">
-          {{ model.customDiscount || '--' }}
-        </h-desc-item>
       </h-desc>
       <h-card class="cost-type" title="计费方式">
         <a-radio-group v-model="radioValue" @change="handleRadioChange">
@@ -50,7 +34,7 @@
             <h-form ref="taskForm1" v-model="model" :column="2" :formData="formData1"/>
           </a-radio>
           <a-radio style="display:block" value="2">
-            <h-form ref="taskForm2" v-model="model" :column="1" :formData="formData2"/>
+            <h-form ref="taskForm2" v-model="model" :column="4" :formData="formData2"/>
           </a-radio>
         </a-radio-group>
       </h-card>
@@ -62,8 +46,12 @@
 <script>
 import moment from 'moment'
 import {postAction} from '@/api/manage'
+import TestSecondaryCom from "@views/hifar/hifar-environmental-test/task/modules/components/TestSecondaryCom.vue";
+import ApplicableBillingStandard
+  from "@views/hifar/hifar-environmental-test/task/modules/components/ApplicableBillingStandard.vue";
 
 export default {
+  components: {ApplicableBillingStandard, TestSecondaryCom},
   inject: {
     getContainer: {
       default: () => {
@@ -79,108 +67,6 @@ export default {
       loading: false,
       model: {},
       type: null,
-      formData1: [
-        {
-          title: '入场时间',
-          key: 'approachTime',
-          component: (
-            <h-time-select
-              disabled={true}
-              v-decorator={['approachTime']}
-            />
-          )
-        },
-        {
-          title: '离场时间',
-          key: 'departureTime',
-          component: (
-            <h-time-select disabled={true} v-decorator={['departureTime']}/>
-          )
-        },
-        {
-          title: '开始时间',
-          key: 'realStartTime',
-          component: (
-            <h-time-select disabled={true} v-decorator={['realStartTime']}/>
-          )
-        },
-        {
-          title: '结束时间',
-          key: 'realEndTime',
-          validate: {rules: [{required: true, message: '请选择结束时间'}, {validator: this.validateEndTime}]},
-          component: (
-            <h-time-select
-              v-decorator={
-                [
-                  'realEndTime',
-                  {
-                    rules: [{
-                      required: true,
-                      message: '请选择结束时间'
-                    }]
-                  }
-                ]
-              }
-              onChange={(val) => {
-                let form1 = this.$refs.taskForm1.form
-                let form3 = this.$refs.taskForm3.form
-                let {discountUnitPrice, unitPrice, startupCost, customDiscount} = this.model
-                let startTime = form1.getFieldsValue().realStartTime
-                let startTimeVal = startTime ? moment(startTime).valueOf() : 0
-                let endTime = val ? val.valueOf() : 0
-                let diff = this.getTimeDiff(startTimeVal, endTime)
-                form1.setFieldsValue({realUseTime: diff || 0})
-                if (this.radioValue === '1' && diff && this.isNumberEqual(unitPrice) && this.isNumberEqual(startupCost)) {
-                  form3.setFieldsValue({
-                    // 标准总价 = 时长 * 标准单价 + 开机费
-                    standardTotalPrice: (diff * unitPrice + +startupCost) || undefined,
-                  })
-                  if (this.isNumberEqual(discountUnitPrice) && this.isNumberEqual(customDiscount)) {
-                    form3.setFieldsValue({
-                      // 折后总价 = (时长 * (折后单价 || 标准单价) * 客户折扣) + 开机费
-                      totalExpenses: (((diff * (discountUnitPrice || unitPrice)) * customDiscount) + +startupCost) || undefined,
-                    })
-                  }
-                } else {
-                  form3.setFieldsValue({standardTotalPrice: undefined, totalExpenses: undefined})
-                }
-              }}
-            />
-          )
-        },
-        {
-          title: '时长',
-          key: 'realUseTime',
-          formType: 'input',
-          readOnly: true,
-          placeholder: '自动计算'
-        },
-      ],
-      formData2: [
-        {
-          title: '向次',
-          key: 'testSecondary',
-          formType: 'input-number',
-          min: 0,
-          style: {width: '100%',},
-          change: (val) => {
-            let {discountUnitPrice, unitPrice, startupCost, customDiscount} = this.model
-            if (this.radioValue === '2' && this.isNumberEqual(val) && this.isNumberEqual(unitPrice) && this.isNumberEqual(startupCost)) {
-              let form3 = this.$refs.taskForm3.form
-              form3.setFieldsValue({
-                // 标准总价 = 向次 * 标准单价 + 开机费
-                standardTotalPrice: (val * unitPrice + +startupCost) || undefined,
-              })
-              if (this.isNumberEqual(discountUnitPrice) && this.isNumberEqual(customDiscount)) {
-                form3.setFieldsValue({
-                  // 折后总价 = (向次 * (折后单价 || 标准单价) * 客户折扣) + 开机费
-                  totalExpenses: (((val * (discountUnitPrice || unitPrice)) * customDiscount) + +startupCost) || undefined,
-                })
-              }
-            }
-          }
-        },
-      ],
       formData3: [
         {
           key: 'id',
@@ -192,10 +78,7 @@ export default {
           key: 'standardTotalPrice',
           validate: {
             rules: [
-              {
-                required: true,
-                message: ''
-              },
+              {required: true, message: ''},
               {
                 validator: (rule, value, cb) => {
                   if (!this.isNumberEqual(value)) {
@@ -270,6 +153,119 @@ export default {
       },
     }
   },
+  computed: {
+    costStandardListModel() {
+      return this.model.costStandardList
+    },
+    formData1() {
+      return [
+        {
+          title: '入场时间',
+          key: 'approachTime',
+          component: (
+            <h-time-select
+              disabled={true}
+              v-decorator={['approachTime']}
+            />
+          )
+        },
+        {
+          title: '离场时间',
+          key: 'departureTime',
+          component: (
+            <h-time-select disabled v-decorator={['departureTime']}/>
+          )
+        },
+        {
+          title: '开始时间',
+          key: 'realStartTime',
+          component: (
+            <h-time-select disabled v-decorator={['realStartTime']}/>
+          )
+        },
+        {
+          title: '结束时间',
+          key: 'realEndTime',
+          validate: {rules: [{required: true, message: '请选择结束时间'}, {validator: this.validateEndTime}]},
+          component: (
+            <h-time-select
+              v-decorator={
+                [
+                  'realEndTime',
+                  {
+                    rules: [{
+                      required: true,
+                      message: '请选择结束时间'
+                    }]
+                  }
+                ]
+              }
+              onChange={(val) => {
+                this.calcCostByTime(val)
+              }}
+            />
+          )
+        },
+        {
+          title: '时长',
+          key: 'realUseTime',
+          formType: 'input',
+          readOnly: true,
+          placeholder: '自动计算'
+        },
+        {
+          title: '计费标准',
+          key: "a",
+          component: (
+            <applicable-billing-standard props={{
+              model: (() => {
+                try {
+                  return this.costStandardListModel['value']
+                } catch {
+                  return {}
+                }
+              })()
+            }}>
+              <a style={{lineHeight: '34px'}}>{'查看适用计费标准'}</a>
+            </applicable-billing-standard>
+          )
+        },
+      ]
+    },
+    formData2() {
+      return (() => {
+        const secondaryFields = [];
+        let costStandardList
+        try {
+          costStandardList = Object.keys(this.costStandardListModel)
+        } catch {
+          return []
+        }
+        if (costStandardList.includes('value') || !costStandardList.length) {
+          return [
+            {
+              title: `向次`,
+              key: `testSecondary`,
+              formType: 'input',
+              component: this.getTestSecondaryCom(null, this.costStandardListModel, 'value')
+            }
+          ]
+        }
+        for (let i = 1; i <= costStandardList.length; i++) {
+          let acceleration = `acceleration${i}`
+          const field = {
+            title: `向次${i}`,
+            key: `secondary${i}`,
+            formType: 'input',
+            hidden: !this.model[acceleration], // 有几个加速度就有几个向次
+            component: this.getTestSecondaryCom(i, this.costStandardListModel, acceleration),
+          };
+          secondaryFields.push(field);
+        }
+        return secondaryFields
+      })()
+    }
+  },
   methods: {
     show(type, record) {
       this.loading = true
@@ -281,6 +277,42 @@ export default {
       })
       this.type = type
       this.getCalcCost(record)
+    },
+    getTestSecondaryCom(i, costStandardList, field) {
+      return (
+        <test-secondary-com
+          v-decorator={[i ? `secondary${i}` : 'testSecondary', {
+            rules: [
+              {required: false, message: ''},
+              {
+                validator: (rule, value, cb) => {
+                  if (!this.isNumberEqual(value) && value !== '') {
+                    cb('请输入正确格式的向次')
+                  } else {
+                    cb()
+                  }
+                }
+              }
+            ],
+          }, {initialValue: undefined}]}
+          placeholder={"请输入向次" + i}
+          onblur={(value) => {
+            if (this.radioValue === '2') {
+              this.calcCostBySecondary(field)
+            }
+          }}
+          props={{
+            model: (() => {
+              try {
+                return costStandardList[field]
+              } catch {
+                return {}
+              }
+            })()
+          }}
+        >
+        </test-secondary-com>
+      )
     },
     dateFormat(time) {
       return time && +time !== 0 ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : undefined
@@ -309,55 +341,122 @@ export default {
       this.calcTotalCost()
     },
     isNumberEqual(value) {
-      return !isNaN(Number(value)) && value !== '' && value >= 0
+      return !isNaN(Number(value)) && value !== '' && +value >= 0 && +value
     },
     calcTotalCost() {
-      let {discountUnitPrice, unitPrice, startupCost, customDiscount} = this.model
-      let form1 = this.$refs.taskForm1.form
+      let costStandardList
+      try {
+        costStandardList = Object.keys(this.costStandardListModel)
+      } catch {
+        return
+      }
       let form2 = this.$refs.taskForm2.form
       let form3 = this.$refs.taskForm3.form
-      if (this.radioValue === '1' && this.isNumberEqual(unitPrice) && this.isNumberEqual(startupCost)) {
-        let realStartTime = form1.getFieldsValue().realStartTime
-        let startTime = realStartTime ? moment(realStartTime).format('x') : 0
-        let realEndTime = form1.getFieldsValue().realEndTime
-        let endTime = realEndTime ? moment(realEndTime).format('x') : 0
-        let diff = this.getTimeDiff(startTime, endTime)
-        if (diff) {
-          form3.setFieldsValue({
-            // 标准总价 = 时长 * 标准单价 + 开机费
-            standardTotalPrice: (diff * unitPrice + +startupCost) || undefined,
-          })
-          if (this.isNumberEqual(discountUnitPrice) && this.isNumberEqual(customDiscount)) {
-            form3.setFieldsValue({
-              // 折后总价 = (时长 * (折后单价 || 标准单价) * 客户折扣) + 开机费
-              totalExpenses: (((diff * (discountUnitPrice || unitPrice)) * customDiscount) + +startupCost) || undefined,
-            })
-          }
+      if (this.radioValue === '1') {
+        this.calcCostByTime()
+      } else if (this.radioValue === '2') {
+        if (costStandardList.includes('value') || !costStandardList.length) {
+          this.calcCostBySecondary('value')
+          return
         }
-      } else if (this.radioValue === '2' && this.isNumberEqual(unitPrice) && this.isNumberEqual(startupCost)) {
-        let testSecondary = form2.getFieldsValue().testSecondary
-        if (this.isNumberEqual(testSecondary)) {
-          form3.setFieldsValue({
-            // 标准总价 = 向次 * 标准单价 + 开机费
-            standardTotalPrice: (testSecondary * unitPrice + +startupCost) || undefined,
-          })
-          if (this.isNumberEqual(discountUnitPrice) && this.isNumberEqual(customDiscount)) {
-            form3.setFieldsValue({
-              // 折后总价 = (向次 * (折后单价 || 标准单价) * 客户折扣) + 开机费
-              totalExpenses: (((testSecondary * (discountUnitPrice || unitPrice)) * customDiscount) + +startupCost) || undefined,
-            })
-          }
+        for (let i = 1; i <= costStandardList.length; i++) {
+          this.calcCostBySecondary(`acceleration${i}`)
         }
       } else {
         form3.setFieldsValue({totalExpenses: undefined, standardTotalPrice: undefined})
-        form2.setFieldsValue({testSecondary: undefined})
+        form2.setFieldsValue({secondary: undefined})
       }
     },
+    calcCostByTime(endTimeVal) {
+      // 根据时长计费
+      let form1 = this.$refs.taskForm1.form
+      let form3 = this.$refs.taskForm3.form
+      let realStartTime = form1.getFieldsValue().realStartTime
+      let startTime = realStartTime ? moment(realStartTime).format('x') : 0
+      let realEndTime = form1.getFieldsValue().realEndTime || endTimeVal
+      let endTime = endTimeVal ? (endTimeVal ? moment(endTimeVal).format('x') : 0) : (realEndTime ? moment(realEndTime).format('x') : 0)
+      if (!realEndTime || !endTime) {
+        form3.setFieldsValue({standardTotalPrice: undefined, totalExpenses: undefined})
+        return
+      }
+      let diff = this.getTimeDiff(startTime, endTime)
+      form1.setFieldsValue({realUseTime: diff || undefined})
+      let costStandardListField = this.costStandardListModel['value']
+      if (!costStandardListField) {
+        form3.setFieldsValue({standardTotalPrice: undefined, totalExpenses: undefined})
+        return
+      }
+      // 开机费,折扣单价,标准单价,客户折扣
+      let {startupCost, discountPrice, unitPrice, customDiscount} = costStandardListField
+      if (diff) {
+        /*
+         * 根据时间算费用：
+         *   标准总价=时长*标准单价+开机费。
+         *   折后总价=时长*折扣单价*客户折扣+开机费。
+         * */
+        form3.setFieldsValue({
+          // 标准总价 = 时长 * 标准单价 + 开机费
+          standardTotalPrice: ((diff * unitPrice + (+startupCost || 0))).toFixed(2) || undefined,
+        })
+        if (this.isNumberEqual(discountPrice)) {
+          form3.setFieldsValue({
+            // 折后总价 = (时长 * (折后单价 || 标准单价) * 客户折扣) + 开机费
+            totalExpenses: ((((diff * (discountPrice)) * (customDiscount || 1)) + (+startupCost || 0))).toFixed(2) || undefined,
+          })
+        } else {
+          form3.setFieldsValue({
+            // 折后总价 = (时长 * (折后单价 || 标准单价) * 客户折扣) + 开机费
+            totalExpenses: ((((diff * (unitPrice)) * (customDiscount || 1)) + (+startupCost || 0))).toFixed(2) || undefined,
+          })
+        }
+      } else {
+        form3.setFieldsValue({standardTotalPrice: undefined, totalExpenses: undefined})
+      }
+
+    },
+    calcCostBySecondary(field) {
+      // 根据向次计费
+      let form2 = this.$refs.taskForm2.form
+      let form3 = this.$refs.taskForm3.form
+      let form2AllValue = form2.getFieldsValue()
+      let costStandardListField = this.costStandardListModel[field]
+      if (!costStandardListField) {
+        form3.setFieldsValue({standardTotalPrice: undefined, totalExpenses: undefined})
+        return
+      }
+      // 开机费,折扣单价,标准单价,客户折扣
+      let {startupCost, discountPrice, unitPrice, customDiscount} = costStandardListField
+      let standardTotalPrice = 0, totalExpenses = 0 // 标准总价,折后总价
+      for (const key in form2AllValue) {
+        let val = form2AllValue[key]
+        if (val && this.isNumberEqual(val) && this.isNumberEqual(unitPrice) && this.isNumberEqual(discountPrice)) {
+          if (this.isNumberEqual(unitPrice)) {
+            standardTotalPrice = (+standardTotalPrice + (+form2AllValue[key] * +unitPrice)).toFixed(2)
+          }
+          if (this.isNumberEqual(discountPrice)) {
+            totalExpenses = (+totalExpenses + (+form2AllValue[key] * +discountPrice)).toFixed(2)
+          } else {
+            totalExpenses = (+totalExpenses + (+form2AllValue[key])).toFixed(2)
+          }
+        } else {
+          form3.setFieldsValue({standardTotalPrice: undefined, totalExpenses: undefined})
+        }
+      }
+      /* * (customDiscount || 1)
+      * 根据向次算费用：
+      *  标准总价=向次1*标准单价+向次2*标准单价+开机费。
+      *  折后总价=（向次1*折扣单价+向次2*折扣单价）*客户折扣+开机费。
+      * */
+      form3.setFieldsValue({
+        standardTotalPrice: Number((+standardTotalPrice + (+startupCost || 0)).toFixed(2)) || undefined,
+        totalExpenses: Number((+totalExpenses * (+customDiscount || 1) + (+startupCost || 0)).toFixed(2)) || undefined,
+      })
+    },
     getTimeDiff(startTime, endTime) {
-      if (!startTime || !endTime || endTime <= startTime) {
+      if (!startTime || !endTime || +endTime <= +startTime) {
         return 0
       }
-      return ((endTime - startTime) / (3600 * 1000)).toFixed(1)
+      return ((+endTime - +startTime) / (3600 * 1000)).toFixed(1)
     },
     validateEndTime(rule, value, cb) {
       let startTime = this.$refs.taskForm1.form.getFieldsValue(['realStartTime'])
@@ -376,6 +475,7 @@ export default {
     },
     handleCancel() {
       this.visible = false
+      this.radioValue = '1'
     },
     validateForm() {
       return new Promise((resolve, reject) => {

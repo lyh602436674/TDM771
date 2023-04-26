@@ -62,7 +62,7 @@ export default {
         },
         roleCode: {
           rules: [
-            { required: true, message: '请输入角色名称!' },
+            { required: true, message: '请输入角色编码!' },
             { min: 0, max: 64, message: '长度不超过 64 个字符', trigger: 'blur' },
             { validator: this.validateRoleCode },
           ],

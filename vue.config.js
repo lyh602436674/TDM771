@@ -3,8 +3,11 @@ const CompressionPlugin = require('compression-webpack-plugin')
 const webpack = require('webpack')
 const generateVersion = require('./public/build/version')
 const {date, count} = generateVersion()
-console.log(date, count, 'count')
-console.log("打包后，请在build-chang-log.md 文件中写上本次打包修改内容，切记！！！！！")
+if (process.env.npm_lifecycle_event === 'build') {
+  console.log(date, count, 'count')
+  console.log("打包后，请在build-chang-log.md 文件中写上本次打包修改内容，切记！！！！！")
+}
+
 
 function resolve(dir) {
   return path.join(__dirname, dir)

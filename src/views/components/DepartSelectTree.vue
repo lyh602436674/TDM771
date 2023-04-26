@@ -331,9 +331,7 @@ export default {
       this.$emit('check', this.checkedKeys, checkedData)
     },
     onSelect(selectedKeys, e) {
-      console.log('selected', selectedKeys, e)
       let record = e.node.dataRef
-      console.log('onSelect-record', record)
       this.currSelected = Object.assign({}, record)
       this.selectedKeys = [record.key]
       this.$emit('select', this.selectedKeys)

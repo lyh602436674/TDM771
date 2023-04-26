@@ -41,7 +41,7 @@
         </template>
       </h-vex-table>
     </h-card>
-    <capability-parameter-modal ref="capabilityParameterModal" @change="refresh"></capability-parameter-modal>
+    <capability-parameter-modal ref="capabilityParameterModal" @change="refresh(false)"></capability-parameter-modal>
   </div>
 </template>
 

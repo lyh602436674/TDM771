@@ -234,8 +234,9 @@
                             <div @click="$refs.taskAbnormalModal.show('error', record)">异常</div>
                           </a-menu-item>
                           <!-- 终止 -->
-                          <a-menu-item v-if="record.status !== 40 && record.status === 20"
-                                       v-has="'ArrangeMent:forceEnd'">
+                          <a-menu-item
+                            v-if="record.status !== 40 && record.status === 20 && record.forceEndStatus !== 10"
+                            v-has="'ArrangeMent:forceEnd'">
                             <div @click="$refs.taskForceEnd.show('forceEnd', record)">终止</div>
                           </a-menu-item>
                           <!-- 撤销 -->

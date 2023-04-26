@@ -8,11 +8,15 @@ function generateVersion() {
   if (fs.existsSync(countFilePath)) {
     // 获取打包次数
     count = parseInt(fs.readFileSync(countFilePath));
-    count++;
+    if (process.env.npm_lifecycle_event === 'build') {
+      count++;
+    }
     if (isNaN(parseInt(count)) || count === 'NaN') {
       fs.writeFileSync(countFilePath, '0');
       count = parseInt(fs.readFileSync(countFilePath));
-      count++;
+      if (process.env.npm_lifecycle_event === 'build') {
+        count++;
+      }
     }
   }
   fs.writeFileSync(countFilePath, count.toString());

@@ -13,13 +13,14 @@
     destroyOnClose
     :visible="visible"
     @cancel="handleCancel"
+    :width="800"
   >
     <template slot="footer">
       <a-button type="danger" @click="handleCancel">关闭</a-button>
       <a-button type="primary" @click="handleSubmit" :loading="submitLoading">确定</a-button>
     </template>
     <a-alert v-if="errorMessage" type="error" :message="errorMessage" banner/>
-    <h-form v-model="model" ref="taskArrangementForm" :formData="formData" :column="1" @change="submit"/>
+    <h-form v-model="model" ref="taskArrangementForm" :formData="formData" :column="2" @change="submit"/>
   </h-modal>
 </template>
 
@@ -28,214 +29,234 @@ import moment from 'moment'
 import {postAction} from '@/api/manage'
 import PhemismUserSelect from '@/views/components/PhemismUserSelect'
 
+const validatorFields = (cellValue, message, reg, callback) => {
+  if (cellValue && !reg.test(cellValue)) {
+    callback(message)
+  } else {
+    callback()
+  }
+}
+// 整数-整数
+// const regRange = /^-?\d+(-\d*[1-9]\d*)$/
+// 浮点数或整数-浮点数或整数
+const regRange = /^-?\d+(?:\.\d+)?-\d+(?:\.\d+)?$/
 export default {
   components: {
     PhemismUserSelect,
   },
-  data() {
-    const validatorFields = (cellValue, message, reg, callback) => {
-      if (cellValue && !reg.test(cellValue)) {
-        callback(message)
-      } else {
-        callback()
-      }
+  computed: {
+    formData() {
+      return (() => {
+        const speedFields = [];
+        for (let i = 1; i <= 12; i++) {
+          const field = {
+            title: `加速度${i}`,
+            key: `speed${i}`,
+            formType: 'input',
+            hidden: !this.model[`speed${i}`]
+          };
+          speedFields.push(field);
+        }
+        return [
+          {
+            key: 'taskId',
+            hidden: true,
+            formType: 'input',
+          },
+          {
+            key: 'equipId',
+            hidden: true,
+            formType: 'input',
+            span: 2,
+          },
+          {
+            title: '试验设备',
+            key: 'equipName',
+            formType: 'text',
+            span: 2,
+          },
+          {
+            title: '预计开始时间',
+            key: 'predictStartTime',
+            span: 2,
+            component: (
+              <h-time-select
+                v-decorator={['predictStartTime', {rules: [{required: true, message: '请选择预计开始时间'}]}]}
+                timeFormat={"HH:mm"}
+                // disabledDate={(current) => {
+                //   return current && current < moment().subtract(1, 'day')
+                // }}
+                // disabledHours={() => {
+                //   if (moment(this.selectedStartTime).get('date') === moment().get('date')) {
+                //     return this.timeRange(0, 24).splice(0, moment().get('hour'))
+                //   }
+                // }}
+                // disabledMinutes={() => {
+                //   if (moment(this.selectedStartTime).get('date') === moment().get('date') &&
+                //     moment(this.selectedStartTime).get('hour') === moment().get('hour')
+                //   ) {
+                //     return this.timeRange(0, 60).splice(0, moment().get('minute'))
+                //   }
+                // }}
+                // disabledSeconds={() => {
+                //   if (moment(this.selectedStartTime).get('date') === moment().get('date')) {
+                //     return this.timeRange(0, 60).splice(0, moment().get('second'))
+                //   }
+                // }}
+                onchange={(predictStartTime) => {
+                  this.selectedStartTime = predictStartTime
+                  let {equipId, predictUseTime} = this.$refs.taskArrangementForm.form.getFieldsValue()
+                  if (!equipId) return
+                  let selectedEquip = find(this.equipList, (equip) => {
+                    return equip.id === equipId
+                  })
+                  if (!selectedEquip) return
+                  let checkValid = selectedEquip.checkValid
+                  let startTime = moment(predictStartTime.valueOf()).add(parseFloat(predictUseTime), 'h').valueOf()
+                  if (startTime > parseFloat(checkValid)) {
+                    this.errorMessage = '试验时长超过了设备计量有效期时间，试验数据可能无效'
+                    return
+                  }
+                  this.errorMessage = null
+                }}
+              />
+            ),
+            validate: {
+              rules: [
+                {
+                  required: true,
+                  message: '请选择预计开始时间',
+                },
+              ],
+            },
+          },
+          {
+            title: '预计时长(h)',
+            key: 'predictUseTime',
+            formType: 'input-number',
+            span: 2,
+            min: 0,
+            style: {width: '100%'},
+            validate: {
+              rules: [
+                {
+                  required: true,
+                  message: '请输入预计时长',
+                },
+              ],
+            },
+            change: (predictUseTime) => {
+              let {equipId, predictStartTime} = this.$refs.taskArrangementForm.form.getFieldsValue()
+              if (!equipId) return
+              let selectedEquip = find(this.equipList, (equip) => {
+                return equip.id === equipId
+              })
+              if (!selectedEquip) return
+              let checkValid = selectedEquip.checkValid
+              let startTime = moment(predictStartTime.valueOf()).add(parseFloat(predictUseTime), 'h').valueOf()
+              if (startTime > parseFloat(checkValid)) {
+                this.errorMessage = '试验时长超过了设备检定有效期时间，试验数据可能无效'
+                return
+              }
+              this.errorMessage = null
+            },
+          },
+          {
+            title: '试验员',
+            key: 'chargeUserId',
+            formType: 'input',
+            span: 2,
+            component: (
+              <phemism-user-select
+                ref="PhemismUserSelect"
+                type={'checkbox'}
+                title={'请选择试验员'}
+                v-decorator={['chargeUserId']}
+                selectedName={() => {
+                  return this.model.idName
+                }}
+                onchange={this.selectuserChange}
+              />
+            ),
+          },
+          {
+            title: '设备速率',
+            key: 'testRate',
+            formType: 'input',
+            hidden: !this.model.testRate,
+            validate: {
+              rules: [
+                {
+                  validator: (rule, value, callback) => {
+                    return validatorFields(value, '请输入正确格式的设备速率，例：1-100', regRange, callback)
+                  },
+                },
+              ],
+            },
+          },
+          {
+            title: '温度范围',
+            key: 'temperatureRange',
+            formType: 'input',
+            hidden: !this.model.temperatureRange,
+            validate: {
+              rules: [
+                {
+                  validator: (rule, value, callback) => {
+                    return validatorFields(value, '请输入正确格式的温度范围，例：1-100', regRange, callback)
+                  },
+                },
+              ],
+            },
+          },
+          {
+            title: '湿度范围',
+            key: 'humidityRange',
+            formType: 'input',
+            hidden: !this.model.humidityRange,
+            validate: {
+              rules: [
+                {
+                  validator: (rule, value, callback) => {
+                    return validatorFields(value, '请输入正确格式的湿度范围，例：1-100', regRange, callback)
+                  },
+                },
+              ],
+            },
+          },
+          {
+            title: '压力范围',
+            key: 'pressureRange',
+            formType: 'input',
+            hidden: !this.model.pressureRange,
+            validate: {
+              rules: [
+                {
+                  validator: (rule, value, callback) => {
+                    return validatorFields(value, '请输入正确格式的压力范围，例：1-100', regRange, callback)
+                  },
+                },
+              ],
+            },
+          },
+          ...speedFields,
+          {
+            title: '备注',
+            key: 'remarks',
+            formType: 'textarea',
+            span: 2
+          },
+        ]
+      })()
     }
-    const regRange = /^-?\d+(-\d*[1-9]\d*)$/
+  },
+  data() {
     return {
       visible: false,
       submitLoading: false,
       model: {},
       name: '',
       errorMessage: null,
-      formData: [
-        {
-          key: 'taskId',
-          hidden: true,
-          formType: 'input',
-        },
-        {
-          key: 'equipId',
-          hidden: true,
-          formType: 'input',
-        },
-        {
-          title: '试验设备',
-          key: 'equipName',
-          formType: 'text',
-        },
-        {
-          title: '预计开始时间',
-          key: 'predictStartTime',
-          component: (
-            <h-time-select
-              v-decorator={['predictStartTime', {rules: [{required: true, message: '请选择预计开始时间'}]}]}
-              timeFormat={"HH:mm"}
-              disabledDate={(current) => {
-                return current && current < moment().subtract(1, 'day')
-              }}
-              // disabledHours={() => {
-              //   if (moment(this.selectedStartTime).get('date') === moment().get('date')) {
-              //     return this.timeRange(0, 24).splice(0, moment().get('hour'))
-              //   }
-              // }}
-              // disabledMinutes={() => {
-              //   if (moment(this.selectedStartTime).get('date') === moment().get('date') &&
-              //     moment(this.selectedStartTime).get('hour') === moment().get('hour')
-              //   ) {
-              //     return this.timeRange(0, 60).splice(0, moment().get('minute'))
-              //   }
-              // }}
-              // disabledSeconds={() => {
-              //   if (moment(this.selectedStartTime).get('date') === moment().get('date')) {
-              //     return this.timeRange(0, 60).splice(0, moment().get('second'))
-              //   }
-              // }}
-              onchange={(predictStartTime) => {
-                this.selectedStartTime = predictStartTime
-                let {equipId, predictUseTime} = this.$refs.taskArrangementForm.form.getFieldsValue()
-                if (!equipId) return
-                let selectedEquip = find(this.equipList, (equip) => {
-                  return equip.id === equipId
-                })
-                if (!selectedEquip) return
-                let checkValid = selectedEquip.checkValid
-                let startTime = moment(predictStartTime.valueOf()).add(parseFloat(predictUseTime), 'h').valueOf()
-                if (startTime > parseFloat(checkValid)) {
-                  this.errorMessage = '试验时长超过了设备计量有效期时间，试验数据可能无效'
-                  return
-                }
-                this.errorMessage = null
-              }}
-            />
-          ),
-          validate: {
-            rules: [
-              {
-                required: true,
-                message: '请选择预计开始时间',
-              },
-            ],
-          },
-        },
-        {
-          title: '预计时长(h)',
-          key: 'predictUseTime',
-          formType: 'input-number',
-          min: 0,
-          style: {width: '100%'},
-          validate: {
-            rules: [
-              {
-                required: true,
-                message: '请输入预计时长',
-              },
-            ],
-          },
-          change: (predictUseTime) => {
-            let {equipId, predictStartTime} = this.$refs.taskArrangementForm.form.getFieldsValue()
-            if (!equipId) return
-            let selectedEquip = find(this.equipList, (equip) => {
-              return equip.id === equipId
-            })
-            if (!selectedEquip) return
-            let checkValid = selectedEquip.checkValid
-            let startTime = moment(predictStartTime.valueOf()).add(parseFloat(predictUseTime), 'h').valueOf()
-            if (startTime > parseFloat(checkValid)) {
-              this.errorMessage = '试验时长超过了设备检定有效期时间，试验数据可能无效'
-              return
-            }
-            this.errorMessage = null
-          },
-        },
-        {
-          title: '试验员',
-          key: 'chargeUserId',
-          formType: 'input',
-          component: (
-            <phemism-user-select
-              ref="PhemismUserSelect"
-              type={'checkbox'}
-              title={'请选择试验员'}
-              v-decorator={['chargeUserId']}
-              selectedName={() => {
-                return this.model.idName
-              }}
-              onchange={this.selectuserChange}
-            />
-          ),
-        },
-        {
-          title: '设备速率',
-          key: 'testRate',
-          formType: 'input',
-          validate: {
-            rules: [
-              {
-                validator: (rule, value, callback) => {
-                  return validatorFields(value, '请输入正确格式的设备速率，例：1-100', regRange, callback)
-                },
-              },
-            ],
-          },
-        },
-        {
-          title: '温度范围',
-          key: 'temperatureRange',
-          formType: 'input',
-          validate: {
-            rules: [
-              {
-                validator: (rule, value, callback) => {
-                  return validatorFields(value, '请输入正确格式的温度范围，例：1-100', regRange, callback)
-                },
-              },
-            ],
-          },
-        },
-        {
-          title: '湿度范围',
-          key: 'humidityRange',
-          formType: 'input',
-          validate: {
-            rules: [
-              {
-                validator: (rule, value, callback) => {
-                  return validatorFields(value, '请输入正确格式的湿度范围，例：1-100', regRange, callback)
-                },
-              },
-            ],
-          },
-        },
-        {
-          title: '压力范围',
-          key: 'pressureRange',
-          formType: 'input',
-          validate: {
-            rules: [
-              {
-                validator: (rule, value, callback) => {
-                  return validatorFields(value, '请输入正确格式的压力范围，例：1-100', regRange, callback)
-                },
-              },
-            ],
-          },
-        },
-        {
-          title: '加速度1',
-          key: 'speed1',
-          formType: 'input',
-        },
-        {
-          title: '加速度2',
-          key: 'speed2',
-          formType: 'input',
-        },
-        {
-          title: '备注',
-          key: 'remarks',
-          formType: 'textarea',
-        },
-      ],
       taskPlanSelectedRows: [],
       url: {
         distribute: '/HfEnvTaskTestBusiness/distributeTask',

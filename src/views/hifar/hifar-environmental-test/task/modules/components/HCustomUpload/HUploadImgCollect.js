@@ -22,6 +22,14 @@ export default {
       type: Object,
       default: () => ({})
     },
+    selectedTreeRows: {
+      type: Object,
+      default: () => ({})
+    },
+    isInReport: {
+      type: Boolean,
+      default: false
+    },
   },
   watch: {
     propsData: {
@@ -60,7 +68,7 @@ export default {
     },
     renderImgList(h) {
       let imgList = []
-      this.fileList.map(file => {
+      this.fileList.map((file, index) => {
         imgList.push(h('div', {
           class: "h-upload-img-wrapper",
           style: {
@@ -80,7 +88,7 @@ export default {
             }
           }),
           file.url ? null : this.renderImgMask(file),
-          this.renderImgAction(file)
+          this.renderImgAction(file, index)
         ]))
       })
       return h('a-spin', {
@@ -107,23 +115,60 @@ export default {
           width: isNumber(this.width) ? this.width + 'px' : isString(this.width) ? this.width : 'auto',
           marginBottom: "10px"
         },
-        on: {
-          click: this.autoCollectImage
-        }
+
       }, [
-        h('a-icon', {
-          props: {
-            type: this.loading ? 'loading' : 'video-camera'
+        h('div', {
+          style: {
+            width: "100%",
+            height: "50%"
           },
-          style: {
-            fontSize: '34px',
+          on: {
+            click: this.autoCollectImage
           }
-        }),
-        h('span', {
+        }, [
+          h('a-icon', {
+            props: {
+              type: this.loading ? 'loading' : 'video-camera'
+            },
+            style: {
+              fontSize: '34px',
+              display: "block",
+              marginTop: "10px"
+            }
+          }),
+          h('span', {
+            style: {
+              color: "#bfbfbf",
+              display: "block",
+              textAlign: "center"
+            }
+          }, "自动采集")]),
+        h('div', {
           style: {
-            color: "#bfbfbf"
+            width: "100%",
+            height: "50%"
+          },
+          on: {
+            click: this.handlePreview
           }
-        }, "自动采集")
+        }, [
+          h('a-icon', {
+            props: {
+              type: 'eye'
+            },
+            style: {
+              fontSize: '34px',
+              display: "block",
+              marginTop: "10px"
+            }
+          }),
+          h('span', {
+            style: {
+              color: "#bfbfbf",
+              display: "block",
+              textAlign: "center"
+            }
+          }, "预览")]),
       ])
     },
     renderImgUpload(h) {
@@ -161,6 +206,10 @@ export default {
       return dom
     },
     popoverCancel() {
+    },
+    handlePreview() {
+      if (!this.selectedTreeRows.cameraIp) return this.$message.warning('未配置摄像机IP地址')
+      window.open('http://' + this.selectedTreeRows.cameraIp, '_blank')
     },
     popoverSubmit() {
       this.clickUpload()
@@ -225,7 +274,11 @@ export default {
             this.isEdit ?
               <a-button style={{marginLeft: '10px'}} icon={this.loading ? 'loading' : 'video-camera'} size="small"
                         type={"ghost-primary"}
-                        onClick={this.autoCollectImage}>{'自动采集'}</a-button> : null
+                        onClick={this.autoCollectImage}>{'自动采集'}</a-button> : null,
+            this.isEdit ?
+              <a-button style={{marginLeft: '10px'}} icon={this.loading ? 'loading' : 'video-camera'} size="small"
+                        type={"ghost-primary"}
+                        onClick={this.handlePreview}>{'预览'}</a-button> : null
           ])
         ])
       } else {

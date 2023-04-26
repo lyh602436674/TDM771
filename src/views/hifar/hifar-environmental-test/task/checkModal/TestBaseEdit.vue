@@ -77,6 +77,8 @@
             <a-table
               :columns="installControlColumns"
               :dataSource="installControlTable"
+              :expandedRowKeys.sync="installControlExpandedRowKeys"
+              @expandedRowsChange="installControlExpandedRowsChange"
               :pagination="false"
               bordered
               rowKey="id"
@@ -576,6 +578,7 @@ export default {
         }
       ],
       switchRecordingTable: [],
+      installControlExpandedRowKeys: [],
       installControlColumns: [
         {
           title: '#',
@@ -1030,7 +1033,7 @@ export default {
         queryParams: {}
       },
       sensorList: {
-        list: '/HfResSensorBusiness/listPageBySearchType',
+        list: '/HfResEquipSensorBusiness/listPageSensorByEquip',
         queryParams: {}
       },
       toolsProductList: {
@@ -1690,7 +1693,7 @@ export default {
     },
     // 查看试件附件
     previewProductFile(row) {
-      this.$refs.productFileModal.show(row, this.testRecordInfo.equipId)
+      this.$refs.productFileModal.show(row, this.testRecordInfo.equipId, this.selectedTreeRows[0])
     },
     loadImgData() {
       postAction(this.url.attachList, {refType: 'test_picture', refId: this.testId}).then((res) => {
@@ -1823,6 +1826,9 @@ export default {
     installControlHandleDelete(index) {
       this.installControlTable.splice(index, 1)
     },
+    installControlExpandedRowsChange(expandedRowKeys){
+      this.installControlExpandedRowKeys = expandedRowKeys
+    },
     siteInspectionDelete(index) {
       this.siteInspectionTable.splice(index, 1)
     },
@@ -1833,8 +1839,10 @@ export default {
       this.$refs.PostionModal.show(this.personArr, '选择参试人员')
     },
     sensorAdd(record, index) {
+      this.sensorList.queryParams.equipId = this.testRecordInfo.equipId
       this.selectedBeforeIndex = index
       this.$refs.sensorHandleSelectModal.show(this.installControlTable[index].testSensorInfo)
+      this.installControlExpandedRowKeys = [record.id]
     },
     // 选择传感器返回数据
     sensorCallback(value) {

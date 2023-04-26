@@ -21,10 +21,10 @@
     <div class="signature-wrapper">
       <a-descriptions :column="2" layout="vertical" size="small" bordered style="text-align: left; width: 100%">
         <a-descriptions-item label="签名" style="width: 50%">
-          <h-upload-img v-model="autographUrl" :max="1" @change="handleAutographChange"></h-upload-img>
+          <h-upload-img v-model="autographUrl" width="274" :max="1" @delete="handleAutographChange" @change="handleAutographChange"></h-upload-img>
         </a-descriptions-item>
         <a-descriptions-item label="签章" style="width: 50%">
-          <h-upload-img v-model="signatureUrl" :max="1" @change="handleSignatureChange"></h-upload-img>
+          <h-upload-img v-model="signatureUrl" width="274" :max="1" @delete="handleSignatureChange" @change="handleSignatureChange"></h-upload-img>
         </a-descriptions-item>
       </a-descriptions>
     </div>
@@ -89,7 +89,6 @@ export default {
   // 方法集合
   methods: {
     show(record = {}) {
-      console.log(record)
       this.userInfo = Object.assign({}, record)
       this.autographUrl = this.userInfo.autographUrl || ''
       this.signatureUrl = this.userInfo.signatureUrl || ''
@@ -117,9 +116,8 @@ export default {
         autographUrl: isObject(autographUrl) ? autographUrl.url : autographUrl,
       }
       postAction(this.url.uploadUrl, params).then((res) => {
-        console.log(res)
         if (res.code === 200) {
-          this.$message.success('上传成功')
+          // this.$message.success('上传成功')
           this.$emit('change', true)
           this.handleModalClose()
         }
@@ -174,11 +172,9 @@ export default {
     },
     handleAutographChange(val) {
       this.autographUrl = val[0] && val[0].url
-      console.log('This autographUrl', this.autographUrl)
     },
     handleSignatureChange(val) {
       this.signatureUrl = val[0] && val[0].url
-      console.log('this signature', this.signatureUrl)
     },
     handleModalClose() {
       this.userInfo = {}

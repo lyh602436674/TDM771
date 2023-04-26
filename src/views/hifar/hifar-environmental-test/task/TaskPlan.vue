@@ -50,7 +50,6 @@
             </a-calendar>
             <a-popover class="instruction">
               <template slot="content">
-
                 <div>
                   <a-badge color="#2f54eb" text="未分配"/>
                 </div>
