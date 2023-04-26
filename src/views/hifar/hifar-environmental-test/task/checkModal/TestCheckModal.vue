@@ -20,7 +20,7 @@
     <template slot='footer'>
       <a-button type='ghost-danger' @click='handleCancel'> 关闭</a-button>
     </template>
-    <a-spin :spinning="spinLoading">
+    <a-spin :spinning='spinLoading'>
       <h-card v-if="type === 'before'" :showCollapse='false' style='min-height: 600px'>
         <div slot='table-operator'>
           <a-button size='small' type='ghost-primary' @click="handleCopy('beforeCheckInfo')"> 复制</a-button>
@@ -29,12 +29,12 @@
           <a-button size='small' type='ghost-primary' @click="handleCheckAll('beforeCheckInfo')"> 一键复核</a-button>
         </div>
         <div slot='content' class='check-list'>
-          <a-empty v-if='beforeCheckInfo && beforeCheckInfo.length <= 0'/>
+          <a-empty v-if='beforeCheckInfo && beforeCheckInfo.length <= 0' />
           <template v-else>
             <div class='check-list-item check-list-item-center'>
               <div class='check-checkbox'>
-                <a-checkbox :checked="checkAll" :indeterminate="indeterminate"
-                            @change="e=>checkChangeAll(e,'beforeCheckInfo')"/>
+                <a-checkbox :checked='checkAll' :indeterminate='indeterminate'
+                            @change="e=>checkChangeAll(e,'beforeCheckInfo')" />
               </div>
               <div class='check-name'>检查项名称</div>
               <div class='check-content'>检查项内容</div>
@@ -46,41 +46,41 @@
             </div>
             <div v-for='(item, index) in beforeCheckInfo' :key='index' class='check-list-item'>
               <div class='check-checkbox check-list-item-center'>
-                <a-checkbox :checked="item.checked" @change="e=>checkItemChange(e,item, 'beforeCheckInfo')"/>
+                <a-checkbox :checked='item.checked' @change="e=>checkItemChange(e,item, 'beforeCheckInfo')" />
               </div>
               <div class='check-name check-list-item-center'>
-                <span v-if="!item.isEdit">{{ item.itemName }}</span>
-                <a-textarea v-else v-model="item.itemName" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <span v-if='!item.isEdit'>{{ item.itemName }}</span>
+                <a-textarea v-else v-model='item.itemName' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-content'>
-                <span v-if="!item.isEdit">{{ item.itemContent }}</span>
-                <a-textarea v-else v-model="item.itemContent" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <span v-if='!item.isEdit'>{{ item.itemContent }}</span>
+                <a-textarea v-else v-model='item.itemContent' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-require'>
-                <span v-if="!item.isEdit">{{ item.itemRequire }}</span>
-                <a-textarea v-else v-model="item.itemRequire" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <span v-if='!item.isEdit'>{{ item.itemRequire }}</span>
+                <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-res check-list-item-center'>
-                <div v-if="!item.isEdit || item.isCheckRes"
+                <div v-if='!item.isEdit || item.isCheckRes'
                      @click="() => handleCheckRes(item, index, 'beforeCheckInfo')">
-                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
-                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
-                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
-                  <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="item.itemRes"></span>
+                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1' />
+                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha' />
+                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti' />
+                  <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
-                <a-textarea v-else v-model="item.itemRes" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-res-person' @click='() => handleFillCheck(item, index)'>
                 {{ item.fillUserName || '--' }}
                 <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
-                <template v-if="item.checkFlag === 2">
-                  <h-icon type='icon-xieti'/>
+                <template v-if='item.checkFlag === 2'>
+                  <h-icon type='icon-xieti' />
                 </template>
                 <template v-else>
                   {{ item.checkUserName || '--' }}
@@ -102,12 +102,12 @@
           <a-button size='small' type='ghost-primary' @click="handleCheckAll('inCheckInfo')"> 一键复核</a-button>
         </div>
         <div slot='content' class='check-list'>
-          <a-empty v-if='inCheckInfo && inCheckInfo.length <= 0'/>
+          <a-empty v-if='inCheckInfo && inCheckInfo.length <= 0' />
           <template v-else>
             <div class='check-list-item check-list-item-center'>
               <div class='check-checkbox'>
-                <a-checkbox :checked="checkAll" :indeterminate="indeterminate"
-                            @change="e=>checkChangeAll(e,'inCheckInfo')"/>
+                <a-checkbox :checked='checkAll' :indeterminate='indeterminate'
+                            @change="e=>checkChangeAll(e,'inCheckInfo')" />
               </div>
               <div class='check-name'>检查项名称</div>
               <div class='check-content'>检查项内容</div>
@@ -119,40 +119,40 @@
             </div>
             <div v-for='(item, index) in inCheckInfo' :key='index' class='check-list-item'>
               <div class='check-checkbox check-list-item-center'>
-                <a-checkbox :checked="item.checked" @change="e=>checkItemChange(e,item, 'inCheckInfo')"/>
+                <a-checkbox :checked='item.checked' @change="e=>checkItemChange(e,item, 'inCheckInfo')" />
               </div>
               <div class='check-name check-list-item-center'>
-                <span v-if="!item.isEdit">{{ item.itemName }}</span>
-                <a-textarea v-else v-model="item.itemName" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <span v-if='!item.isEdit'>{{ item.itemName }}</span>
+                <a-textarea v-else v-model='item.itemName' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-content'>
-                <span v-if="!item.isEdit">{{ item.itemContent }}</span>
-                <a-textarea v-else v-model="item.itemContent" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <span v-if='!item.isEdit'>{{ item.itemContent }}</span>
+                <a-textarea v-else v-model='item.itemContent' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-require'>
-                <span v-if="!item.isEdit">{{ item.itemRequire }}</span>
-                <a-textarea v-else v-model="item.itemRequire" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <span v-if='!item.isEdit'>{{ item.itemRequire }}</span>
+                <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-res check-list-item-center'>
-                <div v-if="!item.isEdit || item.isCheckRes" @click="() => handleCheckRes(item, index, 'inCheckInfo')">
-                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
-                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
-                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
-                  <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="item.itemRes"></span>
+                <div v-if='!item.isEdit || item.isCheckRes' @click="() => handleCheckRes(item, index, 'inCheckInfo')">
+                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1' />
+                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha' />
+                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti' />
+                  <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
-                <a-textarea v-else v-model="item.itemRes" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-res-person' @click='() => handleFillCheck(item, index)'>
                 {{ item.fillUserName || '--' }}
                 <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
-                <template v-if="item.checkFlag === 2">
-                  <h-icon type='icon-xieti'/>
+                <template v-if='item.checkFlag === 2'>
+                  <h-icon type='icon-xieti' />
                 </template>
                 <template v-else>
                   {{ item.checkUserName || '--' }}
@@ -174,12 +174,12 @@
           <a-button size='small' type='ghost-primary' @click="handleCheckAll('afterCheckInfo')"> 一键复核</a-button>
         </div>
         <div slot='content' class='check-list'>
-          <a-empty v-if='afterCheckInfo && afterCheckInfo.length <= 0'/>
+          <a-empty v-if='afterCheckInfo && afterCheckInfo.length <= 0' />
           <template v-else>
             <div class='check-list-item check-list-item-center'>
               <div class='check-checkbox'>
-                <a-checkbox :checked="checkAll" :indeterminate="indeterminate"
-                            @change="e=>checkChangeAll(e,'afterCheckInfo')"/>
+                <a-checkbox :checked='checkAll' :indeterminate='indeterminate'
+                            @change="e=>checkChangeAll(e,'afterCheckInfo')" />
               </div>
               <div class='check-name'>检查项名称</div>
               <div class='check-content'>检查项内容</div>
@@ -191,41 +191,41 @@
             </div>
             <div v-for='(item, index) in afterCheckInfo' :key='index' class='check-list-item'>
               <div class='check-checkbox check-list-item-center'>
-                <a-checkbox :checked="item.checked" @change="e=>checkItemChange(e,item, 'afterCheckInfo')"/>
+                <a-checkbox :checked='item.checked' @change="e=>checkItemChange(e,item, 'afterCheckInfo')" />
               </div>
               <div class='check-name check-list-item-center'>
-                <span v-if="!item.isEdit">{{ item.itemName }}</span>
-                <a-textarea v-else v-model="item.itemName" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <span v-if='!item.isEdit'>{{ item.itemName }}</span>
+                <a-textarea v-else v-model='item.itemName' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-content'>
-                <span v-if="!item.isEdit">{{ item.itemContent }}</span>
-                <a-textarea v-else v-model="item.itemContent" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <span v-if='!item.isEdit'>{{ item.itemContent }}</span>
+                <a-textarea v-else v-model='item.itemContent' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-require'>
-                <span v-if="!item.isEdit">{{ item.itemRequire }}</span>
-                <a-textarea v-else v-model="item.itemRequire" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <span v-if='!item.isEdit'>{{ item.itemRequire }}</span>
+                <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-res check-list-item-center'>
-                <div v-if="!item.isEdit || item.isCheckRes"
+                <div v-if='!item.isEdit || item.isCheckRes'
                      @click="() => handleCheckRes(item, index, 'afterCheckInfo')">
-                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
-                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
-                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
-                  <span v-else style="display:inline-block;width:100%;text-align: left;" v-text="item.itemRes"></span>
+                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1' />
+                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha' />
+                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti' />
+                  <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
-                <a-textarea v-else v-model="item.itemRes" :auto-size="{minRows:2}"
-                            @blur="handleBlurSave(item)"></a-textarea>
+                <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'
+                            @blur='handleBlurSave(item)'></a-textarea>
               </div>
               <div class='check-res-person' @click='() => handleFillCheck(item, index)'>
                 {{ item.fillUserName || '--' }}
                 <div>{{ formatTime(item.fillTime) }}</div>
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
-                <template v-if="item.checkFlag === 2">
-                  <h-icon type='icon-xieti'/>
+                <template v-if='item.checkFlag === 2'>
+                  <h-icon type='icon-xieti' />
                 </template>
                 <template v-else>
                   {{ item.checkUserName || '--' }}
@@ -239,16 +239,16 @@
           </template>
         </div>
       </h-card>
-      <check-ensure-modal ref="checkEnsureModal"/>
+      <check-ensure-modal ref='checkEnsureModal' />
     </a-spin>
   </h-modal>
 </template>
 
 <script>
-import {postAction} from '@/api/manage'
-import {cloneDeep, isArray, isObject} from 'lodash'
-import {randomUUID} from "@/utils/util";
-import CheckEnsureModal from "@views/hifar/hifar-environmental-test/task/modules/components/CheckEnsureModal";
+import { postAction } from '@/api/manage'
+import { cloneDeep, isArray, isObject } from 'lodash'
+import { randomUUID } from '@/utils/util'
+import CheckEnsureModal from '@views/hifar/hifar-environmental-test/task/modules/components/CheckEnsureModal'
 import moment from 'moment'
 
 export default {
@@ -257,7 +257,13 @@ export default {
       default: () => document.body
     }
   },
-  components: {CheckEnsureModal},
+  props: {
+    buildWord: {
+      type: Boolean,
+      default: false
+    }
+  },
+  components: { CheckEnsureModal },
   data() {
     return {
       moment,
@@ -277,7 +283,7 @@ export default {
         fill: '/HfEnvTaskTestBusiness/saveTestCheckItem',
         check: '/HfEnvTaskTestBusiness/checkTestCheckItem',
         deleteCheckDoItem: '/HfEnvTaskTestBusiness/deleteCheckDoItem',
-        updateCheckItem: "/HfEnvTaskTestBusiness/updateCheckItem"
+        updateCheckItem: '/HfEnvTaskTestBusiness/updateCheckItem'
       }
     }
   },
@@ -296,11 +302,12 @@ export default {
       item.checked = e.target.checked
       this.$forceUpdate()
       let checkedList = this.filterCheckedList(type)
-      this.checkAll = checkedList.length === this[type].length;
-      this.indeterminate = !!checkedList.length && checkedList.length < this[type].length;
+      this.checkAll = checkedList.length === this[type].length
+      this.indeterminate = !!checkedList.length && checkedList.length < this[type].length
     },
     handleBlurSave(item) {
       if (item.itemContent || item.itemName || item.itemRequire) {
+        item.isdel=this.buildWord ? '1' : "0";
         postAction(this.url.updateCheckItem, item).then(res => {
           if (res.code === 200) {
             this.$message.success('保存成功')
@@ -320,12 +327,12 @@ export default {
           isCheckRes: true,
           checked: false,
           id: randomUUID(),
-          fillUserName: "",
-          fillUserId: "",
-          fillTime: "0",
-          checkUserName: "",
-          checkUserId: "",
-          checkTime: "0"
+          fillUserName: '',
+          fillUserId: '',
+          fillTime: '0',
+          checkUserName: '',
+          checkUserId: '',
+          checkTime: '0'
         }
       })
       // 复制后自动把复制的数据保存了
@@ -333,14 +340,14 @@ export default {
         await postAction(this.url.updateCheckItem, extendCheckedList[i])
       }
       this[type] = this[type].concat(extendCheckedList).map(item1 => {
-        return {...item1, checked: false,}
+        return { ...item1, checked: false }
       })
       this.checkAll = false
       this.indeterminate = false
       this.spinLoading = false
     },
     handleAdd(type) {
-      let params = this[type].length > 0 ? cloneDeep(this[type][this[type].length - 1]) : Object.assign({}, this.checkDetail, {testId: this.testId})
+      let params = this[type].length > 0 ? cloneDeep(this[type][this[type].length - 1]) : Object.assign({}, this.checkDetail, { testId: this.testId })
       let records = {}
       records.pid = params.pid ? params.pid : (type === 'beforeCheckInfo' ? params.beforeCheckId : type === 'inCheckInfo' ? params.inCheckId : type === 'afterCheckInfo' ? params.afterCheckId : '')
       records.tenantId = params.tenantId
@@ -374,10 +381,10 @@ export default {
       this.afterCheckInfo = []
     },
     getCheckDetail() {
-      postAction(this.url.detail, {id: this.testId}).then((res) => {
+      postAction(this.url.detail, { id: this.testId }).then((res) => {
         if (res.code === 200) {
           this.checkDetail = res.data
-          let {beforeCheckInfo, inCheckInfo, afterCheckInfo} = res.data
+          let { beforeCheckInfo, inCheckInfo, afterCheckInfo } = res.data
           this.beforeCheckInfo = isArray(beforeCheckInfo) && beforeCheckInfo.length ? beforeCheckInfo : []
           this.inCheckInfo = isArray(inCheckInfo) && inCheckInfo.length ? inCheckInfo : []
           this.afterCheckInfo = isArray(afterCheckInfo) && afterCheckInfo.length ? afterCheckInfo : []
@@ -411,7 +418,7 @@ export default {
       this.$refs.checkEnsureModal.show(record, this.handleFillSubmit)
     },
     handleFillSubmit(record) {
-      postAction(this.url.fill, {...record}).then((res) => {
+      postAction(this.url.fill, { ...record }).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查审核成功')
           this.getCheckDetail()
@@ -431,10 +438,10 @@ export default {
       }
 
       function deleteItem() {
-        postAction(this.url.deleteCheckDoItem, {id: item.id}).then(res => {
+        postAction(this.url.deleteCheckDoItem, { id: item.id, testId: this.testId,isdel : this.buildWord ? '1' : "0" }).then(res => {
           if (res.code === 200) {
             this.$message.success('删除成功')
-            this.getCheckDetail();
+            this.getCheckDetail()
           } else {
             this.$message.error('删除失败')
           }
@@ -456,7 +463,7 @@ export default {
       this.$refs.checkEnsureModal.show(record, this.handleCheckSubmit)
     },
     handleCheckSubmit(record) {
-      postAction(this.url.check, {...record}).then((res) => {
+      postAction(this.url.check, { ...record }).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查复核成功')
           this.getCheckDetail()
@@ -468,7 +475,7 @@ export default {
     checkItem() {
       let items = [], arr = cloneDeep(arguments[0])
       for (let i = 0; i < arr.length; i++) {
-        let {itemContent, itemName, itemRequire} = arr[i]
+        let { itemContent, itemName, itemRequire } = arr[i]
         if (itemContent || itemName || itemRequire) {
           let obj = {}
           arguments[1].forEach(item => {
@@ -507,7 +514,7 @@ export default {
             } else {
               return this.$message.warning('请填写检查项')
             }
-          },
+          }
         })
       }
     },
@@ -535,7 +542,7 @@ export default {
             } else {
               return this.$message.warning('请填写检查项')
             }
-          },
+          }
         })
       }
     },
@@ -543,15 +550,15 @@ export default {
       this.indeterminate = false
       this.checkAll = false
       let typeObj = {
-        before: "beforeCheckInfo",
-        testMiddle: "inCheckInfo",
-        after: "afterCheckInfo",
+        before: 'beforeCheckInfo',
+        testMiddle: 'inCheckInfo',
+        after: 'afterCheckInfo'
       }
       this[typeObj[this.type]].forEach(item => item.checked = false)
     },
     formatTime(time) {
       return (time && +time) ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : ''
-    },
+    }
   }
 }
 </script>
