@@ -116,14 +116,14 @@
                 class="primary-text"
                 @click="() => handleEditFolder(record)"
               />
-              <template v-if="record.fileType == 2">
-                <a-icon
-                  type="eye"
-                  class="primary-text"
-                  @click="() => handlePreview(record)"
-                />
-                <a-divider type="vertical"/>
-              </template>
+<!--              <template v-if="record.fileType == 2">-->
+<!--                <a-icon-->
+<!--                  type="eye"-->
+<!--                  class="primary-text"-->
+<!--                  @click="() => handlePreview(record)"-->
+<!--                />-->
+<!--                <a-divider type="vertical"/>-->
+<!--              </template>-->
               <a-icon
                 v-if="record.fileType == 2"
                 type="download"

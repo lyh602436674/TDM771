@@ -56,6 +56,7 @@
             </a>
             <h-upload-file-b
               v-model="swapFileList"
+              action="/MinioLocalBusiness/authUpload"
               :customParams="{id:record.id}"
               accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
               isPublic
@@ -75,6 +76,7 @@
               <a-icon class="primary-text" type="download"></a-icon>
             </a>
             <h-upload-file-b
+              action="/MinioLocalBusiness/authUpload"
               v-model="swapFileList"
               :customParams="{id:record.id}"
               accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"

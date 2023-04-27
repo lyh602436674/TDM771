@@ -10,14 +10,13 @@
     @submit='handleClickSubmit'
     @cancel='handleCancel'
   >
-      <h-form
-        v-if='visible'
-        ref='toolsProductForm'
-        v-model='equipentInfo'
-        :formData='formData'
-        :column='24'
-        @change='submit'
-      ></h-form>
+    <h-form
+      ref='toolsProductForm'
+      v-model='equipentInfo'
+      :formData='formData'
+      :column='24'
+      @change='submit'
+    ></h-form>
   </h-modal>
 </template>
 <script>
@@ -62,7 +61,7 @@ export default {
           key: 'toolsCode',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请输入工装编号' }]
+            rules: [{required: true, message: '请输入工装编号'}]
           }
         },
         {
@@ -71,7 +70,7 @@ export default {
           key: 'toolsName',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请输入工装名称' }]
+            rules: [{required: true, message: '请输入工装名称'}]
           }
         },
         {
@@ -80,7 +79,7 @@ export default {
           key: 'toolsSize',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请输入工装规格' }]
+            rules: [{required: true, message: '请输入工装规格'}]
           }
         },
         {
@@ -90,7 +89,7 @@ export default {
           component: (
             <h-depart-select
               placeholder='请选择借用部门'
-              v-decorator={['borrwoDept', { initialValue: undefined }]}
+              v-decorator={['borrwoDept', {initialValue: undefined}]}
               v-on:change={this.borrowDeptChange}
             />
           ),
@@ -174,7 +173,7 @@ export default {
           component: (
             <h-depart-select
               placeholder='请选择责任部门'
-              v-decorator={['dept', { initialValue: undefined }]}
+              v-decorator={['dept', {initialValue: undefined}]}
               v-on:change={this.userDeptChange}
             />
           )
@@ -235,7 +234,7 @@ export default {
           title: '设备图片',
           span: 24,
           key: 'picurl',
-          component: <h-upload-img v-decorator={['picurl', { initialValue: [] }]} />,
+          component: <h-upload-img v-decorator={['picurl', {initialValue: []}]}/>,
         },
       ]
     }
@@ -257,6 +256,8 @@ export default {
           url: obj.picurl
         })
       }
+      obj.borrowPerson = obj.borrowPerson !== '0' ? obj.borrowPerson : undefined
+      obj.personId = obj.personId !== '0' ? obj.personId : undefined
       obj.picurl = imgArr ? imgArr : []
       obj.userDeptId = obj.userDeptId ? obj.userDeptId : undefined
       obj.verificationDate = obj.verificationDate && obj.verificationDate !== 0 && obj.verificationDate > 0 ? moment(parseInt(obj.verificationDate)) : ''
@@ -310,10 +311,10 @@ export default {
       this.equipentInfo = {}
     },
     userDeptChange(val, options) {
-      this.$refs.toolsProductForm.form.setFieldsValue({ deptName: options.deptName })
+      this.$refs.toolsProductForm.form.setFieldsValue({deptName: options.deptName})
     },
     borrowDeptChange(val, options) {
-      this.$refs.toolsProductForm.form.setFieldsValue({ borrwoDeptName: options.deptName })
+      this.$refs.toolsProductForm.form.setFieldsValue({borrwoDeptName: options.deptName})
     },
     managerChange(val, option) {
       this.$refs.toolsProductForm.form.setFieldsValue({borrowPersonName: option.idName})

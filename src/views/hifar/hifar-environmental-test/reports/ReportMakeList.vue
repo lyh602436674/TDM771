@@ -114,6 +114,7 @@
                        @click="handleEdit(record)"/>
                      <h-upload-file-b
                        v-model="reportFileList"
+                       action="/MinioLocalBusiness/authUpload"
                        v-has="'report:edit'"
                        :customParams="{id:record.id}"
                        accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
