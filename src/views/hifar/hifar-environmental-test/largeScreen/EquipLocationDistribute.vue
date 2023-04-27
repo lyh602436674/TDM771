@@ -9,7 +9,7 @@
 <template>
   <div class="equipLocationDistribute">
     <div class="title">
-<!--      <span>{{ title }}</span>-->
+      <!--      <span>{{ title }}</span>-->
       <div class="equipRunningStatus">
         <div v-for="(item, index) in equipRunningStatus" :key="index + '-info'" class="equipRunningStatus-item">
           <!--          @mouseenter="equipStatusItemEnter(item)"
@@ -56,19 +56,21 @@
             class="equipImage"
             @contextmenu="switchContextmenu"
           >
-            <template v-for="(item, index) in equipStatusData.filter(_eq => _eq.address === _item.key )">
+
+            <!--   v-if="item.address == _item.key"          -->
+            <template v-for="(item, index) in equipStatusDataFilter(_item)">
               <div
                 :key="index + '-item'"
-                ref="equipItem"
+                :ref="'equipItem' + _index + index"
                 :style="{
                       left: item.coordinateX + '%',
                       top: item.coordinateY + '%',
                       backgroundImage: 'url(' + equipStatusImage[item.status - 1] + ')',
-                    }"
+                }"
                 class="equipStatus-item"
                 @click="equipItemClick(item)"
-                @mousedown="(e) => equipItemDrag(e, item, index)"
-                @mouseenter="(e) => equipItemEnter(e, item, index)"
+                @mousedown="(e) => equipItemDrag(e, item, _index, index)"
+                @mouseenter="(e) => equipItemEnter(e, item, _index, index)"
                 @mouseout="(e) => equipItemOut(e)"
               ></div>
             </template>
@@ -95,6 +97,7 @@ export default {
       default: [],
     },
   },
+
   data() {
     return {
       autoplay: false,
@@ -126,7 +129,10 @@ export default {
     }
   },
   methods: {
-    autoplaySwitchChange(val,e) {
+    equipStatusDataFilter(_item) {
+      return this.equipStatusData.filter(_eq => _eq.address === _item.key)
+    },
+    autoplaySwitchChange(val, e) {
       e.stopPropagation()
       this.autoplaySwitch = val
       setTimeout(() => {
@@ -152,7 +158,8 @@ export default {
       getAction(this.url.getEquipStatus).then((res) => {
         if (res.code === 200) {
           //这里只要设备状态为1，2，3的
-          let address = ['1', '2', '3', '4', '5', '6']
+          // let address = ['1', '2', '3', '4', '5', '6'] // bgImg
+          let address = this.bgImg.map(v => v.key) // bgImg
           this.equipStatusData = res.data.filter((item) => +item.status < 4 && address.includes(item.address))
         }
       })
@@ -164,7 +171,8 @@ export default {
       this.switchStyle.top = e.clientY - 90 - this.$refs.equipImage.offsetTop + 'px'
       this.visible = true
     },
-    equipItemClick(item) {},
+    equipItemClick(item) {
+    },
     equipItemEnter(e, item) {
       this.$emit('equipItemEnter', e, item)
     },
@@ -179,45 +187,46 @@ export default {
         this.visible = false
       }, 300)
     },
-    equipItemDrag(e, item, index) {
+    equipItemDrag(e, item, _index, index) {
       if (this.dragSwitch === '1') {
         e.stopPropagation()
+        let equipItemRef = this.$refs['equipItem' + _index + index][0]
         //记录拖动之前的位置
-        this.dragItemLeftBefore = JSON.parse(JSON.stringify(this.$refs.equipItem[index].offsetLeft))
-        this.dragItemTopBefore = JSON.parse(JSON.stringify(this.$refs.equipItem[index].offsetTop))
+        this.dragItemLeftBefore = JSON.parse(JSON.stringify(equipItemRef.offsetLeft))
+        this.dragItemTopBefore = JSON.parse(JSON.stringify(equipItemRef.offsetTop))
         this.dragFlag = true
-        let itemX = e.clientX - this.$refs.equipItem[index].offsetLeft
-        let itemY = e.clientY - this.$refs.equipItem[index].offsetTop
+        let itemX = e.clientX - equipItemRef.offsetLeft
+        let itemY = e.clientY - equipItemRef.offsetTop
         this.$refs.equipImage.onmousemove = (event) => {
           this.$emit('equipItemMove')
           if (!this.dragFlag) return
           let left = event.clientX - itemX
           let top = event.clientY - itemY
           //先让圆点跟着鼠标走
-          this.$refs.equipItem[index].style.left = (left / this.$refs.equipImage.offsetWidth) * 100 + '%'
-          this.$refs.equipItem[index].style.top = (top / this.$refs.equipImage.offsetHeight) * 100 + '%'
+          equipItemRef.style.left = (left / this.$refs.equipImage.offsetWidth) * 100 + '%'
+          equipItemRef.style.top = (top / this.$refs.equipImage.offsetHeight) * 100 + '%'
           //限制右边边界
-          if (left > this.$refs.equipImage.offsetWidth - this.$refs.equipItem[index].offsetWidth) {
-            this.$refs.equipItem[index].style.left =
-              ((this.$refs.equipImage.offsetWidth - this.$refs.equipItem[index].offsetWidth) /
+          if (left > this.$refs.equipImage.offsetWidth - equipItemRef.offsetWidth) {
+            equipItemRef.style.left =
+              ((this.$refs.equipImage.offsetWidth - equipItemRef.offsetWidth) /
                 this.$refs.equipImage.offsetWidth) *
-                100 +
+              100 +
               '%'
           }
           //限制左边边界
           if (left < 0) {
-            this.$refs.equipItem[index].style.left = 0
+            equipItemRef.style.left = 0
           }
           //限制上面边界
           if (top <= 0) {
-            this.$refs.equipItem[index].style.top = 0 + '%'
+            equipItemRef.style.top = 0 + '%'
           }
           //限制下面边界
-          if (top > this.$refs.equipImage.offsetHeight - this.$refs.equipItem[index].offsetHeight) {
-            this.$refs.equipItem[index].style.top =
-              ((this.$refs.equipImage.offsetHeight - this.$refs.equipItem[index].offsetHeight) /
+          if (top > this.$refs.equipImage.offsetHeight - equipItemRef.offsetHeight) {
+            equipItemRef.style.top =
+              ((this.$refs.equipImage.offsetHeight - equipItemRef.offsetHeight) /
                 this.$refs.equipImage.offsetHeight) *
-                100 +
+              100 +
               '%'
           }
         }
@@ -227,10 +236,10 @@ export default {
           this.dragFlag = false
           let params = {
             id: item.id,
-            coordinateX: ((this.$refs.equipItem[index].offsetLeft / this.$refs.equipImage.offsetWidth) * 100).toFixed(
+            coordinateX: ((equipItemRef.offsetLeft / this.$refs.equipImage.offsetWidth) * 100).toFixed(
               2
             ),
-            coordinateY: ((this.$refs.equipItem[index].offsetTop / this.$refs.equipImage.offsetHeight) * 100).toFixed(
+            coordinateY: ((equipItemRef.offsetTop / this.$refs.equipImage.offsetHeight) * 100).toFixed(
               2
             ),
           }
@@ -242,9 +251,9 @@ export default {
               if (response.code === 200) {
                 this.$message.success('修改成功')
               } else {
-                this.$refs.equipItem[index].style.left =
+                equipItemRef.style.left =
                   (this.dragItemLeftBefore / this.$refs.equipImage.offsetWidth) * 100 + '%'
-                this.$refs.equipItem[index].style.top =
+                equipItemRef.style.top =
                   (this.dragItemTopBefore / this.$refs.equipImage.offsetHeight) * 100 + '%'
                 this.$message.error('修改失败', response.message)
               }
@@ -297,6 +306,7 @@ export default {
       }
     }
   }
+
   .content {
     width: 100%;
     height: calc(100% - 0.252rem);
@@ -391,18 +401,23 @@ export default {
   .v-enter {
     opacity: 0;
   }
+
   .v-enter-to {
     opacity: 1;
   }
+
   .v-enter-active {
     transition: all 0.3s;
   }
+
   .v-leave {
     opacity: 1;
   }
+
   .v-leave-to {
     opacity: 0;
   }
+
   .v-leave-active {
     transition: all 0.3s;
   }

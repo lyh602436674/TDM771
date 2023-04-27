@@ -167,8 +167,9 @@
                       </a>
                       <h-upload-file-b
                         v-has="'archiveTem:edit'"
+                        action="/MinioLocalBusiness/authUpload"
                         v-model="swapFileList"
-                        :customParams="{id:record.id}"
+                        :customParams="{refId:record.id}"
                         accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                         isPublic
                         @beforeUpload="$refs.equipTaskList.localLoading = true"
@@ -189,7 +190,8 @@
                       <h-upload-file-b
                         v-has="'embodimentTem:edit'"
                         v-model="swapFileList"
-                        :customParams="{id:record.id}"
+                        action="/MinioLocalBusiness/authUpload"
+                        :customParams="{refId:record.id}"
                         accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                         isPublic
                         @beforeUpload="$refs.equipTaskList.localLoading = true"
