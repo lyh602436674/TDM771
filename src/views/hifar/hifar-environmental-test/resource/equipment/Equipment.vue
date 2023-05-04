@@ -134,7 +134,7 @@
     <equipment-detail ref="detailModal"></equipment-detail>
     <equipment-modal ref="equipmentModal" @change="refresh(true)"></equipment-modal>
     <h-file-import ref="HFileImport" @change="refresh(true)" @downloadExcel="downloadChange"/>
-    <h-file-import ref="HFileEditImport" @change="refresh(true)" @downloadExcel="downloadEditChange" />
+    <h-file-import ref="HFileEditImport" @change="refresh(true)" @downloadExcel="downloadEditChange"/>
   </h-card>
 </template>
 <script>
@@ -153,7 +153,7 @@ export default {
     }
   },
   mixins: [mixin],
-  components: { HistoryTemperature, EquipmentDetail, EquipmentModal },
+  components: {HistoryTemperature, EquipmentDetail, EquipmentModal},
   data() {
     return {
       moment,
@@ -215,7 +215,7 @@ export default {
           ellipsis: true,
           width: 120,
           dataIndex: 'equipCode',
-          scopedSlots: { customRender: 'equipCode' }
+          scopedSlots: {customRender: 'equipCode'}
         },
         {
           title: '设备名称 ',
@@ -245,12 +245,19 @@ export default {
           }
         },
         {
+          title: '计量编号',
+          align: 'left',
+          ellipsis: true,
+          width: 100,
+          dataIndex: 'meteringNum',
+        },
+        {
           title: '计量有效期',
           align: 'left',
           ellipsis: true,
           width: 180,
           dataIndex: 'checkValid',
-          scopedSlots: { customRender: 'checkValid' }
+          scopedSlots: {customRender: 'checkValid'}
         },
         {
           title: '计量周期',
@@ -258,7 +265,7 @@ export default {
           ellipsis: true,
           width: 100,
           dataIndex: 'checkPeriod',
-          scopedSlots: { customRender: 'checkPeriod' }
+          scopedSlots: {customRender: 'checkPeriod'}
         },
         {
           title: '内部名称',
@@ -377,7 +384,7 @@ export default {
           align: 'center',
           fixed: 'right',
           width: 150,
-          scopedSlots: { customRender: 'action' }
+          scopedSlots: {customRender: 'action'}
         }
       ],
       deviceInfoLoadData: (params) => {
@@ -421,7 +428,7 @@ export default {
     },
     // 单个删除
     handleDelete(id) {
-      postAction(this.url.delete, { id: id }).then((res) => {
+      postAction(this.url.delete, {id: id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.refresh()
@@ -438,7 +445,7 @@ export default {
           title: '确认删除',
           content: '删除后不可恢复，确认删除？',
           onOk: function () {
-            postAction(_this.url.delete, { id: _this.selectedRowKeys.join() }).then((res) => {
+            postAction(_this.url.delete, {id: _this.selectedRowKeys.join()}).then((res) => {
               if (res.code === 200) {
                 _this.$message.success('删除成功')
                 _this.refresh()
@@ -493,7 +500,7 @@ export default {
     },
     handleImportEditExcel() {
       let type = '设备信息'
-      let { importEditExcel } = this.url
+      let {importEditExcel} = this.url
       let record = {
         importCode: 'HfResEquipEditExport'
       }
@@ -502,14 +509,14 @@ export default {
     // 导入
     handleImportExcel() {
       let type = '设备信息'
-      let { importExcelUrl } = this.url
+      let {importExcelUrl} = this.url
       let record = {
         importCode: 'HfResEquipExport'
       }
       this.$refs.HFileImport.show(type, importExcelUrl, record)
     },
     downloadChange() {
-      this.handleExportXls('设备信息', { type: 'template' })
+      this.handleExportXls('设备信息', {type: 'template'})
     },
     async downloadEditChange() {
       let url = this.url.exportEditTemplate

@@ -176,7 +176,7 @@ export default {
       } else {
         this.selectedRowKeys = []
       }
-        // this.setCheckboxStatus()
+      // this.setCheckboxStatus()
     },
     /**
      * @Date: 2021-11-17 18:06:54
@@ -446,7 +446,6 @@ export default {
       // }
       // this.selectedRowKeys = Object.keys(selectedRows)
       // this.selectedRows = selectedRows
-
       //勾选选中时
       if (checked) {
         //第一次选数据，还未进行翻页时
@@ -622,6 +621,9 @@ export default {
     },
     getCheckboxRecords(isFull) {
       return this.$refs[this.tableId].getCheckboxRecords(isFull)
+    },
+    clearCheckboxRow() {
+      return this.$refs[this.tableId].clearCheckboxRow()
     },
     getCheckboxReserveRecords(isFull) {
       return this.$refs[this.tableId].getCheckboxReserveRecords(isFull)

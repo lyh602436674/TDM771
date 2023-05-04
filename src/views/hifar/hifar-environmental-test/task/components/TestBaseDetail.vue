@@ -42,13 +42,12 @@
         </div>
         <div id="piece">
           <!-- 试件信息 -->
-          <!-- :dataSource="getPieceDataByEntrustId" -->
           <test-piece-detail
             v-if="viewDetailType === '2'"
-            :dataSource="testPieceInfo"
+            :dataSource="getPieceDataByEntrustId"
             class="mg-t-20"
             title="试件信息"/>
-          <piece-detail-template titlle="试件信息" v-else :dataSource="testPieceInfo"/>
+          <piece-detail-template titlle="试件信息" v-else :dataSource="getPieceDataByEntrustId"/>
         </div>
         <!-- 项目信息 -->
         <div id="project">
@@ -405,6 +404,15 @@ export default {
           dataIndex: 'usePurposeName',
           align: 'center',
           width: 150,
+        },
+        {
+          title: '是否记录振动曲线',
+          dataIndex: 'vibrationCurveFlag',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return t === 1 ? '是' : t === 0 ? '否' : ''
+          }
         },
       ],
       testEquipInfo: [],

@@ -86,7 +86,7 @@ export default {
           key: 'equipName',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请输入设备名称' }]
+            rules: [{required: true, message: '请输入设备名称'}]
           }
         },
         {
@@ -95,7 +95,7 @@ export default {
           key: 'equipCode',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请输入设备编号' }]
+            rules: [{required: true, message: '请输入设备编号'}]
           }
         },
         {
@@ -106,7 +106,7 @@ export default {
           span: 12,
           dictCode: 'hf_res_equip_use',
           validate: {
-            rules: [{ required: true, message: '请选择设备用途' }]
+            rules: [{required: true, message: '请选择设备用途'}]
           }
         },
         {
@@ -117,10 +117,10 @@ export default {
           dictCode: 'hf_res_equip_type',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请选择设备类型' }]
+            rules: [{required: true, message: '请选择设备类型'}]
           },
           change: (val, option) => {
-            this.$refs.equipmentForm.form.setFieldsValue({ equipTypeName: option.title })
+            this.$refs.equipmentForm.form.setFieldsValue({equipTypeName: option.title})
           }
         },
         {
@@ -192,8 +192,14 @@ export default {
           dictCode: 'status_dict',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请选择设备状态' }]
+            rules: [{required: true, message: '请选择设备状态'}]
           }
+        },
+        {
+          title: '计量编号',
+          formType: 'input',
+          key: 'meteringNum',
+          span: 12
         },
         {
           title: '计量有效期',
@@ -224,7 +230,7 @@ export default {
           component: (
             <h-depart-select
               placeholder="请选择使用部门"
-              v-decorator={['userDeptId', { initialValue: undefined }]}
+              v-decorator={['userDeptId', {initialValue: undefined}]}
               v-on:change={this.userDeptChange}
             />
           )
@@ -263,7 +269,7 @@ export default {
           type: 'number',
           span: 6,
           addonAfter: '%',
-          validate: { rules: [{ required: false, validator: this.validateCoordinate }] }
+          validate: {rules: [{required: false, validator: this.validateCoordinate}]}
         },
         {
           title: 'Y坐标',
@@ -272,7 +278,7 @@ export default {
           span: 6,
           type: 'number',
           addonAfter: '%',
-          validate: { rules: [{ required: false, validator: this.validateCoordinate }] }
+          validate: {rules: [{required: false, validator: this.validateCoordinate}]}
         },
         {
           title: '摄像头IP',
@@ -280,7 +286,7 @@ export default {
           formType: 'input',
           key: 'cameraIp',
           validate: {
-            rules: [{ required: false, validator: validatorIp }]
+            rules: [{required: false, validator: validatorIp}]
           }
         },
         {
@@ -290,7 +296,7 @@ export default {
           dictCode: 'hf_res_equip_address',
           span: 12,
           validate: {
-            rules: [{ required: true, message: '请选择放置地点' }]
+            rules: [{required: true, message: '请选择放置地点'}]
           }
         },
         {
@@ -299,7 +305,7 @@ export default {
           formType: 'input',
           span: 12,
           type: 'number',
-          validate: { rules: [{ required: true, message: '请输入排序(值越小越靠前)' }] }
+          validate: {rules: [{required: true, message: '请输入排序(值越小越靠前)'}]}
         },
         {
           title: '',
@@ -328,7 +334,7 @@ export default {
             <h-upload-img
               multiple={false}
               accept="image/png,image/gif,image/jpg,image/jpeg"
-              v-decorator={['imgUrl', { initialValue: [] }]}
+              v-decorator={['imgUrl', {initialValue: []}]}
             />
           )
         },
@@ -336,7 +342,7 @@ export default {
           title: '附件',
           key: 'attachIds',
           span: 24,
-          component: <h-upload-file multiple={true} v-decorator={['attachIds', { initialValue: [] }]}/>
+          component: <h-upload-file multiple={true} v-decorator={['attachIds', {initialValue: []}]}/>
         }
       ]
     }
@@ -397,7 +403,7 @@ export default {
       this.equipentInfo = {}
     },
     userDeptChange(val, options) {
-      this.$refs.equipmentForm.form.setFieldsValue({ userDeptName: options.deptName })
+      this.$refs.equipmentForm.form.setFieldsValue({userDeptName: options.deptName})
     },
     handleClickSubmit() {
       this.$refs.equipmentForm.validateForm()
@@ -440,7 +446,7 @@ export default {
       })
     },
     managerChange(val, option) {
-      this.$refs.equipmentForm.form.setFieldsValue({ managerName: option.idName })
+      this.$refs.equipmentForm.form.setFieldsValue({managerName: option.idName})
     },
     validateCheckPeriod(rule, value, callback) {
       if (!value) {

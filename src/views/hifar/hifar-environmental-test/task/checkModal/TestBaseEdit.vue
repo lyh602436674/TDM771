@@ -686,7 +686,8 @@ export default {
         {
           title: '控制方式',
           dataIndex: 'controlMethod',
-          align: 'center'
+          align: 'center',
+          width: 100,
         },
         {
           title: '备注',
@@ -1491,6 +1492,25 @@ export default {
           }
         },
         {
+          title: '是否记录振动曲线',
+          dataIndex: 'vibrationCurveFlag',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return this.$createElement('h-switch', {
+              props: {
+                value: row.vibrationCurveFlag,
+                options: [1, 0],
+              },
+              on: {
+                change: v => {
+                  row.vibrationCurveFlag = v
+                }
+              }
+            })
+          }
+        },
+        {
           title: '操作',
           dataIndex: 'action',
           scopedSlots: {customRender: 'action'},
@@ -1826,7 +1846,7 @@ export default {
     installControlHandleDelete(index) {
       this.installControlTable.splice(index, 1)
     },
-    installControlExpandedRowsChange(expandedRowKeys){
+    installControlExpandedRowsChange(expandedRowKeys) {
       this.installControlExpandedRowKeys = expandedRowKeys
     },
     siteInspectionDelete(index) {

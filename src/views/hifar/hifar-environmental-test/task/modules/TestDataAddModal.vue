@@ -23,13 +23,10 @@
         <h-upload-file
           v-model="attachIds"
           :customParams="{refType: 'test_attach', refId: this.testId}"
-          :isVarSeq="true"
           accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           style="width: 100%"
-          @change="this.handleFilesChange"
-          @delete="this.handleDelete"
-          @serialBlur="this.handleSerialBlur"
-          @serialFocus="this.handleSerialFocus"
+          @change="handleFilesChange"
+          @delete="handleDelete"
         />
       </h-desc>
       <h-desc title="视频" :bordered="false">
@@ -103,7 +100,7 @@ export default {
               type: item.viewType == 2 ? 'image/jpeg' : 'text/plain',
               replaceStatus: item.replaceStatus,
               rowSort: item.rowSort,
-              serial: item.serial,
+              // serial: item.serial,
             }
           }) || []
         }
@@ -141,26 +138,26 @@ export default {
     },
     handleFilesChange(fileList) {
       this.attachIds = fileList
-      for (let i = 0; i < fileList.length; i++) {
-        let serial = fileList[i].serial || i + 1
-        this.$set(this.attachIds[i], 'serial', serial)
-      }
-      this.saveSerial(this.attachIds)
+      // for (let i = 0; i < fileList.length; i++) {
+      //   let serial = fileList[i].serial || i + 1
+      //   this.$set(this.attachIds[i], 'serial', serial)
+      // }
+      // this.saveSerial(this.attachIds)
     },
-    handleSerialFocus(e, record) {
-      this.serialBeforeRecord = e.target.value
-    },
-    handleSerialBlur(record) {
-      if (!record.serial || this.serialBeforeRecord === record.serial) return
-      this.saveSerial([{...record, refId: this.testId}], true)
-    },
-    saveSerial(data, msg) {
-      postAction(this.url.saveSerial, {data}).then(res => {
-        if (res.code === 200) {
-          msg && this.$message.success('序列号保存成功')
-        }
-      })
-    },
+    // handleSerialFocus(e, record) {
+    //   this.serialBeforeRecord = e.target.value
+    // },
+    // handleSerialBlur(record) {
+    //   if (!record.serial || this.serialBeforeRecord === record.serial) return
+    //   this.saveSerial([{...record, refId: this.testId}], true)
+    // },
+    // saveSerial(data, msg) {
+    //   postAction(this.url.saveSerial, {data}).then(res => {
+    //     if (res.code === 200) {
+    //       msg && this.$message.success('序列号保存成功')
+    //     }
+    //   })
+    // },
   },
 }
 </script>

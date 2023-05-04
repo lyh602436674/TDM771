@@ -17,13 +17,14 @@
     @submit="handleSubmit"
   >
     <h-card fixed>
-      <h-search v-model="queryParams" slot="search-form" :data="searchForm" @change="refresh" />
+      <h-search v-model="queryParams" slot="search-form" :data="searchForm" @change="refresh"/>
       <h-vex-table
         ref="equipmentSensorTable"
         slot="content"
         :columns="columns"
         :data="loadData"
-        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect }"
+        :history-select="true"
+        :rowSelection="{ selectedRowKeys, onChange: onSelect }"
       ></h-vex-table>
     </h-card>
   </h-modal>
@@ -31,7 +32,8 @@
 
 <script>
 import moment from 'moment'
-import { postAction } from '@/api/manage'
+import {postAction} from '@/api/manage'
+
 export default {
   inject: {
     getContainer: {
@@ -110,8 +112,25 @@ export default {
             return text || '--'
           },
         },
+        {
+          title: '技术参数',
+          minWidth: 140,
+          dataIndex: 'technologyParam',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '备注',
+          minWidth: 120,
+          dataIndex: 'remarks',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
       ],
       selectedRowKeys: [],
+      selectedRows: [],
       loadData: (params) => {
         let data = {
           ...params,
@@ -134,16 +153,18 @@ export default {
     show(equipId) {
       this.visible = true
       this.equipId = equipId
-      setTimeout(() => {
+      this.$nextTick(() => {
         this.refresh(true)
-      }, 200)
+      })
     },
     refresh(bool = true) {
       this.$refs.equipmentSensorTable.refresh(bool)
       this.selectedRowKeys = []
+      this.selectedRows = []
     },
     onSelect(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
+      this.selectedRows = selectedRows
     },
     handleSubmit() {
       if (!this.selectedRowKeys.length) {
@@ -162,8 +183,10 @@ export default {
       })
     },
     handleCancel() {
+      this.$refs.equipmentSensorTable.clearCheckboxRow()
       this.visible = false
       this.selectedRowKeys = []
+      this.selectedRows = []
     },
   },
 }

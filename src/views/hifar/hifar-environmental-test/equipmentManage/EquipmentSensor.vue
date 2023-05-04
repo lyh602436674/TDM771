@@ -198,6 +198,22 @@ export default {
           },
         },
         {
+          title: '技术参数',
+          minWidth: 140,
+          dataIndex: 'technologyParam',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
+          title: '备注',
+          minWidth: 120,
+          dataIndex: 'remarks',
+          customRender: (text, record) => {
+            return text || '--'
+          },
+        },
+        {
           title: '操作',
           dataIndex: 'actions',
           align: 'center',

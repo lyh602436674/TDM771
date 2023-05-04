@@ -154,6 +154,8 @@ export default {
           click: (item, index) => {
             if (!this.selectedRows.length) {
               this.$message.error('请至少选择一项')
+            } else if (this.selectedRows.length > 1) {
+              this.$message.error('只能选择一项')
             } else {
               this.$refs.testCheckModal.show(this.selectedRows[0], '试前', 'before')
             }
@@ -170,7 +172,7 @@ export default {
             if (!this.selectedRows.length) {
               this.$message.error('请至少选择一项')
             } else if (this.selectedRows.length > 1) {
-              this.$message.error('请至少选择一项')
+              this.$message.error('只能选择一项')
             } else {
               this.$refs.testCheckModal.show(this.selectedRows[0], '试中', 'testMiddle')
             }
@@ -187,7 +189,7 @@ export default {
             if (!this.selectedRows.length) {
               this.$message.error('请至少选择一项')
             } else if (this.selectedRows.length > 1) {
-              this.$message.error('请至少选择一项')
+              this.$message.error('只能选择一项')
             } else {
               this.$refs.testCheckModal.show(this.selectedRows[0], '试后', 'after')
             }
@@ -204,7 +206,7 @@ export default {
             if (this.selectedRows.length === 0) {
               this.$message.error('请至少选择一项')
             } else if (this.selectedRows.length > 1) {
-              this.$message.error('请至少选择一项')
+              this.$message.error('只能选择一项')
             } else {
               this.records = this.selectedRows[0]
               this.$refs.TestBaseEdit.show(this.selectedRows[0])
@@ -222,7 +224,7 @@ export default {
             if (!this.selectedRows.length) {
               this.$message.error('请至少选择一项')
             } else if (this.selectedRows.length > 1) {
-              this.$message.error('请至少选择一项')
+              this.$message.error('只能选择一项')
             } else {
               this.$refs.testDataAddModal.show(this.selectedRows[0])
             }
@@ -239,7 +241,7 @@ export default {
             if (!this.selectedRows.length) {
               this.$message.error('请至少选择一项')
             } else if (this.selectedRows.length > 1) {
-              this.$message.error('请至少选择一项')
+              this.$message.error('只能选择一项')
             } else {
               this.$refs.taskAbnormalModal.show('error', this.selectedRows[0])
             }

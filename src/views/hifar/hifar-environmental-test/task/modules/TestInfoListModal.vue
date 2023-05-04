@@ -17,7 +17,7 @@
     @cancel="handleCancel"
   >
     <div class="footer" slot="footer">
-      <a-button @click="handleCancel" type="ghost-danger" style="margin-right: 8px"> 关闭 </a-button>
+      <a-button @click="handleCancel" type="ghost-danger" style="margin-right: 8px"> 关闭</a-button>
     </div>
     <h-card :bordered="false" fixed class="testTable">
       <h-search
@@ -29,14 +29,15 @@
       />
       <h-vex-table slot="content" ref="testInfoListTable" :columns="columns" :data="loadData">
         <template slot="status" slot-scope="text">
-          <a-badge v-if="text == 0" color="grey" text="未发布" />
-          <a-badge v-else-if="text == 1" color="geekblue" text="已发布" />
-          <a-badge v-else-if="text == 10" color="red" text="已撤销" />
-          <a-badge v-else-if="text == 20" color="green" text="进行中" />
-          <a-badge v-else-if="text == 30" color="volcano" text="暂停" />
-          <a-badge v-else-if="text == 40" color="red" text="终止" />
-          <a-badge v-else-if="text == 45" color="yellow" text="异常"/>
-          <a-badge v-else-if="text == 50" color="grey" text="已完成" />
+          <a-badge v-if="text === 0" color="grey" text="未发布"/>
+          <a-badge v-else-if="text === 1" color="geekblue" text="已发布"/>
+          <a-badge v-else-if="text === 10" color="red" text="已撤销"/>
+          <a-badge v-else-if="text === 20" color="green" text="进行中"/>
+          <a-badge v-else-if="text === 30" color="volcano" text="暂停"/>
+          <a-badge v-else-if="text === 40" color="red" text="终止"/>
+          <a-badge v-else-if="text === 45" color="yellow" text="异常"/>
+          <a-badge v-else-if="text === 50" color="grey" text="已完成"/>
+          <a-badge v-else-if="text === 60" color="grey" text="已出报告"/>
         </template>
         <span slot="actions" slot-scope="text, record">
           <a-popconfirm title="确定发布吗？" @confirm="() => handleRelease(record.id)">
@@ -284,7 +285,7 @@ export default {
      * @param id 试验id
      */
     handleRelease(id) {
-      postAction(this.url.release, { id }).then((res) => {
+      postAction(this.url.release, {id}).then((res) => {
         if (res.code === 200) {
           if (res.msg) {
             this.$message.success(res.msg)
@@ -298,7 +299,7 @@ export default {
       })
     },
     handleDelete(id) {
-      postAction(this.url.delete, { id }).then((res) => {
+      postAction(this.url.delete, {id}).then((res) => {
         if (res.code == 200) {
           this.$message.success('操作成功')
           this.refresh()

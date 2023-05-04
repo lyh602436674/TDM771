@@ -68,6 +68,9 @@
         <a-descriptions-item label="检定编号">
           {{ detailData.checkCode || '--' }}
         </a-descriptions-item>
+        <a-descriptions-item label="计量编号">
+          {{ detailData.meteringNum || '--' }}
+        </a-descriptions-item>
         <a-descriptions-item label="计量有效期">
           {{
             detailData.checkValid && detailData.checkValid != 0
@@ -124,7 +127,7 @@
 <script>
 import moment from 'moment'
 import mixin from '@/views/hifar/mixin.js'
-import { downloadFile, getFileAccessHttpUrl } from '@/api/manage'
+import {downloadFile, getFileAccessHttpUrl} from '@/api/manage'
 
 export default {
   mixins: [mixin],

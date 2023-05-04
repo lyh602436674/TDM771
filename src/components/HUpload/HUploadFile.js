@@ -359,7 +359,7 @@ export default {
               'highlight-hover-row': true,
               'highlight-current-column': true,
               'highlight-hover-column': true,
-              // 'resizable': true,
+              'resizable': true,
               'show-overflow': 'tooltip',
               'show-header-overflow': 'tooltip',
             },

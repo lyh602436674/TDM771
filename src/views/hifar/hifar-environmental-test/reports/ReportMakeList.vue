@@ -72,7 +72,7 @@
             </a-popconfirm>
             <span v-if="record.status === 1">
               <a-space>
-<!--                <a-popconfirm-->
+                <!--                  <a-popconfirm-->
                 <!--                  title="确定生成报告吗?"-->
                 <!--                  @confirm="() => handleMakeReport(record)">-->
                 <!--                  <a-icon-->

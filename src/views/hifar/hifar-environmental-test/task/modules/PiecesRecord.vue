@@ -30,8 +30,9 @@
 </template>
 
 <script>
-import { getAction } from '@/api/manage'
+import {getAction} from '@/api/manage'
 import moment from 'moment'
+
 export default {
   inject: {
     getContainer: {
@@ -81,14 +82,20 @@ export default {
           return '开始'
         case 'suspend':
           return '暂停'
+        case 'exception':
+          return '异常'
+        case 'clearException':
+          return '异常解除'
+        case 'forceEndApply':
+          return '申请终止'
+        case 'forceEndRefuse':
+          return '终止申请驳回'
         case 'forceEnd':
-          return '强制结束'
+          return '终止'
         case 'finish':
           return '完成'
         case 'remove':
           return '删除'
-        case 'forceEndApply':
-          return '终止'
       }
     },
   },

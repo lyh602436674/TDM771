@@ -683,14 +683,16 @@ export default {
       let result = []
       for (let i = 0; i < values.length; i++) {
         let v = values[i]
-        let getZero = v.pieceStartNo && v.pieceStartNo[0] === '0' && v.pieceStartNo.substring(0, v.pieceStartNo.lastIndexOf('0') + 1) || ''
-        for (let j = 0; j < +v.pieceNum; j++) {
+        let loopStart = v.pieceStartNo ? +v.pieceStartNo : 0
+        let loopNum = v.pieceStartNo ? +v.pieceStartNo + +v.pieceNum - 1 : +v.pieceNum - 1
+        for (let j = loopStart; j <= loopNum; j++) {
           result.push({
             ...v,
             productId: v.id,
             id: randomUUID(),
             pieceNum: 1,
-            pieceNo: v.piecePrefix ? v.piecePrefix + getZero + (+v.pieceStartNo + j) : v.pieceStartNo ? +v.pieceStartNo + j : ''
+            pieceNoPrefix: v.piecePrefix,
+            pieceNo: v.piecePrefix ? v.piecePrefix + j.toString().padStart(v.pieceStartNo.length, "0") : (v.pieceStartNo ? +v.pieceStartNo + j : '')
           })
         }
       }

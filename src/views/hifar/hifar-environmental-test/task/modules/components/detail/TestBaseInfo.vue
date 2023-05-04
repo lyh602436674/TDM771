@@ -387,6 +387,15 @@ export default {
           align: 'center',
           width: 150,
         },
+        {
+          title: '是否记录振动曲线',
+          dataIndex: 'vibrationCurveFlag',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return t === 1 ? '是' : t === 0 ? '否' : ''
+          }
+        },
       ],
       testTaskColumns: [
         {
