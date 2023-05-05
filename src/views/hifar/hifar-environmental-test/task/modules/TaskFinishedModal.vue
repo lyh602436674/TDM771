@@ -308,7 +308,8 @@ export default {
               } catch {
                 return {}
               }
-            })()
+            })(),
+            speedItem: this.model[field]
           }}
         >
         </test-secondary-com>
@@ -321,7 +322,15 @@ export default {
       postAction(this.url.calcCost, {id: record.id}).then(res => {
         if (res.code === 200) {
           const {data} = res
-          this.model = Object.assign({}, this.model, data)
+          if (data.costStandardList) {
+            if (Object.keys(data.costStandardList).length) {
+              for (const key in data.costStandardList) {
+                data.costStandardList[key].customDiscount = data.customDiscount
+              }
+            }
+          }
+          let costStandardList = data.costStandardList
+          this.model = Object.assign({}, this.model, data, {costStandardList : costStandardList})
           if (res.msg) {
             this.$message.warning(res.msg)
           }
@@ -401,12 +410,12 @@ export default {
         if (this.isNumberEqual(discountPrice)) {
           form3.setFieldsValue({
             // 折后总价 = (时长 * (折后单价 || 标准单价) * 客户折扣) + 开机费
-            totalExpenses: ((((diff * (discountPrice)) * (customDiscount || 1)) + (+startupCost || 0))).toFixed(2) || undefined,
+            totalExpenses: ((((diff * (discountPrice)) * ((customDiscount * 0.1) || 1)) + (+startupCost || 0))).toFixed(2) || undefined,
           })
         } else {
           form3.setFieldsValue({
             // 折后总价 = (时长 * (折后单价 || 标准单价) * 客户折扣) + 开机费
-            totalExpenses: ((((diff * (unitPrice)) * (customDiscount || 1)) + (+startupCost || 0))).toFixed(2) || undefined,
+            totalExpenses: ((((diff * (unitPrice)) * ((customDiscount * 0.1) || 1)) + (+startupCost || 0))).toFixed(2) || undefined,
           })
         }
       } else {
@@ -449,7 +458,7 @@ export default {
       * */
       form3.setFieldsValue({
         standardTotalPrice: Number((+standardTotalPrice + (+startupCost || 0)).toFixed(2)) || undefined,
-        totalExpenses: Number((+totalExpenses * (+customDiscount || 1) + (+startupCost || 0)).toFixed(2)) || undefined,
+        totalExpenses: Number((+totalExpenses * ((customDiscount * 0.1) || 1) + (+startupCost || 0)).toFixed(2)) || undefined,
       })
     },
     getTimeDiff(startTime, endTime) {

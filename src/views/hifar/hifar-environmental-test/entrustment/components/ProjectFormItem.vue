@@ -833,7 +833,7 @@ export default {
       for (let i = 0; i < pointTableItem.length; i++) {
         let item = pointTableItem[i]
         try {
-          this.loopNum = item.filter(v => +v.curveType === 1 && v.paramCode === 'qh07')[0].conditionTypeDesc
+          this.loopNum = item.filter(v => v.paramCode === 'qh07')[0].conditionTypeDesc
         } catch {
           // return this.$message.warning(`循环阶段${i + 1}，请添加循环次数`)
           this.loopNum = 1

@@ -254,7 +254,7 @@ export default {
       for (let i = 0; i < pointTableItem.length; i++) {
         let item = pointTableItem[i]
         try {
-          this.loopNum = item.filter(v => +v.curveType === 1 && v.paramCode === 'qh07')[0].conditionTypeDesc
+          this.loopNum = item.filter(v => v.paramCode === 'qh07')[0].conditionTypeDesc
         } catch {
           this.loopNum = 1
         }

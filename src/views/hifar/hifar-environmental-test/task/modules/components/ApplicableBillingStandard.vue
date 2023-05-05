@@ -8,18 +8,18 @@
         style="margin: 0 0 20px 0;width: 800px"
       >
         <h-desc-item label="温度范围">{{ model.temperatureRange || '--' }}</h-desc-item>
-        <h-desc-item label="湿度">{{ model.humidityRange || '--' }}</h-desc-item>
-        <h-desc-item label="压力">{{ model.pressureRange || '--' }}</h-desc-item>
-        <h-desc-item label="加速度">{{ model.accelerationRange || '--' }}</h-desc-item>
+        <h-desc-item label="湿度范围">{{ model.humidityRange || '--' }}</h-desc-item>
+        <h-desc-item label="压力范围">{{ model.pressureRange || '--' }}</h-desc-item>
+        <h-desc-item label="加速度范围">{{ model.accelerationRange || '--' }}</h-desc-item>
         <h-desc-item label="开机费">
           {{ model.startupCost || '--' }}
         </h-desc-item>
         <h-desc-item label="折扣">{{ model.discount || '--' }}</h-desc-item>
         <h-desc-item label="标准单价">
-          {{ model.unitPrice || '--' }}
+          {{ Number(model.unitPrice) || '--' }}
         </h-desc-item>
         <h-desc-item label="折扣单价">
-          {{ model.discountPrice || '--' }}
+          {{ Number(model.discountPrice) || '--' }}
         </h-desc-item>
         <h-desc-item label="客户折扣">
           {{ model.customDiscount || '--' }}

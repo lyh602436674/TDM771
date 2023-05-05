@@ -214,9 +214,9 @@ export default {
         let rh00Val = this.initialHumTime
         let nodeTime = parseInt(rh00Val)
         let nodeVal = this.initialHumidity // 默认湿度为30%
-        if(this.entrustOrTaskFlag){
+        if (this.entrustOrTaskFlag) {
           result.push(['Humidity_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
-        }else{
+        } else {
           result.push({name: nodeTime, value: [nodeTime, nodeVal]})
         }
 
