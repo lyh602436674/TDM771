@@ -232,12 +232,12 @@
                         </a-tooltip>
                         <a-menu slot="overlay">
                           <!-- 异常 -->
-                          <a-menu-item v-if="[20,45].includes(record.status)" v-has="'ArrangeMent:error'">
+                          <a-menu-item v-if="[20,30,45].includes(record.status)" v-has="'ArrangeMent:error'">
                             <div @click="$refs.taskAbnormalModal.show('error', record)">异常</div>
                           </a-menu-item>
                           <!-- 终止 -->
                           <a-menu-item
-                            v-if="record.status !== 40 && record.status === 20 && record.forceEndStatus !== 10"
+                            v-if="record.status !== 40 && [20,30].includes(record.status) && record.forceEndStatus !== 10"
                             v-has="'ArrangeMent:forceEnd'">
                             <div @click="$refs.taskForceEnd.show('forceEnd', record)">终止</div>
                           </a-menu-item>
@@ -733,6 +733,7 @@ export default {
     },
     handleFinish(record) {
       if (record.status === 1) return this.$message.warning('试验未开始，不能完成')
+      if (record.status === 30) return this.$message.warning('试验暂停中，不能完成')
       if (record.status === 45) return this.$message.warning('试验异常中，请先解决异常')
       this.$refs.taskFinishedModal.show('finish', record)
     },

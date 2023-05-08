@@ -108,7 +108,7 @@ export default {
       this.$nextTick(() => {
         this.visible = true
       })
-      this.getTestDetail()
+      // this.getTestDetail()
     },
     getTestDetail() {
       postAction(this.testDetailUrl, {id: this.model.id}).then((res) => {

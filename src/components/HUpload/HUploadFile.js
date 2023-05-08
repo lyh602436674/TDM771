@@ -286,8 +286,19 @@ export default {
     renderUploadAction(h) {
       let actions = []
       if (this.isEdit) {
-        actions.push(<a-button size="small" type="ghost-primary" icon="plus"
-                               onclick={this.clickUpload}>{this.fileList.length ? '继续上传' : '上传文件'}</a-button>)
+        if (this.multiple) {
+          actions.push(
+            <a-button size="small" type="ghost-primary" icon="plus"
+                      onclick={this.clickUpload}>{this.fileList.length ? '继续上传' : '上传文件'}</a-button>
+          )
+        } else {
+          if (this.fileList.length === 0) {
+            actions.push(
+              <a-button size="small" type="ghost-primary" icon="plus"
+                        onclick={this.clickUpload}>{'上传文件'}</a-button>
+            )
+          }
+        }
       }
       return h('div', {
           slot: "table-operator",
@@ -426,7 +437,7 @@ export default {
                 let btns = []
                 if (this.isEdit) {
                   btns.push(
-                    <a-popconfirm title="确定删除吗?" onconfirm={() => this.handleDelete(record,index)}>
+                    <a-popconfirm title="确定删除吗?" onconfirm={() => this.handleDelete(record, index)}>
                       <h-icon class="danger-text cursor-pointer" type="icon-shanchu"/>
                     </a-popconfirm>
                   )

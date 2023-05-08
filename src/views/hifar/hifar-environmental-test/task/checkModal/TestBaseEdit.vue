@@ -345,7 +345,7 @@
     />
     <postion-modal ref="PostionModal" :title="'添加参试人员'" @change="selectPersonHandle"/>
     <check-ensure-modal ref="checkEnsureModal"></check-ensure-modal>
-    <product-file-modal @close="getTestDetail(testId)" ref="productFileModal"></product-file-modal>
+    <product-file-modal @close="getTestDetail(testId,true)" ref="productFileModal"></product-file-modal>
   </h-modal>
 </template>
 
@@ -1786,7 +1786,7 @@ export default {
         }
       }
     },
-    getTestDetail(id) {
+    getTestDetail(id, flag) {
       postAction(this.url.detail, {id: id}).then((res) => {
         if (res.code === 200) {
           let model = Object.assign({}, res.data)
@@ -1797,6 +1797,8 @@ export default {
               afterStatus: item.afterStatus || '1'
             }
           })
+          // 上传了样品图片后，防止下面的数据刷新，所以直接return
+          if (flag) return
           // 试验设备开关机记录
           this.switchRecordingTable = model.switchOnOffInfo.map(item => {
             return {

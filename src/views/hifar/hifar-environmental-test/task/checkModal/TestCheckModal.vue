@@ -29,12 +29,12 @@
           <a-button size='small' type='ghost-primary' @click="handleCheckAll('beforeCheckInfo')"> 一键复核</a-button>
         </div>
         <div slot='content' class='check-list'>
-          <a-empty v-if='beforeCheckInfo && beforeCheckInfo.length <= 0' />
+          <a-empty v-if='beforeCheckInfo && beforeCheckInfo.length <= 0'/>
           <template v-else>
             <div class='check-list-item check-list-item-center'>
               <div class='check-checkbox'>
                 <a-checkbox :checked='checkAll' :indeterminate='indeterminate'
-                            @change="e=>checkChangeAll(e,'beforeCheckInfo')" />
+                            @change="e=>checkChangeAll(e,'beforeCheckInfo')"/>
               </div>
               <div class='check-name'>检查项名称</div>
               <div class='check-content'>检查项内容</div>
@@ -46,7 +46,7 @@
             </div>
             <div v-for='(item, index) in beforeCheckInfo' :key='index' class='check-list-item'>
               <div class='check-checkbox check-list-item-center'>
-                <a-checkbox :checked='item.checked' @change="e=>checkItemChange(e,item, 'beforeCheckInfo')" />
+                <a-checkbox :checked='item.checked' @change="e=>checkItemChange(e,item, 'beforeCheckInfo')"/>
               </div>
               <div class='check-name check-list-item-center'>
                 <span v-if='!item.isEdit'>{{ item.itemName }}</span>
@@ -66,9 +66,9 @@
               <div class='check-res check-list-item-center'>
                 <div v-if='!item.isEdit || item.isCheckRes'
                      @click="() => handleCheckRes(item, index, 'beforeCheckInfo')">
-                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1' />
-                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha' />
-                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti' />
+                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
                   <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
                 <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'
@@ -80,14 +80,15 @@
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
                 <template v-if='item.checkFlag === 2'>
-                  <h-icon type='icon-xieti' />
+                  <h-icon type='icon-xieti'/>
                 </template>
                 <template v-else>
                   {{ item.checkUserName || '--' }}
                   <div>{{ formatTime(item.checkTime) }}</div>
                 </template>
               </div>
-              <a-popconfirm class='check-operate' title='确定删除吗?' @confirm='handleDelete(item,index,"beforeCheckInfo")'>
+              <a-popconfirm class='check-operate' title='确定删除吗?'
+                            @confirm='handleDelete(item,index,"beforeCheckInfo")'>
                 <a style='color: #ff4d4f'>删除</a>
               </a-popconfirm>
             </div>
@@ -102,12 +103,12 @@
           <a-button size='small' type='ghost-primary' @click="handleCheckAll('inCheckInfo')"> 一键复核</a-button>
         </div>
         <div slot='content' class='check-list'>
-          <a-empty v-if='inCheckInfo && inCheckInfo.length <= 0' />
+          <a-empty v-if='inCheckInfo && inCheckInfo.length <= 0'/>
           <template v-else>
             <div class='check-list-item check-list-item-center'>
               <div class='check-checkbox'>
                 <a-checkbox :checked='checkAll' :indeterminate='indeterminate'
-                            @change="e=>checkChangeAll(e,'inCheckInfo')" />
+                            @change="e=>checkChangeAll(e,'inCheckInfo')"/>
               </div>
               <div class='check-name'>检查项名称</div>
               <div class='check-content'>检查项内容</div>
@@ -119,7 +120,7 @@
             </div>
             <div v-for='(item, index) in inCheckInfo' :key='index' class='check-list-item'>
               <div class='check-checkbox check-list-item-center'>
-                <a-checkbox :checked='item.checked' @change="e=>checkItemChange(e,item, 'inCheckInfo')" />
+                <a-checkbox :checked='item.checked' @change="e=>checkItemChange(e,item, 'inCheckInfo')"/>
               </div>
               <div class='check-name check-list-item-center'>
                 <span v-if='!item.isEdit'>{{ item.itemName }}</span>
@@ -138,9 +139,9 @@
               </div>
               <div class='check-res check-list-item-center'>
                 <div v-if='!item.isEdit || item.isCheckRes' @click="() => handleCheckRes(item, index, 'inCheckInfo')">
-                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1' />
-                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha' />
-                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti' />
+                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
                   <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
                 <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'
@@ -152,7 +153,7 @@
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
                 <template v-if='item.checkFlag === 2'>
-                  <h-icon type='icon-xieti' />
+                  <h-icon type='icon-xieti'/>
                 </template>
                 <template v-else>
                   {{ item.checkUserName || '--' }}
@@ -174,12 +175,12 @@
           <a-button size='small' type='ghost-primary' @click="handleCheckAll('afterCheckInfo')"> 一键复核</a-button>
         </div>
         <div slot='content' class='check-list'>
-          <a-empty v-if='afterCheckInfo && afterCheckInfo.length <= 0' />
+          <a-empty v-if='afterCheckInfo && afterCheckInfo.length <= 0'/>
           <template v-else>
             <div class='check-list-item check-list-item-center'>
               <div class='check-checkbox'>
                 <a-checkbox :checked='checkAll' :indeterminate='indeterminate'
-                            @change="e=>checkChangeAll(e,'afterCheckInfo')" />
+                            @change="e=>checkChangeAll(e,'afterCheckInfo')"/>
               </div>
               <div class='check-name'>检查项名称</div>
               <div class='check-content'>检查项内容</div>
@@ -191,7 +192,7 @@
             </div>
             <div v-for='(item, index) in afterCheckInfo' :key='index' class='check-list-item'>
               <div class='check-checkbox check-list-item-center'>
-                <a-checkbox :checked='item.checked' @change="e=>checkItemChange(e,item, 'afterCheckInfo')" />
+                <a-checkbox :checked='item.checked' @change="e=>checkItemChange(e,item, 'afterCheckInfo')"/>
               </div>
               <div class='check-name check-list-item-center'>
                 <span v-if='!item.isEdit'>{{ item.itemName }}</span>
@@ -211,9 +212,9 @@
               <div class='check-res check-list-item-center'>
                 <div v-if='!item.isEdit || item.isCheckRes'
                      @click="() => handleCheckRes(item, index, 'afterCheckInfo')">
-                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1' />
-                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha' />
-                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti' />
+                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
                   <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
                 <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'
@@ -225,29 +226,30 @@
               </div>
               <div class='check-flag-person' @click='() => handleFlagCheck(item, index)'>
                 <template v-if='item.checkFlag === 2'>
-                  <h-icon type='icon-xieti' />
+                  <h-icon type='icon-xieti'/>
                 </template>
                 <template v-else>
                   {{ item.checkUserName || '--' }}
                   <div>{{ formatTime(item.checkTime) }}</div>
                 </template>
               </div>
-              <a-popconfirm class='check-operate' title='确定删除吗?' @confirm='handleDelete(item,index,"afterCheckInfo")'>
+              <a-popconfirm class='check-operate' title='确定删除吗?'
+                            @confirm='handleDelete(item,index,"afterCheckInfo")'>
                 <a style='color: #ff4d4f'>删除</a>
               </a-popconfirm>
             </div>
           </template>
         </div>
       </h-card>
-      <check-ensure-modal ref='checkEnsureModal' />
+      <check-ensure-modal ref='checkEnsureModal'/>
     </a-spin>
   </h-modal>
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
-import { cloneDeep, isArray, isObject } from 'lodash'
-import { randomUUID } from '@/utils/util'
+import {postAction} from '@/api/manage'
+import {cloneDeep, isArray, isObject} from 'lodash'
+import {randomUUID} from '@/utils/util'
 import CheckEnsureModal from '@views/hifar/hifar-environmental-test/task/modules/components/CheckEnsureModal'
 import moment from 'moment'
 
@@ -263,7 +265,7 @@ export default {
       default: false
     }
   },
-  components: { CheckEnsureModal },
+  components: {CheckEnsureModal},
   data() {
     return {
       moment,
@@ -307,7 +309,7 @@ export default {
     },
     handleBlurSave(item) {
       if (item.itemContent || item.itemName || item.itemRequire) {
-        item.isdel=this.buildWord ? '1' : "0";
+        item.isdel = this.buildWord ? '1' : "0";
         postAction(this.url.updateCheckItem, item).then(res => {
           if (res.code === 200) {
             this.$message.success('保存成功')
@@ -340,14 +342,14 @@ export default {
         await postAction(this.url.updateCheckItem, extendCheckedList[i])
       }
       this[type] = this[type].concat(extendCheckedList).map(item1 => {
-        return { ...item1, checked: false }
+        return {...item1, checked: false}
       })
       this.checkAll = false
       this.indeterminate = false
       this.spinLoading = false
     },
     handleAdd(type) {
-      let params = this[type].length > 0 ? cloneDeep(this[type][this[type].length - 1]) : Object.assign({}, this.checkDetail, { testId: this.testId })
+      let params = this[type].length > 0 ? cloneDeep(this[type][this[type].length - 1]) : Object.assign({}, this.checkDetail, {testId: this.testId})
       let records = {}
       records.pid = params.pid ? params.pid : (type === 'beforeCheckInfo' ? params.beforeCheckId : type === 'inCheckInfo' ? params.inCheckId : type === 'afterCheckInfo' ? params.afterCheckId : '')
       records.tenantId = params.tenantId
@@ -381,10 +383,10 @@ export default {
       this.afterCheckInfo = []
     },
     getCheckDetail() {
-      postAction(this.url.detail, { id: this.testId }).then((res) => {
+      postAction(this.url.detail, {id: this.testId}).then((res) => {
         if (res.code === 200) {
           this.checkDetail = res.data
-          let { beforeCheckInfo, inCheckInfo, afterCheckInfo } = res.data
+          let {beforeCheckInfo, inCheckInfo, afterCheckInfo} = res.data
           this.beforeCheckInfo = isArray(beforeCheckInfo) && beforeCheckInfo.length ? beforeCheckInfo : []
           this.inCheckInfo = isArray(inCheckInfo) && inCheckInfo.length ? inCheckInfo : []
           this.afterCheckInfo = isArray(afterCheckInfo) && afterCheckInfo.length ? afterCheckInfo : []
@@ -402,6 +404,7 @@ export default {
       }
       this.$set(this[type][index], 'itemRes', itemRes)
       this.handleBlurSave(item)
+      this.getCheckDetail()
     },
     handleFillCheck(item) {
       let record = {
@@ -418,7 +421,7 @@ export default {
       this.$refs.checkEnsureModal.show(record, this.handleFillSubmit)
     },
     handleFillSubmit(record) {
-      postAction(this.url.fill, { ...record }).then((res) => {
+      postAction(this.url.fill, {...record}).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查审核成功')
           this.getCheckDetail()
@@ -438,7 +441,11 @@ export default {
       }
 
       function deleteItem() {
-        postAction(this.url.deleteCheckDoItem, { id: item.id, testId: this.testId,isdel : this.buildWord ? '1' : "0" }).then(res => {
+        postAction(this.url.deleteCheckDoItem, {
+          id: item.id,
+          testId: this.testId,
+          isdel: this.buildWord ? '1' : "0"
+        }).then(res => {
           if (res.code === 200) {
             this.$message.success('删除成功')
             this.getCheckDetail()
@@ -463,7 +470,7 @@ export default {
       this.$refs.checkEnsureModal.show(record, this.handleCheckSubmit)
     },
     handleCheckSubmit(record) {
-      postAction(this.url.check, { ...record }).then((res) => {
+      postAction(this.url.check, {...record}).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查复核成功')
           this.getCheckDetail()
@@ -475,7 +482,7 @@ export default {
     checkItem() {
       let items = [], arr = cloneDeep(arguments[0])
       for (let i = 0; i < arr.length; i++) {
-        let { itemContent, itemName, itemRequire } = arr[i]
+        let {itemContent, itemName, itemRequire} = arr[i]
         if (itemContent || itemName || itemRequire) {
           let obj = {}
           arguments[1].forEach(item => {

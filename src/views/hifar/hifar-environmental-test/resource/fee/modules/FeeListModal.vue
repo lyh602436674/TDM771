@@ -175,7 +175,7 @@ export default {
       })
     }
     // 整数-整数
-    const regRange = /^-?\d+(-\d*[1-9]\d*)$/
+    const regRange = /^-?\d+(-\d*[0-9]\d*)$/
     // 浮点数或者整数-浮点数或者整数
     const accelerationRange = /^-?\d+(?:\.\d+)?-\d+(?:\.\d+)?$/
 
