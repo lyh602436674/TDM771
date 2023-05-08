@@ -757,10 +757,22 @@ export default {
       this.$refs.reviewPdf.show(path)
     },
     webOfficeEdit(fileUrl) {
-      let fileUrlAuth = fileUrl.split('?')[1]
+      // let fileUrlAuth = fileUrl.split('?')[1]
+      // fileUrl = fileUrl.split('?')[0]
+      // let token = this.$ls.get(ACCESS_TOKEN)
+      // WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+
+
       fileUrl = fileUrl.split('?')[0]
-      let token = this.$ls.get(ACCESS_TOKEN)
-      WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+      let obj = {
+        AccessKey: this.minioName || 'minioadmin',
+        SecretKey: this.minioName || 'minioadmin',
+        ServerOfficeFileUrl: fileUrl,
+        IsSaveAsPDF: true
+      }
+
+      let url = 'HifarWebOffice://' + JSON.stringify(obj)
+      window.open(encodeURI(url),)
     },
     handleEnlargement(record, extendRecord) {
       this.$refs.EquipBasicLineModal.open(record, extendRecord)

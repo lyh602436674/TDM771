@@ -307,7 +307,7 @@ export default {
           this.$emit('change', res.data)
           this.handleCancel()
         } else {
-          this.$message.success(res.msg)
+          this.$message.warning(res.msg)
         }
       }).finally(() => {
         this.submitLoading = false
@@ -336,11 +336,12 @@ export default {
         } else {
           this.distributeTask(params)
         }
-      }).catch(err => {
-        this.submitLoading = false
-      }).finally(() => {
-        this.submitLoading = false
       })
+      //   .catch(err => {
+      //   this.submitLoading = false
+      // }).finally(() => {
+      //   this.submitLoading = false
+      // })
     },
   },
 }

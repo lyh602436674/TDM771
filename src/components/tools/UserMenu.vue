@@ -43,14 +43,14 @@
         </a>
       </a-tooltip>
     </span>
-    <span class="action iconfont">
-      <a-tooltip title="工具">
-        <a class="logout_title" href="javascript:;" @click="goToolsManage">
-          <h-icon type="icon-tool"/>
-        </a>
-      </a-tooltip>
-    </span>
-    <header-notice class="action iconfont"/>
+<!--    <span class="action iconfont">-->
+<!--      <a-tooltip title="工具">-->
+<!--        <a class="logout_title" href="javascript:;" @click="goToolsManage">-->
+<!--          <h-icon type="icon-tool"/>-->
+<!--        </a>-->
+<!--      </a-tooltip>-->
+<!--    </span>-->
+<!--    <header-notice class="action iconfont"/>-->
     <a-dropdown>
       <span class="action action-full ant-dropdown-link user-dropdown-menu">
         <a-avatar :src="getAvatar()" class="avatar" size="small"/>

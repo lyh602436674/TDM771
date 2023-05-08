@@ -116,7 +116,7 @@ export default {
     loadStaticData() {
       postAction(this.url.statics, {}).then((res) => {
         if (res.code === 200) {
-          this.taskList = res.data
+          this.taskList = res.data.sort((a,b) => a.rowSort - b.rowSort)
         }
       })
     },

@@ -21,6 +21,9 @@
         <a-button icon="eye" size="small" type="primary" @click="handleIdea">
           意见汇总
         </a-button>
+        <a-button icon="export" size="small" type="primary" @click="handleTurnover">
+          移交
+        </a-button>
         <a-badge :count="reportNum">
           <a-button
             v-has="'report:add'"
@@ -31,6 +34,9 @@
           >添加
           </a-button>
         </a-badge>
+        <a-button v-has="'report:download'" icon="download" size="small" type="primary" @click="batchDownload">
+          批量下载
+        </a-button>
         <a-button v-has="'report:delete'" icon="delete" size="small" type="danger" @click="batchDel">
           批量删除
         </a-button>
@@ -41,6 +47,7 @@
         slot="content"
         :columns="columns"
         :data="loadData"
+        :loading="tableLoading"
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :rowKey="(record) => record.id"
         :scroll="{ x: true }"
@@ -54,6 +61,10 @@
         </span>
         <template slot="downloadNum" slot-scope="text,record">
           <a @click="downloadRecord(record)">查看下载记录</a>
+        </template>
+        <template slot="transferStatus" slot-scope="text,record">
+          <a-tag v-if="text === 0" color="#f50">待移交</a-tag>
+          <a-tag v-if="text === 1" color="#87d068">已移交</a-tag>
         </template>
         <div slot="action" slot-scope="text, record">
           <a-space>
@@ -174,7 +185,7 @@
 
 <script>
 import moment from 'moment'
-import {downloadFile, postAction} from '@/api/manage'
+import {createLink, downloadFile, postAction} from '@/api/manage'
 import mixin from './mixin'
 import * as WebCtrl from '@/plugins/webOffice'
 import ReportMakeListsModal from './modules/ReportMakeListsModal.vue'
@@ -217,6 +228,8 @@ export default {
         pushIntranet: '/ReportPushApiBusiness/pushIntranet',
         pushMes: '/ReportPushApiBusiness/pushReportToMes',
         amend: "/HfEnvReportAmendBusiness/amendReport",
+        turnover: "/HfEnvReportBusiness/modifyReportStatus",
+        downLoadBatchById: "/HfEnvReportReceiveBusiness/downLoadBatchById",
       },
       reportNum: 0,
       selectedRowKeys: [],
@@ -351,6 +364,13 @@ export default {
           }
         },
         {
+          title: '移交状态',
+          align: 'center',
+          width: 100,
+          dataIndex: 'transferStatus',
+          scopedSlots: {customRender: 'transferStatus'}
+        },
+        {
           title: '试验项目',
           align: 'left',
           width: 150,
@@ -435,6 +455,28 @@ export default {
     this.loadReportNum()
   },
   methods: {
+    batchDownload() {
+      if (!this.selectedRowKeys.length) return this.$message.warning('请至少选择一条报告')
+      getAction(this.url.downLoadBatchById, {ids: this.selectedRowKeys.toString()}).then(res => {
+        if (res.code === 200) {
+          createLink(res.data, '试验报告')
+        } else {
+          this.$message.error('下载失败!')
+        }
+      })
+    },
+    handleTurnover() {
+      if (!this.selectedRowKeys.length) return this.$message.warning('请选择需要移交的报告')
+      if (Array.from(new Set(this.selectedRows.map(item => item.status))).toString() !== '40') return this.$message.warning('请选择批准通过的报告进行移交')
+      postAction(this.url.turnover, {id: this.selectedRowKeys.toString(), transferStatus: "1"}).then(res => {
+        if (res.code === 200) {
+          this.$message.success('移交成功')
+          this.refresh()
+        } else {
+          this.$message.warning('移交失败')
+        }
+      })
+    },
     handleIdea() {
       if (this.selectedRowKeys.length > 1) {
         return this.$message.warning('只能选择一条报告')
@@ -530,6 +572,7 @@ export default {
     },
     // 单个删除
     handleDelete(id, status) {
+      this.tableLoading = true
       let delInfo = [{id, status}]
       postAction(this.url.delete, {delInfo: delInfo}).then((res) => {
         if (res.code === 200) {
@@ -538,6 +581,8 @@ export default {
         } else {
           this.$message.warning(res.msg)
         }
+      }).finally(() => {
+        this.tableLoading = false
       })
     },
 
@@ -545,6 +590,7 @@ export default {
     batchDel() {
       let _this = this
       if (_this.selectedRowKeys.length) {
+        this.tableLoading = true
         this.$confirm({
           title: '确认删除',
           content: '删除后不可恢复，确认删除？',
@@ -564,7 +610,12 @@ export default {
               } else {
                 _this.$message.warning(res.msg)
               }
+            }).finally(() => {
+              _this.tableLoading = false
             })
+          },
+          onCancel: function () {
+            _this.tableLoading = false
           }
         })
       } else {
@@ -587,11 +638,21 @@ export default {
     },
     // 编辑
     handleEdit(record) {
-      let fileUrl = record.filePath
-      let fileUrlAuth = fileUrl.split('?')[1]
-      fileUrl = fileUrl.split('?')[0]
-      let token = this.$ls.get(ACCESS_TOKEN)
-      WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+      let fileUrl = record.filePath.split('?')[0]
+      // let fileUrlAuth = fileUrl.split('?')[1]
+      // fileUrl = fileUrl.split('?')[0]
+      // let token = this.$ls.get(ACCESS_TOKEN)
+      // WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+
+      let obj = {
+        AccessKey: this.minioName || 'minioadmin',
+        SecretKey: this.minioName || 'minioadmin',
+        ServerOfficeFileUrl: fileUrl,
+        IsSaveAsPDF: true
+      }
+
+      let url = 'HifarWebOffice://' + JSON.stringify(obj)
+      window.open(encodeURI(url),)
     },
     // 详情
     handleDetail(record) {

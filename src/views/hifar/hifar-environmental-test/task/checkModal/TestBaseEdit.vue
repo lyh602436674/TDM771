@@ -1400,6 +1400,13 @@ export default {
             return text || '--'
           }
         },
+        {
+          title: '备注',
+          dataIndex: 'remarks',
+          customRender: (text) => {
+            return text || '--'
+          }
+        },
       ],
       sensorColumns: [
         {

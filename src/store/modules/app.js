@@ -55,7 +55,7 @@ const app = {
       state.sidebar.opened = type
     },
     CLOSE_SIDEBAR: (state, withoutAnimation) => {
-      Vue.ls.set(SIDEBAR_TYPE, true)
+      Vue.ls.set(SIDEBAR_TYPE, process.env.NODE_ENV === 'development')
       state.sidebar.opened = false
       state.sidebar.withoutAnimation = withoutAnimation
     },
