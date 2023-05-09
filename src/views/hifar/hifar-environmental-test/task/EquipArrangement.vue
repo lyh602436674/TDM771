@@ -757,22 +757,20 @@ export default {
       this.$refs.reviewPdf.show(path)
     },
     webOfficeEdit(fileUrl) {
-      // let fileUrlAuth = fileUrl.split('?')[1]
-      // fileUrl = fileUrl.split('?')[0]
-      // let token = this.$ls.get(ACCESS_TOKEN)
-      // WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
-
-
+      let fileUrlAuth = fileUrl.split('?')[1]
       fileUrl = fileUrl.split('?')[0]
-      let obj = {
-        AccessKey: this.minioName || 'minioadmin',
-        SecretKey: this.minioName || 'minioadmin',
-        ServerOfficeFileUrl: fileUrl,
-        IsSaveAsPDF: true
-      }
-
-      let url = 'HifarWebOffice://' + JSON.stringify(obj)
-      window.open(encodeURI(url),)
+      let token = this.$ls.get(ACCESS_TOKEN)
+      WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+      // fileUrl = fileUrl.split('?')[0]
+      // let obj = {
+      //   AccessKey: this.minioName || 'minioadmin',
+      //   SecretKey: this.minioName || 'minioadmin',
+      //   ServerOfficeFileUrl: fileUrl,
+      //   IsSaveAsPDF: true
+      // }
+      //
+      // let url = 'HifarWebOffice://' + JSON.stringify(obj)
+      // window.open(encodeURI(url),)
     },
     handleEnlargement(record, extendRecord) {
       this.$refs.EquipBasicLineModal.open(record, extendRecord)
@@ -783,8 +781,12 @@ export default {
       this.buttons.map((item, index) => {
         item.type = 'primary'
       })
-      // this.selectedKeys = [selectedRow[0].equipId]
-      // this.getEquipDetail()
+      // 点击列表自动定位设备
+      if (!this.selectedKeys.length) {
+        this.selectedKeys = [selectedRow[0].equipId]
+        this.getEquipDetail()
+        this.$refs.equipTaskList.refresh()
+      }
     },
     loadLeftTreeBySearch(e) {
       let value = isObject(e) ? e.target.value : e

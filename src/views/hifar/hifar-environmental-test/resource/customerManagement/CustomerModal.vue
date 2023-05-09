@@ -33,6 +33,7 @@
 import {postAction} from '@/api/manage'
 import FeeListSelectModal from '../fee/modules/FeeListSelectModal.vue'
 import {isNumber} from "lodash";
+import {CUST_TYPE_OPTIONS} from "@views/hifar/constants";
 
 const validatorDiscount = (rule, value, callback) => {
   const regMinMax = /^((\d|10)(\.\d{1,2})?)$/
@@ -88,10 +89,7 @@ export default {
           title: '客户类型',
           key: 'custType',
           formType: 'select',
-          options: [
-            { title: '内部', value: 'inside', key: 'inside' },
-            { title: '外部', value: 'outside', key: 'outside' },
-          ],
+          options: CUST_TYPE_OPTIONS,
         },
         {
           title: '联系人',

@@ -166,7 +166,7 @@
                           @click="handlePush(record,'mes')"/>
                 </a-space>
               </template>
-              <span v-if="record.status === 1" v-has="'report:delete'">
+              <span v-if="[1,30,50].includes(record.status)" v-has="'report:delete'">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
                   <a-icon class="danger-text cursor-pointer" title="删除" type="delete"/>
                 </a-popconfirm>
@@ -639,20 +639,19 @@ export default {
     // 编辑
     handleEdit(record) {
       let fileUrl = record.filePath.split('?')[0]
-      // let fileUrlAuth = fileUrl.split('?')[1]
-      // fileUrl = fileUrl.split('?')[0]
-      // let token = this.$ls.get(ACCESS_TOKEN)
-      // WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
-
-      let obj = {
-        AccessKey: this.minioName || 'minioadmin',
-        SecretKey: this.minioName || 'minioadmin',
-        ServerOfficeFileUrl: fileUrl,
-        IsSaveAsPDF: true
-      }
-
-      let url = 'HifarWebOffice://' + JSON.stringify(obj)
-      window.open(encodeURI(url),)
+      let fileUrlAuth = fileUrl.split('?')[1]
+      fileUrl = fileUrl.split('?')[0]
+      let token = this.$ls.get(ACCESS_TOKEN)
+      WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+      // let obj = {
+      //   AccessKey: this.minioName || 'minioadmin',
+      //   SecretKey: this.minioName || 'minioadmin',
+      //   ServerOfficeFileUrl: fileUrl,
+      //   IsSaveAsPDF: true
+      // }
+      //
+      // let url = 'HifarWebOffice://' + JSON.stringify(obj)
+      // window.open(encodeURI(url),)
     },
     // 详情
     handleDetail(record) {

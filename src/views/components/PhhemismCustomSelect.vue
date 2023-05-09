@@ -38,7 +38,7 @@
           slot="search-form"
           size="small"
           :showToggleButton="false"
-          :data="columns"
+          :data="columns.filter(v => v.search !== false)"
           @change="handleSearch"
         />
         <h-vex-table
@@ -56,6 +56,8 @@
 <script>
 import {getAction} from '@/api/manage'
 import {isArray, isFunction, isString} from 'lodash'
+import {CUST_TYPE_OPTIONS} from "@views/hifar/constants";
+
 
 export default {
   inject: {
@@ -93,7 +95,8 @@ export default {
     },
     selectedName: {
       type: [Function, String],
-      default: () => {},
+      default: () => {
+      },
     },
   },
   watch: {
@@ -112,22 +115,43 @@ export default {
         }
       },
     },
+    entrustType: {
+      immediate: true,
+      handler(val) {
+        this.localEntrustType = val
+      }
+    }
   },
   data() {
     return {
       visible: false,
-      queryParams: {},
-      title: '选择',
+      title: '选择送试单位',
       loading: false,
       localSelectedName: this.selectedName || undefined,
       selectedRowKeys: [],
       selectedRows: [],
+      entrustType: "1",
+      queryParams: {},
+      localEntrustType: '1',
       columns: [
         {
           title: '客户单位',
           dataIndex: 'custName',
           key: 'c_custName_7',
           formType: 'input',
+        },
+        {
+          title: '客户类型',
+          dataIndex: 'custType',
+          search: false,
+          customRender: t => {
+            try {
+              return CUST_TYPE_OPTIONS.filter(v => v.key === t)[0].title
+            } catch {
+              return '--'
+            }
+
+          }
         },
         {
           title: '客户折扣',
@@ -183,7 +207,6 @@ export default {
       this.selectedRows = selectedRows
     },
     handleCancel() {
-      this.selectedRowKeys
       this.visible = false
     },
     showSelectModal() {
@@ -200,6 +223,11 @@ export default {
         ...params,
         ...this.queryParams,
       }
+      let obj = {
+        '1': "inside",
+        '2': 'outside'
+      }
+      data.c_custType_1 = obj[this.localEntrustType]
       return getAction(this.url, data).then((res) => {
         if (res.code === 200) {
           return res.data
@@ -218,12 +246,14 @@ export default {
     border-color: #f5222d !important;
   }
 }
+
 .sys-product-select {
   .sys-product-select-wrapper {
     width: 100%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
+
     .sys-product-select {
       box-sizing: border-box;
       margin: 0;
@@ -251,11 +281,13 @@ export default {
         outline: 0;
         box-shadow: 0 0 0 2px rgb(64 158 255 / 20%);
       }
+
       &:empty::before {
         color: lightgrey;
         content: attr(placeholder);
       }
     }
+
     .ant-btn {
       margin-left: 5px;
     }

@@ -259,10 +259,14 @@ export default {
           key: 'entrustType',
           formType: 'dict',
           dictCode: 'hf_entrustlist_entrustType',
-          disabled: true,
           validate: {
             rules: [{required: true, message: '请选择委托单类型', trigger: 'blur'}]
           },
+          change: val => {
+            this.entrustType = val
+            this.$refs.PhemismCustomSelect.entrustType = val
+            this.tableData = []
+          }
         },
         {
           title: '要求试验时间',
@@ -680,6 +684,14 @@ export default {
     },
     // 新增产品弹框返回数据
     productAddCallback(values) {
+      if (this.entrustType === '1') {
+        this.addProductDataByInner(values)
+      }
+      if (this.entrustType === '2') {
+        this.addProductDataByOuter(values)
+      }
+    },
+    addProductDataByInner(values) {
       let result = []
       for (let i = 0; i < values.length; i++) {
         let v = values[i]
@@ -697,6 +709,72 @@ export default {
         }
       }
       this.tableData = this.tableData.concat(result)
+    },
+    addProductDataByOuter(values) {
+      if (values.pieceNo.includes('-') && values.pieceNo.includes(',')) {
+        this.tableData.push(...this.splitByBoth(values))
+      } else if (values.pieceNo.includes(',')) {
+        this.tableData.push(...this.splitByComma(values, values.pieceNo.split(',')))
+      } else if (values.pieceNo.includes('-')) {
+        this.tableData.push(...this.splitByHorizontalLine(values, values.pieceNo.split('-')))
+      } else {
+        this.tableData.push({
+          id: randomUUID(),
+          productName: values.productName,
+          pieceNum: 1,
+          productAlias: values.productAlias,
+          pieceNo: (values.piecePrefix || '') + values.pieceNo,
+        })
+      }
+    },
+    splitByHorizontalLine(values, arr) {
+      //根据横杠分隔
+      let tableData = []
+      let getZero = arr[0][0] === '0' && arr[0].substring(0, arr[0].lastIndexOf('0') + 1) || ''
+      let num = +arr[1] + 1 - +arr[0] > +values.pieceNum ? +arr[0] + +values.pieceNum - 1 : +arr[1]
+      for (let i = +arr[0]; i <= num; i++) {
+        tableData.push({
+          id: randomUUID(),
+          productName: values.productName,
+          pieceNum: 1,
+          productAlias: values.productAlias,
+          pieceNo: (values.piecePrefix || '') + getZero + i,
+        })
+      }
+      return tableData
+    },
+    splitByComma(values, arr) {
+      // 根据逗号分隔
+      let tableData = []
+      arr.forEach(item => {
+        tableData.push({
+          id: randomUUID(),
+          productName: values.productName,
+          pieceNum: 1,
+          productAlias: values.productAlias,
+          pieceNo: (values.piecePrefix || '') + item,
+        })
+      })
+      return tableData
+    },
+    splitByBoth(values) {
+      // 逗号和横杠都存在
+      let commaArr = values.pieceNo.split(',')
+      let tableData = []
+      for (let i = 0; i < commaArr.length; i++) {
+        if (commaArr[i].includes('-')) {
+          tableData.push(...this.splitByHorizontalLine(values, commaArr[i].split('-')))
+        } else {
+          tableData.push({
+            id: randomUUID(),
+            productName: values.productName,
+            pieceNum: 1,
+            productAlias: values.productAlias,
+            pieceNo: (values.piecePrefix || '') + commaArr[i],
+          })
+        }
+      }
+      return tableData
     },
     // 产品分类：根据产品名称和代号进行分类
     pieceSorting(data, name = 'productName', model = 'productAlias') {

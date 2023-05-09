@@ -36,3 +36,10 @@ export const REPORT_REJECT_TYPE = [
   {title: "报告批准", key: "3", value: "3"},
   {title: "修改审批", key: "4", value: "4"},
 ]
+/**
+ * 客户管理-客户类型
+ * */
+export const CUST_TYPE_OPTIONS = [
+  { title: '内部', value: 'inside', key: 'inside' },
+  { title: '外部', value: 'outside', key: 'outside' },
+]

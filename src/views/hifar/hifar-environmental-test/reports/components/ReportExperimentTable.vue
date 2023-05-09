@@ -7,7 +7,7 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\reports\components\ReportExperimentTable.vue
 -->
 <template>
-  <h-card :border='true' :fixed='true'>
+  <h-card :border='true' :fixed='true' style="height:100%">
     <template slot='title'> 试验列表</template>
     <h-search
       slot='search-form'
@@ -24,14 +24,13 @@
       slot='content'
       :columns='columns'
       class="templateSelect"
-      :data='custLoadData'
-      :row-selection="{ selectedRowKeys: selectedRowKeys,  onSelect: onSelect }"
+      :data='loadData'
+      :row-selection="{ selectedRowKeys,onSelect }"
       :rowKey="(record) => record.id"
-      :scroll='{ x: true }'
     >
-                    <span slot="reportFlag" slot-scope="text, record">
-                        <a-badge :color='text | testStatusColorFilter' :text='text | testStatusFilter'/>
-              </span>
+        <span slot="reportFlag" slot-scope="text, record">
+           <a-badge :color='text | testStatusColorFilter' :text='text | testStatusFilter'/>
+        </span>
     </h-vex-table>
   </h-card>
 </template>
@@ -40,22 +39,22 @@
 import {postAction} from '@/api/manage'
 import moment from 'moment'
 import mixin from '@/views/hifar/hifar-environmental-test/mixin.js'
-import HEditTree from '@/views/components/HEditTree.js'
 
 export default {
   mixins: [mixin],
-  components: {
-    HEditTree,
+  props: {
+    reportFlag: {
+      type: Number,
+      default: 50
+    }
   },
   data() {
     return {
       moment,
       selectedRowKeys: [],
       queryParam: {},
-      formDatas: {},
-      MainSearchParams: {},
       url: {
-        productTable: '/HfEnvReportBusiness/listPageTest'
+        list: '/HfEnvReportBusiness/listPageTest'
       },
       // 搜索
       searchBar: [
@@ -149,13 +148,14 @@ export default {
           dataIndex: 'productName',
         },
       ],
-      custLoadData: (params) => {
+      loadData: (params) => {
         let data = {
           ...this.queryParam,
           ...params,
-          c_reportType_1: '1'
+          c_reportType_1: '1',
+          reportFlag: this.reportFlag, // 50 待出 60 已出
         }
-        return postAction(this.url.productTable, data).then((res) => {
+        return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
             return res.data
           }
@@ -183,7 +183,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .templateSelect {
-  /deep/  .table-row-overdue {
+  /deep/ .table-row-overdue {
     background-color: #faa4a4;
   }
 }

@@ -39,12 +39,9 @@
           </a>
         </span>
         <span slot="custType" slot-scope="text">
-          <a-tag v-if="text === 'inside'" color="pink">
-            {{ text === 'inside' ? (text = '内部') : '' }}
-          </a-tag>
-          <a-tag v-if="text === 'outside'" color="green">
-            {{ text === 'outside' ? (text = '外部') : '' }}
-          </a-tag>
+          <a-tag v-if="text === 'inside'" color="pink">内部</a-tag>
+          <a-tag v-else-if="text === 'outside'" color="green">外部</a-tag>
+          <span v-else>--</span>
         </span>
 
         <span slot="action" slot-scope="text, record">
@@ -89,6 +86,7 @@ import mixin from '@/views/hifar/mixin.js'
 import {downloadFile, postAction} from '@/api/manage'
 import CustomerDetail from './customerDetail'
 import CustomerModal from './CustomerModal'
+import {CUST_TYPE_OPTIONS} from "@views/hifar/constants";
 
 export default {
   provide() {
@@ -135,10 +133,7 @@ export default {
           title: '客户类型',
           key: 'c_custType_7',
           formType: 'select',
-          options: [
-            { title: '内部', value: 'inside', key: 'inside' },
-            { title: '外部', value: 'outside', key: 'outside' },
-          ],
+          options: CUST_TYPE_OPTIONS,
         },
         {
           title: '联系人',

@@ -40,7 +40,6 @@ export default {
             return '已删除';
         }
       },
-      // 状态：1 未开始 10 已撤销 20 进行中 30 暂停 40 强制结束 50 已完成 99 已删除
       testStatusFilter(status) {
         let s = Number(status)
         switch (s) {

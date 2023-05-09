@@ -8,7 +8,7 @@
  -->
 <template>
   <h-modal
-    title="添加"
+    title="添加报告"
     inner
     fullScreen
     destroyOnClose
@@ -21,14 +21,17 @@
         确定
       </a-button>
     </template>
-    <report-experiment-table ref="reportExperimentMain" @change="selectChange"></report-experiment-table>
-    <report-template-select ref="reportTemplateSelect" @callback="selectedTemplate"></report-template-select>
+    <a-spin class="spin-wrapper" :spinning="submitLoading" tip="生成报告中...">
+      <report-experiment-table-tabs ref="reportExperimentMain" @change="selectChange"></report-experiment-table-tabs>
+      <report-template-select ref="reportTemplateSelect" @callback="selectedTemplate"></report-template-select>
+    </a-spin>
   </h-modal>
 </template>
 
 <script>
 import {postAction} from '@/api/manage'
-import ReportExperimentTable from '../components/ReportExperimentTable'
+import ReportExperimentTableTabs
+  from '@views/hifar/hifar-environmental-test/reports/components/ReportExperimentTableTabs.vue'
 import ReportTemplateSelect from '@views/hifar/hifar-environmental-test/reports/modules/ReportTemplateSelect';
 
 export default {
@@ -43,7 +46,6 @@ export default {
       submitLoading: false,
       selectedRowKeys: [],
       selectedRow: [],
-      entrustCodeArr: [],
       url: {
         submit: '/HfEnvReportBusiness/add'
       }
@@ -51,7 +53,7 @@ export default {
   },
   components: {
     ReportTemplateSelect,
-    ReportExperimentTable
+    ReportExperimentTableTabs
   },
   methods: {
     handleCancel() {
@@ -62,20 +64,10 @@ export default {
     show() {
       this.visible = true
     },
-    // 项目页面保存
     selectChange(selectedRowKeys, selectedRow) {
-      let entrustCodeArr = []
-      if (selectedRow.length > 0) {
-        selectedRow.forEach((item) => {
-          entrustCodeArr.push(item.entrustCode)
-        })
-      }
-      this.entrustCodeArr = entrustCodeArr
       this.selectedRow = selectedRow
       this.selectedRowKeys = selectedRowKeys
-      this.$emit('change')
     },
-    // 按试验生成报告按钮
     saveTestHandle() {
       if (!this.selectedRowKeys.length) return this.$message.warning('请选择试验')
       if (Array.from(new Set(this.selectedRow.map(item => item.entrustNo))).length > 1) return this.$message.warning('只能选择同一委托单')
@@ -85,18 +77,13 @@ export default {
       this.handleSubmit(selectedRowKeys, checkboxValue)
     },
     handleSubmit(templateId, checkboxValue) {
-      let {entrustCodeArr, selectedRowKeys} = this
+      let {selectedRowKeys} = this
       if (!selectedRowKeys.length) {
         this.$message.warning('请选择试验')
       } else {
-        let testId = []
-        let selectedRow = this.selectedRow
-        selectedRow.forEach((item) => {
-          testId.push(item.id)
-        })
         this.submitLoading = true
         let params = {
-          tests: selectedRow,
+          tests: this.selectedRow,
           buttonFlag: 'save',
           templateId: templateId.toString(),
           options: checkboxValue.toString(),
@@ -119,4 +106,11 @@ export default {
 </script>
 
 <style lang='less' scoped>
+.spin-wrapper {
+  height: 100%;
+
+  /deep/ .ant-spin-container {
+    height: 100%;
+  }
+}
 </style>
