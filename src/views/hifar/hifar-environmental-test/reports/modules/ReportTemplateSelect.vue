@@ -18,20 +18,6 @@
       style="height: 100%"
     >
     </h-vex-table>
-
-    <h-card v-if="selectedRowKeys.length" style="margin-top:20px" title="报告内容信息">
-      <a-checkbox-group :value="checkboxValue" @change="handleCheckboxChange">
-        <a-checkbox
-          v-for="item in checkboxOptions"
-          :key="item.value"
-          :data-title="item.title"
-          :value="item.value"
-        >
-          {{ item.title }}
-        </a-checkbox>
-      </a-checkbox-group>
-    </h-card>
-
   </h-modal>
 </template>
 
@@ -50,14 +36,6 @@ export default {
     return {
       visible: false,
       submitLoading: false,
-      checkboxValue: ['1', '2', '3', '4','5'],
-      checkboxOptions: [
-        {title: "试前检查单", value: "1"},
-        {title: "样品图片", value: "2"},
-        {title: "曲线图片", value: "3"},
-        {title: "振动图谱", value: "4"},
-        {title: "项目附件", value: "5"},
-      ],
       columns: [
         {
           title: '模板分类',
@@ -114,9 +92,6 @@ export default {
     show() {
       this.visible = true
     },
-    handleCheckboxChange(checked) {
-      this.checkboxValue = checked
-    },
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -129,7 +104,7 @@ export default {
       if (this.submitLoading) return
       if (this.selectedRowKeys.length) {
         this.submitLoading = true
-        this.$emit('callback', this.selectedRowKeys, this.checkboxValue)
+        this.$emit('callback', this.selectedRowKeys)
         this.handleCancel()
       } else {
         this.$message.warning('请选择模板')

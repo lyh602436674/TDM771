@@ -16,7 +16,7 @@
     :getContainer="getContainer"
     @cancel="handleCancel">
     <template slot="footer">
-      <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
+      <a-button type="ghost-danger" :loading="submitLoading" @click="handleCancel"> 关闭</a-button>
       <a-button type="ghost-success" :loading="submitLoading" @click="saveTestHandle">
         确定
       </a-button>
@@ -65,8 +65,8 @@ export default {
       this.visible = true
     },
     selectChange(selectedRowKeys, selectedRow) {
-      this.selectedRow = selectedRow
       this.selectedRowKeys = selectedRowKeys
+      this.selectedRow = selectedRow
     },
     saveTestHandle() {
       if (!this.selectedRowKeys.length) return this.$message.warning('请选择试验')
@@ -83,10 +83,13 @@ export default {
       } else {
         this.submitLoading = true
         let params = {
-          tests: this.selectedRow,
+          tests: this.selectedRow.map(item => {
+            return {...item, options: item.checkboxValue.toString()}
+          }),
           buttonFlag: 'save',
           templateId: templateId.toString(),
-          options: checkboxValue.toString(),
+          // options: checkboxValue.toString(),
+          options: Array.from(new Set(this.selectedRow.map(v => v.checkboxValue).flat())).toString(),
         }
         postAction('/HfEnvReportBusiness/generateReport', params).then((res) => {
           if (res.code === 200) {

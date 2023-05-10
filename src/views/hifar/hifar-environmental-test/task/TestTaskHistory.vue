@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import {createLink, downloadFile, postAction} from '@/api/manage'
+import {createLink, downloadFile, officeOnlineEdit, postAction} from '@/api/manage'
 import moment from 'moment'
 import TestTaskBaseInfoModal from '@/views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal'
 import TestCheckModal from "@views/hifar/hifar-environmental-test/task/checkModal/TestCheckModal";
@@ -541,10 +541,11 @@ export default {
       this.$refs.reviewPdf.show(path)
     },
     webOfficeEdit(fileUrl) {
-      let fileUrlAuth = fileUrl.split('?')[1]
-      fileUrl = fileUrl.split('?')[0]
-      let token = this.$ls.get(ACCESS_TOKEN)
-      WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+      officeOnlineEdit(fileUrl.split('?')[0])
+      // let fileUrlAuth = fileUrl.split('?')[1]
+      // fileUrl = fileUrl.split('?')[0]
+      // let token = this.$ls.get(ACCESS_TOKEN)
+      // WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
     },
     refresh(bool = false) {
       this.$refs.taskHistoryTable.refresh(bool)

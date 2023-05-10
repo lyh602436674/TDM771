@@ -93,7 +93,7 @@
 
 <script>
 import moment from 'moment'
-import {createLink, postAction} from '@api/manage'
+import {createLink, officeOnlineEdit, postAction} from '@api/manage'
 import mixin from '@views/hifar/hifar-environmental-test/mixin.js'
 import AbnormalDetailModal from '@views/hifar/hifar-environmental-test/task/modules/AbnormalDetailModal';
 import {ACCESS_TOKEN} from '@/store/mutation-types';
@@ -126,7 +126,7 @@ export default {
       url: {
         list: '/HfEnvHistoryTestBusiness/listPage'
       },
-      taskStatus: { 1: '未发布', 2: '执行中', 3: '已完成', 4: '强制终止' },
+      taskStatus: {1: '未发布', 2: '执行中', 3: '已完成', 4: '强制终止'},
       taskStatusColor: ['lightgrey', 'green', 'blue', 'red'],
       queryParams: {},
       selectedRowKeys: [],
@@ -217,28 +217,28 @@ export default {
           align: 'left',
           width: 140,
           dataIndex: 'taskno',
-          scopedSlots: { customRender: 'taskno' }
+          scopedSlots: {customRender: 'taskno'}
         },
         {
           title: '任务状态',
           align: 'center',
           dataIndex: 'taskstate',
           minWidth: 100,
-          scopedSlots: { customRender: 'taskstate' }
+          scopedSlots: {customRender: 'taskstate'}
         },
         {
           title: '异常数量',
           align: 'center',
           minWidth: 80,
           dataIndex: 'exceptioncnt',
-          scopedSlots: { customRender: 'exceptioncnt' }
+          scopedSlots: {customRender: 'exceptioncnt'}
         },
         {
           title: '终止记录',
           align: 'center',
           minWidth: 80,
           dataIndex: 'endCnt',
-          scopedSlots: { customRender: 'endCnt' }
+          scopedSlots: {customRender: 'endCnt'}
         },
         {
           title: '设备内部名称',
@@ -368,14 +368,14 @@ export default {
           align: 'center',
           width: 100,
           dataIndex: 'archiveRecord',
-          scopedSlots: { customRender: 'archiveRecord' }
+          scopedSlots: {customRender: 'archiveRecord'}
         },
         {
           title: '实施方案',
           align: 'center',
           width: 100,
           dataIndex: 'embodiment',
-          scopedSlots: { customRender: 'embodiment' }
+          scopedSlots: {customRender: 'embodiment'}
         }
       ],
       reviewPdfTitle: '',
@@ -421,7 +421,8 @@ export default {
       this.$refs.reviewPdf.show(path)
     },
     webOfficeEdit(fileUrl) {
-      WebCtrl.ShowEditPage(fileUrl.split('?')[0], this.$ls.get(ACCESS_TOKEN), baseUrl, fileUrl.split('?')[1], 'env')
+      officeOnlineEdit(fileUrl.split('?')[1])
+      // WebCtrl.ShowEditPage(fileUrl.split('?')[0], this.$ls.get(ACCESS_TOKEN), baseUrl, fileUrl.split('?')[1], 'env')
     },
     refresh(bool = true) {
       this.$refs.testArchiveTable.refresh(bool)

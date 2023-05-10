@@ -24,6 +24,10 @@
         :rowSelection="{ selectedRowKeys, onSelect }"
       >
         <template #entrustNo="text, record">
+          <span style="padding: 0 5px">
+            <h-icon v-if="record.entrustType === '1'" type='icon-nei'/>
+            <h-icon v-else type='icon-wai'/>
+          </span>
           <a v-if="record.entrustNo" @click="handleDetailCode(record,'1')">{{ record.entrustNo }}</a>
           <span v-else>--</span>
         </template>
@@ -206,7 +210,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          width: 140,
+          width: 160,
           dataIndex: 'entrustNo',
           scopedSlots: {customRender: 'entrustNo'},
           fixed: 'left'
@@ -402,7 +406,6 @@ export default {
         let data = {
           ...params,
           ...this.queryParams,
-          c_entrustType_1: '1'
         }
         // console.log(postActionDebounce(this.url.list, data, 500)(),'postActionDebounce(this.url.list, data, 500)')
         // return postActionDebounce(this.url.list, data, 500)().then((res) => {

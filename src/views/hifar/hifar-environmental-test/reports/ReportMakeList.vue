@@ -185,7 +185,7 @@
 
 <script>
 import moment from 'moment'
-import {createLink, downloadFile, postAction} from '@/api/manage'
+import {createLink, downloadFile, officeOnlineEdit, postAction} from '@/api/manage'
 import mixin from './mixin'
 import * as WebCtrl from '@/plugins/webOffice'
 import ReportMakeListsModal from './modules/ReportMakeListsModal.vue'
@@ -639,19 +639,11 @@ export default {
     // 编辑
     handleEdit(record) {
       let fileUrl = record.filePath.split('?')[0]
-      let fileUrlAuth = fileUrl.split('?')[1]
-      fileUrl = fileUrl.split('?')[0]
-      let token = this.$ls.get(ACCESS_TOKEN)
-      WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
-      // let obj = {
-      //   AccessKey: this.minioName || 'minioadmin',
-      //   SecretKey: this.minioName || 'minioadmin',
-      //   ServerOfficeFileUrl: fileUrl,
-      //   IsSaveAsPDF: true
-      // }
-      //
-      // let url = 'HifarWebOffice://' + JSON.stringify(obj)
-      // window.open(encodeURI(url),)
+      officeOnlineEdit(fileUrl)
+      // let fileUrlAuth = fileUrl.split('?')[1]
+      // fileUrl = fileUrl.split('?')[0]
+      // let token = this.$ls.get(ACCESS_TOKEN)
+      // WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
     },
     // 详情
     handleDetail(record) {

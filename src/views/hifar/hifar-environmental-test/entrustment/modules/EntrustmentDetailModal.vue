@@ -34,7 +34,7 @@
             <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
           </a-tab-pane>
           <a-tab-pane key='3' tab='试验信息'
-                      v-if="[20,40,50,80].includes(detailData.status)">
+                      v-if="[20,40,50,80].includes(detailData.status) && viewDetailType !== '1'">
             <test-task-info ref='TaskInfo' :entrustType="detailData.entrustType" :entrustId='entrustId'
                             class='autoHeight'></test-task-info>
           </a-tab-pane>
@@ -171,12 +171,7 @@ export default {
           } else if (status == 20) {
             this.current = 2
           } else if (status == 40) {
-            // 内部委托单不出报告，所以到了待出报告状态就代表已完成
-            if (record.entrustType === '1') {
-              this.current = 4
-            } else {
-              this.current = 3
-            }
+            this.current = 3
           } else if (status == 50) {
             this.current = 4
           }

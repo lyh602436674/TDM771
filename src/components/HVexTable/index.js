@@ -10,6 +10,7 @@ import T from "ant-design-vue/es/table/Table";
 import "./hVexTable.less";
 import {isArray, isEmpty, isFunction, isObject, isString} from "lodash";
 import {randomUUID} from '@/utils/util';
+import {get} from 'xe-utils'
 
 export default {
   props: Object.assign({}, T.props, {
@@ -69,6 +70,11 @@ export default {
     showSeq: {
       type: Boolean,
       default: true
+    },
+    // 是否可展开
+    showExpand: {
+      type: Boolean,
+      default: false
     },
     // 是否显示表头
     showHeader: {
@@ -256,7 +262,8 @@ export default {
             this.setCheckboxStatus()
           }
           // 设置数据默认选中行
-          if (this.selectedRowKeys.length > 0) {
+          console.log(this.selectedRowKeys,'this.selectedRowKeys')
+          if (this.selectedRowKeys.length) {
             let selectionRows = []
             dataSource.forEach(v => {
               this.selectedRowKeys.forEach(s => {
@@ -265,6 +272,7 @@ export default {
                 }
               })
             })
+            console.log(selectionRows, 'selectionRowsselectionRowsselectionRows')
             this.$refs[this.tableId].setCheckboxRow(selectionRows, true)
           }
         })
@@ -362,6 +370,20 @@ export default {
           column = this.renderColumn(this.columns[i])
           columns.push(column)
         }
+      }
+      // 是否可展开
+      if (this.showExpand) {
+        columns.unshift(h('vxe-table-column', {
+          attrs: {
+            type: 'expand',
+            width: 40,
+            align: 'center',
+          },
+          scopedSlots: {
+            content: ({row, rowIndex}) => get(this, '$scopedSlots.expandContent', () => {
+            })(row, rowIndex)
+          }
+        }))
       }
       // 这里默认增加序号列
       if (this.showSeq) {
@@ -573,6 +595,13 @@ export default {
     clearRowExpand() {
       this.$refs[this.tableId].clearRowExpand()
     },
+    // 用于 type=expand，切换展开行的状态
+    toggleRowExpand(props) {
+      this.$emit('toggleRowExpand', props)
+    },
+    setRowExpand(row, expanded) {
+      this.$refs[this.tableId].setRowExpand(row, expanded)
+    },
     /**
      * @Date: 2021-11-18 11:48:04
      * @Author: 陈乾龙
@@ -756,6 +785,10 @@ export default {
       if (isFunction(this.customMethod)) {
         vxeTableProps['custom-config'].checkMethod = this.customMethod
       }
+    }
+
+    if (this.showExpand) {
+      events['toggle-row-expand'] = this.toggleRowExpand
     }
     // 判断是否显示选中的列表
     let selectedList = null

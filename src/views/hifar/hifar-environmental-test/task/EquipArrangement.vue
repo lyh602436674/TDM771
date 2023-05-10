@@ -279,7 +279,7 @@
 
 <script>
 import moment from 'moment'
-import {createLink, postAction} from '@/api/manage'
+import {createLink, officeOnlineEdit, postAction} from '@/api/manage'
 import TaskStartModal from './modules/TaskStartModal.vue'
 import TaskSuspendModal from './modules/TaskSuspendModal.vue'
 import TaskForceEndModal from './modules/TaskForceEndModal.vue'
@@ -757,20 +757,11 @@ export default {
       this.$refs.reviewPdf.show(path)
     },
     webOfficeEdit(fileUrl) {
-      let fileUrlAuth = fileUrl.split('?')[1]
-      fileUrl = fileUrl.split('?')[0]
-      let token = this.$ls.get(ACCESS_TOKEN)
-      WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+      // let fileUrlAuth = fileUrl.split('?')[1]
       // fileUrl = fileUrl.split('?')[0]
-      // let obj = {
-      //   AccessKey: this.minioName || 'minioadmin',
-      //   SecretKey: this.minioName || 'minioadmin',
-      //   ServerOfficeFileUrl: fileUrl,
-      //   IsSaveAsPDF: true
-      // }
-      //
-      // let url = 'HifarWebOffice://' + JSON.stringify(obj)
-      // window.open(encodeURI(url),)
+      // let token = this.$ls.get(ACCESS_TOKEN)
+      // WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
+      officeOnlineEdit(fileUrl.split('?')[0])
     },
     handleEnlargement(record, extendRecord) {
       this.$refs.EquipBasicLineModal.open(record, extendRecord)

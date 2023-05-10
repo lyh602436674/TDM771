@@ -1,14 +1,5 @@
-<!--
- * @Author: 马潭龙
- * @Date: 2021-11-23 10:52:40
- * @LastEditTime: 2021-11-23 14:48:02
- * @LastEditors: 马潭龙
- * @Descripttion: 报告生成-按试验查找-表格内容
- * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\reports\components\ReportExperimentTable.vue
--->
 <template>
-  <h-card :border='true' :fixed='true' style="height:100%">
-    <template slot='title'> 试验列表</template>
+  <h-card :border='true' :fixed='true' style="height:100%" class="card-wrapper">
     <h-search
       slot='search-form'
       v-model='queryParam'
@@ -19,18 +10,48 @@
       @change='refresh(true)'
     />
     <h-vex-table
-      :row-class-name="tableClassRowName"
       ref='reportProductTable'
       slot='content'
       :columns='columns'
       class="templateSelect"
       :data='loadData'
-      :row-selection="{ selectedRowKeys,onSelect }"
+      @toggleRowExpand="handleToggleRowExpand"
+      showExpand
+      :expand-config="{accordion:true,trigger:'row'}"
       :rowKey="(record) => record.id"
     >
-        <span slot="reportFlag" slot-scope="text, record">
-           <a-badge :color='text | testStatusColorFilter' :text='text | testStatusFilter'/>
-        </span>
+
+      <!--  :row-selection="{ selectedRowKeys, onSelect }"    -->
+      <span slot="expandContent" slot-scope="row,rowIndex">
+        <h-vex-table
+          ref='subTable'
+          :row-class-name="tableClassRowName"
+          :columns='subColumns'
+          :data='loadSubData'
+          style="height: 400px"
+          showExpand
+          :auto-load="false"
+          :expand-config="{trigger:'row'}"
+          :row-selection="{ selectedRowKeys: selectedSubRowKeys, onSelect: onSubSelect,trigger:'row'}"
+          :rowKey="(record) => record.id"
+        >
+          <span slot="reportFlag" slot-scope="text, record">
+             <a-badge :color='text | testStatusColorFilter' :text='text | testStatusFilter'/>
+          </span>
+          <div slot="expandContent" slot-scope="subRow,subRowIndex" style="width: max-content;margin-left: 150px">
+            <a-checkbox-group :value="subRow.checkboxValue" @change="checked => handleCheckboxChange(checked,subRow)">
+              <a-checkbox
+                v-for="item in checkboxOptions"
+                :key="item.value"
+                :data-title="item.title"
+                :value="item.value"
+              >
+                {{ item.title }}
+              </a-checkbox>
+            </a-checkbox-group>
+          </div>
+        </h-vex-table>
+      </span>
     </h-vex-table>
   </h-card>
 </template>
@@ -52,15 +73,25 @@ export default {
     return {
       moment,
       selectedRowKeys: [],
+      selectedSubRowKeys: [],
+      selectedSubRow: [],
+      checkboxOptions: [
+        {title: "试前检查单", value: "1"},
+        {title: "样品图片", value: "2"},
+        {title: "曲线图片", value: "3"},
+        {title: "振动图谱", value: "4"},
+        {title: "项目附件", value: "5"},
+      ],
       queryParam: {},
       url: {
-        list: '/HfEnvReportBusiness/listPageTest'
+        subList: '/HfEnvReportBusiness/listPageTest',
+        list: "/HfEnvReportBusiness/listPageEntrustByReportFlag"
       },
       // 搜索
       searchBar: [
         {
-          title: '试验编号',
-          key: 'c_testCode_7',
+          title: '产品名称',
+          key: 'c_productName_7',
           formType: 'input'
         },
         {
@@ -93,28 +124,42 @@ export default {
           key: 'c_custLinkMobile_7',
           formType: 'input'
         },
-        {
-          title: '样品名称',
-          key: 'c_productName_7',
-          formType: 'input'
-        },
       ],
       // 表头
-      columns: [
+      subColumns: [
         {
           title: '试验编号',
           align: 'left',
           dataIndex: 'testCode',
         },
         {
-          title: '委托单号',
-          align: 'left',
-          dataIndex: 'entrustNo',
-        },
-        {
           title: '运行单号',
           align: 'left',
           dataIndex: 'entrustCode',
+        },
+        {
+          title: '产品名称',
+          align: 'left',
+          dataIndex: 'productName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '产品编号',
+          align: 'left',
+          dataIndex: 'pieceNo',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '产品代号',
+          align: 'left',
+          dataIndex: 'productAlias',
+          customRender: (text, record) => {
+            return text || '--';
+          }
         },
         {
           title: '项目名称',
@@ -127,25 +172,88 @@ export default {
           dataIndex: 'reportFlag',
           scopedSlots: {customRender: 'reportFlag'},
         },
+      ],
+      columns: [
+        {
+          title: '委托单号',
+          align: 'left',
+          dataIndex: 'entrustNo',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '运行单号',
+          align: 'left',
+          dataIndex: 'entrustCode',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '产品名称',
+          align: 'left',
+          dataIndex: 'productName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '产品编号',
+          align: 'left',
+          dataIndex: 'pieceNo',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '产品代号',
+          align: 'left',
+          dataIndex: 'productAlias',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '项目名称',
+          align: 'left',
+          dataIndex: 'unitName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '试验性质',
+          align: 'center',
+          width: 120,
+          dataIndex: 'testPropertyCode_dictText',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
         {
           title: '委托单位',
           align: 'left',
           dataIndex: 'custName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
         },
         {
           title: '联系人 ',
           align: 'left',
           dataIndex: 'custLinkName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
         },
         {
           title: '联系人电话 ',
           align: 'left',
           dataIndex: 'custLinkMobile',
-        },
-        {
-          title: '样品名称',
-          align: 'left',
-          dataIndex: 'productName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
         },
       ],
       loadData: (params) => {
@@ -160,24 +268,58 @@ export default {
             return res.data
           }
         })
-      }
+      },
+      loadSubData: params => {
+        let data = {
+          entrustId: this.expandedRow.entrustId,
+          entrustNo: this.expandedRow.entrustNo,
+          reportFlag: this.reportFlag, // 50 待出 60 已出
+        }
+        return postAction(this.url.subList, data).then(res => {
+          return res.data.map(item => {
+            return {
+              ...item,
+              checkboxValue: ['1', '2', '3', '4', '5']
+            }
+          })
+        })
+      },
+      expandedRow: {},
     }
   },
   methods: {
     refresh(bool = true) {
       this.$refs.reportProductTable.refresh(bool)
     },
+    handleCheckboxChange(checked, subRow) {
+      subRow.checkboxValue = checked
+    },
+    handleToggleRowExpand({expanded, row}) {
+      if (expanded) {
+        this.expandedRow = row
+        this.$nextTick(() => {
+          this.$refs.subTable.refresh(true)
+        })
+      } else {
+        this.expandedRow = {}
+        this.selectedSubRowKeys = []
+        this.selectedSubRow = []
+      }
+    },
     tableClassRowName({row}) {
       if (row.overdue === 1) {
         return 'table-row-overdue'
       }
     },
-    // 是否选中表格,数据传到父标签,保存
-    onSelect(selectedRowKeys, selectedRow) {
-      this.selectedRowKeys = selectedRowKeys
-      this.$emit('selected', selectedRowKeys, selectedRow)
+    onSubSelect(selectedRowKeys, selectedRow) {
+      this.selectedSubRowKeys = selectedRowKeys
+      this.selectedSubRow = selectedRow
       this.$emit('change', selectedRowKeys, selectedRow)
     },
+    // onSelect(selectedRowKeys, selectedRow) {
+    //   this.selectedRowKeys = selectedRowKeys
+    //   this.$emit('change', selectedRowKeys, selectedRow)
+    // },
   }
 }
 </script>
@@ -185,6 +327,10 @@ export default {
 .templateSelect {
   /deep/ .table-row-overdue {
     background-color: #faa4a4;
+  }
+
+  /deep/ .vxe-table--render-default .vxe-body--expanded-cell {
+    padding: 10px !important;
   }
 }
 </style>

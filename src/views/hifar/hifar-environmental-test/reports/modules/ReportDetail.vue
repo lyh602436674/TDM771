@@ -10,9 +10,9 @@
   <div class='detail-containter'>
     <!-- 委托信息 -->
     <h-collapse :extraShow='false' title='委托信息' :activeKey='activeKeyArr'>
-<!--      <div v-for='item in localDetailData.reportBaseInfo' >-->
-        <report-base-info slot='content'  :detailDataObj='localDetailData.reportBaseInfo' />
-<!--      </div>-->
+      <!--      <div v-for='item in localDetailData.reportBaseInfo' >-->
+      <report-base-info slot='content' :detailDataObj='localDetailData.reportBaseInfo'/>
+      <!--      </div>-->
     </h-collapse>
     <!-- 报告信息 -->
     <h-collapse :extraShow='false' title='报告信息' :activeKey='activeKeyArr' style='margin-top: 10px'>
@@ -29,11 +29,15 @@
           </h-desc-item>
           <h-desc-item label='试验项目' :span='4'>
             <div slot='content' v-if='localDetailData.projectInfo'>
-              <a-tag v-for='item in localDetailData.projectInfo' :key='item.id'>{{ item.unitName }}</a-tag>
+              <a-tag v-for='(item,index) in localDetailData.projectInfo' :key='item.id + index '>{{
+                  item.unitName
+                }}
+              </a-tag>
             </div>
           </h-desc-item>
           <h-desc-item label='备注' :span='4'>
-            <span slot='content' v-html="localDetailData.remarks && localDetailData.remarks.replace(/\n/g,'<br/>')"></span>
+            <span slot='content'
+                  v-html="localDetailData.remarks && localDetailData.remarks.replace(/\n/g,'<br/>')"></span>
           </h-desc-item>
         </h-desc>
       </div>
