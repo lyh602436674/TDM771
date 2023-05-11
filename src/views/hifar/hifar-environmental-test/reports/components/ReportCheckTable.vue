@@ -35,8 +35,8 @@
           style="cursor: pointer"
           @click="() => handleDetail(record)"
         />
-        <a-divider type="vertical" style="color: #409eff"/>
         <span v-if="record.status === 10">
+          <a-divider type="vertical" style="color: #409eff"/>
           <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckPass(record.id)">
             <h-icon v-has="'reportCheck:pass'" type="icon-wancheng1" title="通过" class="success-text"
                     style="cursor: pointer"/>
@@ -138,7 +138,7 @@ export default {
           align: 'left',
           width: 140,
           dataIndex: 'reportCode',
-          customRender: (t)=>{
+          customRender: (t) => {
             return t || '--'
           }
         },
@@ -257,19 +257,25 @@ export default {
       this.$refs.ReportDetailModal.show(id, 'check', '2', true)
     },
     handleCheck(id) {
+      this.$refs.dataCheckTable.localLoading = true
       postAction(this.url.check, {id, examineFlag: 30}).then((res) => {
         if (res.code === 200) {
           this.$message.success('驳回成功')
           this.refresh(true)
         }
+      }).finally(() => {
+        this.$refs.dataCheckTable.localLoading = false
       })
     },
     handleCheckPass(id) {
+      this.$refs.dataCheckTable.localLoading = true
       postAction(this.url.check, {id: id, examineFlag: 20}).then((res) => {
         if (res.code === 200) {
           this.$message.success('审核成功')
           this.refresh(true)
         }
+      }).finally(() => {
+        this.$refs.dataCheckTable.localLoading = false
       })
     },
   },

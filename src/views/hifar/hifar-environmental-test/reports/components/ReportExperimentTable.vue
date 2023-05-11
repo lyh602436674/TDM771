@@ -35,6 +35,34 @@
           :row-selection="{ selectedRowKeys: selectedSubRowKeys, onSelect: onSubSelect,trigger:'row'}"
           :rowKey="(record) => record.id"
         >
+          <span class="piece-wrapper" slot="pieceNo" slot-scope="text, subRow, subRowIndex">
+             <a-tooltip :title="subRow.pieceNoExtend">
+                <span class="pieceNo">{{ subRow.pieceNoExtend }}</span>
+             </a-tooltip>
+              <a-popover v-if="subRow.relation && subRow.relation.length" placement="right"
+                         v-model="subRow.popoverVisible" trigger="click">
+                <template slot="content">
+                  <a-checkbox-group :value="subRow.pieceResult"
+                                    @change="checked => handleSubTableCheckboxChange(checked,subRow)">
+                    <a-checkbox
+                      v-for="item in subRow.relation"
+                      :key="item.pieceId"
+                      :data-title="item.pieceNo"
+                      :value="item.pieceId"
+                    >
+                      {{ item.pieceNo }}
+                    </a-checkbox>
+                  </a-checkbox-group>
+                  <div class="popover-footer">
+                    <a-button size="small" type="danger" @click="handlePopCancel(subRow)">取消</a-button>
+                    <a-button size="small" type="ghost-primary" @click="handlePopReload(subRow)">重置</a-button>
+                    <a-button size="small" type="primary" @click="handlePopSubmit(subRow)"> 确定</a-button>
+                  </div>
+                </template>
+                <a-button @click.stop="handleSelectPiece(subRow)" class="chooseBtn" size="small"
+                          type="primary">选择</a-button>
+              </a-popover>
+          </span>
           <span slot="reportFlag" slot-scope="text, record">
              <a-badge :color='text | testStatusColorFilter' :text='text | testStatusFilter'/>
           </span>
@@ -149,9 +177,7 @@ export default {
           title: '产品编号',
           align: 'left',
           dataIndex: 'pieceNo',
-          customRender: (text, record) => {
-            return text || '--';
-          }
+          scopedSlots: {customRender: 'pieceNo'},
         },
         {
           title: '产品代号',
@@ -279,7 +305,11 @@ export default {
           return res.data.map(item => {
             return {
               ...item,
-              checkboxValue: ['1', '2', '3', '4', '5']
+              popoverVisible: false,
+              pieceNoExtend: item.pieceNo,
+              pieceResult: item.relation ? item.relation.map(v => v.pieceId) : [],
+              relationResult: item.relation || [],
+              checkboxValue: ['1', '2', '3', '4', '5'],
             }
           })
         })
@@ -290,6 +320,27 @@ export default {
   methods: {
     refresh(bool = true) {
       this.$refs.reportProductTable.refresh(bool)
+    },
+    handlePopCancel(subRow) {
+      this.$set(subRow, 'popoverVisible', false)
+    },
+    handlePopReload(subRow) {
+      this.$set(subRow, 'pieceResult', subRow.relation.map(v => v.pieceId))
+    },
+    handlePopSubmit(subRow) {
+      let result = subRow.relation.filter((item) => {
+        return subRow.pieceResult.includes(item.pieceId);
+      });
+      this.$set(subRow, 'relationResult', result)
+      this.$set(subRow, 'pieceNoExtend', result.map(item => item.pieceNo).toString())
+      this.$set(subRow, 'popoverVisible', false)
+    },
+    handleSelectPiece(subRow) {
+      // subRow.popoverVisible = true
+    },
+    handleSubTableCheckboxChange(checked, subRow) {
+      subRow.pieceResult = checked
+      console.log(checked, subRow, 'checked, subRow')
     },
     handleCheckboxChange(checked, subRow) {
       subRow.checkboxValue = checked
@@ -324,6 +375,45 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+
+.ant-popover {
+  .popover-footer {
+    padding-top: 10px;
+
+    /deep/ .ant-btn {
+      margin-left: 5px;
+    }
+  }
+
+  .ant-checkbox-wrapper {
+    margin-bottom: 5px !important;
+    margin-left: 0 !important;
+    display: block !important;
+  }
+
+}
+
+
+.piece-wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+
+
+  .pieceNo {
+    width: calc(100% - 44px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .chooseBtn {
+
+  }
+}
+
 .templateSelect {
   /deep/ .table-row-overdue {
     background-color: #faa4a4;
@@ -352,5 +442,14 @@ export default {
 
 /deep/ .ant-tree li span.ant-tree-switcher.ant-tree-switcher-noop {
   display: none;
+}
+</style>
+
+<style lang="less">
+.ant-popover-inner {
+  .ant-popover-inner-content {
+    max-height: 650px !important;
+    overflow: scroll !important;
+  }
 }
 </style>

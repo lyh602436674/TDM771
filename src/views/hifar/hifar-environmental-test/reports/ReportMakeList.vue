@@ -34,7 +34,8 @@
           >添加
           </a-button>
         </a-badge>
-        <a-button v-has="'report:download'" icon="download" size="small" type="primary" @click="batchDownload">
+        <a-button :loading="loading" v-has="'report:download'" icon="download" size="small" type="primary"
+                  @click="batchDownload">
           批量下载
         </a-button>
         <a-button v-has="'report:delete'" icon="delete" size="small" type="danger" @click="batchDel">
@@ -47,7 +48,6 @@
         slot="content"
         :columns="columns"
         :data="loadData"
-        :loading="tableLoading"
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :rowKey="(record) => record.id"
         :scroll="{ x: true }"
@@ -213,8 +213,8 @@ export default {
     return {
       moment,
       queryParams: {},
+      loading: false,
       isIntranet: true,
-      tableLoading: false,
       url: {
         list: '/HfEnvReportBusiness/listPage',
         delete: '/HfEnvReportBusiness/logicRemoveById',
@@ -456,6 +456,8 @@ export default {
   },
   methods: {
     batchDownload() {
+      this.$refs.reportMakeTable.localLoading = true
+      this.loading = true
       if (!this.selectedRowKeys.length) return this.$message.warning('请至少选择一条报告')
       getAction(this.url.downLoadBatchById, {ids: this.selectedRowKeys.toString()}).then(res => {
         if (res.code === 200) {
@@ -463,6 +465,9 @@ export default {
         } else {
           this.$message.error('下载失败!')
         }
+      }).finally(() => {
+        this.$refs.reportMakeTable.localLoading = false
+        this.loading = false
       })
     },
     handleTurnover() {
@@ -572,7 +577,7 @@ export default {
     },
     // 单个删除
     handleDelete(id, status) {
-      this.tableLoading = true
+      this.$refs.reportMakeTable.localLoading = true
       let delInfo = [{id, status}]
       postAction(this.url.delete, {delInfo: delInfo}).then((res) => {
         if (res.code === 200) {
@@ -582,7 +587,7 @@ export default {
           this.$message.warning(res.msg)
         }
       }).finally(() => {
-        this.tableLoading = false
+        this.$refs.reportMakeTable.localLoading = false
       })
     },
 
@@ -590,7 +595,7 @@ export default {
     batchDel() {
       let _this = this
       if (_this.selectedRowKeys.length) {
-        this.tableLoading = true
+        this.$refs.reportMakeTable.localLoading = true
         this.$confirm({
           title: '确认删除',
           content: '删除后不可恢复，确认删除？',
@@ -611,11 +616,11 @@ export default {
                 _this.$message.warning(res.msg)
               }
             }).finally(() => {
-              _this.tableLoading = false
+              _this.$refs.reportMakeTable.localLoading = false
             })
           },
           onCancel: function () {
-            _this.tableLoading = false
+            _this.$refs.reportMakeTable.localLoading = false
           }
         })
       } else {

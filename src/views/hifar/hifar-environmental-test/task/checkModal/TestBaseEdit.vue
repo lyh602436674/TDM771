@@ -1876,7 +1876,7 @@ export default {
     // 选择传感器返回数据
     sensorCallback(value) {
       value.forEach((item) => {
-        this.installControlTable[this.selectedBeforeIndex].testSensorInfo.push(item)
+        this.installControlTable[this.selectedBeforeIndex].testSensorInfo.push(Object.assign({}, item, {vibrationCurveFlag: 0}))
       })
     },
     toolsProductAdd() {

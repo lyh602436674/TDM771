@@ -262,7 +262,6 @@ export default {
             this.setCheckboxStatus()
           }
           // 设置数据默认选中行
-          console.log(this.selectedRowKeys,'this.selectedRowKeys')
           if (this.selectedRowKeys.length) {
             let selectionRows = []
             dataSource.forEach(v => {

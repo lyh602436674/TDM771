@@ -73,10 +73,10 @@ export default {
       if (Array.from(new Set(this.selectedRow.map(item => item.entrustNo))).length > 1) return this.$message.warning('只能选择同一委托单')
       this.$refs.reportTemplateSelect.show()
     },
-    selectedTemplate(selectedRowKeys, checkboxValue) {
-      this.handleSubmit(selectedRowKeys, checkboxValue)
+    selectedTemplate(selectedRowKeys,) {
+      this.handleSubmit(selectedRowKeys)
     },
-    handleSubmit(templateId, checkboxValue) {
+    handleSubmit(templateId) {
       let {selectedRowKeys} = this
       if (!selectedRowKeys.length) {
         this.$message.warning('请选择试验')
@@ -88,7 +88,6 @@ export default {
           }),
           buttonFlag: 'save',
           templateId: templateId.toString(),
-          // options: checkboxValue.toString(),
           options: Array.from(new Set(this.selectedRow.map(v => v.checkboxValue).flat())).toString(),
         }
         postAction('/HfEnvReportBusiness/generateReport', params).then((res) => {

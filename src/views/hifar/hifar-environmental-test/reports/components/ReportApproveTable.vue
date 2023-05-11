@@ -25,7 +25,7 @@
       :rowKey="(record) => record.id"
     >
       <span slot="status" slot-scope="text, record">
-        <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter" />
+        <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
       </span>
       <div slot="action" slot-scope="text, record">
         <a-icon
@@ -139,7 +139,7 @@ export default {
           align: 'left',
           width: 140,
           dataIndex: 'reportCode',
-          customRender: (t)=>{
+          customRender: (t) => {
             return t || '--'
           }
         },
@@ -226,7 +226,7 @@ export default {
           fixed: 'right',
           width: 100,
           align: 'center',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
         },
       ],
       type: 'approve',
@@ -258,28 +258,25 @@ export default {
       this.$refs.ReportDetailModal.show(id, 'approve', '2', true)
     },
     handleCheck(id) {
+      this.$refs.dataCheckTable.localLoading = true
       postAction(this.url.check, {id, examineFlag: 50}).then((res) => {
         if (res.code === 200) {
           this.$message.success('驳回成功')
           this.refresh(true)
         }
+      }).finally(() => {
+        this.$refs.dataCheckTable.localLoading = false
       })
     },
     handleCheckPass(id) {
+      this.$refs.dataCheckTable.localLoading = true
       postAction(this.url.checkApprove, {id, examineFlag: 40}).then((res) => {
         if (res.code === 200) {
           this.$message.success('批准成功')
           this.refresh(true)
         }
-      })
-    },
-    // 委托详情
-    handleWtDetail(record) {
-      this.$router.push({
-        path: '/entrustlistDetail',
-        query: {
-          id: record.entrustId,
-        },
+      }).finally(() => {
+        this.$refs.dataCheckTable.localLoading = false
       })
     },
   },
