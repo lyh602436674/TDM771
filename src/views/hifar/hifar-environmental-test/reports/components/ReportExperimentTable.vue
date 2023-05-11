@@ -28,10 +28,10 @@
           :row-class-name="tableClassRowName"
           :columns='subColumns'
           :data='loadSubData'
-          style="height: 400px"
+          @toggleRowExpand="handleToggleSubRowExpand"
+          :style="{height: `${tableHeight}px`}"
           showExpand
           :auto-load="false"
-          :expand-config="{trigger:'row'}"
           :row-selection="{ selectedRowKeys: selectedSubRowKeys, onSelect: onSubSelect,trigger:'row'}"
           :rowKey="(record) => record.id"
         >
@@ -111,6 +111,7 @@ export default {
         {title: "项目附件", value: "5"},
       ],
       queryParam: {},
+      tableHeight: 40,
       url: {
         subList: '/HfEnvReportBusiness/listPageTest',
         list: "/HfEnvReportBusiness/listPageEntrustByReportFlag"
@@ -302,16 +303,19 @@ export default {
           reportFlag: this.reportFlag, // 50 待出 60 已出
         }
         return postAction(this.url.subList, data).then(res => {
-          return res.data.map(item => {
-            return {
-              ...item,
-              popoverVisible: false,
-              pieceNoExtend: item.pieceNo,
-              pieceResult: item.relation ? item.relation.map(v => v.pieceId) : [],
-              relationResult: item.relation || [],
-              checkboxValue: ['1', '2', '3', '4', '5'],
-            }
-          })
+          if (res.code === 200) {
+            this.tableHeight = res.data.length * 40 + 40
+            return res.data.map(item => {
+              return {
+                ...item,
+                popoverVisible: false,
+                pieceNoExtend: item.pieceNo,
+                pieceResult: item.relation ? item.relation.map(v => v.pieceId) : [],
+                relationResult: item.relation || [],
+                checkboxValue: ['1', '2', '3', '4', '5'],
+              }
+            })
+          }
         })
       },
       expandedRow: {},
@@ -344,6 +348,13 @@ export default {
     },
     handleCheckboxChange(checked, subRow) {
       subRow.checkboxValue = checked
+    },
+    handleToggleSubRowExpand({expanded, row}) {
+      if (expanded) {
+        this.tableHeight += 41
+      } else {
+        this.tableHeight -= 41
+      }
     },
     handleToggleRowExpand({expanded, row}) {
       if (expanded) {
