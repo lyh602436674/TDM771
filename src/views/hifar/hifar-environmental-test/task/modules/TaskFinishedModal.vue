@@ -286,7 +286,7 @@ export default {
               {required: false, message: ''},
               {
                 validator: (rule, value, cb) => {
-                  if (!this.isNumberEqual(value) && value !== '') {
+                  if (!this.isNumberEqual(value) && value !== '' && this.radioValue === '2') {
                     cb('请输入正确格式的向次')
                   } else {
                     cb()
@@ -295,7 +295,7 @@ export default {
               }
             ],
           }, {initialValue: undefined}]}
-          placeholder={"请输入向次" + i}
+          placeholder={"请输入向次" + (i || '')}
           onblur={(value) => {
             if (this.radioValue === '2') {
               this.calcCostBySecondary(field)
@@ -330,7 +330,11 @@ export default {
             }
           }
           let costStandardList = data.costStandardList
-          this.model = Object.assign({}, this.model, data, {costStandardList : costStandardList})
+          this.model = Object.assign({}, this.model, data, {
+            costStandardList: costStandardList,
+            testSecondary: undefined
+          })
+          console.log(this.model, 'this.model')
           if (res.msg) {
             this.$message.warning(res.msg)
           }

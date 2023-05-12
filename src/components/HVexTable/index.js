@@ -271,7 +271,6 @@ export default {
                 }
               })
             })
-            console.log(selectionRows, 'selectionRowsselectionRowsselectionRows')
             this.$refs[this.tableId].setCheckboxRow(selectionRows, true)
           }
         })

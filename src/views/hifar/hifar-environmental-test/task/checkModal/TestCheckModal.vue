@@ -314,6 +314,7 @@ export default {
           if (res.code === 200) {
             this.$message.success('保存成功')
             item.isSave = true
+            this.getCheckDetail()
           }
         })
       }
@@ -404,7 +405,7 @@ export default {
       }
       this.$set(this[type][index], 'itemRes', itemRes)
       this.handleBlurSave(item)
-      this.getCheckDetail()
+
     },
     handleFillCheck(item) {
       let record = {
@@ -421,7 +422,7 @@ export default {
       this.$refs.checkEnsureModal.show(record, this.handleFillSubmit)
     },
     handleFillSubmit(record) {
-      postAction(this.url.fill, {...record}).then((res) => {
+      postAction(this.url.fill, {...record, isdel: this.buildWord ? '1' : "0"}).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查审核成功')
           this.getCheckDetail()
@@ -470,7 +471,7 @@ export default {
       this.$refs.checkEnsureModal.show(record, this.handleCheckSubmit)
     },
     handleCheckSubmit(record) {
-      postAction(this.url.check, {...record}).then((res) => {
+      postAction(this.url.check, {...record, isdel: this.buildWord ? '1' : "0"}).then((res) => {
         if (res.code === 200) {
           this.$message.success('检查复核成功')
           this.getCheckDetail()

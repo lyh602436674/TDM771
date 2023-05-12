@@ -344,7 +344,6 @@ export default {
     },
     handleSubTableCheckboxChange(checked, subRow) {
       subRow.pieceResult = checked
-      console.log(checked, subRow, 'checked, subRow')
     },
     handleCheckboxChange(checked, subRow) {
       subRow.checkboxValue = checked

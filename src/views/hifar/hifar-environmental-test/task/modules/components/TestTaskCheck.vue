@@ -8,15 +8,15 @@
 -->
 <template>
   <div class="test-task-check">
-    <a-empty v-if="!testId" />
+    <a-empty v-if="!testId"/>
     <div v-else>
       <h-card title="试前检查" :bordered="false" :showCollapse="true">
         <div v-if="beforeCheckInfo && beforeCheckInfo.length > 0" slot="table-operator">
-          <a-button type="ghost-primary" size="small" @click="handleFillAll('beforeCheckInfo')"> 一键审核 </a-button>
-          <a-button type="ghost-primary" size="small" @click="handleCheckAll('beforeCheckInfo')"> 一键复核 </a-button>
+          <a-button type="ghost-primary" size="small" @click="handleFillAll('beforeCheckInfo')"> 一键审核</a-button>
+          <a-button type="ghost-primary" size="small" @click="handleCheckAll('beforeCheckInfo')"> 一键复核</a-button>
         </div>
         <div slot="content" class="check-list">
-          <a-empty v-if="beforeCheckInfo && beforeCheckInfo.length <= 0" />
+          <a-empty v-if="beforeCheckInfo && beforeCheckInfo.length <= 0"/>
           <template v-else>
             <div class="check-list-item check-list-item-center">
               <div class="check-name">检查项名称</div>
@@ -41,8 +41,8 @@
                 @click="() => handleCheckRes(item, index, 'beforeCheckInfo')"
               >
                 <div v-if="item.itemRes == '1'" class="check-box"></div>
-                <h-icon v-else-if="item.itemRes == '2'" type="icon-wancheng1" class="success-text" />
-                <h-icon v-else type="icon-chacha" class="danger-text" />
+                <h-icon v-else-if="item.itemRes == '2'" type="icon-wancheng1" class="success-text"/>
+                <h-icon v-else type="icon-chacha" class="danger-text"/>
               </div>
               <div class="check-res-person" @click="() => handleFillCheck(item, index)">
                 {{ item.fillUserName || '--' }}
@@ -58,11 +58,11 @@
       </h-card>
       <h-card title="试中检查" :bordered="false" :showCollapse="true">
         <div v-if="inCheckInfo && inCheckInfo.length > 0" slot="table-operator">
-          <a-button type="ghost-primary" size="small" @click="handleFillAll('inCheckInfo')"> 一键审核 </a-button>
-          <a-button type="ghost-primary" size="small" @click="handleCheckAll('inCheckInfo')"> 一键复核 </a-button>
+          <a-button type="ghost-primary" size="small" @click="handleFillAll('inCheckInfo')"> 一键审核</a-button>
+          <a-button type="ghost-primary" size="small" @click="handleCheckAll('inCheckInfo')"> 一键复核</a-button>
         </div>
         <div slot="content" class="check-list">
-          <a-empty v-if="inCheckInfo && inCheckInfo.length <= 0" />
+          <a-empty v-if="inCheckInfo && inCheckInfo.length <= 0"/>
           <template v-else>
             <div class="check-list-item check-list-item-center">
               <div class="check-name">检查项名称</div>
@@ -84,8 +84,8 @@
               </div>
               <div class="check-res check-list-item-center" @click="() => handleCheckRes(item, index, 'inCheckInfo')">
                 <div v-if="item.itemRes == '1'" class="check-box"></div>
-                <h-icon v-else-if="item.itemRes == '2'" type="icon-wancheng1" class="success-text" />
-                <h-icon v-else type="icon-chacha" class="danger-text" />
+                <h-icon v-else-if="item.itemRes == '2'" type="icon-wancheng1" class="success-text"/>
+                <h-icon v-else type="icon-chacha" class="danger-text"/>
               </div>
               <div class="check-res-person" @click="() => handleFillCheck(item, index)">
                 {{ item.fillUserName || '--' }}
@@ -101,11 +101,11 @@
       </h-card>
       <h-card title="试后检查" :bordered="false" :showCollapse="true">
         <div v-if="afterCheckInfo && afterCheckInfo.length > 0" slot="table-operator">
-          <a-button type="ghost-primary" size="small" @click="handleFillAll('afterCheckInfo')"> 一键审核 </a-button>
-          <a-button type="ghost-primary" size="small" @click="handleCheckAll('afterCheckInfo')"> 一键复核 </a-button>
+          <a-button type="ghost-primary" size="small" @click="handleFillAll('afterCheckInfo')"> 一键审核</a-button>
+          <a-button type="ghost-primary" size="small" @click="handleCheckAll('afterCheckInfo')"> 一键复核</a-button>
         </div>
         <div slot="content" class="check-list">
-          <a-empty v-if="afterCheckInfo && afterCheckInfo.length <= 0" />
+          <a-empty v-if="afterCheckInfo && afterCheckInfo.length <= 0"/>
           <template v-else>
             <div class="check-list-item check-list-item-center">
               <div class="check-name">检查项名称</div>
@@ -130,8 +130,8 @@
                 @click="() => handleCheckRes(item, index, 'afterCheckInfo')"
               >
                 <div v-if="item.itemRes == '1'" class="check-box"></div>
-                <h-icon v-else-if="item.itemRes == '2'" type="icon-wancheng1" class="success-text" />
-                <h-icon v-else type="icon-chacha" class="danger-text" />
+                <h-icon v-else-if="item.itemRes == '2'" type="icon-wancheng1" class="success-text"/>
+                <h-icon v-else type="icon-chacha" class="danger-text"/>
               </div>
               <div class="check-res-person" @click="() => handleFillCheck(item, index)">
                 {{ item.fillUserName || '--' }}
@@ -146,15 +146,16 @@
         </div>
       </h-card>
     </div>
-    <ensure-modal ref="ensureModal" />
+    <ensure-modal ref="ensureModal"/>
   </div>
 </template>
 
 <script>
-import { postAction } from '@/api/manage'
-import { isArray, isObject } from 'lodash'
+import {postAction} from '@/api/manage'
+import {isArray, isObject} from 'lodash'
 import ensureModal from './CheckEnsureModal.vue'
 import moment from "moment";
+
 export default {
   name: 'TestTaskCheck',
   props: {
@@ -163,7 +164,7 @@ export default {
       default: null,
     },
   },
-  components: { ensureModal },
+  components: {ensureModal},
   data() {
     return {
       beforeCheckInfo: [],
@@ -183,10 +184,9 @@ export default {
   },
   methods: {
     getCheckDetail() {
-      console.log(this.testId)
-      postAction(this.url.detail, { id: this.testId }).then((res) => {
+      postAction(this.url.detail, {id: this.testId}).then((res) => {
         if (res.code === 200) {
-          let { beforeCheckInfo, inCheckInfo, afterCheckInfo } = res.data
+          let {beforeCheckInfo, inCheckInfo, afterCheckInfo} = res.data
           this.beforeCheckInfo = isArray(beforeCheckInfo) && beforeCheckInfo.length ? beforeCheckInfo : []
           this.inCheckInfo = isArray(inCheckInfo) && inCheckInfo.length ? inCheckInfo : []
           this.afterCheckInfo = isArray(afterCheckInfo) && afterCheckInfo.length ? afterCheckInfo : []
@@ -195,12 +195,12 @@ export default {
     },
     handleCheckRes(item, index, type) {
       let itemRes = item.itemRes
-      if (itemRes == 1) {
-        itemRes = 2
-      } else if (itemRes == 2) {
-        itemRes = 3
-      } else if (itemRes == 3) {
-        itemRes = 2
+      if (itemRes === '1') {
+        itemRes = '2'
+      } else if (itemRes === '2') {
+        itemRes = '3'
+      } else if (itemRes === '3') {
+        itemRes = '2'
       }
       this.$set(this[type][index], 'itemRes', itemRes)
     },
@@ -278,56 +278,69 @@ export default {
   height: 100%;
   overflow: auto;
 }
+
 .check-list-item-center {
   text-align: center;
 }
+
 .check-list-item {
   display: flex;
   align-items: center;
   border: solid 1px @border-color-base;
   border-bottom: none;
+
   &:last-child {
     border-bottom: solid 1px @border-color-base;
     border-bottom-left-radius: @border-radius-base;
     border-bottom-right-radius: @border-radius-base;
   }
+
   &:first-child {
     border-top-left-radius: @border-radius-base;
     border-top-right-radius: @border-radius-base;
   }
+
   > div {
     border-right: solid 1px @border-color-base;
     min-height: 30px;
     padding: 5px;
     overflow: hidden;
     align-self: stretch;
+
     &:last-child {
       border-right: none;
     }
   }
+
   .check-name {
     width: 10%;
   }
+
   .check-content {
     width: 25%;
   }
+
   .check-require {
     flex: 1;
   }
+
   .check-res {
     width: 70px;
     cursor: pointer;
   }
+
   .check-res-person {
     .check-list-item-center;
     width: 120px;
     cursor: pointer;
   }
+
   .check-flag-person {
     .check-list-item-center;
     width: 120px;
     cursor: pointer;
   }
+
   .check-box {
     width: 18px;
     height: 18px;

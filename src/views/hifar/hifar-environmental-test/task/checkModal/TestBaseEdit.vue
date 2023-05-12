@@ -37,6 +37,7 @@
               bordered
               rowKey="id"
               size="small"
+              :loading="productTableLoading"
               style="width: 100%;"
             >
               <template #action="text, record,index">
@@ -949,6 +950,7 @@ export default {
       pictureData: [],
       visible: false,
       submitLoading: false,
+      productTableLoading: false,
       title: '',
       testId: '',
       model: {},
@@ -1794,6 +1796,7 @@ export default {
       }
     },
     getTestDetail(id, flag) {
+      this.productTableLoading = true
       postAction(this.url.detail, {id: id}).then((res) => {
         if (res.code === 200) {
           let model = Object.assign({}, res.data)
@@ -1803,6 +1806,9 @@ export default {
               beforeStatus: item.beforeStatus || '1',
               afterStatus: item.afterStatus || '1'
             }
+          })
+          this.$nextTick(() => {
+            this.productTableLoading = false
           })
           // 上传了样品图片后，防止下面的数据刷新，所以直接return
           if (flag) return
