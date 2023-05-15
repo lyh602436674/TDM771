@@ -41,7 +41,7 @@
               <div class='check-require'>检查项要求</div>
               <div class='check-res'>检查结果</div>
               <div class='check-res-person'>试验员</div>
-              <div class='check-flag-person'>检验员</div>
+              <div class='check-flag-person'>复核人</div>
               <div class='check-operate'>操作</div>
             </div>
             <div v-for='(item, index) in beforeCheckInfo' :key='index' class='check-list-item'>
@@ -115,7 +115,7 @@
               <div class='check-require'>检查项要求</div>
               <div class='check-res'>检查结果</div>
               <div class='check-res-person'>试验员</div>
-              <div class='check-flag-person'>检验员</div>
+              <div class='check-flag-person'>复核人</div>
               <div class='check-operate'>操作</div>
             </div>
             <div v-for='(item, index) in inCheckInfo' :key='index' class='check-list-item'>
@@ -187,7 +187,7 @@
               <div class='check-require'>检查项要求</div>
               <div class='check-res'>检查结果</div>
               <div class='check-res-person'>试验员</div>
-              <div class='check-flag-person'>检验员</div>
+              <div class='check-flag-person'>复核人</div>
               <div class='check-operate'>操作</div>
             </div>
             <div v-for='(item, index) in afterCheckInfo' :key='index' class='check-list-item'>

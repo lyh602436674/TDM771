@@ -108,10 +108,10 @@ export default {
 </script>
 
 <style lang='less' scoped>
-.spin-wrapper {
+/deep/ .spin-wrapper {
   height: 100%;
 
-  /deep/ .ant-spin-container {
+  .ant-spin-container {
     height: 100%;
   }
 }

@@ -726,7 +726,7 @@ export default {
           scopedSlots: {customRender: 'itemRes'}
         },
         {
-          title: '试验员',
+          title: '检查人',
           align: 'left',
           dataIndex: 'fillUserName',
           customRender: (text, record) => {
@@ -734,7 +734,7 @@ export default {
           }
         },
         {
-          title: '检验员',
+          title: '复核人',
           align: 'left',
           dataIndex: 'checkUserName',
           customRender: (text, record) => {

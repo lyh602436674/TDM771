@@ -19,8 +19,8 @@
               <div class="check-content">检查项内容</div>
               <div class="check-require">检查项要求</div>
               <div class="check-res">检查结果</div>
-              <div class="check-res-person">试验员</div>
-              <div class="check-flag-person">检验员</div>
+              <div class="check-res-person">检查人</div>
+              <div class="check-flag-person">复核人</div>
             </div>
             <div v-for="(item, index) in beforeCheckInfo" :key="index" class="check-list-item">
               <div class="check-name check-list-item-center">
@@ -64,8 +64,8 @@
               <div class="check-content">检查项内容</div>
               <div class="check-require">检查项要求</div>
               <div class="check-res">检查结果</div>
-              <div class="check-res-person">试验员</div>
-              <div class="check-flag-person">检验员</div>
+              <div class="check-res-person">检查人</div>
+              <div class="check-flag-person">复核人</div>
             </div>
             <div v-for="(item, index) in inCheckInfo" :key="index" class="check-list-item">
               <div class="check-name check-list-item-center">
@@ -109,8 +109,8 @@
               <div class="check-content">检查项内容</div>
               <div class="check-require">检查项要求</div>
               <div class="check-res">检查结果</div>
-              <div class="check-res-person">试验员</div>
-              <div class="check-flag-person">检验员</div>
+              <div class="check-res-person">检查人</div>
+              <div class="check-flag-person">复核人</div>
             </div>
             <div v-for="(item, index) in afterCheckInfo" :key="index" class="check-list-item">
               <div class="check-name check-list-item-center">

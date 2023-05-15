@@ -386,21 +386,18 @@ export default {
 </script>
 <style lang="less" scoped>
 
-.ant-popover {
-  .popover-footer {
-    padding-top: 10px;
+.popover-footer {
+  padding-top: 10px;
 
-    /deep/ .ant-btn {
-      margin-left: 5px;
-    }
+  .ant-btn {
+    margin-left: 5px;
   }
+}
 
-  .ant-checkbox-wrapper {
-    margin-bottom: 5px !important;
-    margin-left: 0 !important;
-    display: block !important;
-  }
-
+.ant-checkbox-wrapper {
+  margin-bottom: 5px !important;
+  margin-left: 0 !important;
+  display: block !important;
 }
 
 

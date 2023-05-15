@@ -6,9 +6,12 @@
     :getContainer="getContainer"
     :width="drawerWidth"
     :confirm-loading="confirmLoading"
-    @submit="handleClickSubmit"
     @cancel="handleCancel"
   >
+    <template slot="footer">
+      <a-button type="ghost-danger" :disabled="_isUploading_" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" :disabled="_isUploading_" @click="handleClickSubmit">确定</a-button>
+    </template>
     <h-form
       ref="TempForm"
       v-if="visible"
@@ -23,9 +26,11 @@
 <script>
 import moment from 'moment'
 import {downloadFile, getFileAccessHttpUrl, postAction} from '@/api/manage'
+import mixin from '@/views/hifar/hifar-environmental-test/mixin.js'
 
 export default {
   components: {},
+  mixins: [mixin],
   inject: {
     getContainer: {
       default: () => document.body
@@ -103,7 +108,7 @@ export default {
       }
     },
     loadDetail(id) {
-      postAction(this.url.detailById, { id: id }).then((res) => {
+      postAction(this.url.detailById, {id: id}).then((res) => {
         if (res.code === 200) {
           let obj = Object.assign({}, res.data)
           let attachInfo = obj.attachInfo

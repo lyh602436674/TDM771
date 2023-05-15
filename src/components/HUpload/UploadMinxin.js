@@ -51,6 +51,7 @@ export default {
      * @description: 从Input中获取文件
      */
     async beforeUpload(event) {
+      this.$store.commit('SET_UPLOADING', true)
       let files, targetFiles = event.target.files
       this.originTargetFiles = targetFiles
       if (this.watermark) {
@@ -159,7 +160,7 @@ export default {
             }
           })
           this.fileList.splice(oldIndex, 1)
-          this.handleDelete(this.extendRecords)
+          this.handleDelete(this.extendRecords, oldIndex)
           this.fileList.sort((o1, o2) => o1.rowSort - o2.rowSort)
         }
         this.triggerChange()
@@ -259,6 +260,7 @@ export default {
 
           }
           this.$emit('finishUpload', this.fileList[fileIndex])
+          this.$store.commit('SET_UPLOADING', false)
         } else {
           this.$set(this.fileList[fileIndex], "status", 'exception')
         }
@@ -429,6 +431,7 @@ export default {
       this.fileList.splice(index, 1)
       // this.fileList = this.fileList.filter((item) => item.uuid !== file.uuid)
       this.$emit('delete', file, this.fileList)
+      this.$store.commit('SET_UPLOADING', false)
       // this.triggerChange()
     },
     // 渲染Input
