@@ -171,10 +171,10 @@ export default {
                 ref="PhemismUserSelect"
                 type={'checkbox'}
                 title={'请选择试验员'}
+                customUrl={'/HfPrjWorkCenterUserBusiness/listPageUserByRoleCode'}
+                customQueryParams={{roleCode: 'technician'}}
                 v-decorator={['chargeUserId']}
-                selectedName={() => {
-                  return this.model.idName
-                }}
+                selectedName={this.model.idName}
                 onchange={this.selectuserChange}
               />
             ),

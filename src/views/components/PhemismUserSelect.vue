@@ -11,16 +11,16 @@
     <div :class="['sys-product-select-wrapper', type]" @click="showSelectModal">
       <div
         v-if="type === 'radio'"
-        v-html="localSelectedName"
         class="sys-product-select"
         tabindex="2"
         :placeholder="placeholder"
-      ></div>
-      <div v-else-if="type === 'checkbox'"  v-html="localSelectedName"
+      >{{localSelectedName}}</div>
+      <div v-else-if="type === 'checkbox'"
            tabindex="2"
            :placeholder="placeholder" class="sys-product-select">
+        {{localSelectedName}}
       </div>
-      <a-button type="ghost-primary" :size="size" icon="select"> </a-button>
+      <a-button type="ghost-primary" :size="size" icon="select"></a-button>
     </div>
     <h-modal
       destroyOnClose
@@ -56,13 +56,22 @@
 </template>
 
 <script>
-import { getAction } from '@/api/manage'
-import { isString, isArray, isFunction } from 'lodash'
+import {getAction} from '@/api/manage'
+import {isString, isArray, isFunction} from 'lodash'
+
 export default {
   props: {
     title: {
       type: String,
       default: '请选择人员',
+    },
+    customUrl: {
+      type: String,
+      default: ''
+    },
+    customQueryParams: {
+      type: Object,
+      default: () => ({})
     },
     placeholder: {
       type: String,
@@ -90,11 +99,17 @@ export default {
       },
     },
     selectedName: {
-      type: [Function, String],
-      default: () => {},
+      type: String,
+      default: '',
     },
   },
   watch: {
+    selectedName: {
+      immediate: true,
+      handler(val) {
+        this.localSelectedName = val
+      }
+    },
     value: {
       immediate: true,
       handler(val) {
@@ -104,9 +119,6 @@ export default {
           this.selectedRowKeys = val
         } else {
           this.selectedRowKeys = []
-        }
-        if (isFunction(this.selectedName)) {
-          this.localSelectedName = this.selectedName()
         }
       },
     },
@@ -150,19 +162,20 @@ export default {
   },
   methods: {
     triggerChange() {
-      switch (this.type) {
-        case 'radio':
-          this.selectedRows.map((item) => {
-            this.localSelectedName = item[this.replaceFields.title]
-          })
-          break
-        case 'checkbox':
-          this.localSelectedName = []
-          this.selectedRows.map((item) => {
-            this.localSelectedName.push(item[this.replaceFields.title])
-          })
-          break
-      }
+      // switch (this.type) {
+      //   case 'radio':
+      //     this.selectedRows.map((item) => {
+      //       this.localSelectedName = item[this.replaceFields.title]
+      //     })
+      //     break
+      //   case 'checkbox':
+      //     this.localSelectedName = []
+      //     this.selectedRows.map((item) => {
+      //       this.localSelectedName.push(item[this.replaceFields.title])
+      //     })
+      //     break
+      // }
+      this.localSelectedName = this.selectedRows.map(item => item.idName).toString()
       this.$emit('change', this.selectedRowKeys, this.selectedRows)
     },
     handleSubmit() {
@@ -189,8 +202,9 @@ export default {
       let data = {
         ...params,
         ...this.queryParams,
+        ...this.customQueryParams
       }
-      return getAction(this.url, data).then((res) => {
+      return getAction(this.customUrl || this.url, data).then((res) => {
         if (res.code === 200) {
           return res.data
         }
@@ -208,12 +222,14 @@ export default {
     border-color: #f5222d !important;
   }
 }
+
 .sys-product-select {
   .sys-product-select-wrapper {
     width: 100%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
+
     .sys-product-select {
       box-sizing: border-box;
       margin: 0;
@@ -242,11 +258,13 @@ export default {
         outline: 0;
         box-shadow: 0 0 0 2px rgb(64 158 255 / 20%);
       }
+
       &:empty::before {
         color: lightgrey;
         content: attr(placeholder);
       }
     }
+
     .ant-btn {
       margin-left: 5px;
     }
