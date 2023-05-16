@@ -41,7 +41,7 @@
              </a-tooltip>
               <a-popover v-if="subRow.relation && subRow.relation.length" placement="right"
                          v-model="subRow.popoverVisible" trigger="click">
-                <template slot="content">
+                <div class="popover-content" slot="content">
                   <a-checkbox-group :value="subRow.pieceResult"
                                     @change="checked => handleSubTableCheckboxChange(checked,subRow)">
                     <a-checkbox
@@ -58,7 +58,7 @@
                     <a-button size="small" type="ghost-primary" @click="handlePopReload(subRow)">重置</a-button>
                     <a-button size="small" type="primary" @click="handlePopSubmit(subRow)"> 确定</a-button>
                   </div>
-                </template>
+                </div>
                 <a-button @click.stop="handleSelectPiece(subRow)" class="chooseBtn" size="small"
                           type="primary">选择</a-button>
               </a-popover>
@@ -394,12 +394,13 @@ export default {
   }
 }
 
-.ant-checkbox-wrapper {
-  margin-bottom: 5px !important;
-  margin-left: 0 !important;
-  display: block !important;
+.popover-content {
+  .ant-checkbox-wrapper {
+    margin-bottom: 5px !important;
+    margin-left: 0 !important;
+    display: block !important;
+  }
 }
-
 
 .piece-wrapper {
   position: relative;

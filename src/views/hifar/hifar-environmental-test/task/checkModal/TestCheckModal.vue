@@ -50,18 +50,15 @@
               </div>
               <div class='check-name check-list-item-center'>
                 <span v-if='!item.isEdit'>{{ item.itemName }}</span>
-                <a-textarea v-else v-model='item.itemName' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemName' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-content'>
                 <span v-if='!item.isEdit'>{{ item.itemContent }}</span>
-                <a-textarea v-else v-model='item.itemContent' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemContent' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-require'>
                 <span v-if='!item.isEdit'>{{ item.itemRequire }}</span>
-                <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-res check-list-item-center'>
                 <div v-if='!item.isEdit || item.isCheckRes'
@@ -71,8 +68,7 @@
                   <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
                   <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
-                <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-res-person' @click='() => handleFillCheck(item, index)'>
                 {{ item.fillUserName || '--' }}
@@ -124,18 +120,15 @@
               </div>
               <div class='check-name check-list-item-center'>
                 <span v-if='!item.isEdit'>{{ item.itemName }}</span>
-                <a-textarea v-else v-model='item.itemName' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemName' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-content'>
                 <span v-if='!item.isEdit'>{{ item.itemContent }}</span>
-                <a-textarea v-else v-model='item.itemContent' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemContent' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-require'>
                 <span v-if='!item.isEdit'>{{ item.itemRequire }}</span>
-                <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-res check-list-item-center'>
                 <div v-if='!item.isEdit || item.isCheckRes' @click="() => handleCheckRes(item, index, 'inCheckInfo')">
@@ -144,8 +137,7 @@
                   <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
                   <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
-                <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-res-person' @click='() => handleFillCheck(item, index)'>
                 {{ item.fillUserName || '--' }}
@@ -196,18 +188,15 @@
               </div>
               <div class='check-name check-list-item-center'>
                 <span v-if='!item.isEdit'>{{ item.itemName }}</span>
-                <a-textarea v-else v-model='item.itemName' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemName' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-content'>
                 <span v-if='!item.isEdit'>{{ item.itemContent }}</span>
-                <a-textarea v-else v-model='item.itemContent' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemContent' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-require'>
                 <span v-if='!item.isEdit'>{{ item.itemRequire }}</span>
-                <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-res check-list-item-center'>
                 <div v-if='!item.isEdit || item.isCheckRes'
@@ -217,8 +206,7 @@
                   <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
                   <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
-                <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'
-                            @blur='handleBlurSave(item)'></a-textarea>
+                <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-res-person' @click='() => handleFillCheck(item, index)'>
                 {{ item.fillUserName || '--' }}
@@ -307,18 +295,6 @@ export default {
       this.checkAll = checkedList.length === this[type].length
       this.indeterminate = !!checkedList.length && checkedList.length < this[type].length
     },
-    handleBlurSave(item) {
-      if (item.itemContent || item.itemName || item.itemRequire) {
-        item.isdel = this.buildWord ? '1' : "0";
-        postAction(this.url.updateCheckItem, item).then(res => {
-          if (res.code === 200) {
-            this.$message.success('保存成功')
-            item.isSave = true
-            this.getCheckDetail()
-          }
-        })
-      }
-    },
     async handleCopy(type) {
       let checkedList = this.filterCheckedList(type)
       if (!checkedList.length) return this.$message.warning('请选择需要复制的项')
@@ -374,9 +350,36 @@ export default {
       if (record.id) {
         this.getCheckDetail()
       }
-      this.$emit('change')
     },
-    handleCancel() {
+    async handleCancelBefore() {
+      let typeObj = {
+        before: 'beforeCheckInfo',
+        testMiddle: 'inCheckInfo',
+        after: 'afterCheckInfo'
+      }
+      let isEditItem = this[typeObj[this.type]].filter(item => item.isEdit === true)
+      let isUnfinished = isEditItem.some(item => !item.itemContent || !item.itemName || !item.itemRequire || !item.itemRes)
+      if (isEditItem.length === 0) return true
+      if (isUnfinished) {
+        this.$message.warning('还有未填写完成的检查项')
+        return false
+      }
+      let bool = false
+      for (let i = 0; i < isEditItem.length; i++) {
+        isEditItem[i].isdel = this.buildWord ? '1' : "0";
+        let updateItem = await postAction(this.url.updateCheckItem, isEditItem[i])
+        if (updateItem.code === 200) {
+          bool = true
+        } else {
+          this.$message.warning('保存出错')
+          bool = false
+          return
+        }
+      }
+      return bool
+    },
+    async handleCancel() {
+      if (!(await this.handleCancelBefore())) return
       this.visible = false
       this.spinLoading = false
       this.beforeCheckInfo = []
@@ -404,8 +407,6 @@ export default {
         itemRes = '1'
       }
       this.$set(this[type][index], 'itemRes', itemRes)
-      this.handleBlurSave(item)
-
     },
     handleFillCheck(item) {
       let record = {

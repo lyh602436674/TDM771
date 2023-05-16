@@ -9,8 +9,8 @@
     @cancel="handleCancel"
   >
     <template slot="footer">
-      <a-button type="ghost-danger" :disabled="_isUploading_" @click="handleCancel">关闭</a-button>
-      <a-button type="primary" :disabled="_isUploading_" @click="handleClickSubmit">确定</a-button>
+      <a-button type="ghost-danger" :loading="_isUploading_" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" :loading="_isUploading_" @click="handleClickSubmit">确定</a-button>
     </template>
     <h-form
       ref="TempForm"

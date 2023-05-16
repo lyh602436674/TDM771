@@ -79,14 +79,17 @@ export default {
         let {size, type, name} = files[i]
         if (this.maxSize && size / 1000 > this.maxSize) {
           this.$message.error(`${name}文件大小大于最大限制${this.maxSize}kB`)
+          this.$store.commit('SET_UPLOADING', false)
           return
         }
         if (this.minSize && size / 1000 < this.minSize) {
           this.$message.error(`${name}文件大小小于最小限制${this.minSize}kB`)
+          this.$store.commit('SET_UPLOADING', false)
           return
         }
         if (this.accept && !this.accept.includes(type)) {
           this.$message.error(`${name}文件类型不正确，请重新选择！${name}文件类型${type}，可上传类型${fileTypeTxt}`)
+          this.$store.commit('SET_UPLOADING', false)
           return
         }
         UUID = randomUUID()
@@ -263,6 +266,7 @@ export default {
           this.$store.commit('SET_UPLOADING', false)
         } else {
           this.$set(this.fileList[fileIndex], "status", 'exception')
+          this.$store.commit('SET_UPLOADING', false)
         }
       })
 

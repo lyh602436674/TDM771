@@ -92,32 +92,30 @@
         }}
       </span>
       <!-- 操作 -->
-      <span slot="action" slot-scope="text, record">
+      <a-space slot="action" slot-scope="text, record" size="middle">
         <a-icon
           class="primary-text"
           style="cursor: pointer"
           title="编辑"
           type="edit"
-          @click="() => handleEdit(record)"
+          @click="handleEdit(record)"
         />
-        <a-divider type="vertical"/>
         <a-icon
           class="primary-text"
           style="cursor: pointer"
           title="详情"
           type="eye"
-          @click="() => detailHandle(record)"
+          @click="detailHandle(record)"
         />
-        <a-divider type="vertical"/>
         <a-icon
+          v-if="record.equipUse === 1 && record.equipTypeCode === 'climate'"
           class="primary-text"
           style="cursor: pointer"
           title="历史温度"
           type="history"
-          @click="() => historyCollection(record)"
+          @click="historyCollection(record)"
         />
-        <a-divider type="vertical" v-has="'device:delete'"/>
-        <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
+        <a-popconfirm title="确定删除吗?" @confirm="handleDelete(record.id)">
           <a-icon
             v-has="'device:delete'"
             class="primary-text"
@@ -128,7 +126,7 @@
             type="delete"
           />
         </a-popconfirm>
-      </span>
+      </a-space>
     </h-vex-table>
     <history-temperature ref="historyTemperature"></history-temperature>
     <equipment-detail ref="detailModal"></equipment-detail>

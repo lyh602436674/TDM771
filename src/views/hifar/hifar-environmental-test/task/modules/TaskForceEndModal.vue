@@ -15,8 +15,11 @@
     inner
     width="90%"
     @cancel="handleCancel"
-    @submit="handleSubmit"
   >
+    <template slot="footer">
+      <a-button type="ghost-danger" :loading="_isUploading_ || loading" @click="handleCancel">关闭</a-button>
+      <a-button type="primary" :loading="_isUploading_ || loading" @click="handleSubmit">确定</a-button>
+    </template>
     <h-desc :bordered="false">
       <h-card :bordered="false" style="width: 100%">
         <h-form ref="taskForceEndForm" v-model="model" :column="2" :formData="formData" style="width: 100%"/>
@@ -28,9 +31,11 @@
 <script>
 import moment from 'moment'
 import {postAction} from '@/api/manage'
+import mixin from "@views/hifar/hifar-environmental-test/mixin";
 
 export default {
   name: 'TaskForceEndModal',
+  mixins: [mixin],
   props: {
     forceEndUrl: {
       type: String,
@@ -48,6 +53,7 @@ export default {
       moment,
       title: '',
       visible: false,
+      loading: false,
       model: {},
       type: null,
       testDetailData: {},
@@ -103,7 +109,7 @@ export default {
     show(type, record) {
       this.model = Object.assign({}, record)
       this.type = type
-      this.title = '终止：' + (record.testNames || record.unitNames || record.testName || record.unitName) + ( record.testCode ? '-' + record.testCode : '')
+      this.title = '终止：' + (record.testNames || record.unitNames || record.testName || record.unitName) + (record.testCode ? '-' + record.testCode : '')
       this.model.optTime = moment()
       this.$nextTick(() => {
         this.visible = true
@@ -121,6 +127,7 @@ export default {
       this.visible = false
     },
     handleSubmit() {
+      this.loading = true
       const {
         $refs: {taskForceEndForm},
       } = this
@@ -154,7 +161,11 @@ export default {
           } else {
             this.$message.warning(res.msg)
           }
+        }).finally(() => {
+          this.loading = false
         })
+      }).catch(() => {
+        this.loading = false
       })
     },
     getModalContainer() {
