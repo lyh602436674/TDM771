@@ -466,15 +466,14 @@ export default {
     },
     // 编辑
     handleEdit(record) {
-      let type = 'edit'
-      this.$refs.EntrustmentModal.show(record, type)
+      this.$refs.EntrustmentModal.show(record, 'edit')
     },
     // 删除
     handleDelete(id) {
       postAction(this.url.delete, {id: id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
-          this.refresh(true)
+          this.refresh()
         }
       })
     },

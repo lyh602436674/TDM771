@@ -59,7 +59,12 @@ export default {
     localDataSource() {
       return () => {
         return new Promise((resolve, reject) => {
-          resolve(this.dataSource)
+          resolve(this.dataSource.map(item => {
+            return {
+              ...item,
+              conditionTypeDesc: item.dataType === 'string' ? item.strValue : item.conditionTypeDesc
+            }
+          }))
         }).then(res => {
           return res
         })

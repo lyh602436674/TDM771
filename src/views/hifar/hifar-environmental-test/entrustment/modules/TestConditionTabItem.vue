@@ -14,7 +14,7 @@
       :ref="'pointTable' + projectIndex + itemIndex"
       :class="'pointTable' + projectIndex + itemIndex"
       :auto-resize="true"
-      :data="itemAbilityInfo"
+      :data="itemAbilityInfoExtend"
       :edit-config="{
                 trigger: 'click',
                 mode: 'cell',
@@ -125,9 +125,22 @@ export default {
         this.highLowTemperatureExtend = val
       },
     },
+    itemAbilityInfo: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        this.itemAbilityInfoExtend = val.map(item => {
+          return {
+            ...item,
+            conditionTypeDesc: item.dataType === 'string' ? item.strValue : item.conditionTypeDesc
+          }
+        })
+      }
+    }
   },
   data() {
     return {
+      itemAbilityInfoExtend: [],
       sysDelFlag: PROJECT_RELEVANCY_TEST_CONDITION,
       selectOptionItem: [
         {label: "先高温", key: '1', value: '1'},
