@@ -74,7 +74,7 @@ export default {
           },
         },
         {
-          title: '座机号',
+          title: '分机号',
           dataIndex: 'telephone',
           customRender: (text, record) => {
             return record.telephone || '--'

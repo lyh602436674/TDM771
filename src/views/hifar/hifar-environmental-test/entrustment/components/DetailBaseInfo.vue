@@ -11,7 +11,8 @@
       <h-desc-item label='委托单号' style="display: block">
         <template slot="content">
           <div>{{ detailData.entrustNo || '--' }}</div>
-          <a-button v-if="showPreviewBtn" icon="eye" size="small" style="margin-left: 10px" type="primary"
+          <a-button v-if="showPreviewBtn && detailData.entrustNo" icon="eye" size="small" style="margin-left: 10px"
+                    type="primary"
                     @click="entrustReview">委托单预览
           </a-button>
         </template>
@@ -90,20 +91,20 @@
       <h-desc-item :span='3' label='测试软件/测试方法'>
         <span slot='content' v-html="detailData.testMethod && detailData.testMethod.replace(/\n/g,'<br/>')"></span>
       </h-desc-item>
-<!--      <h-desc-item :span='3' label='委托单附件'>-->
-<!--        <div slot='content'>-->
-<!--          <template v-if='attachInfo && attachInfo.length'>-->
-<!--            <div v-for='(item, index) in attachInfo' :key='index' class='url-list'>-->
-<!--              <span>{{ index + 1 }}、{{ item.fileName }}</span>-->
-<!--              <a-button icon='download' size='small' type='primary'-->
-<!--                        @click='handleDownload(item.filePath, item.fileName)'>-->
-<!--                下载-->
-<!--              </a-button>-->
-<!--            </div>-->
-<!--          </template>-->
-<!--          <span v-else>暂无附件</span>-->
-<!--        </div>-->
-<!--      </h-desc-item>-->
+      <!--      <h-desc-item :span='3' label='委托单附件'>-->
+      <!--        <div slot='content'>-->
+      <!--          <template v-if='attachInfo && attachInfo.length'>-->
+      <!--            <div v-for='(item, index) in attachInfo' :key='index' class='url-list'>-->
+      <!--              <span>{{ index + 1 }}、{{ item.fileName }}</span>-->
+      <!--              <a-button icon='download' size='small' type='primary'-->
+      <!--                        @click='handleDownload(item.filePath, item.fileName)'>-->
+      <!--                下载-->
+      <!--              </a-button>-->
+      <!--            </div>-->
+      <!--          </template>-->
+      <!--          <span v-else>暂无附件</span>-->
+      <!--        </div>-->
+      <!--      </h-desc-item>-->
       <h-desc-item :span='3' label='备注'>
         <span slot='content' v-html="detailData.remarks && detailData.remarks.replace(/\n/g,'<br/>')"></span>
       </h-desc-item>

@@ -16,37 +16,53 @@
       :rowKey="(record) => record.id"
     >
       <span slot="entrustCode" slot-scope="text, row">
-        <a @click="handleEntrustDetail(row,'2')"></a>
+        <a @click="handleEntrustDetail(row,'2')">{{ text }}</a>
       </span>
       <span slot="entrustNo" slot-scope="text, row">
-        <a @click="handleEntrustDetail(row,'1')"></a>
+        <a @click="handleEntrustDetail(row,'1')">{{ text }}</a>
       </span>
+      <span slot="status" slot-scope="text, record">
+          <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
+        </span>
       <div slot="action" slot-scope="text, record">
-        <a-icon
-          type="eye"
-          title="详情"
-          class="primary-text"
-          style="cursor: pointer"
-          @click="() => handleDetail(record)"
-        />
+        <a-space size="middle">
+          <a-icon
+            :type="record.docxLoading ? 'loading' : 'file-word'"
+            class="primary-text cursor-pointer"
+            title="下载word"
+            @click="handleDownload(record, 'docx')"
+          />
+          <a-icon
+            :type="record.pdfLoading ? 'loading' : 'file-pdf'"
+            class="primary-text cursor-pointer"
+            title="下载pdf"
+            @click="handleDownload(record, 'pdf')"
+          />
+        </a-space>
       </div>
     </h-vex-table>
+    <integrated-query-modal :queryType="queryType" ref="integratedQueryModal"></integrated-query-modal>
   </h-card>
 </template>
 
 <script>
 
-import {postAction} from "@api/manage";
+import {downloadFile, getAction, postAction} from "@api/manage";
 import moment from "moment/moment";
+import mixin from "@views/hifar/hifar-environmental-test/reports/mixin";
+import IntegratedQueryModal
+  from "@views/hifar/hifar-environmental-test/integratedQuery/modules/integratedQueryModal.vue";
 
 export default {
   name: "integratedQueryTable",
+  components: {IntegratedQueryModal},
   props: {
     queryType: {
       type: String,
       default: '1'
     }
   },
+  mixins: [mixin],
   data() {
     return {
       queryParams: {},
@@ -130,14 +146,14 @@ export default {
         {
           title: '运行单号',
           align: 'left',
-          width: 140,
+          width: 160,
           dataIndex: 'entrustCode',
           scopedSlots: {customRender: 'entrustCode'},
         },
         {
           title: '委托单号',
           align: 'left',
-          width: 120,
+          width: 140,
           dataIndex: 'entrustNo',
           scopedSlots: {customRender: 'entrustNo'},
         },
@@ -175,14 +191,6 @@ export default {
             return text || '--'
           }
         },
-
-        {
-          title: '移交状态',
-          align: 'center',
-          width: 100,
-          dataIndex: 'transferStatus',
-          scopedSlots: {customRender: 'transferStatus'}
-        },
         {
           title: '试验项目',
           align: 'left',
@@ -211,13 +219,6 @@ export default {
           }
         },
         {
-          title: '查看下载记录 ',
-          align: 'center',
-          width: 120,
-          dataIndex: 'downloadNum',
-          scopedSlots: {customRender: 'downloadNum'}
-        },
-        {
           title: 'mes推送状态',
           align: 'center',
           width: 120,
@@ -228,29 +229,61 @@ export default {
           title: '操作',
           dataIndex: 'action',
           fixed: 'right',
-          width: 240,
+          width: 100,
           align: 'center',
           scopedSlots: {customRender: 'action'}
         }
       ],
       url: {
-        list: "/HfEnvEntrustBusiness/listPage"
+        list: "/HfEnvReportEntrustBusiness/listPage",
+        download: '/HfEnvReportEntrustBusiness/download',
       },
       loadData: params => {
         return postAction(this.url.list, {
           ...params,
           ...this.queryParams,
+          queryType: this.queryType
         }).then(res => {
           if (res.code === 200) {
-            return res.data
+            return Object.assign({}, res.data, {
+              data: res.data.data.map(item => {
+                return {
+                  ...item,
+                  docxLoading: false,
+                  pdfLoading: false,
+                }
+              })
+            })
           }
         })
       }
     }
   },
   methods: {
+    handleDownload(record, type) {
+      let obj = {
+        docx: {
+          loading: 'docxLoading',
+        },
+        pdf: {
+          loading: 'pdfLoading',
+        },
+      }
+      this.$set(record, obj[type].loading, true)
+      getAction(this.url.download, {id: record.id, type, queryType: this.queryType}).then(res => {
+        if (res.code === 200) {
+          let filePath = res.data.url;
+          let fileName = res.data.fileName;
+          downloadFile(filePath, fileName)
+        } else {
+          this.$message.error('下载失败!')
+        }
+      }).finally(() => {
+        this.$set(record, obj[type].loading, false)
+      })
+    },
     handleEntrustDetail(row, type) {
-
+      this.$refs.integratedQueryModal.show(row.entrustIds, type)
     },
     refresh(bool = true) {
       this.$refs.table.refresh(bool)

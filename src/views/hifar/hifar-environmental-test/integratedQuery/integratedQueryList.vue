@@ -4,10 +4,10 @@
       <template slot="title"> 综合查询</template>
       <h-tabs fixed :activeKey="activeKey" :animated="true" @change="handleTabsChange">
         <a-tab-pane key="1" tab="空港">
-          <integrated-query-table queryType="1"></integrated-query-table>
+          <integrated-query-table :queryType="activeKey"></integrated-query-table>
         </a-tab-pane>
         <a-tab-pane key="2" tab="质检">
-          <integrated-query-table queryType="2"></integrated-query-table>
+          <integrated-query-table :queryType="activeKey"></integrated-query-table>
         </a-tab-pane>
       </h-tabs>
     </h-card>

@@ -205,14 +205,14 @@ export default {
             key: 'idCard',
             formType: 'input',
             placeholder: '请输入身份证号',
-            validate: {
-              rules: [
-                {
-                  required: true,
-                  validator: this.validateIdCard,
-                },
-              ],
-            },
+            // validate: {
+            //   rules: [
+            //     {
+            //       required: true,
+            //       validator: this.validateIdCard,
+            //     },
+            //   ],
+            // },
           },
           {
             title: '工号',
@@ -295,12 +295,12 @@ export default {
             },
           },
           {
-            title: '座机号',
+            title: '分机号',
             key: 'telephone',
             formType: 'input',
-            validate: {
-              rules: [{pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码'}],
-            },
+            // validate: {
+            //   rules: [{pattern: /^0\d{2,3}-[1-9]\d{6,7}$/, message: '请输入正确的座机号码'}],
+            // },
           },
         ],
       ],
