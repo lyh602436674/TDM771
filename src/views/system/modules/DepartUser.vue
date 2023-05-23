@@ -18,7 +18,6 @@
       <h-table
         ref="departUserTable"
         :showAlertInfo="true"
-        :scroll="{ x: true }"
         :columns="columns"
         :data="loadData"
         :rowKey="(record) => record.id"

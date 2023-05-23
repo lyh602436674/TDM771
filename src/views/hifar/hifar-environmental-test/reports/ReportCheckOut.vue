@@ -21,7 +21,6 @@
       <h-vex-table
         slot="content"
         ref="dataCheckTable"
-        :scroll="{ x: true }"
         :columns="columns"
         :data="loadData"
         :rowKey="(record) => record.id"

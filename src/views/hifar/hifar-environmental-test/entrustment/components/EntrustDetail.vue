@@ -9,7 +9,7 @@
 <template>
   <div>
     <!-- 委托信息 -->
-    <detail-base-info id="entrust" :detailDataObj="detailData"></detail-base-info>
+    <detail-base-info id="entrust" :viewDetailType="viewDetailType" :detailDataObj="detailData"></detail-base-info>
     <!--样品信息-->
     <piece-detail-template id="product" :dataSource="detailData.pieceInfo"/>
     <!-- 项目信息 -->
@@ -41,6 +41,10 @@ export default {
       default: () => {
       },
     },
+    viewDetailType: {
+      type: String,
+      default: '1'
+    }
   },
   watch: {
     detailData: {

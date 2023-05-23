@@ -19,7 +19,6 @@
       <h-vex-table
         slot="content"
         ref="methodsTable"
-        :scroll="{ x: true }"
         :columns="columns"
         :data="getLoadData"
         :rowKey="(record) => record.id"

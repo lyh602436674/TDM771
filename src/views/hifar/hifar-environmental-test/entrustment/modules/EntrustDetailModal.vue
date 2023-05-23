@@ -34,7 +34,8 @@
       <h-card :bordered="false">
         <h-tabs :activeKey="activeKey" :animated="true" @change="handleTabsChange">
           <a-tab-pane key="1" :tab='viewDetailType === "1" ? "委托信息" : "运行单信息"'>
-            <entrust-detail ref="EntrustDetail" :detailData="detailData"></entrust-detail>
+            <entrust-detail ref="EntrustDetail" :viewDetailType="viewDetailType"
+                            :detailData="detailData"></entrust-detail>
           </a-tab-pane>
           <a-tab-pane key="2" tab="委托单预览">
             <div class="autoHeight">
@@ -104,6 +105,7 @@ export default {
       pageCount: 0,
       outsourcingUnit: '',
       viewDetailType: '',
+      rejectRemarks: '',
       testCondition: 2,
       testProgress: 2
     }
@@ -119,6 +121,7 @@ export default {
     handleCancel() {
       this.visible = false
       this.submitLoading = false
+      this.rejectRemarks = ''
     },
     handleTabsChange(v) {
       this.activeKey = v
@@ -126,7 +129,7 @@ export default {
     loadDetail(id, type) {
       this.spinning = true
       let url = this.url.detail
-      postAction(url, { id, type }).then((res) => {
+      postAction(url, {id, type}).then((res) => {
         if (res.code === 200) {
           this.detailData = res.data
         }
@@ -136,10 +139,28 @@ export default {
     },
     handleCheck(record, title) {
       this.$confirm({
-        title: '提示',
-        content: '确认驳回吗?',
+        title: '请填写驳回意见',
+        content: h => {
+          return h('div', {}, [
+            h('a-textarea', {
+              props: {
+                autoSize: {minRows: 6},
+                value: this.rejectRemarks,
+              },
+              on: {
+                click: e => {
+                  this.rejectRemarks = e.target.value
+                }
+              }
+            }),
+          ])
+        },
         onOk: () => {
-          postAction(this.url.reject, {id: record.id, typeNo: this.pageOption.typeNo}).then(res => {
+          postAction(this.url.reject, {
+            id: record.id,
+            typeNo: this.pageOption.typeNo,
+            rejectRemarks: this.rejectRemarks
+          }).then(res => {
             if (res.code === 200) {
               this.$message.success('驳回成功')
               this.handleCancel();
@@ -148,6 +169,9 @@ export default {
               this.$message.warning(res.msg)
             }
           })
+        },
+        onCancel: () => {
+
         }
       })
     },

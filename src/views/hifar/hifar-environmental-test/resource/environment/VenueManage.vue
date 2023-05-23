@@ -32,7 +32,6 @@
       <h-vex-table
         slot="content"
         ref="venueManageTable"
-        :scroll="{ x: true }"
         :columns="columns"
         :data="loadData"
         :rowKey="(record) => record.id"

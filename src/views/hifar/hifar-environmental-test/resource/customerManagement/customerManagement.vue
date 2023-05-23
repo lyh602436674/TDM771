@@ -27,7 +27,6 @@
       <h-vex-table
         slot="content"
         ref="custTable"
-        :scroll="{ x: true }"
         :columns="columns"
         :data="custLoadData"
         :rowKey="(record) => record.id"

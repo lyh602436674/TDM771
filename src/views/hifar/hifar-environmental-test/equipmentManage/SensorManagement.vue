@@ -32,7 +32,6 @@
     <h-vex-table
       ref="sensorManagementTable"
       slot="content"
-      :scroll="{ x: true }"
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"

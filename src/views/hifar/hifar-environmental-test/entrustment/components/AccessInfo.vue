@@ -14,7 +14,6 @@
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"
-      :scroll="{ x: true }"
     >
       <span slot="status" slot-scope="text,record">
         <a-tag v-if="record.status == 1" color="orange">待接收</a-tag>

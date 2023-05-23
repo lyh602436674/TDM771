@@ -20,7 +20,6 @@
     <h-vex-table
       slot="content"
       ref="reportFlowTable"
-      :scroll="{ x: true }"
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"

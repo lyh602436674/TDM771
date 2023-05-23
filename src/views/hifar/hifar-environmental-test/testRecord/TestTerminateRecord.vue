@@ -25,7 +25,6 @@
       <h-vex-table
         slot="content"
         ref="materialTable"
-        :scroll="{ x: true }"
         :columns="columns"
         :data="loadData"
         :rowKey="(record) => record.id"

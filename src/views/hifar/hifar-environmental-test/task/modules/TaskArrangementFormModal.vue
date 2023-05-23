@@ -53,7 +53,8 @@ export default {
             title: `加速度${i}`,
             key: `speed${i}`,
             formType: 'input',
-            hidden: !this.model[`speed${i}`]
+            hidden: !this.model[`speed${i}`],
+            readOnly: true
           };
           speedFields.push(field);
         }
@@ -184,6 +185,7 @@ export default {
             key: 'testRate',
             formType: 'input',
             hidden: !this.model.testRate,
+            readOnly: true,
             validate: {
               rules: [
                 {
@@ -199,6 +201,7 @@ export default {
             key: 'temperatureRange',
             formType: 'input',
             hidden: !this.model.temperatureRange,
+            readOnly: true,
             validate: {
               rules: [
                 {
@@ -214,6 +217,7 @@ export default {
             key: 'humidityRange',
             formType: 'input',
             hidden: !this.model.humidityRange,
+            readOnly: true,
             validate: {
               rules: [
                 {
@@ -229,6 +233,7 @@ export default {
             key: 'pressureRange',
             formType: 'input',
             hidden: !this.model.pressureRange,
+            readOnly: true,
             validate: {
               rules: [
                 {

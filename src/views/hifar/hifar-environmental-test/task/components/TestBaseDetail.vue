@@ -98,7 +98,7 @@
           <h-desc-item :span="3" label="实施过程">{{ detailData.remarks || '--' }}</h-desc-item>
         </h-desc>
         <!-- 安装、控制方式 -->
-        <h-desc id="installControl" class="mg-t-20" title='安装、控制方式'>
+        <h-desc v-if="!isShow" id="installControl" class="mg-t-20" title='安装、控制方式'>
           <h-card :bordered='false' style='width: 100%'>
             <a-table
               :columns='installControlColumns'
@@ -168,7 +168,7 @@
         <!--          ></a-table>-->
         <!--        </h-card>-->
         <!--      </h-desc>-->
-        <h-desc id="toolsProduct" class="mg-t-20" title='振动工装'>
+        <h-desc v-if="!isShow" id="toolsProduct" class="mg-t-20" title='振动工装'>
           <h-card :bordered='false' style='width: 100%'>
             <div slot='content'>
               <a-table
@@ -293,6 +293,7 @@ import HfElevatorLayer from "@comp/HfElevatorLayer";
 import TestPieceDetail from "@views/hifar/hifar-environmental-test/task/components/TestPieceDetail";
 import {dateTimeFormatByStamp} from '@/utils/util'
 import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
+import entrustmentMixins from "@views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins";
 
 export default {
   components: {
@@ -306,7 +307,7 @@ export default {
     DetailBaseInfo,
     HfElevatorLayer
   },
-  mixins: [mixin],
+  mixins: [mixin, entrustmentMixins],
   props: {
     testId: {
       type: String,
@@ -797,7 +798,8 @@ export default {
             />
           )
         }
-      ]
+      ],
+      projectClassifyType: "1"
     }
   },
   watch: {
@@ -809,12 +811,14 @@ export default {
           this.loadImgData()
           this.loadAttachData()
           this.loadVideoData()
-          this.buildLayerColumns()
         }
       }
     }
   },
   computed: {
+    isShow() {
+      return this.filterUnitCode(this.projectClassifyType)
+    },
     isBase() {
       return ['1', '2'].includes(this.viewDetailType)
     },
@@ -849,7 +853,8 @@ export default {
         },
         {
           title: "安装控制方式",
-          id: "installControl"
+          id: "installControl",
+          hidden: !this.isShow
         },
         {
           title: "测试设备",
@@ -865,7 +870,8 @@ export default {
         // },
         {
           title: "振动工装",
-          id: "toolsProduct"
+          id: "toolsProduct",
+          hidden: !this.isShow
         },
         {
           title: "曲线图片",
@@ -923,6 +929,9 @@ export default {
               testPersonInfo.push(res)
             })
           }
+          // 项目类型 力学 气候用来判断安装控制方式和振动工装是否显示
+          this.projectClassifyType = data.projectInfo[0].classifyType
+          this.buildLayerColumns()
           // 试件信息
           this.testPieceInfo = data.testPieceInfo
           this.testPersonInfo = testPersonInfo

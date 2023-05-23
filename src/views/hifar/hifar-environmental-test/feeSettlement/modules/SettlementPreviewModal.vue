@@ -184,7 +184,7 @@ export default {
         },
         {
           title: '折后单价',
-          dataIndex: 'discountPrice',
+          dataIndex: 'discountUnitPrice',
           align: 'center',
           width: 100,
           customRender: (text) => {

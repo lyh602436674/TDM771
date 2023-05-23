@@ -19,7 +19,6 @@
     <h-vex-table
       slot="content"
       ref="diveceInfoTable"
-      :scroll="{ x: true }"
       :columns="columns"
       :data="deviceInfoLoadData"
       :rowKey="(record) => record.id"

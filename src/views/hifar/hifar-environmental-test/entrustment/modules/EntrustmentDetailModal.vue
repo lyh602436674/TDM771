@@ -31,7 +31,8 @@
         </a-steps>
         <h-tabs :activeKey='activeKey' :animated='true' @change='handleTabsChange'>
           <a-tab-pane key='1' :tab='viewDetailType === "1" ? "委托信息" : "运行单信息"'>
-            <entrust-detail ref='EntrustDetail' :detailData='detailData'></entrust-detail>
+            <entrust-detail ref='EntrustDetail' :viewDetailType="viewDetailType"
+                            :detailData='detailData'></entrust-detail>
           </a-tab-pane>
           <a-tab-pane key='3' tab='试验信息'
                       v-if="[20,40,50,80].includes(detailData.status) && viewDetailType !== '1'">
@@ -47,7 +48,7 @@
             </a-button>
             <report-info ref='ReportInfo' :entrustCode='detailData.entrustCode' class='autoHeight'></report-info>
           </a-tab-pane>
-          <a-tab-pane v-if='detailData.status !== 1' key='5' tab='委托单预览'>
+          <a-tab-pane v-if='detailData.status !== 1 && viewDetailType === "1"' key='5' tab='委托单预览'>
             <div class='autoHeight'>
               <iframe
                 v-if='detailData.reportPath'

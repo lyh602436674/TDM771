@@ -27,7 +27,6 @@
     <h-vex-table
       ref="acceptanceRecordTable"
       slot="content"
-      :scroll="{ x: true }"
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"

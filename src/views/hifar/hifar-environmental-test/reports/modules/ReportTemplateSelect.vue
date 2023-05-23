@@ -14,7 +14,6 @@
       height="350"
       :row-selection="{ selectedRowKeys, onChange: onSelectChange,type:'radio' }"
       :rowKey="(record) => record.id"
-      :scroll="{ x: true }"
       style="height: 100%"
     >
     </h-vex-table>

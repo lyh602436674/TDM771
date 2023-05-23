@@ -15,7 +15,6 @@
       <h-vex-table
         slot="content"
         ref="downloadRecordTable"
-        :scroll="{ x: true }"
         :columns="columns"
         :data="loadData"
         :rowKey="(record) => record.id"

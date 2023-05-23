@@ -44,7 +44,6 @@
           :columns="columns"
           :data="loadData"
           :loading="loading"
-          :scroll="{ x: true }"
           :rowSelection="{
             selectedRowKeys: selectedRowKeys,
             onChange: onSelectChange,

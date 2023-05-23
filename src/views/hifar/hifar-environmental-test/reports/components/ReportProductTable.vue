@@ -18,7 +18,7 @@
       @change="refresh(true)"
       style="width:100%"
     />
-    <h-vex-table slot="content" ref="reportProductTable" :scroll="{ x: true }" :columns="columns" :data="custLoadData">
+    <h-vex-table slot="content" ref="reportProductTable"  :columns="columns" :data="custLoadData">
     </h-vex-table>
   </h-card>
 </template>

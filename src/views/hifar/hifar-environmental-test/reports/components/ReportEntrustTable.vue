@@ -22,7 +22,6 @@
     <h-vex-table
       slot="content"
       ref="unitListTable"
-      :scroll="{ x: true }"
       :columns="columns"
       :data="entrustData"
       :rowKey="(record) => record.id"

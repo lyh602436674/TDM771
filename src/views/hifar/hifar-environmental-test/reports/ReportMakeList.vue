@@ -50,7 +50,6 @@
         :data="loadData"
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :rowKey="(record) => record.id"
-        :scroll="{ x: true }"
       >
         <span slot="status" slot-scope="text, record">
           <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>

@@ -14,7 +14,6 @@
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"
-      :scroll="{ x: true }"
     >
       <span slot="status" slot-scope="text, record">
         <a-tag class="status_tag" :color="record.status | taskStatusColorFilter">

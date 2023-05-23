@@ -68,7 +68,7 @@
           </h-card>
         </h-desc>
         <!-- 安装、控制方式 -->
-        <h-desc id="installControl" class="mg-t-20" title="安装、控制方式">
+        <h-desc v-if="!isShow" id="installControl" class="mg-t-20" title="安装、控制方式">
           <h-card :bordered="false" style="width: 100%">
             <template slot="table-operator">
               <a-button icon="plus" size="small" type="primary" @click="installControlAdd">
@@ -262,7 +262,7 @@
             </div>
           </h-card>
         </h-desc>
-        <h-desc id="toolsProduct" class="mg-t-20" title="振动工装">
+        <h-desc v-if="!isShow" id="toolsProduct" class="mg-t-20" title="振动工装">
           <h-card :bordered="false" style="width: 100%">
             <template slot="table-operator">
               <a-button icon="plus" size="small" type="primary" @click="toolsProductAdd">
@@ -360,6 +360,7 @@ import {randomUUID, recursive, uniqueArray} from '@/utils/util'
 import CheckEnsureModal from '../modules/components/CheckEnsureModal'
 import ProductFileModal from '@views/hifar/hifar-environmental-test/task/modules/ProductFileModal'
 import HfElevatorLayer from '@/components/HfElevatorLayer'
+import entrustmentMixins from "@views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins";
 
 export default {
   inject: {
@@ -367,6 +368,7 @@ export default {
       default: () => document.body
     }
   },
+  mixins: [entrustmentMixins],
   props: {
     records: {
       type: Object,
@@ -388,44 +390,6 @@ export default {
   },
   data() {
     return {
-      layerColumns: [
-        {
-          title: '试件信息',
-          id: 'product'
-        },
-        {
-          title: '实施过程',
-          id: 'processForm'
-        },
-        {
-          title: '安装控制方式',
-          id: 'installControl'
-        },
-        {
-          title: '试验设备开关机记录',
-          id: 'switchRecording'
-        },
-        // {
-        //   title: '巡检记录',
-        //   id: 'siteInspection'
-        // },
-        {
-          title: '参试人员',
-          id: 'person'
-        },
-        {
-          title: '测试设备',
-          id: 'testEquip'
-        },
-        {
-          title: '振动工装',
-          id: 'toolsProduct'
-        },
-        {
-          title: '曲线图片',
-          id: 'picture'
-        }
-      ],
       moment,
       productStatusOptions: [{key: '1', value: '1', label: '完好'}, {key: '2', value: '2', label: '损坏'}],
       siteRunningStatus: [
@@ -1670,10 +1634,56 @@ export default {
         }
       ],
       selectedBeforeIndex: 0,
-      testRecordInfo: {}
+      testRecordInfo: {},
+      projectClassifyType: '1'
     }
   },
   computed: {
+    layerColumns() {
+      return [
+        {
+          title: '试件信息',
+          id: 'product'
+        },
+        {
+          title: '实施过程',
+          id: 'processForm'
+        },
+        {
+          title: '安装控制方式',
+          id: 'installControl',
+          hidden: !this.isShow
+        },
+        {
+          title: '试验设备开关机记录',
+          id: 'switchRecording'
+        },
+        // {
+        //   title: '巡检记录',
+        //   id: 'siteInspection'
+        // },
+        {
+          title: '参试人员',
+          id: 'person'
+        },
+        {
+          title: '测试设备',
+          id: 'testEquip'
+        },
+        {
+          title: '振动工装',
+          id: 'toolsProduct',
+          hidden: !this.isShow
+        },
+        {
+          title: '曲线图片',
+          id: 'picture'
+        }
+      ]
+    },
+    isShow() {
+      return this.filterUnitCode(this.projectClassifyType)
+    },
     pictureCustomParams() {
       return {
         refId: this.testId,
@@ -1829,8 +1839,9 @@ export default {
           // })
           this.installControlTable = model.insertMethodInfo// 安装、控制方式+传感器
           this.personArr = model.testPersonInfo
-          this.testTaskData = model.testTaskInfo
           this.projectData = model.testTaskInfo
+          // 项目类型 力学 气候用来判断安装控制方式和振动工装是否显示
+          this.projectClassifyType = model.projectInfo[0].classifyType
           this.equipData = model.testEquipInfo.length ? model.testEquipInfo : this.selectedTreeRows
           this.toolsProductData = model.testToolsProductInfo
           model.realStartTime = model.realStartTime && model.realStartTime !== '0' ? moment(+model.realStartTime) : null

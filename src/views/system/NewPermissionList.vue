@@ -19,7 +19,6 @@
       <a-table
         size="small"
         rowKey="id"
-        :scroll="{ x: true }"
         :columns="columns"
         :pagination="false"
         :dataSource="dataSource"

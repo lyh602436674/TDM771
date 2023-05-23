@@ -163,9 +163,6 @@ export default {
           title: '测试状态',
           key: 'testStatus',
           formType: 'select',
-          validate: {
-            rules: [{required: true, message: '请选择测试状态'}]
-          },
           options: [
             {title: '有错误', value: 1, key: 1},
             {title: '无错误', value: 2, key: 2}

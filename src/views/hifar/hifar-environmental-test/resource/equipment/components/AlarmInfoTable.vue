@@ -32,7 +32,6 @@
       :data="loadData"
       :row-selection="{ selectedRowKeys, onChange: onSelectChange }"
       :rowKey="(record) => record.id"
-      :scroll="{ x: true }"
     >
       <span slot="action" slot-scope="text, record">
         <a-icon

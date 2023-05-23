@@ -25,7 +25,6 @@
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"
-      :scroll="{ x: true }"
     >
       <div slot="idName" slot-scope="text, record">
         {{ record.idName }}

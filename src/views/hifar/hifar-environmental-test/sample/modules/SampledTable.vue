@@ -24,7 +24,6 @@
     <h-vex-table
       ref="sampleListTable"
       slot="content"
-      :scroll="{ x: true }"
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"

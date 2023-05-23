@@ -14,7 +14,6 @@
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"
-      :scroll="{ x: true }"
     >
       <template slot="status" slot-scope="text">
         <a-badge v-if="text == 1" color="geekblue" text="未开始" />

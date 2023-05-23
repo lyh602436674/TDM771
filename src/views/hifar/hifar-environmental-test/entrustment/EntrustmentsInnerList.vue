@@ -32,11 +32,17 @@
           <span v-else>--</span>
         </template>
         <template #entrustCode="text, record">
-          <a v-if="record.entrustCode" @click="handleDetailCode(record)">{{ record.entrustCode }}</a>
+          <a v-if="record.entrustCode" @click="handleDetailCode(record,'2')">{{ record.entrustCode }}</a>
           <span v-else>--</span>
         </template>
         <span slot="status" slot-scope="text, record">
           <a-badge :color="record.status | wtStatusColorFilter" :text="record.status | wtStatusFilter"/>
+          <a-popover trigger="click" v-if="record.status === 30">
+          <div slot="content" style="max-width: 500px">
+            {{ record.rejectRemarks || '--' }}
+          </div>
+          <a-icon style="margin-left:5px" type="eye" class="primary-text"></a-icon>
+        </a-popover>
         </span>
         <template slot="actions" slot-scope="text, record">
           <a-tooltip title="详情">

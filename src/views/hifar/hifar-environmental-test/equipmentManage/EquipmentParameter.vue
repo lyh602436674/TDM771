@@ -138,7 +138,6 @@
                   :data="(params) => loadTemplateData(params,1)"
                   :rowKey="(record) => record.id"
                   :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-                  :scroll="{ x: true }"
                   fixed
                 >
                   <template slot="checkName" slot-scope="text, record">
@@ -186,7 +185,6 @@
                   :data="(params) => loadTemplateData(params,2)"
                   :rowKey="(record) => record.id"
                   :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-                  :scroll="{ x: true }"
                   fixed
                 >
                   <template slot="checkName" slot-scope="text, record">
@@ -282,7 +280,6 @@
                   :data="(params) => loadTemplateData(params,4)"
                   :rowKey="(record) => record.id"
                   :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-                  :scroll="{ x: true }"
                   fixed
                 >
                   <template slot="name" slot-scope="text, record">

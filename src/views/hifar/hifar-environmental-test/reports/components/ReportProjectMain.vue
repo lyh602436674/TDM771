@@ -24,7 +24,6 @@
     <h-vex-table
       slot="content"
       ref="entrusListTable"
-      :scroll="{ x: true }"
       :columns="columns"
       :data="custLoadData"
       :rowKey="(record) => record.id"

@@ -547,8 +547,10 @@ export default {
               this.$message.error('请至少选择一项')
             } else {
               let row = this.selectedRow[0]
-              if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
-              if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
+              if (row.status === 1) return this.$message.warning('试验未开始，不能记录异常')
+              if (row.status === 10) return this.$message.warning('试验已撤销，不能记录异常')
+              if (row.status === 40) return this.$message.warning('试验已终止，不能记录异常')
+              if (row.status === 50) return this.$message.warning('试验已完成，不能记录异常')
               this.$refs.taskAbnormalModal.show('error', this.selectedRow[0])
             }
           },

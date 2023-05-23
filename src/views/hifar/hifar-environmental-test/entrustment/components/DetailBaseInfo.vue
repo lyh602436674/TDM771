@@ -17,7 +17,7 @@
           </a-button>
         </template>
       </h-desc-item>
-      <h-desc-item label='运行单号'>
+      <h-desc-item v-if="viewDetailType === '2'" label='运行单号'>
         {{ detailData.entrustCode || '--' }}
       </h-desc-item>
       <h-desc-item label='委托状态'>
@@ -135,6 +135,10 @@ export default {
     showPreviewBtn: {
       type: Boolean,
       default: false
+    },
+    viewDetailType: {
+      type: String,
+      default: "1"
     }
   },
   components: {TestEntrustReviewPdf},

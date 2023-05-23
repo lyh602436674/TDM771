@@ -52,7 +52,6 @@
             :data="experimentLoadData"
             :rowKey="(record) => record.id"
             :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :scroll="{ x: true }"
           >
             <template slot="actions" slot-scope="text, record">
               <a-tooltip title="删除">
@@ -90,7 +89,6 @@
             :data="parameterLoadData"
             :rowKey="(record) => record.id"
             :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :scroll="{ x: true }"
           >
             <template slot="actions" slot-scope="text, record">
               <a-tooltip title="删除">
@@ -128,7 +126,6 @@
             :data="testBeforeLoadData"
             :rowKey="(record) => record.id"
             :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :scroll="{ x: true }"
             fixed
           >
             <template slot="checkName" slot-scope="text, record">
@@ -179,7 +176,6 @@
             :data="testHalfwayLoadData"
             :rowKey="(record) => record.id"
             :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :scroll="{ x: true }"
             fixed
           >
             <template slot="checkName" slot-scope="text, record">
@@ -230,7 +226,6 @@
             :data="testAfterLoadData"
             :rowKey="(record) => record.id"
             :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-            :scroll="{ x: true }"
             fixed
           >
             <template slot="checkName" slot-scope="text, record">

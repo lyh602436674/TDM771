@@ -37,7 +37,6 @@
       <h-vex-table
         slot="content"
         ref="equipCheckTable"
-        :scroll="{ x: true }"
         :columns="columns"
         :data="checkLoadData"
         :rowKey="(record) => record.id"

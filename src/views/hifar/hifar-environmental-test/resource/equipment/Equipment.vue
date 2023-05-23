@@ -47,7 +47,6 @@
       :data="deviceInfoLoadData"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       :rowKey="(record) => record.id"
-      :scroll="{ x: true }"
       uid="envEquipmentList"
     >
       <!-- 设备编号跳详情 -->
