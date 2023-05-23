@@ -9,9 +9,9 @@
 <template>
   <div class="desc" :style="{ margin }">
     <!-- 标题 -->
-    <h1 v-if="title" class="desc-title" v-html="title"></h1>
+    <h1 v-if="title" class="desc-title"><span :class="[required ? 'required' : '']" v-html="title"></span></h1>
     <a-row :class="bordered ? 'desc-row bordered' : 'desc-row'">
-      <slot />
+      <slot/>
     </a-row>
   </div>
 </template>
@@ -40,6 +40,10 @@ export default {
     title: {
       type: String,
       default: '',
+    },
+    required: {
+      type: Boolean,
+      default: false
     },
     // 边距
     margin: {
@@ -112,6 +116,7 @@ export default {
 <style scoped lang="less">
 .desc {
   width: 100%;
+
   .desc-title {
     color: rgba(0, 0, 0, 0.45);
     font-weight: 400;
@@ -119,7 +124,21 @@ export default {
     line-height: 1.5715;
     padding-bottom: 4px;
     border-bottom: 1px solid #ccc;
+
+    .required {
+      margin-left: 10px;
+      position: relative;
+
+      &:before {
+        content: "*";
+        position: absolute;
+        font-weight: bolder;
+        left: -10px;
+        color: red;
+      }
+    }
   }
+
   .desc-row {
     display: flex;
     flex-wrap: wrap;
@@ -129,6 +148,7 @@ export default {
     width: 100%;
     height: 100%;
   }
+
   .bordered {
     border: 1px solid #e8e8e8;
     //border-right: none;

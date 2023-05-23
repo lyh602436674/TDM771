@@ -149,7 +149,8 @@ export default {
           if (res.code === 200) {
             let selectedTreeRows = {
               postId: this.selectedTreeRows[0].id,
-              postName: this.selectedTreeRows[0].postName
+              postName: this.selectedTreeRows[0].postName,
+              postCode: this.selectedTreeRows[0].postCode,
             }
             return Object.assign({}, res.data, {
               data: res.data.data.map(item => {

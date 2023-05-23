@@ -243,6 +243,7 @@ export default {
               itemRequire: item.itemRequire ? item.itemRequire : '',
               checkFlag: item.checkFlag ? item.checkFlag : '',
               remarks: item.remarks ? item.remarks : '',
+              rowSort: item.rowSort ? item.rowSort : '',
             })
           })
         } else {
@@ -291,6 +292,7 @@ export default {
         itemRequire: '',
         checkFlag: '',
         remarks: '',
+        rowSort: '',
       }
       const record = [tableItem]
       await $table.insertAt(record, row)

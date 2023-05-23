@@ -11,10 +11,10 @@
   >
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     <h-card fixed :bordered="true" style="width: 100%;">
-<!--      <div style="width:100%;padding: 5px;border: 1px solid #c5c5c5;border-top: 5px">-->
+      <!--      <div style="width:100%;padding: 5px;border: 1px solid #c5c5c5;border-top: 5px">-->
       <div style="margin-left: 5px;margin-bottom:10px;display: flex">
-      <a-col :md="7" :sm="12" style="margin-right: 10px;flex: 1">
-          <h-range-picker
+        <a-col :md="7" :sm="12" style="margin-right: 10px;flex: 1">
+          <a-range-picker
             style="width: 100%"
             size="small"
             show-time
@@ -22,9 +22,10 @@
             format="YYYY-MM-DD HH:mm:ss"
             :placeholder="['开始时间', '结束时间']"
             @change="onDateChange"
+            @ok="onOk"
           >
             <span slot="addonBefore">时间选择</span>
-          </h-range-picker>
+          </a-range-picker>
         </a-col>
         <a-col style="flex: 1">
           <a-button type="primary" icon="search" size="small" @click="refresh">查询</a-button>
@@ -73,9 +74,10 @@
 import {downloadFile, postAction} from '@api/manage'
 import EditHistoryTemperature
   from '@views/hifar/hifar-environmental-test/resource/equipment/components/editHistoryTemperature'
+import moment from 'moment'
 
 export default {
-  components: { EditHistoryTemperature },
+  components: {EditHistoryTemperature},
   inject: {
     getContainer: {
       default: () => document.body
@@ -83,6 +85,7 @@ export default {
   },
   data() {
     return {
+      moment,
       queryParams: {},
       equipCode: '',
       visible: false,
@@ -108,7 +111,8 @@ export default {
         //   scopedSlots: {customRender: 'action'}
         // }
       ],
-      url: '/HfResHistroyTemperauter/historyTemperature'
+      url: '/HfResHistroyTemperauter/historyTemperature',
+      overflowDay: false,
     }
   },
   methods: {
@@ -126,15 +130,28 @@ export default {
     },
 
     refresh(bool = true) {
+      if (this.overflowDay) return this.$message.warning('最多支持七天范围内查询');
       this.$refs.historyTemper.refresh(bool)
     },
 
     edit(record) {
       this.$refs.editHistory.show(record)
     },
+    onOk(selectedDates) {
+      let pickerValue0 = moment(selectedDates[0]).format('x')
+      let pickerValue1 = moment(selectedDates[1]).format('x')
+      const diffInDays = Math.round((pickerValue1 - pickerValue0) / (1000 * 60 * 60 * 24));
+      if (diffInDays > 7) {
+        this.overflowDay = true
+        this.$message.warning('最多支持七天范围内查询');
+      } else {
+        this.overflowDay = false
+      }
+    },
+
     onDateChange(row) {
-      this.queryParams.initialTime_startTime = new Date(row[0]).getTime() / 1000 || 0
-      this.queryParams.initialTime_endTime = new Date(row[1]).getTime() / 1000 || 0
+      this.queryParams.initialTime_startTime = moment(row[0]).format('x') || 0
+      this.queryParams.initialTime_endTime = moment(row[1]).format('x') || 0
       this.loadData()
     },
     handleReset() {
@@ -148,7 +165,7 @@ export default {
     handleCancel(e) {
       this.visible = false
       this.activeKey = '1'
-      this.queryParams={}
+      this.queryParams = {}
     },
     loadData(params) {
       let data = {

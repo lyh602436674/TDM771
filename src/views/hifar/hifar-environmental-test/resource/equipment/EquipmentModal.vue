@@ -107,6 +107,11 @@ export default {
           dictCode: 'hf_res_equip_use',
           validate: {
             rules: [{required: true, message: '请选择设备用途'}]
+          },
+          change: val => {
+            let formData = this.$refs.equipmentForm.$options.propsData.formData
+            let equipTypeCode = formData.filter(v => v.key === 'equipTypeCode')[0]
+            equipTypeCode.validate.rules[0].required = val === '1'
           }
         },
         {
@@ -216,10 +221,7 @@ export default {
           span: 12,
           validate: {
             rules: [
-              {
-                required: false,
-                validator: this.validateCheckPeriod
-              }
+              {required: false, validator: this.validateCheckPeriod}
             ]
           }
         },

@@ -36,7 +36,8 @@
                                          @delete="handleDelete"/>
               </a-tab-pane>
             </template>
-            <a-button slot="tabBarExtraContent" size="small" type="primary" @click="addLoopStage">新增循环阶段</a-button>
+            <a-button slot="tabBarExtraContent" size="small" type="primary" @click="addLoopStage">新增循环阶段
+            </a-button>
           </a-tabs>
         </template>
         <template v-else>
@@ -189,6 +190,7 @@ export default {
                   return {
                     paramType_dictText: a.paramType_dictText,
                     ...a,
+                    conditionTypeDesc: a.dataType === 'string' ? a.strValue : a.conditionTypeDesc,
                   }
                 }) || [],
               }
@@ -218,6 +220,7 @@ export default {
                       paramId: a.abilityParamId,
                       ...a,
                       paramType_dictText: a.paramType_dictText,
+                      conditionTypeDesc: a.dataType === 'string' ? a.strValue : a.conditionTypeDesc,
                       delFlag: 0,  // 默认带入不可以删除
                     }
                   }) || []
@@ -513,13 +516,13 @@ export default {
           change: (val) => {
             let formName = 'projectInfoForm' + this.index, powerUpTime
             if (formName) {
-                powerUpTime = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'powerUpTime')[0]
-                if (val === '2') {
-                  powerUpTime.disabled = true
-                  this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
-                } else {
-                  powerUpTime.disabled = false
-                }
+              powerUpTime = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'powerUpTime')[0]
+              if (val === '2') {
+                powerUpTime.disabled = true
+                this.$refs[formName].form.setFieldsValue({powerUpTime: '4'})
+              } else {
+                powerUpTime.disabled = false
+              }
             }
           },
         },

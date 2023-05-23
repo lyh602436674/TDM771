@@ -196,7 +196,7 @@
         <!--          </h-card>-->
         <!--        </h-desc>-->
         <!-- 参试人员 -->
-        <h-desc id="person" class="mg-t-20" title="参试人员">
+        <h-desc required id="person" class="mg-t-20" title="参试人员">
           <h-card :bordered="false" style="width: 100%">
             <template slot="table-operator">
               <a-button icon="plus" size="small" type="primary" @click="personAdd">
@@ -1985,6 +1985,15 @@ export default {
           this.submitLoading = false
           this.$message.warning(h => msgList)
           return
+        }
+        let personPostCodeList = this.personArr.map(v => v.testPostCode)
+        if (!personPostCodeList.includes('01')) {
+          this.submitLoading = false
+          return this.$message.warning('请添加试验员')
+        }
+        if (!personPostCodeList.includes('02')) {
+          this.submitLoading = false
+          return this.$message.warning('请添加检验员')
         }
         let params = {
           id: this.records.id,

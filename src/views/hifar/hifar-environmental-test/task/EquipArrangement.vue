@@ -586,6 +586,12 @@ export default {
           width: 190,
         },
         {
+          title: '发起人',
+          dataIndex: 'initiatorNames',
+          width: 120,
+          align: 'center'
+        },
+        {
           title: '送试单位',
           dataIndex: 'custNames',
           minWidth: 150,
