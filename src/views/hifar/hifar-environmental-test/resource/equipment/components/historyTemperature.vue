@@ -12,10 +12,11 @@
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     <h-card fixed :bordered="true" style="width: 100%;">
       <!--      <div style="width:100%;padding: 5px;border: 1px solid #c5c5c5;border-top: 5px">-->
-      <div style="margin-left: 5px;margin-bottom:10px;display: flex">
-        <a-col :md="7" :sm="12" style="margin-right: 10px;flex: 1">
+      <div slot="search-form" style="display:flex">
+        <a-col style="margin-right: 10px">
+          <span>时间选择：</span>
           <a-range-picker
-            style="width: 100%"
+            style="display: inline-block"
             size="small"
             show-time
             v-model="queryParams.initialTimeRange"
@@ -27,7 +28,7 @@
             <span slot="addonBefore">时间选择</span>
           </a-range-picker>
         </a-col>
-        <a-col style="flex: 1">
+        <a-col>
           <a-button type="primary" icon="search" size="small" @click="refresh">查询</a-button>
           <a-button type="default" icon="reload" size="small" style="margin: 0 5px 0 5px" @click="handleReset">
             重置
@@ -37,34 +38,34 @@
           </a-button>
         </a-col>
       </div>
-      <div class="task-list" style="height: 100%;width: 100%">
-        <h-vex-table
-          slot="content"
-          ref="historyTemper"
-          style="width: 100%"
-          :columns="taskColumns"
-          :data="loadData"
-        >
-          <!-- 操作 -->
-          <template slot="temperature" slot-scope="text, record">
-            <a-input-number style="width: 100%" v-model="record.temperature"
-                            @blur="(e)=>handleTableChange(e,record)"></a-input-number>
-          </template>
-          <template #humidity="text, record">
-            <a-input-number style="width: 100%" v-model="record.humidity"
-                            @blur="(e)=>handleTableChange(e,record)"></a-input-number>
-          </template>
-          <!--          <span slot="action" slot-scope="text, record">-->
-          <!--              <a-icon-->
-          <!--                type="edit"-->
-          <!--                title="编辑"-->
-          <!--                class="primary-text"-->
-          <!--                style="cursor: pointer"-->
-          <!--                @click="edit(record)"-->
-          <!--              />-->
-          <!--          </span>-->
-        </h-vex-table>
-      </div>
+      <h-vex-table
+        slot="content"
+        ref="historyTemper"
+        style="width: 100%"
+        :columns="columns"
+        :data="loadData"
+      >
+        <!-- 操作 -->
+        <template slot="temperaturePv" slot-scope="text, record">
+          <a-input-number style="width: 100%" v-model="record.temperaturePv"
+                          @focus="handleInputFocus"
+                          @blur="(e)=>handleInputBlur(e, record,'temperaturePv')"></a-input-number>
+        </template>
+        <template #humidityPv="text, record">
+          <a-input-number style="width: 100%" v-model="record.humidityPv"
+                          @focus="handleInputFocus"
+                          @blur="(e)=>handleInputBlur(e, record,'humidityPv')"></a-input-number>
+        </template>
+        <!--          <span slot="action" slot-scope="text, record">-->
+        <!--              <a-icon-->
+        <!--                type="edit"-->
+        <!--                title="编辑"-->
+        <!--                class="primary-text"-->
+        <!--                style="cursor: pointer"-->
+        <!--                @click="edit(record)"-->
+        <!--              />-->
+        <!--          </span>-->
+      </h-vex-table>
       <!--      <edit-history-temperature ref="editHistory" @change="refresh"></edit-history-temperature>-->
     </h-card>
   </h-modal>
@@ -89,20 +90,20 @@ export default {
       queryParams: {},
       equipCode: '',
       visible: false,
-      taskColumns: [
+      columns: [
         {
           title: '采集时间',
           dataIndex: 'timestamp',
         },
         {
           title: '温度值',
-          dataIndex: 'temperature',
-          scopedSlots: {customRender: 'temperature'}
+          dataIndex: 'temperaturePv',
+          scopedSlots: {customRender: 'temperaturePv'}
         },
         {
           title: '湿度值',
-          dataIndex: 'humidity',
-          scopedSlots: {customRender: 'humidity'}
+          dataIndex: 'humidityPv',
+          scopedSlots: {customRender: 'humidityPv'}
         },
         // {
         //   title: '操作',
@@ -112,12 +113,28 @@ export default {
         // }
       ],
       url: '/HfResHistroyTemperauter/historyTemperature',
+      edit: "/HfResHistroyTemperauter/modifyHistoryTemperature",
       overflowDay: false,
+      beforeBlurValue: "",
     }
   },
   methods: {
-    handleTableChange(e, record) {
-      console.log(e, record, 'rrrrr')
+    handleInputFocus(e) {
+      this.beforeBlurValue = e.target.value
+    },
+    handleInputBlur(e, record, field) {
+      if (e.target.value === this.beforeBlurValue) return
+      postAction(this.edit, {
+        timestamp: record.timestamp,
+        tablename: record.tablename,
+        [field]: record[field]
+      }).then(res => {
+        if (res.code === 200) {
+          this.refresh()
+        }
+      }).catch(() => {
+        this.$message.warning('保存失败')
+      })
     },
     async handleExportXls() {
       let params = {
@@ -134,9 +151,9 @@ export default {
       this.$refs.historyTemper.refresh(bool)
     },
 
-    edit(record) {
-      this.$refs.editHistory.show(record)
-    },
+    // edit(record) {
+    //   this.$refs.editHistory.show(record)
+    // },
     onOk(selectedDates) {
       let pickerValue0 = moment(selectedDates[0]).format('x')
       let pickerValue1 = moment(selectedDates[1]).format('x')

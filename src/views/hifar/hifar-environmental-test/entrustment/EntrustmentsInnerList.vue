@@ -225,7 +225,7 @@ export default {
           title: '状态',
           align: 'left',
           dataIndex: 'status',
-          minWidth: 100,
+          minWidth: 120,
           scopedSlots: {customRender: 'status'}
         },
         {

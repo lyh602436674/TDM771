@@ -351,7 +351,18 @@ export default {
           key: 'expectedTime',
           formType: 'input-number',
           validate: {
-            rules: [{required: true, message: '请输入预计时长'}]
+            rules: [{
+              required: true, validate: (rule, value, cb) => {
+                let reg = /^[1-9]\d*(\.\d+)?|0\.\d*[1-9]+(\d+)?$/
+                if (!value) {
+                  cb('请输入预计时长')
+                } else if (!reg.test(value)) {
+                  cb('请输入大于0的数字')
+                } else {
+                  cb()
+                }
+              }
+            }]
           },
           style: {
             width: '100%'

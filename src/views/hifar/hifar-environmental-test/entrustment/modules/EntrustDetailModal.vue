@@ -148,7 +148,7 @@ export default {
                 value: this.rejectRemarks,
               },
               on: {
-                click: e => {
+                change: e => {
                   this.rejectRemarks = e.target.value
                 }
               }

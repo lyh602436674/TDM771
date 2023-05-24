@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import {filterDictTextByCache} from "@comp/_util/JDictSelectUtil";
 
 export default {
   name: "TestConditionTemplate",
@@ -59,12 +58,7 @@ export default {
     localDataSource() {
       return () => {
         return new Promise((resolve, reject) => {
-          resolve(this.dataSource.map(item => {
-            return {
-              ...item,
-              conditionTypeDesc: item.dataType === 'string' ? item.strValue : item.conditionTypeDesc
-            }
-          }))
+          resolve(this.dataSourceFormat(this.dataSource))
         }).then(res => {
           return res
         })
@@ -76,8 +70,37 @@ export default {
       type: Array,
       default: () => []
     },
+    classifyType: {
+      type: [String, Number],
+      default: ''
+    }
   },
-  methods: {}
+  methods: {
+    transformArray(arr) {
+      let output = [];
+
+      arr.forEach((item) => {
+        let index = parseInt(item.name.match(/\d+/)[0]);
+        let key = item.name.replace(/\d+/g, '');
+
+        if (!output[index - 1]) {
+          output[index - 1] = {index};
+        }
+
+        output[index - 1][key] = item.value;
+      });
+
+      return output;
+    },
+    dataSourceFormat(dataSource) {
+      return dataSource.map(item => {
+        return {
+          ...item,
+          conditionTypeDesc: item.dataType === 'string' ? item.strValue : item.conditionTypeDesc
+        }
+      })
+    },
+  }
 }
 </script>
 
