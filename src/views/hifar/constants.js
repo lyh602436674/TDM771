@@ -26,7 +26,7 @@ export const SYSTEM_CONSTANTS_PROJECT_CLASSIFY = [
 // 项目管理页面中添加的试验条件，会在填写委托单的时候，选择了项目信息会自动带入项目所关联的试验条件
 // 这个常量用来控制，自动带入的条件是否可以删除
 // false 不可以删除， true 可以删除
-export const PROJECT_RELEVANCY_TEST_CONDITION = true
+export const PROJECT_RELEVANCY_TEST_CONDITION = false
 
 // 报告驳回类型
 

@@ -113,6 +113,7 @@ export default {
             this.model = Object.assign({}, this.model, values, {
               dataType: v,
             })
+            this.model.unitCode = undefined
           },
         },
         {

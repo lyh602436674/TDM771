@@ -352,11 +352,11 @@ export default {
           formType: 'input-number',
           validate: {
             rules: [{
-              required: true, validate: (rule, value, cb) => {
+              required: true,  validator: (rule, value, cb) => {
                 let reg = /^[1-9]\d*(\.\d+)?|0\.\d*[1-9]+(\d+)?$/
-                if (!value) {
+                if (!value && value !== 0) {
                   cb('请输入预计时长')
-                } else if (!reg.test(value)) {
+                } else if (!reg.test(value) || value <= 0) {
                   cb('请输入大于0的数字')
                 } else {
                   cb()
