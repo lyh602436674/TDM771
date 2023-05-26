@@ -683,7 +683,7 @@ export default {
           ...item,
           // 给选择之后的项目添加unitId字段
           unitId: item.id,
-          testCondition: item.remarks,
+          // testCondition: item.remarks, // 项目信息中试验条件自动带入
         }
       })
       this.projectInfoData.push(...extendRecord);

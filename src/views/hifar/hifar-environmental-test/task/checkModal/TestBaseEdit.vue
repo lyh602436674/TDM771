@@ -1075,7 +1075,12 @@ export default {
           key: 'remarks',
           formType: 'textarea',
           span: 2
-        }
+        },
+        {
+          title: '实施过程示例',
+          key: 'example',
+          formType: 'text',
+        },
       ],
       addProductColumns: [
         {
@@ -1810,6 +1815,7 @@ export default {
       postAction(this.url.detail, {id: id}).then((res) => {
         if (res.code === 200) {
           let model = Object.assign({}, res.data)
+          model.example = model.example || '无'
           this.productTable = model.testPieceInfo.map(item => {
             return {
               ...item,
