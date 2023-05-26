@@ -172,8 +172,8 @@ export default {
                 ref="PhemismUserSelect"
                 type={'checkbox'}
                 title={'请选择试验员'}
-                customUrl={'/HfPrjWorkCenterUserBusiness/listPageUserByRoleCode'}
-                customQueryParams={{roleCode: 'technician'}}
+                customUrl={'/OrgPostUserBusiness/listPageUserByPostCode'}
+                customQueryParams={{postCode: '01'}} // 按照岗位管理查询试验员
                 v-decorator={['chargeUserId']}
                 selectedName={this.model.idName}
                 onchange={this.selectuserChange}
@@ -186,15 +186,6 @@ export default {
             formType: 'input',
             hidden: !this.model.testRate,
             readOnly: true,
-            validate: {
-              rules: [
-                {
-                  validator: (rule, value, callback) => {
-                    return validatorFields(value, '请输入正确格式的设备速率，例：1-100', regRange, callback)
-                  },
-                },
-              ],
-            },
           },
           {
             title: '温度范围',
@@ -202,15 +193,6 @@ export default {
             formType: 'input',
             hidden: !this.model.temperatureRange,
             readOnly: true,
-            validate: {
-              rules: [
-                {
-                  validator: (rule, value, callback) => {
-                    return validatorFields(value, '请输入正确格式的温度范围，例：1-100', regRange, callback)
-                  },
-                },
-              ],
-            },
           },
           {
             title: '湿度范围',
@@ -218,15 +200,6 @@ export default {
             formType: 'input',
             hidden: !this.model.humidityRange,
             readOnly: true,
-            validate: {
-              rules: [
-                {
-                  validator: (rule, value, callback) => {
-                    return validatorFields(value, '请输入正确格式的湿度范围，例：1-100', regRange, callback)
-                  },
-                },
-              ],
-            },
           },
           {
             title: '压力范围',
@@ -234,15 +207,6 @@ export default {
             formType: 'input',
             hidden: !this.model.pressureRange,
             readOnly: true,
-            validate: {
-              rules: [
-                {
-                  validator: (rule, value, callback) => {
-                    return validatorFields(value, '请输入正确格式的压力范围，例：1-100', regRange, callback)
-                  },
-                },
-              ],
-            },
           },
           ...speedFields,
           {
