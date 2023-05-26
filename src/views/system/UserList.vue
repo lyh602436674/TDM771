@@ -1,90 +1,95 @@
-`<template>
-  <h-card fixed title="用户管理">
-    <h-search
-      v-model="queryParam"
-      slot="search-form"
-      size="small"
-      :showToggleButton="true"
-      :data="searchBar"
-      @change="refresh"
-    />
-    <!-- 操作按钮 -->
-    <div slot="table-operator">
-      <a-button v-has="'userlist:add'" type="ghost-primary" size="small" @click="handleAdd" icon="plus">添加用户</a-button>
-      <a-button v-has="'userlist:derive'" size="small" type="ghost-success" icon="export" @click="handleExportXls('用户管理')">导出</a-button>
-      <a-button type="ghost-success" size="small" icon="import" @click="handleImportExcel">导入</a-button>
-      <!-- <a-button type="success" size="small" @click="handleSyncUser">
-        <h-icon type="icon-tongbu"></h-icon>
-        同步流程
-      </a-button>
-      <a-button type="ghost-warning" size="small" icon="download" @click="handleExportXls('用户信息')">导出</a-button>
-      <a-upload
-        name="file"
-        :showUploadList="false"
-        :multiple="false"
-        :headers="tokenHeader"
-        :action="importExcelUrl"
-        @change="handleImportExcel"
-      >
-        <a-button type="ghost-success" size="small" icon="import">导入</a-button>
-      </a-upload>
-      <a-button type="ghost-danger" size="small" icon="delete" @click="recycleBinVisible = true">回收站</a-button> -->
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay" @click="handleMenuClick">
-          <!-- <a-menu-item key="1" class="danger-text">
-            <a-icon type="delete" @click="batchDel" />
-            删除
-          </a-menu-item> -->
-          <a-menu-item key="2">
-            <a-icon type="lock" @click="batchFrozen('2')" />
-            冻结
-          </a-menu-item>
-          <a-menu-item key="3">
-            <a-icon type="unlock" @click="batchFrozen('1')" />
-            解冻
-          </a-menu-item>
-        </a-menu>
-        <a-button size="small" style="margin-left: 8px">
-          批量操作
-          <a-icon type="down" />
+`
+<template>
+  <div ref="pageWrapper" class="pageWrapper">
+    <h-card fixed title="用户管理">
+      <h-search
+        v-model="queryParam"
+        slot="search-form"
+        size="small"
+        :showToggleButton="true"
+        :data="searchBar"
+        @change="refresh"
+      />
+      <!-- 操作按钮 -->
+      <div slot="table-operator">
+        <a-button v-has="'userlist:add'" type="ghost-primary" size="small" @click="handleAdd" icon="plus">添加用户
         </a-button>
-      </a-dropdown>
-    </div>
-    <!-- 列表区域 -->
-    <template slot="content">
-      <h-vex-table
-        ref="table"
-        :columns="columns"
-        :data="loadData"
-        :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect }"
-      >
+        <a-button v-has="'userlist:derive'" size="small" type="ghost-success" icon="export"
+                  @click="handleExportXls('用户管理')">导出
+        </a-button>
+        <a-button type="ghost-success" size="small" icon="import" @click="handleImportExcel">导入</a-button>
+        <!-- <a-button type="success" size="small" @click="handleSyncUser">
+          <h-icon type="icon-tongbu"></h-icon>
+          同步流程
+        </a-button>
+        <a-button type="ghost-warning" size="small" icon="download" @click="handleExportXls('用户信息')">导出</a-button>
+        <a-upload
+          name="file"
+          :showUploadList="false"
+          :multiple="false"
+          :headers="tokenHeader"
+          :action="importExcelUrl"
+          @change="handleImportExcel"
+        >
+          <a-button type="ghost-success" size="small" icon="import">导入</a-button>
+        </a-upload>
+        <a-button type="ghost-danger" size="small" icon="delete" @click="recycleBinVisible = true">回收站</a-button> -->
+        <a-dropdown v-if="selectedRowKeys.length > 0">
+          <a-menu slot="overlay" @click="handleMenuClick">
+            <!-- <a-menu-item key="1" class="danger-text">
+              <a-icon type="delete" @click="batchDel" />
+              删除
+            </a-menu-item> -->
+            <a-menu-item key="2">
+              <a-icon type="lock" @click="batchFrozen('2')"/>
+              冻结
+            </a-menu-item>
+            <a-menu-item key="3">
+              <a-icon type="unlock" @click="batchFrozen('1')"/>
+              解冻
+            </a-menu-item>
+          </a-menu>
+          <a-button size="small" style="margin-left: 8px">
+            批量操作
+            <a-icon type="down"/>
+          </a-button>
+        </a-dropdown>
+      </div>
+      <!-- 列表区域 -->
+      <template slot="content">
+        <h-vex-table
+          ref="table"
+          :columns="columns"
+          :data="loadData"
+          :rowSelection="{ selectedRowKeys: selectedRowKeys, onChange: onSelect }"
+        >
         <span slot="userCode" slot-scope="text, record">
           <a href="javascript:;" @click="handleDetailCode(record)">
             {{ record.userCode ? record.userCode : '--' }}
           </a>
         </span>
-        <h-tag
-          slot="status"
-          slot-scope="text, record"
-          type="1"
-          :status="record.status == 1 ? 'start' : 'stop'"
-          style="font-size: 26px"
-        />
-        <template slot="orgCodeTxt" slot-scope="text, record">
-          <template v-if="record.deptName">
-            <a-tag v-for="(item, index) in record.deptName.split(',')" :key="index" style="margin: 2px">
-              {{ item || '--' }}
-            </a-tag>
+          <h-tag
+            slot="status"
+            slot-scope="text, record"
+            type="1"
+            :status="record.status == 1 ? 'start' : 'stop'"
+            style="font-size: 26px"
+          />
+          <template slot="orgCodeTxt" slot-scope="text, record">
+            <template v-if="record.deptName">
+              <a-tag v-for="(item, index) in record.deptName.split(',')" :key="index" style="margin: 2px">
+                {{ item || '--' }}
+              </a-tag>
+            </template>
+            <span v-else>--</span>
           </template>
-          <span v-else>--</span>
-        </template>
-        <span slot="action" slot-scope="text, record">
+          <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical" />
+          <a-divider type="vertical"/>
 
           <a-dropdown>
-            <a class="ant-dropdown-link"> 更多 <a-icon type="down" /> </a>
+            <a class="ant-dropdown-link"> 更多 <a-icon type="down"/> </a>
             <a-menu slot="overlay">
               <a-menu-item>
                 <a href="javascript:;" @click="handleDetail(record)">详情</a>
@@ -115,18 +120,18 @@
             </a-menu>
           </a-dropdown>
         </span>
-      </h-vex-table>
-      <!-- table区域-end -->
+        </h-vex-table>
+        <!-- table区域-end -->
 
-      <user-modal ref="modalForm" @ok="refresh"></user-modal>
 
-      <password-modal ref="passwordmodal" @ok="passwordModalOk"></password-modal>
-
-      <!-- 用户回收站 -->
-      <user-recycle-bin-modal :visible.sync="recycleBinVisible" @ok="refresh" />
-      <h-file-import ref="HFileImport" @change="refresh(true)" @downloadExcel="downloadChange"/>
-    </template>
-  </h-card>
+        <password-modal ref="passwordmodal" @ok="passwordModalOk"></password-modal>
+        <user-modal ref="modalForm" @ok="refresh"></user-modal>
+        <!-- 用户回收站 -->
+        <user-recycle-bin-modal :visible.sync="recycleBinVisible" @ok="refresh"/>
+        <h-file-import ref="HFileImport" @change="refresh(true)" @downloadExcel="downloadChange"/>
+      </template>
+    </h-card>
+  </div>
 </template>
 
 <script>
@@ -145,6 +150,11 @@ export default {
     UserModal,
     PasswordModal,
     UserRecycleBinModal,
+  },
+  provide() {
+    return {
+      getContainer: () => this.$refs.pageWrapper,
+    }
   },
   data() {
     return {
@@ -224,7 +234,7 @@ export default {
           align: 'center',
           dataIndex: 'userCode',
           sorter: true,
-          scopedSlots: { customRender: 'userCode' },
+          scopedSlots: {customRender: 'userCode'},
         },
         {
           title: '用户姓名',
@@ -290,7 +300,7 @@ export default {
           title: '操作',
           dataIndex: 'action',
           fixed: 'right',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
           align: 'center',
           width: 140,
         },
@@ -360,7 +370,7 @@ export default {
           title: '确认操作',
           content: '是否' + (status == 1 ? '解冻' : '冻结') + '选中账号?',
           onOk: function () {
-            frozenBatch({ ids: ids, status: status }).then((res) => {
+            frozenBatch({ids: ids, status: status}).then((res) => {
               if (res.code === 200) {
                 that.$message.success((status == 1 ? '解冻' : '冻结') + '成功')
                 that.refresh()
@@ -398,7 +408,7 @@ export default {
       })
     },
     handleChangePassword(id) {
-      postAction('/OrgUserBusiness/resetDefaultPwdById', { id: id }).then((res) => {
+      postAction('/OrgUserBusiness/resetDefaultPwdById', {id: id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('重置成功')
         }
@@ -466,4 +476,10 @@ export default {
 </script>
 <style scoped>
 @import '~@assets/less/common.less';
+
+.pageWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
 </style>

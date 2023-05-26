@@ -2,7 +2,7 @@
   <a-drawer
     placement="right"
     style="height: 100%; overflow: hidden"
-    destroyOnClose
+    :getContainer="getContainer"
     :title="title"
     :maskClosable="true"
     :width="drawerWidth"
@@ -61,6 +61,7 @@
       </a-popconfirm>
       <a-button type="primary" :loading="confirmLoading" @click="handleClickSubmit">提交</a-button>
     </div>
+    <fingerprint-entry-modal ref="fingerprintEntryModal"></fingerprint-entry-modal>
   </a-drawer>
 </template>
 
@@ -69,6 +70,7 @@ import {isArray, reduceRight} from 'lodash'
 import {addUser, duplicateCheck, editUser} from '@/api/api'
 import moment from 'moment'
 import {SYSTEM_CONSTANTS_PROJECT_CLASSIFY} from '@/views/hifar/constants.js'
+import FingerprintEntryModal from "@views/system/modules/FingerprintEntryModal.vue";
 
 const userTypeListMap = [
   {
@@ -94,7 +96,14 @@ const userTypeListMap = [
 ]
 export default {
   name: 'UserModal',
-  components: {},
+  components: {FingerprintEntryModal},
+  inject: {
+    getContainer: {
+      default: () => {
+        return document.body
+      },
+    },
+  },
   data() {
     return {
       SYSTEM_CONSTANTS_PROJECT_CLASSIFY,
@@ -199,6 +208,13 @@ export default {
                 },
               ]
             },
+          },
+          {
+            title: '指纹',
+            key: 'fingerprintData',
+            component: (
+              <a style={{lineHeight: "34px"}} onClick={this.handleFingerprintClick}>录入指纹</a>
+            )
           },
           {
             title: '身份证号',
@@ -321,6 +337,9 @@ export default {
     },
   },
   methods: {
+    handleFingerprintClick() {
+      this.$refs.fingerprintEntryModal.show()
+    },
     moment,
     add() {
       this.edit()
