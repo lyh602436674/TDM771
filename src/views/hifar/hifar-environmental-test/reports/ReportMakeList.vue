@@ -165,7 +165,7 @@
                           @click="handlePush(record,'mes')"/>
                 </a-space>
               </template>
-              <span v-if="[1,30,50].includes(record.status)" v-has="'report:delete'">
+              <span v-if="[1,2,3].includes(record.status)" v-has="'report:delete'">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
                   <a-icon class="danger-text cursor-pointer" title="删除" type="delete"/>
                 </a-popconfirm>
@@ -652,8 +652,7 @@ export default {
     // 详情
     handleDetail(record) {
       let type = 'detail'
-      let activeKey = '1'
-      this.$refs.ReportDetailModal.show(record.id, type, activeKey)
+      this.$refs.ReportDetailModal.show(record.id, type)
     },
     // 提交
     handleSubmit(record) {

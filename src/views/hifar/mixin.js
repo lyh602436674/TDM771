@@ -162,13 +162,13 @@ export default {
         case 1:
           return '草稿'
         case 10:
-          return '已提交'
+          return '待审批'
         case 15:
-          return '已审批';
+          return '待批准';
         case 20:
-          return '已通过'
+          return '批准通过'
         case 30:
-          return '已驳回'
+          return '审批驳回'
         case 31:
           return '批准驳回';
         case 40:

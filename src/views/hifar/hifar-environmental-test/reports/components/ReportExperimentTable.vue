@@ -167,23 +167,31 @@ export default {
           dataIndex: 'entrustCode',
         },
         {
-          title: '产品名称',
-          align: 'left',
-          dataIndex: 'productName',
-          customRender: (text, record) => {
-            return text || '--';
-          }
-        },
-        {
           title: '产品编号',
           align: 'left',
           dataIndex: 'pieceNo',
           scopedSlots: {customRender: 'pieceNo'},
         },
         {
-          title: '产品代号',
+          title: '设备型号',
           align: 'left',
-          dataIndex: 'productAlias',
+          dataIndex: 'equipModel',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
+          title: '报告中是否显示最终用户',
+          align: 'left',
+          dataIndex: 'equipModel',
+          customRender: (text, record) => {
+            return text === '1' ? '是' : '否'
+          }
+        },
+        {
+          title: '最终用户',
+          align: 'left',
+          dataIndex: 'lastUser_dictText',
           customRender: (text, record) => {
             return text || '--';
           }
@@ -192,6 +200,9 @@ export default {
           title: '项目名称',
           align: 'left',
           dataIndex: 'unitName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
         },
         {
           title: '状态',

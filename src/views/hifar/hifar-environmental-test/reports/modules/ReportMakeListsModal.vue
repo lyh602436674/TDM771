@@ -70,6 +70,7 @@ export default {
     },
     saveTestHandle() {
       if (!this.selectedRowKeys.length) return this.$message.warning('请选择试验')
+      if (Array.from(new Set(this.selectedRow.map(item => item.typeCode))).length > 1) return this.$message.warning('只能选择同一种项目类型的试验')
       if (Array.from(new Set(this.selectedRow.map(item => item.entrustNo))).length > 1) return this.$message.warning('只能选择同一委托单')
       this.$refs.reportTemplateSelect.show()
     },
@@ -89,6 +90,7 @@ export default {
           buttonFlag: 'save',
           templateId: templateId.toString(),
           options: Array.from(new Set(this.selectedRow.map(v => v.checkboxValue).flat())).toString(),
+          typeCode: this.selectedRow[0].typeCode
         }
         postAction('/HfEnvReportBusiness/generateReport', params).then((res) => {
           if (res.code === 200) {

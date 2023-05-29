@@ -167,17 +167,17 @@ export default {
               value: 1
             },
             {
-              title: '已提交',
+              title: '待审批',
               key: 10,
               value: 10
             },
             {
-              title: '已审批',
+              title: '待批准',
               key: 15,
               value: 15
             },
             {
-              title: '已通过',
+              title: '批准通过',
               key: 20,
               value: 20
             },

@@ -60,7 +60,7 @@
       <h-desc-item label='优先级'>
         {{ detailData.priority_dictText || '--' }}
       </h-desc-item>
-      <h-desc-item label='预计时长'>
+      <h-desc-item label='预计时长(h)'>
         {{ detailData.expectedTime || '--' }}
       </h-desc-item>
       <h-desc-item label='任务编码'>

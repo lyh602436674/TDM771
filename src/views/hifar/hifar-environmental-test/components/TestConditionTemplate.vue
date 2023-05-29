@@ -121,7 +121,6 @@ export default {
         }
 
         result[nameWithoutNumber].push(value);
-        console.log(result, 'result')
       });
 
       this.columns = columnKeys.map((key) => {
@@ -131,13 +130,9 @@ export default {
         };
       });
 
-
       let keys = Object.keys(result);
       let maxLength = Math.max(...keys.map(key => result[key].length));
-      console.log(maxLength, 'maxLength')
-
       let res = [];
-
       for (let i = 0; i < maxLength; i++) {
         let newObj = {};
         keys.forEach(key => {

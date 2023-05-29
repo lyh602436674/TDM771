@@ -154,7 +154,7 @@ export default {
           minWidth: 150
         },
         {
-          title: '预计时长（小时）',
+          title: '预计时长(h)',
           dataIndex: 'predictUseTime',
           align: 'center',
           minWidth: 150

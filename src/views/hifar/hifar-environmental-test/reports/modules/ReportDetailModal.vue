@@ -52,9 +52,9 @@
     </div>
     <h-card :bordered="false">
       <h-tabs fixed :activeKey="activeKey" :animated="true" @change="handleTabsChange">
-        <a-tab-pane key="1" tab="基本信息">
-          <report-detail :detailData="detailData"></report-detail>
-        </a-tab-pane>
+<!--        <a-tab-pane key="1" tab="基本信息">-->
+<!--          <report-detail :detailData="detailData"></report-detail>-->
+<!--        </a-tab-pane>-->
         <a-tab-pane key="2" tab="报告信息">
           <div v-if="pdfPath" :style="{width:'100%',height:'100%',display:'flex'}">
             <embed
@@ -109,7 +109,7 @@ export default {
     return {
       visible: false,
       drawerVisible: false,
-      activeKey: '1',
+      activeKey: '2',
       detailData: {},
       model: {},
       reportId: '',
@@ -127,7 +127,7 @@ export default {
     }
   },
   methods: {
-    show(id, type = 'checkOut', activeKey = 1, bool = false) {
+    show(id, type = 'checkOut', activeKey = '2', bool = false) {
       // bool 是否打开填写意见弹框
       this.visible = true
       this.type = type

@@ -342,17 +342,14 @@ export default {
           key: 'priority',
           formType: 'dict',
           dictCode: 'hf_entrust_priority',
-          validate: {
-            rules: [{required: true, message: '请选择优先级'}]
-          },
         },
         {
-          title: '预计时长',
+          title: '预计时长(h)',
           key: 'expectedTime',
           formType: 'input-number',
           validate: {
             rules: [{
-              required: true,  validator: (rule, value, cb) => {
+              required: true, validator: (rule, value, cb) => {
                 let reg = /^[1-9]\d*(\.\d+)?|0\.\d*[1-9]+(\d+)?$/
                 if (!value && value !== 0) {
                   cb('请输入预计时长')
@@ -412,9 +409,12 @@ export default {
           }
         },
         {
-          title: '电话',
+          title: '发起人电话',
           key: 'phone',
           formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入发起人电话'}]
+          }
         },
         {
           title: '测试软件/测试方法',
@@ -496,7 +496,7 @@ export default {
         entrustType: '1',
         secretLevelCode: 1,
         isBuildingReport: 1,
-        isPhotograph: 1,
+        isPhotograph: 2,
         radioButton: 1,
       }
       this.tableData = []
@@ -840,7 +840,7 @@ export default {
         this.projectModelInfo = projectData
       }
       this.setSecretLevelByFileList(this.secretLevelArr)
-      this.submitRequest(this.submitStatus)
+      this.submitRequest(this.submitStatus, bool)
     },
     //暂存 不需要验证任何表单和表格
     handleTransientSubmit() {
@@ -876,9 +876,11 @@ export default {
       })
     },
     // 暂存-提交请求
-    async submitRequest(status) {
-      let errMap = await this.$refs.pieceTable.validate(true).catch(errMap => errMap)
-      if (errMap) return
+    async submitRequest(status, bool) {
+      if (bool) {
+        let errMap = await this.$refs.pieceTable.validate(true).catch(errMap => errMap)
+        if (errMap) return this.submitLoading = false
+      }
       let {entrustModelInfo, pieceModelInfo, projectModelInfo} = this
       // 项目中实际用到的产品
       let projectOfPiece = projectModelInfo.reduce((pre, next) => {

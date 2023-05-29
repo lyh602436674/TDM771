@@ -78,6 +78,11 @@ export default {
       queryParams: {},
       searchData: [
         {
+          title: '送试单位',
+          key: 'custName',
+          formType: 'input',
+        },
+        {
           title: '试验编号',
           key: 'c_testCode_7',
           formType: 'input',
