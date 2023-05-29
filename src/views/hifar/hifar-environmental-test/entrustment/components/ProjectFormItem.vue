@@ -16,7 +16,7 @@
     >
     </h-form>
     <h-collapse :activeKey="1" class="collapseStyle" title="试验条件结构化">
-      <div v-if="filterUnitCode(model.classifyType)" slot="extraBox">
+      <div slot="extraBox">
         <a-button size="small" type="primary" @click.stop="previewEcharts"> 预览</a-button>
       </div>
       <div slot="content">
@@ -77,6 +77,7 @@
     </h-collapse>
     <point-list ref="PointList" historySelect @change="pointSelectChange"></point-list>
     <experimental-curve-modal ref="ExperimentalCurveModal" @change="curveUrlChange"></experimental-curve-modal>
+    <preview-mechanical-test-conditions ref="PreviewMechanicalTestConditions"></preview-mechanical-test-conditions>
     <handle-select-modal
       ref="equipHandleSelectModal"
       :columns="addEquipColumns"
@@ -105,6 +106,8 @@ import ExperimentalCurveModal from './ExperimentalCurveModal'
 import sortable from 'sortablejs'
 import SysUserSelect from '@/views/components/SysUserSelect'
 import HandleSelectModal from "@views/hifar/hifar-environmental-test/task/modules/components/HandleSelectModal";
+import PreviewMechanicalTestConditions
+  from "@views/hifar/hifar-environmental-test/entrustment/components/PreviewMechanicalTestConditions.vue";
 
 const seriesLabel = {
   show: true,
@@ -126,6 +129,7 @@ const momentFormat = function (value) {
 
 export default {
   components: {
+    PreviewMechanicalTestConditions,
     NewSampleListModal,
     MethodSelectModal,
     TestConditionTabItem,
@@ -673,12 +677,17 @@ export default {
     },
     //预览
     previewEcharts() {
-      this.splitByCurveType()
-      let {temperatureResult, humidityResult} = this
-      let obj = {temperatureResult, humidityResult}
-      setTimeout(() => {
-        this.$refs.ExperimentalCurveModal.open(obj)
-      }, 0)
+      if (+this.model.classifyType === 1) {
+        this.splitByCurveType()
+        let {temperatureResult, humidityResult} = this
+        let obj = {temperatureResult, humidityResult}
+        setTimeout(() => {
+          this.$refs.ExperimentalCurveModal.open(obj)
+        }, 0)
+      } else {
+        let pointTableItem = this.$refs.testConditionTabItem.$refs['pointTable' + [this.index] + 0].getData()
+        this.$refs.PreviewMechanicalTestConditions.show(pointTableItem)
+      }
     },
     equipAdd() {
       this.$refs.equipHandleSelectModal.show(this.equipData, 'equipId')

@@ -1,6 +1,5 @@
 <template>
   <h-modal
-    :confirmLoading="loading"
     :getContainer="getContainer"
     :title="title"
     :visible="visible"
@@ -35,7 +34,6 @@ export default {
     return {
       visible: false,
       title: "预览",
-      loading: false,
     }
   },
   methods: {

@@ -230,7 +230,7 @@
           </h-card>
         </h-desc>
         <!-- 测试设备 -->
-        <h-desc id="testEquip" class="mg-t-20" title="测试设备">
+        <h-desc required id="testEquip" class="mg-t-20" title="测试设备">
           <h-card :bordered="false" style="width: 100%">
             <template slot="table-operator">
               <a-button icon="plus" size="small" type="primary" @click="equipAdd">
@@ -461,7 +461,13 @@ export default {
                     let start = moment(row.testStartTime)
                     let end = moment(row.testEndTime)
                     let res = end.diff(start, 'hours', true).toFixed(1)
-                    if (res && res !== 'NaN') {
+                    if (res < 0) {
+                      this.$message.warning('结束时间不能小于开始时间')
+                      this.$set(this.switchRecordingTable[index], 'testEndTime', undefined)
+                      this.$set(this.switchRecordingTable[index], 'useTime', '')
+                      return
+                    }
+                    if ((res && res !== 'NaN')) {
                       this.$set(this.switchRecordingTable[index], 'useTime', res)
                     } else {
                       this.$set(this.switchRecordingTable[index], 'useTime', '')
@@ -2000,6 +2006,10 @@ export default {
         if (!personPostCodeList.includes('02')) {
           this.submitLoading = false
           return this.$message.warning('请添加检验员')
+        }
+        if (!this.equipData.length) {
+          this.submitLoading = false
+          return this.$message.warning('请添加测试设备')
         }
         let params = {
           id: this.records.id,

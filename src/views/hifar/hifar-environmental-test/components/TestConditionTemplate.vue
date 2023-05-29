@@ -9,7 +9,7 @@
       max-height='300'
       show-overflow
       v-if="+classifyType === 2">
-      <vxe-table-column type="seq" width="60"></vxe-table-column>
+      <vxe-table-column type="seq" width="40" align="center"></vxe-table-column>
       <vxe-table-column v-for="(item,index) in columns" :key="index" :field="item.key"
                         :title="item.title"></vxe-table-column>
     </vxe-table>
@@ -29,8 +29,11 @@
 <script>
 
 
+import entrustmentMixins from "@views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins";
+
 export default {
   name: "TestConditionTemplate",
+  mixins: [entrustmentMixins],
   data() {
     const columns = [
       {
@@ -74,7 +77,9 @@ export default {
   computed: {
     localDataSource() {
       if (+this.classifyType === 2) {
-        return this.transposeData(this.dataSource)
+        let {columns, res} = this.transposeData(this.dataSource)
+        this.columns = columns
+        return res
       }
       return () => {
         return new Promise((resolve, reject) => {
@@ -96,53 +101,6 @@ export default {
     }
   },
   methods: {
-    transposeData(data) {
-      let columnKeys = [];
-      let result = {};
-
-      data.forEach((item) => {
-        let name, value
-
-        // 如果没有数字，则添加默认值 1
-        if (!/\d/.test(item.paramName)) {
-          item.paramName = item.paramName + '1';
-        }
-        name = item.paramName;
-        value = item.dataType === 'string' ? item.strValue : item.conditionTypeDesc;
-
-
-        let nameWithoutNumber = name.replace(/\d+/g, '');
-        if (!columnKeys.includes(nameWithoutNumber)) {
-          columnKeys.push(nameWithoutNumber);
-        }
-
-        if (!result[nameWithoutNumber]) {
-          result[nameWithoutNumber] = [];
-        }
-
-        result[nameWithoutNumber].push(value);
-      });
-
-      this.columns = columnKeys.map((key) => {
-        return {
-          title: key,
-          key: key
-        };
-      });
-
-      let keys = Object.keys(result);
-      let maxLength = Math.max(...keys.map(key => result[key].length));
-      let res = [];
-      for (let i = 0; i < maxLength; i++) {
-        let newObj = {};
-        keys.forEach(key => {
-          newObj[key] = result[key][i] || '';
-        });
-        res.push(newObj);
-      }
-      return res
-    },
-
     dataSourceFormat(dataSource) {
       return dataSource.map(item => {
         return {
