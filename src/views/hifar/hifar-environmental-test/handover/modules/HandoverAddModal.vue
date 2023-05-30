@@ -232,8 +232,26 @@ export default {
         {
           title: '使用设备',
           align: 'left',
-          minWidth: 100,
+          minWidth: 150,
           dataIndex: 'equipName',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '资产编号',
+          align: 'left',
+          minWidth: 120,
+          dataIndex: 'assetsCode',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '内部名称',
+          align: 'left',
+          minWidth: 100,
+          dataIndex: 'innerName',
           customRender: (text, record) => {
             return text || '--'
           }

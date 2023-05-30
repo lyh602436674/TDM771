@@ -27,7 +27,7 @@
       <h-desc-item label="工具状态"> {{ headDetail.toolStatus == 1 ? '齐全' : '缺失' || '--' }}</h-desc-item>
       <h-desc-item label="设备状态"> {{ headDetail.deviceStatus == 1 ? '有故障' : '无故障' || '--' }}</h-desc-item>
       <h-desc-item label="设备运行数量"> {{ String(headDetail.runNum) || '--' }}</h-desc-item>
-<!--      <h-desc-item label="密级"> {{ headDetail.secretLevel || '&#45;&#45;' }}</h-desc-item>-->
+      <!--      <h-desc-item label="密级"> {{ headDetail.secretLevel || '&#45;&#45;' }}</h-desc-item>-->
       <h-desc-item label="创建人"> {{ headDetail.createUserName || '--' }}</h-desc-item>
       <h-desc-item label="创建时间"> {{
           moment(parseInt(headDetail.createTime)).format('YYYY-MM-DD HH:mm') || '--'
@@ -72,125 +72,143 @@ export default {
         headDetail: '/HfEnvTestHandoverRecordBusiness/queryById'
       },
       // 执行任务总览表格
-        columns: [
-          {
-            title: '委托单号',
-            align: 'left',
-            width: 130,
-            dataIndex: 'entrustNos',
-            customRender: (text, record) => {
-              return text || '--'
-            }
-          },
-          {
-            title: '运行单号',
-            align: 'left',
-            width: 170,
-            dataIndex: 'entrustCodes',
-            customRender: (text, record) => {
-              return text || '--'
-            }
-          },
-          {
-            title: '试验项目',
-            align: 'left',
-            dataIndex: 'unitName',
-            minWidth: 10,
-            customRender: (text, record) => {
-              return text || '--'
-            }
-          },
-          {
-            title: '使用设备',
-            align: 'left',
-            dataIndex: 'equipName',
-            minWidth: 25,
-            customRender: (text, record) => {
-              return text || '--'
-            }
-          },
-          {
-            title: '试件数量(件)',
-            align: 'left',
-            dataIndex: 'sampleNum',
-            minWidth: 10,
-            customRender: (text, record) => {
-              return text || '--'
-            }
-          },
-          // {
-          //   title: '试验地点',
-          //   align: 'left',
-          //   dataIndex: 'workName',
-          //   customRender: (text, record) => {
-          //     return text || '--'
-          //   }
-          // },
-          // {
-          //   title: '过程描述',
-          //   align: 'left',
-          //   dataIndex: 'processDesc',
-          //   customRender: (text, record) => {
-          //     return text || '--'
-          //   }
-          // },
-          {
-            title: '开始时间',
-            align: 'left',
-            dataIndex: 'realStartTime',
-            minWidth: 30,
-            customRender: (text, record) => {
-              return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm') : '--'
-            }
-          },
-          {
-            title: '结束时间',
-            align: 'left',
-            dataIndex: 'realEndTime',
-            minWidth: 30,
-            customRender: (text, record) => {
-              return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm') : '--'
-            }
-          },
-          {
-            title: '备注',
-            align: 'left',
-            dataIndex: 'remark',
-            customRender: (text, record) => {
-              return text || '--'
-            }
+      columns: [
+        {
+          title: '委托单号',
+          align: 'left',
+          width: 130,
+          dataIndex: 'entrustNos',
+          customRender: (text, record) => {
+            return text || '--'
           }
-        ],
-        loadData: (params) => {
-          return postAction(this.url.headDetail, { id: this.id }).then((res) => {
-            if (res.code === 200) {
-              return res.data.taskTestList
-            }
-          })
+        },
+        {
+          title: '运行单号',
+          align: 'left',
+          width: 170,
+          dataIndex: 'entrustCodes',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '试验项目',
+          align: 'left',
+          dataIndex: 'unitName',
+          minWidth: 10,
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '使用设备',
+          align: 'left',
+          dataIndex: 'equipName',
+          minWidth: 150,
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '资产编号',
+          align: 'left',
+          minWidth: 100,
+          dataIndex: 'assetsCode',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '内部名称',
+          align: 'left',
+          minWidth: 100,
+          dataIndex: 'innerName',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '试件数量(件)',
+          align: 'left',
+          dataIndex: 'sampleNum',
+          minWidth: 100,
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        // {
+        //   title: '试验地点',
+        //   align: 'left',
+        //   dataIndex: 'workName',
+        //   customRender: (text, record) => {
+        //     return text || '--'
+        //   }
+        // },
+        // {
+        //   title: '过程描述',
+        //   align: 'left',
+        //   dataIndex: 'processDesc',
+        //   customRender: (text, record) => {
+        //     return text || '--'
+        //   }
+        // },
+        {
+          title: '开始时间',
+          align: 'left',
+          dataIndex: 'realStartTime',
+          minWidth: 30,
+          customRender: (text, record) => {
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm') : '--'
+          }
+        },
+        {
+          title: '结束时间',
+          align: 'left',
+          dataIndex: 'realEndTime',
+          minWidth: 30,
+          customRender: (text, record) => {
+            return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD HH:mm') : '--'
+          }
+        },
+        {
+          title: '备注',
+          align: 'left',
+          dataIndex: 'remark',
+          customRender: (text, record) => {
+            return text || '--'
+          }
         }
-      }
-    },
-    methods: {
-      show(val) {
-        this.id=val.id;
-        this.visible = true
-        this.getheadDetail(val.id)
-      },
-      handleCancel() {
-        this.visible = false
-      },
-      // 详情数据
-      getheadDetail(id) {
-        postAction(this.url.headDetail, { id: id }).then((res) => {
+      ],
+      loadData: (params) => {
+        return postAction(this.url.headDetail, {id: this.id}).then((res) => {
           if (res.code === 200) {
-            this.headDetail = res.data
+            return res.data.taskTestList
           }
         })
       }
-
+    }
+  },
+  methods: {
+    show(val) {
+      this.id = val.id;
+      this.visible = true
+      this.getheadDetail(val.id)
+    },
+    handleCancel() {
+      this.visible = false
+    },
+    // 详情数据
+    getheadDetail(id) {
+      postAction(this.url.headDetail, {id: id}).then((res) => {
+        if (res.code === 200) {
+          this.headDetail = res.data
+        }
+      })
     }
 
   }
+
+}
 </script>
 
 <style>

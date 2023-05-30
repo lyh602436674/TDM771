@@ -62,6 +62,9 @@
               <a-empty v-else style='margin-top: 160px'/>
             </div>
           </a-tab-pane>
+          <a-tab-pane  key='6' tab='流转信息'>
+            <entrust-flow-info-table :entrustId='entrustId'></entrust-flow-info-table>
+          </a-tab-pane>
         </h-tabs>
       </h-card>
     </a-spin>
@@ -77,6 +80,8 @@ import TestTaskInfo from '../components/TestTaskInfo.vue'
 import EntrustDetail from '../components/EntrustDetail'
 import ApplyInfo from '../components/ApplyInfo'
 import ReportInfo from '../components/ReportInfo'
+import EntrustFlowInfoTable
+  from "@views/hifar/hifar-environmental-test/entrustment/components/EntrustFlowInfoTable.vue";
 
 export default {
   inject: {
@@ -85,6 +90,7 @@ export default {
     }
   },
   components: {
+    EntrustFlowInfoTable,
     AccessInfo,
     TaskInfo,
     EntrustDetail,

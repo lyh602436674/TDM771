@@ -7,7 +7,7 @@
  * @FilePath: \hifar-platform-client\src\views\hifar\hifar-environmental-test\entrustment\components\EntrustDetail.vue
 -->
 <template>
-  <div>
+  <div class="entrust-detail">
     <!-- 委托信息 -->
     <detail-base-info id="entrust" :viewDetailType="viewDetailType" :detailDataObj="detailData"></detail-base-info>
     <!--样品信息-->

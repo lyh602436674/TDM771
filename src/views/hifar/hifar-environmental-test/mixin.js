@@ -20,6 +20,21 @@ export default {
     },
   },
   filters: {
+    // 报告操作类型
+    entrustOptFilter(txt) {
+      switch (txt) {
+        case 'submit':
+          return '提交';
+        case 'examinePass':
+          return '审核通过';
+        case 'examineNotPass':
+          return '审核驳回';
+        case 'approved':
+          return '批准通过';
+        case 'approvedNotPass':
+          return '批准驳回';
+      }
+    },
     //委托单状态
     wtStatusFilter(status) {
       let s = Number(status)

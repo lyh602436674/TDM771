@@ -35,12 +35,6 @@
       </span>
       <span slot="status" slot-scope="text, record">
         <a-badge :color='record.status | wtStatusColorFilter' :text='record.status | wtStatusFilter'/>
-        <a-popover trigger="click" v-if="record.status === 31">
-          <div slot="content" style="max-width: 500px">
-            {{ record.rejectRemarks || '--' }}
-          </div>
-          <a-icon style="margin-left:5px" type="eye" class="primary-text"></a-icon>
-        </a-popover>
       </span>
     </h-vex-table>
     <entrust-detail-modal
@@ -146,7 +140,7 @@ export default {
           title: '状态',
           align: 'left',
           dataIndex: 'status',
-          minWidth: 120,
+          minWidth: 100,
           scopedSlots: {customRender: 'status'}
         },
         {

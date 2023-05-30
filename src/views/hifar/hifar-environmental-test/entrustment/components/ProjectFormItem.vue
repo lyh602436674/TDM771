@@ -453,18 +453,26 @@ export default {
               selectedName={() => {
                 return this.model.standardName
               }}
+              type={'checkbox'}
               itemUnitId={() => {
                 return this.model.unitId
               }}
               onchange={(selectedRowKeys, selectedRows) => {
                 let formName = 'projectInfoForm' + this.index
-                let standardName = selectedRows[0] ? selectedRows[0].standardCode + '-' + selectedRows[0].standardName : ''
-                this.model.standardId = selectedRowKeys
+                let standardName = selectedRows.map(v => v.standardCode + '-' + v.standardName).toString()
+                let standardId = selectedRowKeys.toString()
+                this.model.standardId = standardId
                 this.model.standardName = standardName
                 this.$refs[formName].form.setFieldsValue({standardName: standardName})
+                this.$refs[formName].form.setFieldsValue({standardId: standardId})
               }}
             />
           )
+        },
+        {
+          key: 'standardName',
+          hidden: true,
+          formType: 'input',
         },
         {
           title: '最终用户',

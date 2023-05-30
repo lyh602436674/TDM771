@@ -346,7 +346,17 @@ export default {
       }
       postAction(this.url.equipList, params).then((res) => {
         if (res.code === 200) {
-          let list = res.data.sort((a, b) => a.rowSort - b.rowSort)
+          let list = res.data.sort((a, b) => {
+            let nameA = a.innerName.toUpperCase();
+            let nameB = b.innerName.toUpperCase();
+            if (nameA < nameB) {
+              return -1;
+            }
+            if (nameA > nameB) {
+              return 1;
+            }
+            return 0;
+          })
           this.equipList = list
           this.ganttParse(list)
           let ext = res.ext

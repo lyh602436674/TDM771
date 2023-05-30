@@ -26,7 +26,15 @@ export default {
     dialogStyle: {
       type: Object,
       default: () => { }
-    }
+    },
+    keyboard: {
+      type: Boolean,
+      default: process.env.NODE_ENV !== 'production'
+    },
+    maskClosable: {
+      type: Boolean,
+      default: process.env.NODE_ENV !== 'production'
+    },
   }),
   watch: {
     title(val) {

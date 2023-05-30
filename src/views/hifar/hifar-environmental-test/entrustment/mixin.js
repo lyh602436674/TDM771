@@ -14,6 +14,7 @@ export default {
         }
     },
     filters: {
+
         //报告状态
         reportStatusFilter(status) {
             let s = Number(status)

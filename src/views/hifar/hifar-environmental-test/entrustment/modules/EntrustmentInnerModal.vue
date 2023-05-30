@@ -825,9 +825,9 @@ export default {
       //bool 是否进行了数据必填验证
       let projectData = cloneDeep(data)
       projectData.forEach((item) => {
-        item.pieceIds = isArray(item.pieceIds) && item.pieceIds.length > 0 ? item.pieceIds.join(',') : item.pieceIds
-        item.pieceNos = isArray(item.pieceNos) && item.pieceNos.length > 0 ? item.pieceNos.join(',') : item.pieceNos
-        item.standardId = isArray(item.standardId) && item.standardId.length > 0 ? item.standardId[0] : item.standardId
+        item.pieceIds = isArray(item.pieceIds) && item.pieceIds.length ? item.pieceIds.join(',') : item.pieceIds
+        item.pieceNos = isArray(item.pieceNos) && item.pieceNos.length ? item.pieceNos.join(',') : item.pieceNos
+        item.standardId = isArray(item.standardId) && item.standardId.length ? item.standardId.toString() : item.standardId
       })
       if (bool) {
         if (projectData.length) {

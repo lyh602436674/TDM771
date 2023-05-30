@@ -119,11 +119,11 @@
               <span slot="testNum" slot-scope="text, record">
                 <a v-if="text" @click="$refs.TestInfoListModal.show(record)">
                   {{ text }}
+                  <span v-if="record.showPublishFlag" style="margin-left :10px">发布</span>
                 </a>
                 <span v-else> -- </span>
               </span>
               <template slot="actions" slot-scope="text, record">
-
                 <a-tooltip title="详情">
                   <a-icon class="primary-text" type="eye" @click="$refs.taskDetail.show(record)"/>
                 </a-tooltip>

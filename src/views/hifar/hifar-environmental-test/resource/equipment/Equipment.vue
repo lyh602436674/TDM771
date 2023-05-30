@@ -496,7 +496,7 @@ export default {
       await downloadFile(url, fileName, params)
     },
     handleImportEditExcel() {
-      let type = '设备信息'
+      let type = '设备计量有效期修改信息'
       let {importEditExcel} = this.url
       let record = {
         importCode: 'HfResEquipEditExport'

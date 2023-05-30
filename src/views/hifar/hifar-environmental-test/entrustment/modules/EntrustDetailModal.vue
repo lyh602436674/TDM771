@@ -51,6 +51,9 @@
               <a-empty v-else style="margin-top: 160px"/>
             </div>
           </a-tab-pane>
+          <a-tab-pane key='3' tab='流转信息'>
+            <entrust-flow-info-table :entrustId='entrustId'></entrust-flow-info-table>
+          </a-tab-pane>
         </h-tabs>
       </h-card>
     </a-spin>
@@ -61,6 +64,8 @@
 <script>
 import {postAction} from '@/api/manage'
 import EntrustDetail from '@views/hifar/hifar-environmental-test/entrustment/components/EntrustDetail';
+import EntrustFlowInfoTable
+  from "@views/hifar/hifar-environmental-test/entrustment/components/EntrustFlowInfoTable.vue";
 
 export default {
   inject: {
@@ -80,6 +85,7 @@ export default {
     },
   },
   components: {
+    EntrustFlowInfoTable,
     EntrustDetail,
   },
 
@@ -232,6 +238,9 @@ iframe {
 }
 
 /deep/ .ant-tabs-content {
-  padding: 0 10px;
+  .entrust-detail {
+    padding: 0 10px;
+  }
+
 }
 </style>

@@ -37,12 +37,6 @@
         </template>
         <span slot="status" slot-scope="text, record">
           <a-badge :color="record.status | wtStatusColorFilter" :text="record.status | wtStatusFilter"/>
-          <a-popover trigger="click" v-if="record.status === 30">
-          <div slot="content" style="max-width: 500px">
-            {{ record.rejectRemarks || '--' }}
-          </div>
-          <a-icon style="margin-left:5px" type="eye" class="primary-text"></a-icon>
-        </a-popover>
         </span>
         <template slot="actions" slot-scope="text, record">
           <a-tooltip title="详情">
@@ -225,7 +219,7 @@ export default {
           title: '状态',
           align: 'left',
           dataIndex: 'status',
-          minWidth: 120,
+          minWidth: 100,
           scopedSlots: {customRender: 'status'}
         },
         {

@@ -6,7 +6,8 @@
  * @Description: 动态生成查询条件的搜索栏组件
  * @FilePath: \hifar-platform-client\src\components\HSearch\index.js
  */
-import { find, isEmpty, isObject, isFunction } from 'lodash'
+import {find, isEmpty, isObject, isFunction} from 'lodash'
+
 export default {
   props: {
     /**
@@ -39,7 +40,8 @@ export default {
     },
     value: {
       type: Object,
-      default: () => { }
+      default: () => {
+      }
     },
     /**
      * @Date: 2021-10-18 16:59:37
@@ -169,7 +171,15 @@ export default {
                   if (isFunction(item.change)) {
                     item.change(v)
                   } else {
-                    this.queryParams[item.key] = v
+                    if (!v) {
+                      this.queryParams[item.key] = v
+                      this.triggerChange()
+                    }
+                  }
+                },
+                keyup: e => {
+                  if (e.keyCode === 13) {
+                    this.queryParams[item.key] = e.target.value
                     this.triggerChange()
                   }
                 }
@@ -317,8 +327,8 @@ export default {
     },
     renderToggleTrue(h) {
       return this.data.map(item => {
-        if(!item.hidden) {
-         return h('a-col', { attrs: { ...this.colAttrs } }, [this.renderFormItem(h, item)])
+        if (!item.hidden) {
+          return h('a-col', {attrs: {...this.colAttrs}}, [this.renderFormItem(h, item)])
         }
       })
     },
@@ -329,7 +339,8 @@ export default {
       this.activeCode = this.activeItem.key
       return [
         <a-col sm={6} md={5}>
-          <h-select v-model={this.activeCode} placeholder="请选择" size={this.size} onChange={this.handleSearchTypeChange}>
+          <h-select v-model={this.activeCode} placeholder="请选择" size={this.size}
+                    onChange={this.handleSearchTypeChange}>
             {this.data.map(item => {
               return (
                 <a-select-option value={item.key}>{item.addonBefore || item.title}</a-select-option>

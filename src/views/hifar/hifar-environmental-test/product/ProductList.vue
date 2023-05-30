@@ -53,11 +53,6 @@
             :rowKey='(record) => record.id'
             :scroll='{ x: true }'
           >
-            <span slot='productAlias' slot-scope='text, record'>
-              <a @click='handleDetailCode(record)'>
-                {{ record.productAlias ? record.productAlias : '--' }}
-              </a>
-            </span>
             <span slot='action' slot-scope='text, record'>
               <a-icon
                 v-has="'product:add'"
@@ -180,7 +175,6 @@ export default {
           title: '产品代号',
           align: 'left',
           dataIndex: 'productAlias',
-          scopedSlots: {customRender: 'productAlias'}
         },
         {
           title: '产品名称',

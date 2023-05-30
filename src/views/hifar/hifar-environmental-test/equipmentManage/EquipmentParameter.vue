@@ -71,6 +71,7 @@
                   @change="handleSearch('equipmentParameterTable')"/>
                 <template slot="table-operator">
                   <a-button icon="plus" size="small" type="ghost-primary" @click="handleAdd">添加参数</a-button>
+                  <a-button icon="delete" size="small" type="danger" @click="handleDeleteBatch">批量删除</a-button>
                 </template>
                 <h-vex-table
                   ref='equipmentParameterTable'
@@ -78,7 +79,6 @@
                   :columns='columns'
                   :data='loadData'
                   :rowSelection='{ selectedRowKeys: selectedRowKeys, onChange: onSelect }'
-                  :scroll='{ x: true }'
                   fixed
                 >
                   <a
@@ -96,24 +96,24 @@
                 </h-vex-table>
               </h-card>
             </a-tab-pane>
-<!--            <a-tab-pane :key="3" style="height: 100%" tab="修正参数">-->
-<!--              <h-card :title="title + ' 修正参数'" fixed>-->
-<!--                <template slot="table-operator">-->
-<!--                  <a-button icon="plus" size="small" type="ghost-primary" @click="handleAddAmendment">添加参数</a-button>-->
-<!--                </template>-->
-<!--                <h-edit-table-->
-<!--                  ref="equipmentAmendmentParameterTable"-->
-<!--                  slot="content"-->
-<!--                  :autoLoad="false"-->
-<!--                  :columns="amendmentColumns"-->
-<!--                  :data="amendmentLoadData"-->
-<!--                  :editConfig="editConfig"-->
-<!--                  :editRules="editRules"-->
-<!--                  uid="equipmentAmendmentParameterTable"-->
-<!--                  @eidtStatus="editChange"-->
-<!--                ></h-edit-table>-->
-<!--              </h-card>-->
-<!--            </a-tab-pane>-->
+            <!--            <a-tab-pane :key="3" style="height: 100%" tab="修正参数">-->
+            <!--              <h-card :title="title + ' 修正参数'" fixed>-->
+            <!--                <template slot="table-operator">-->
+            <!--                  <a-button icon="plus" size="small" type="ghost-primary" @click="handleAddAmendment">添加参数</a-button>-->
+            <!--                </template>-->
+            <!--                <h-edit-table-->
+            <!--                  ref="equipmentAmendmentParameterTable"-->
+            <!--                  slot="content"-->
+            <!--                  :autoLoad="false"-->
+            <!--                  :columns="amendmentColumns"-->
+            <!--                  :data="amendmentLoadData"-->
+            <!--                  :editConfig="editConfig"-->
+            <!--                  :editRules="editRules"-->
+            <!--                  uid="equipmentAmendmentParameterTable"-->
+            <!--                  @eidtStatus="editChange"-->
+            <!--                ></h-edit-table>-->
+            <!--              </h-card>-->
+            <!--            </a-tab-pane>-->
             <a-tab-pane :key="4" style="height: 100%" tab="试前模板">
               <h-card :title="title + ' 试前模板'" fixed>
                 <h-search
@@ -129,7 +129,8 @@
                             @click="handleShowAddModal(1,url.testTemplateNotEquipList)">
                     添加试前模板
                   </a-button>
-                  <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(1)"> 批量删除</a-button>
+                  <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(1)"> 批量删除
+                  </a-button>
                 </template>
                 <h-vex-table
                   ref="testBefore"
@@ -176,7 +177,8 @@
                             @click="handleShowAddModal(2,url.testTemplateNotEquipList)">
                     添加试中模板
                   </a-button>
-                  <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(2)"> 批量删除</a-button>
+                  <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(2)"> 批量删除
+                  </a-button>
                 </template>
                 <h-vex-table
                   ref="testHalfway"
@@ -223,7 +225,8 @@
                             @click="handleShowAddModal(3,url.testTemplateNotEquipList)">
                     添加试后模板
                   </a-button>
-                  <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(3)"> 批量删除</a-button>
+                  <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(3)"> 批量删除
+                  </a-button>
                 </template>
                 <h-vex-table
                   ref="testAfter"
@@ -271,7 +274,8 @@
                             @click="handleShowAddModal(4, url.obtainTemplate,'radio')">
                     添加巡检模板
                   </a-button>
-                  <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(4)"> 批量删除</a-button>
+                  <a-button icon="delete" size="small" type="danger" @click="deleteTemplateBatch(4)"> 批量删除
+                  </a-button>
                 </template>
                 <h-vex-table
                   ref="pollingTable"
@@ -968,11 +972,11 @@ export default {
       this.$refs.hSelectModal.show()
     },
     getEquipmentTree() {
-      postAction(this.url.tree, {c_equipUse_1: 1,...this.equipQuery}).then((res) => {
+      postAction(this.url.tree, {c_equipUse_1: 1, ...this.equipQuery}).then((res) => {
         if (res.code === 200) {
           this.equipmentTree = res.data.map((item) => {
             return {
-              title: item.equipName + "-" + item.equipModel,
+              title: item.innerName + '[' + item.equipName + ']',
               pid: 0,
               equipCode: item.equipCode,
               id: item.id,
@@ -1019,7 +1023,7 @@ export default {
         title: '确认删除？',
         content: '删除后数据不可恢复，确认删除？',
         onOk: () => {
-          let ids = this.selectedRowKeys.join('')
+          let ids = this.selectedRowKeys.toString()
           this.handleDelete(ids)
         }
       })

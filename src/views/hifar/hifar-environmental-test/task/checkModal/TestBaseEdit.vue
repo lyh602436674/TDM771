@@ -1666,7 +1666,7 @@ export default {
           hidden: !this.isShow
         },
         {
-          title: '试验设备开关机记录',
+          title: '开关机记录',
           id: 'switchRecording'
         },
         // {

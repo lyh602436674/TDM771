@@ -261,7 +261,7 @@ export default {
         if (res.code === 200) {
           this.equipmentTree = res.data.map((item) => {
             return {
-              title: item.equipName + '-' + item.equipModel,
+              title: item.innerName + '[' + item.equipName + ']',
               pid: 0,
               id: item.id,
               scopedSlots: {
