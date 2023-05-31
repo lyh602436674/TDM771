@@ -174,10 +174,12 @@ export default {
             } else {
               this.$message.warning(res.msg)
             }
+          }).finally(() => {
+            this.rejectRemarks = ''
           })
         },
         onCancel: () => {
-
+          this.rejectRemarks = ''
         }
       })
     },
