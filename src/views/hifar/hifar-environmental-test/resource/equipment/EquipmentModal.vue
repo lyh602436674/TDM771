@@ -239,6 +239,11 @@ export default {
           )
         },
         {
+          key: 'department',
+          formType: 'input',
+          hidden: true,
+        },
+        {
           title: '设备能力',
           key: 'equipBaseProjectNames',
           span: 12,
@@ -406,7 +411,7 @@ export default {
       this.equipentInfo = {}
     },
     userDeptChange(val, options) {
-      this.$refs.equipmentForm.form.setFieldsValue({userDeptName: options.deptName})
+      this.$refs.equipmentForm.form.setFieldsValue({userDeptName: options.deptName, department: options.deptCode})
     },
     handleClickSubmit() {
       this.$refs.equipmentForm.validateForm()

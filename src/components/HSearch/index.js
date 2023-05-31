@@ -171,8 +171,8 @@ export default {
                   if (isFunction(item.change)) {
                     item.change(v)
                   } else {
+                    this.queryParams[item.key] = v
                     if (!v) {
-                      this.queryParams[item.key] = v
                       this.triggerChange()
                     }
                   }

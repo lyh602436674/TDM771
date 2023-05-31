@@ -152,6 +152,11 @@ export default {
           }
         },
         {
+          title: '所属部门',
+          key: 'department',
+          formType: 'input',
+        },
+        {
           title: '备注',
           key: 'remarks',
           formType: 'textarea',

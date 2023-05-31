@@ -22,7 +22,11 @@
       <a-button :loading="submitLoading" type='primary' @click='handleSubmit'>提交</a-button>
     </div>
     <h-card bordered>
-      <template slot='title'> {{ handleType === 'add' ? '新增' : '编辑' }}内部委托试验</template>
+      <template slot='title'>
+        <span>{{ handleType === 'add' ? '新增' : '编辑' }}内部委托试验</span>
+        <a v-if="isShowRejectInfo" @click="handleRejectInfo"
+           style="font-size: 14px; font-weight: normal;letter-spacing: 0;padding-left: 15px;color: red">查看驳回意见</a>
+      </template>
       <a-spin :spinning="submitLoading">
         <div id="entrust" class="item-wrapper">
           <div class="item-wrapper-title">
@@ -164,6 +168,7 @@
     <hf-elevator-layer :layer-columns="layerColumns"/>
     <product-add-modal ref='productAddModal' :entrustType="entrustType" @callback='productAddCallback'/>
     <project-add-modal ref='projectAddModal' @change='projectModalCallback'/>
+    <entrust-flow-info-modal ref="entrustFlowInfoModal" :entrust-id="entrustId"></entrust-flow-info-modal>
     <history-project-modal ref='historyProjectModal' @callback='projectModalCallback'/>
   </h-modal>
 </template>
@@ -180,10 +185,12 @@ import HistoryProjectModal from "@views/hifar/hifar-environmental-test/entrustme
 import HfElevatorLayer from '@/components/HfElevatorLayer'
 import {randomUUID} from "@/utils/util";
 import SysUserSelect from '@/views/components/SysUserSelect'
+import EntrustFlowInfoModal from "@views/hifar/hifar-environmental-test/entrustment/modules/EntrustFlowInfoModal.vue";
 
 export default {
   name: "EntrustmentInnerModal",
   components: {
+    EntrustFlowInfoModal,
     HfElevatorLayer,
     HistoryProjectModal,
     ProductAddModal,
@@ -201,6 +208,11 @@ export default {
     return {
       pieceTableData: () => this.pieceTableData
     }
+  },
+  computed: {
+    isShowRejectInfo() {
+      return this.handleType === 'edit' && this.entrustModel.status === 30
+    },
   },
   data() {
     const nameValid = ({cellValue}) => {
@@ -222,6 +234,7 @@ export default {
       submitStatus: 1,
       entrustModel: {},
       entrustType: '1',
+      entrustId: '',
       tableData: [],
       selectedPieceRows: [],
       projectInfoData: [],
@@ -445,7 +458,8 @@ export default {
       url: {
         save: "HfEnvEntrustBusiness/saveEntrust",
         setSecretLevel: '/MinioBusiness/modifyAttachSecretLevelByIds',
-        edit: "/HfEnvEntrustBusiness/queryById"
+        edit: "/HfEnvEntrustBusiness/queryById",
+        getDefaultInfo: "/HfEnvEntrustBusiness/getInitializationInfo"
       },
       pieceTableData: {
         value: []
@@ -470,6 +484,7 @@ export default {
       this.handleType = type
       this.selectedPieceRows = []
       if (record.id) {
+        this.entrustId = record.id
         this.handleEdit(record.id)
       } else {
         this.handleAdd()
@@ -478,7 +493,6 @@ export default {
     handleScroll() {
       const viewportTop = window.pageYOffset || document.documentElement.scrollTop;
       const viewportBottom = viewportTop + window.innerHeight;
-      console.log(viewportTop, viewportBottom, 'viewportBottom')
       this.layerColumns.forEach((column) => {
         const element = document.getElementById(column.id);
         if (!element) return;
@@ -489,8 +503,25 @@ export default {
         column.active = elementTop <= viewportBottom && elementBottom >= viewportTop;
       });
     },
+    getDefaultInfo() {
+      this.submitLoading = true
+      postAction(this.url.getDefaultInfo).then(res => {
+        if (res.code === 200) {
+          let {cust, initiator} = res.data
+          this.entrustModel.custName = cust.name
+          this.$refs.entrustFrom.form.setFieldsValue({
+            custId: cust.id,
+            initiator: initiator.id,
+            phone: initiator.mobile,
+          })
+        }
+      }).finally(() => {
+        this.submitLoading = false
+      })
+    },
     // 新增默认值
     handleAdd() {
+      this.getDefaultInfo()
       this.entrustModel = {
         entrustTime: moment(),
         entrustType: '1',
@@ -523,6 +554,9 @@ export default {
       }).finally(() => {
         this.submitLoading = false
       })
+    },
+    handleRejectInfo() {
+      this.$refs.entrustFlowInfoModal.show()
     },
     initiatorChange(value, option) {
       this.$refs.entrustFrom.form.setFieldsValue({phone: option.mobile})

@@ -165,7 +165,7 @@
                           @click="handlePush(record,'mes')"/>
                 </a-space>
               </template>
-              <span v-if="[1,2,3].includes(record.status)" v-has="'report:delete'">
+              <span v-if="[1,2].includes(record.status)" v-has="'report:delete'">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
                   <a-icon class="danger-text cursor-pointer" title="删除" type="delete"/>
                 </a-popconfirm>

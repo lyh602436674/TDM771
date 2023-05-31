@@ -68,7 +68,7 @@ export default {
       selectedKeys: undefined,
       replaceFields: {
         children: 'children',
-        title: 'deptCode',
+        title: 'deptName',
         value: 'id',
         key: 'id',
       },
@@ -80,7 +80,7 @@ export default {
   methods: {
     async loadData() {
       let result = await queryDepartListAll()
-      if (result.code == 200) {
+      if (result.code === 200) {
         let departList = []
         let treeData = []
         result.data.map((depart) => {
@@ -88,6 +88,7 @@ export default {
             title: depart.deptName,
             deptName: depart.deptName,
             id: depart.id,
+            deptCode: depart.deptCode,
             pid: depart.pid,
             scopedSlots: {
               title: 'title',
