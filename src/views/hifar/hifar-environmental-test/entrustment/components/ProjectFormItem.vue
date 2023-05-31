@@ -108,7 +108,31 @@ import SysUserSelect from '@/views/components/SysUserSelect'
 import HandleSelectModal from "@views/hifar/hifar-environmental-test/task/modules/components/HandleSelectModal";
 import PreviewMechanicalTestConditions
   from "@views/hifar/hifar-environmental-test/entrustment/components/PreviewMechanicalTestConditions.vue";
+import {randomUUID} from "@/utils/util";
 
+
+const defaultBeforeConditions = [
+  {
+    paramId: randomUUID(),
+    paramName: "前置初始温度1",
+    dataType: "input",
+    paramCode: "a-i-t",
+  },
+  {
+    paramId: randomUUID(),
+    paramName: "前置目标温度",
+    dataType: "input",
+    paramCode: "a-t-t",
+  },
+  {
+    paramId: randomUUID(),
+    paramName: "保持时间",
+    dataType: "input",
+    paramCode: "a-k-t",
+  },
+]
+
+const defaultAfterConditions = []
 const seriesLabel = {
   show: true,
   fontWeight: "bold",
@@ -188,8 +212,7 @@ export default {
             obj.abilityRequire = obj.abilityRequire.map((item, index) => {
               return {
                 ...item,
-                closable: index !== 0,
-                highLowTemperature: item.highLowTemperature || "1",
+                closable: index !== 0 && index !== obj.abilityRequire.length - 1,
                 abilityInfo: item.abilityInfo && item.abilityInfo.map(a => {
                   return {
                     paramType_dictText: a.paramType_dictText,
@@ -202,18 +225,9 @@ export default {
           } else {
             if (filterProjectByType) {
               obj.abilityRequire = [
-                // 先不删，后续可能会用上
-                // {
-                //   title: "前置处理", type: "before", closable: false, abilityInfo: [
-                //     {
-                //       paramId: randomUUID(),
-                //       paramName: "初始类型",
-                //       minValue: "1",
-                //       conditionTypeDesc: "1",
-                //       dataType: "select"
-                //     }
-                //   ]
-                // },
+                {
+                  title: "前置处理", type: "before", closable: false, abilityInfo: []
+                },
                 {
                   title: "循环阶段",
                   type: "stage",
@@ -228,7 +242,10 @@ export default {
                       delFlag: 0,  // 默认带入不可以删除
                     }
                   }) || []
-                }
+                },
+                {
+                  title: "后置处理", type: "after", closable: false, abilityInfo: []
+                },
               ]
             } else {
               obj.abilityRequire = [
@@ -243,7 +260,6 @@ export default {
                   }) || []
                 }
               ]
-
             }
           }
           this.disabledIsShowUserInReport = obj.lastUser
@@ -614,13 +630,13 @@ export default {
         [].forEach.call(dom, (item, index) => {
           item.classList.remove('disabledDrag')
           //给第一个dom添加 不可以进行拖动的类名
-          if (index === 0) {
+          if (index === 0 && index === dom.length - 1) {
             item.classList.add('disabledDrag')
           }
         })
         if (this.model.abilityRequire.length) {
           this.model.abilityRequire.map((item, index) => {
-            item.closable = index !== 0
+            item.closable = index !== 0 && index !== this.model.abilityRequire.length - 1
           })
         }
         // this.$forceUpdate()
@@ -658,7 +674,7 @@ export default {
       const currentTabItem = abilityRequire.splice(oldIndex, 1)[0]
       abilityRequire.splice(newIndex, 0, currentTabItem)
       abilityRequire.map((item, index) => {
-        item.closable = index !== 0
+        item.closable = index !== 0 && index !== abilityRequire.length - 1
       })
       setTimeout(() => {
         this.tabsActiveKey = newIndex
