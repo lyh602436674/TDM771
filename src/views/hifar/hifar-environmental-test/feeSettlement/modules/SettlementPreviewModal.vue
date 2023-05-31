@@ -44,8 +44,9 @@
 </template>
 
 <script>
-import {downloadFile, postAction} from '@/api/manage'
+import {createLink, downFile, downloadFile, postAction} from '@/api/manage'
 import moment from "moment";
+import Vue from "vue";
 
 export default {
   name: "SettlementPreviewModal",
@@ -288,18 +289,11 @@ export default {
       this.visible = true
       this.rowId = rowId
     },
-    handleExportXls(fileName) {
-      postAction(this.url.queryById, {id: this.rowId, type: 'export'}).then((data) => {
-        let url = window.URL.createObjectURL(new Blob([data]))
-        let link = document.createElement('a')
-        link.style.display = 'none'
-        link.href = url
-        link.setAttribute('download', fileName + '.xls')
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link); //下载完成移除元素
-        window.URL.revokeObjectURL(url); //释放掉blob对象
-      })
+    handleExportXls(name) {
+      let fileName = name + '.xls'
+      let url = this.url.queryById
+      let params = {id: this.rowId, type: 'export'}
+      downloadFile(url, fileName, params)
     },
     handleSubmit() {
       if (this.submitLoading) return
