@@ -27,6 +27,9 @@
         <h-desc-item label="标准总价">{{ Number(model.standardTotalPrice).toFixed(2) || '--' }}</h-desc-item>
         <h-desc-item label="折后总价">{{ Number(model.discountTotalPrice).toFixed(2) || '--' }}</h-desc-item>
       </h-desc>
+      <div class="operator">
+        <a-button icon="export" type="primary" @click="handleExportXls('结算单')">导出</a-button>
+      </div>
       <h-card fixed style="margin-top: 10px" title="结算项目">
         <h-vex-table
           ref="settlementPreviewTable"
@@ -41,7 +44,7 @@
 </template>
 
 <script>
-import {postAction} from '@/api/manage'
+import {downloadFile, postAction} from '@/api/manage'
 import moment from "moment";
 
 export default {
@@ -285,6 +288,19 @@ export default {
       this.visible = true
       this.rowId = rowId
     },
+    handleExportXls(fileName) {
+      postAction(this.url.queryById, {id: this.rowId, type: 'export'}).then((data) => {
+        let url = window.URL.createObjectURL(new Blob([data]))
+        let link = document.createElement('a')
+        link.style.display = 'none'
+        link.href = url
+        link.setAttribute('download', fileName + '.xls')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link); //下载完成移除元素
+        window.URL.revokeObjectURL(url); //释放掉blob对象
+      })
+    },
     handleSubmit() {
       if (this.submitLoading) return
       this.submitLoading = true
@@ -329,3 +345,10 @@ export default {
   },
 }
 </script>
+<style scoped lang="less">
+.operator {
+  width: 100%;
+  padding-top: 10px;
+  text-align: right;
+}
+</style>
