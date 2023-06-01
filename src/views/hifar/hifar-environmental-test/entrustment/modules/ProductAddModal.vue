@@ -346,6 +346,7 @@ export default {
         ...params,
         ...this.queryParams,
         c_classifyId_1: this.selectedTreeKeys.toString(),
+        queryType: 'entrust'
       }
       postAction(this.url.list, data).then((res) => {
         if (res.code === 200) {
