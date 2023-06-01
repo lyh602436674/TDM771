@@ -48,6 +48,11 @@ export default {
           },
         },
         {
+          title: '试件名称',
+          dataIndex: 'productName',
+          align: 'center',
+        },
+        {
           title: '试件编号',
           dataIndex: 'pieceNo',
           align: 'center',

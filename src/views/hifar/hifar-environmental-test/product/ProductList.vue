@@ -160,6 +160,21 @@ export default {
           formType: 'input'
         },
         {
+          title: '内部产品编码',
+          key: 'c_productCodeInner_7',
+          formType: 'input'
+        },
+        {
+          title: '统一产品编码',
+          key: 'c_productCode_7',
+          formType: 'input'
+        },
+        {
+          title: '规格大小',
+          key: 'c_productSpec_7',
+          formType: 'input'
+        },
+        {
           title: '阶段',
           key: 'c_productStage_7',
           formType: 'dict',
@@ -181,31 +196,49 @@ export default {
           title: '产品代号',
           align: 'left',
           dataIndex: 'productAlias',
+          width: 80,
         },
         {
           title: '产品名称',
           dataIndex: 'productName',
           align: 'left',
+          width: 160,
         },
         {
           title: '产品型号',
           align: 'left',
-          dataIndex: 'productModel'
+          dataIndex: 'productModel',
+          width: 100,
+        },
+        {
+          title: '内部产品编码',
+          dataIndex: 'productCodeInner',
+          align: 'left',
+          width: 180,
+        },
+        {
+          title: '统一产品编码',
+          dataIndex: 'productCode',
+          align: 'left',
+          width: 100,
         },
         {
           title: '规格大小',
           align: 'left',
-          dataIndex: 'productSpec'
+          dataIndex: 'productSpec',
+          width: 100,
         },
         {
           title: '产品图号',
           align: 'left',
-          dataIndex: 'productChartNo'
+          dataIndex: 'productChartNo',
+          width: 100,
         },
         {
           title: '阶段',
           align: 'left',
-          dataIndex: 'productStage_dictText'
+          dataIndex: 'productStage_dictText',
+          width: 60,
         },
         {
           title: '有效性',
@@ -213,7 +246,8 @@ export default {
           dataIndex: 'productEffect',
           customRender: (text) => {
             return text === 1 ? '正常' : '停用'
-          }
+          },
+          width: 80,
         },
         {
           title: '创建人 ',
@@ -221,7 +255,8 @@ export default {
           dataIndex: 'createUserName',
           customRender: (text, record) => {
             return text || '--'
-          }
+          },
+          width: 100,
         },
         {
           title: '创建时间 ',
@@ -229,7 +264,8 @@ export default {
           dataIndex: 'createTime',
           customRender: (text, record) => {
             return text && text != 0 ? moment(parseInt(text)).format('YYYY-MM-DD') : '--'
-          }
+          },
+          width: 120,
         },
         {
           title: '备注 ',
@@ -237,7 +273,8 @@ export default {
           dataIndex: 'remarks',
           customRender: (text, record) => {
             return text || '--'
-          }
+          },
+          width: 120,
         },
         {
           title: '操作',
