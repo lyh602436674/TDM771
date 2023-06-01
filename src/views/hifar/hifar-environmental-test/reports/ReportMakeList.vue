@@ -314,7 +314,7 @@ export default {
         {
           title: '试验编号',
           align: 'left',
-          width: 120,
+          width: 130,
           dataIndex: 'testCode'
         },
         {
@@ -347,7 +347,7 @@ export default {
         {
           title: '运行单号',
           align: 'left',
-          width: 140,
+          width: 165,
           dataIndex: 'entrustCode',
           customRender: (text, record) => {
             return text || '--'
@@ -356,7 +356,7 @@ export default {
         {
           title: '委托单号',
           align: 'left',
-          width: 120,
+          width: 130,
           dataIndex: 'entrustNo',
           customRender: (text, record) => {
             return text || '--'
@@ -372,7 +372,7 @@ export default {
         {
           title: '试验项目',
           align: 'left',
-          width: 150,
+          width: 120,
           dataIndex: 'testName',
           customRender: (text, record) => {
             return text || '--'
