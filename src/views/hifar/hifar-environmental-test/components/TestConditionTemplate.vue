@@ -63,10 +63,7 @@ export default {
         title: '条件',
         dataIndex: 'conditionTypeDesc',
         customRender: (text, record) => {
-          if (record.paramName === '初始类型') {
-            return text === '1' ? '先高温' : text === '2' ? '先低温' : '--'
-          }
-          return text
+          return text || ''
         }
       },
     ]
