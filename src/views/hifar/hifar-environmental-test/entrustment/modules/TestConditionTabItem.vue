@@ -5,6 +5,10 @@
       <a-button size="small"
                 type="primary" @click="handleAdd"> 新增
       </a-button>
+      <h-select v-if="filterProjectByType" v-model="highLowTemperatureExtend" :options="selectOptionItem"
+                style="width: 200px;" @change="(val) => $emit('temperatureChange', val)">
+        <span slot="addonBefore">初始类型</span>
+      </h-select>
     </div>
     <vxe-table
       :ref="'pointTable' + projectIndex + itemIndex"
@@ -24,15 +28,15 @@
       size="mini"
     >
       <vxe-table-column type="seq" width="40" align="center"></vxe-table-column>
-      <vxe-table-column v-if="['stage'].includes(stage)" field="paramCode" title="参数编号"></vxe-table-column>
+      <vxe-table-column field="paramCode" title="参数编号"></vxe-table-column>
       <vxe-table-column field="paramName" title="试验条件"></vxe-table-column>
-      <vxe-table-column v-if="['stage'].includes(stage)" field="paramType_dictText" title="参数类型"></vxe-table-column>
+      <vxe-table-column field="paramType_dictText" title="参数类型"></vxe-table-column>
       <vxe-table-column field="unitName" title="单位">
         <template #default="{ row }">
           {{ row.unitName || '--' }}
         </template>
       </vxe-table-column>
-      <vxe-table-column v-if="['stage'].includes(stage)" field="curveType" title="曲线类型">
+      <vxe-table-column field="curveType" title="曲线类型">
         <template #default="{ row }">
           {{ row.curveType === '1' ? '温度/℃' : row.curveType === '2' ? '湿度/RH' : '--' }}
         </template>
@@ -50,7 +54,10 @@
           <template v-if="row.dataType === 'select'">
             <a-select v-model="row.conditionTypeDesc" @change="inputChangeOfSelect(row)"
                       :getPopupContainer="getSelectContainer(rowIndex)" size="small" style="width: 100%">
-
+              <a-select-option v-for="item in selectOptionItem" :key="item.key" :value="item.key">{{
+                  item.title
+                }}
+              </a-select-option>
             </a-select>
           </template>
         </template>
@@ -96,14 +103,14 @@ export default {
       type: [Array, Object],
       default: () => []
     },
+    highLowTemperature: {
+      type: [String, Number],
+      default: "1"
+    },
     currentProject: {
       type: Object,
       default: () => {
       }
-    },
-    stage: {
-      type: String,
-      default: ''
     },
   },
   computed: {
@@ -111,11 +118,23 @@ export default {
       return this.filterUnitCode(this.currentProject.classifyType)
     },
   },
-  watch: {},
+  watch: {
+    highLowTemperature: {
+      immediate: true,
+      handler(val) {
+        this.highLowTemperatureExtend = val
+      },
+    },
+  },
   data() {
     return {
       sysDelFlag: PROJECT_RELEVANCY_TEST_CONDITION,
+      selectOptionItem: [
+        {label: "先高温", key: '1', value: '1'},
+        {label: "先低温", key: '2', value: '2'},
+      ],
       selectTemplate: false,
+      highLowTemperatureExtend: undefined,
     }
   },
   methods: {

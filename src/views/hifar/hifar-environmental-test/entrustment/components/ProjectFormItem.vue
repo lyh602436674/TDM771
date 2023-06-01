@@ -21,22 +21,23 @@
       </div>
       <div slot="content">
         <template v-if="filterUnitCode(model.classifyType)">
-          <a-tabs id="drag-tab" v-model="tabsActiveKey" @change="handleTabChange" type="card">
+          <a-tabs id="drag-tab" v-model="tabsActiveKey" hideAdd type="editable-card" @edit="onEdit">
             <template v-for="(item,itemIndex) in model.abilityRequire">
               <a-tab-pane :key="itemIndex" :closable="item.closable"
-                          :tab="item.title" forceRender>
+                          :tab="item.type === 'stage' ? item.title + (itemIndex + 1) : item.title" forceRender>
                 <test-condition-tab-item :key="itemIndex + '-only'" ref="testConditionTabItem"
                                          :itemAbilityInfo="item.abilityInfo"
+                                         :highLowTemperature="item.highLowTemperature"
                                          :itemIndex="itemIndex"
                                          :projectIndex="index"
                                          :currentProject="model"
-                                         :stage="item.type"
                                          @add="handleAdd"
+                                         @temperatureChange="(val) => temperatureChange(val,item)"
                                          @delete="handleDelete"/>
               </a-tab-pane>
             </template>
-            <!--            <a-button slot="tabBarExtraContent" size="small" type="primary" @click="addLoopStage">新增循环阶段-->
-            <!--            </a-button>-->
+            <a-button slot="tabBarExtraContent" size="small" type="primary" @click="addLoopStage">新增循环阶段
+            </a-button>
           </a-tabs>
         </template>
         <template v-else>
@@ -109,64 +110,29 @@ import PreviewMechanicalTestConditions
   from "@views/hifar/hifar-environmental-test/entrustment/components/PreviewMechanicalTestConditions.vue";
 import {randomUUID} from "@/utils/util";
 
-const defaultParams = Object.freeze({
-  paramId: randomUUID(),
-  delFlag: 1,
-})
+
 const defaultBeforeConditions = [
   {
-    ...defaultParams,
-    paramName: "初始温度",
-    dataType: "number",
-    paramCode: "beforeInitTem",
-    unitName: "℃",
+    paramId: randomUUID(),
+    paramName: "前置初始温度1",
+    dataType: "input",
+    paramCode: "a-i-t",
   },
   {
-    ...defaultParams,
-    paramName: "目标温度",
-    dataType: "number",
-    paramCode: "beforeTargetTem",
-    unitName: "℃",
+    paramId: randomUUID(),
+    paramName: "前置目标温度",
+    dataType: "input",
+    paramCode: "a-t-t",
   },
   {
-    ...defaultParams,
-    paramName: "温变速率",
-    dataType: "number",
-    paramCode: "beforeVariationRateTem",
-    unitName: "℃/min"
-  },
-  {
-    ...defaultParams,
+    paramId: randomUUID(),
     paramName: "保持时间",
-    dataType: "number",
-    paramCode: "beforeKeepTime",
-    unitName: "min"
+    dataType: "input",
+    paramCode: "a-k-t",
   },
 ]
 
-const defaultAfterConditions = [
-  {
-    ...defaultParams,
-    paramName: "回归温度",
-    dataType: "number",
-    paramCode: "afterLastTem",
-    unitName: "℃",
-  },
-  {
-    ...defaultParams,
-    paramName: "温变速率",
-    dataType: "number",
-    paramCode: "afterVariationRateTem",
-    unitName: "℃/min",
-  },
-  {
-    ...defaultParams,
-    paramName: "保持时间",
-    dataType: "number",
-    paramCode: "afterKeepTime",
-    unitName: "min"
-  },
-]
+const defaultAfterConditions = []
 const seriesLabel = {
   show: true,
   fontWeight: "bold",
@@ -260,11 +226,12 @@ export default {
             if (filterProjectByType) {
               obj.abilityRequire = [
                 {
-                  title: "前置处理", type: "before", closable: false, abilityInfo: defaultBeforeConditions
+                  title: "前置处理", type: "before", closable: false, abilityInfo: []
                 },
                 {
                   title: "循环阶段",
                   type: "stage",
+                  highLowTemperature: "1",
                   closable: false,
                   abilityInfo: obj.abilityInfo && obj.abilityInfo.map(a => {
                     return {
@@ -277,7 +244,7 @@ export default {
                   }) || []
                 },
                 {
-                  title: "后置处理", type: "after", closable: false, abilityInfo: defaultAfterConditions
+                  title: "后置处理", type: "after", closable: false, abilityInfo: []
                 },
               ]
             } else {
@@ -297,6 +264,11 @@ export default {
           }
           this.disabledIsShowUserInReport = obj.lastUser
           this.disabledPowerUpTime = obj.isPowerUp
+          if (filterProjectByType) {
+            this.$nextTick(() => {
+              this.createSortable()
+            })
+          }
           this.model = obj
         }
       }
@@ -651,9 +623,6 @@ export default {
     },
   },
   methods: {
-    handleTabChange(v) {
-      this.tabsActiveKey = v
-    },
     createSortable() {
       try {
         let dragTab = document.getElementById('drag-tab').querySelector('.ant-tabs-nav').firstChild
@@ -661,13 +630,13 @@ export default {
         [].forEach.call(dom, (item, index) => {
           item.classList.remove('disabledDrag')
           //给第一个dom添加 不可以进行拖动的类名
-          if (index === 0 || index === dom.length - 1) {
+          if (index === 0 && index === dom.length - 1) {
             item.classList.add('disabledDrag')
           }
         })
         if (this.model.abilityRequire.length) {
           this.model.abilityRequire.map((item, index) => {
-            item.closable = index !== 0 && index !== 1 && index !== this.model.abilityRequire.length - 1
+            item.closable = index !== 0 && index !== this.model.abilityRequire.length - 1
           })
         }
         // this.$forceUpdate()
@@ -828,12 +797,10 @@ export default {
     },
     //新增循环阶段
     addLoopStage() {
-      let abilityRequire = this.model.abilityRequire
-      let cloneObj = Object.assign({}, cloneDeep(abilityRequire[abilityRequire.length - 2]), {closable: true})
-      this.model.abilityRequire.splice(abilityRequire.length - 1, 0, cloneObj)
+      this.model.abilityRequire.push(Object.assign({}, cloneDeep(this.model.abilityRequire[this.model.abilityRequire.length - 1]), {closable: true}))
       this.$nextTick(() => {
         this.createSortable()
-        this.tabsActiveKey = abilityRequire.length - 2
+        this.tabsActiveKey = this.model.abilityRequire.length - 1
       })
     },
     // 新增指标项
@@ -859,14 +826,30 @@ export default {
       this.model.abilityRequire[itemIndex].abilityInfo = pointInfoAllData
       this.$refs.PointList.showSelectModal(this.model.abilityRequire[itemIndex])
     },
+    temperatureChange(val, item) {
+      this.$set(item, 'highLowTemperature', val)
+    },
     handleDelete(row, rowIndex, projectIndex, itemIndex) {
       this.model.abilityRequire[itemIndex].abilityInfo.splice(rowIndex, 1)
     },
-    pointSelectChange(selectedRowKeys, selectedRows) {
+    // 指标项--新增change
+    async pointSelectChange(selectedRowKeys, selectedRows) {
       selectedRows.forEach((item) => {
         this.model.abilityRequire[this.selectBeforeItemIndex].abilityInfo.push({
-          ...item,
           paramId: item.id,
+          paramName: item.paramName,
+          paramType: item.paramType,
+          paramType_dictText: item.paramType_dictText,
+          paramCode: item.paramCode,
+          dataType: item.dataType,
+          unitCode: item.unitCode,
+          unitName: item.unitName,
+          conditionTypeDesc: item.conditionTypeDesc,
+          maxValue: item.maxValue,
+          minValue: item.minValue,
+          standardValue: item.standardValue,
+          strValue: item.strValue,
+          curveType: item.curveType,
           delFlag: 1, // 手动新增可以删除
         })
       })
@@ -878,11 +861,9 @@ export default {
         [].forEach.call(testConditionTab, (item, i) => {
           pointTableItem.push(item.$refs['pointTable' + [this.index] + [i]].getData())
         })
-        this.initialCurveData()
       } else {
         pointTableItem.push(this.$refs.testConditionTabItem.$refs['pointTable' + [this.index] + 0].getData())
       }
-      console.log(pointTableItem,'pointTableItem')
       let drawTemperatureCurve = []
       let drawHumidityCurve = []
       for (let i = 0; i < pointTableItem.length; i++) {
@@ -911,13 +892,13 @@ export default {
       } else {
         this.predictDuration = 0
       }
+      this.initialCurveData()
     },
-    // 初始化数据
     initialCurveData() {
       this.initialTemTime = moment(0).format('x')//温度湿度初始时间
       this.initialHumTime = moment(0).format('x')//温度湿度初始时间
-      this.initialHumidity = 30 // 初始湿度 beforeInitTem
-      this.initialTemperature = 25
+      this.initialTemperature = 25 // 初始温度
+      this.initialHumidity = 30 // 初始湿度
     },
   }
 }
