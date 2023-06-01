@@ -40,6 +40,9 @@
           <div slot='table-operator' style='border-top: 5px'>
             <a-button v-has="'product:add'" icon='plus' size='small' type='ghost-primary' @click='handleAdd'>添加
             </a-button>
+            <a-button size="small" type="ghost-warning" icon="export" @click="handleExportXls('产品管理')">导出
+            </a-button>
+            <a-button size="small" type="ghost-success" icon="import" @click="handleImportExcel">导入</a-button>
             <a-button v-has="'product:delete'" icon='delete' size='small' type='danger' @click='batchDel'>
               批量删除
             </a-button>
@@ -80,12 +83,13 @@
       </div>
     </r-l-layout>
     <product-modal ref='productModal' @change='refresh'></product-modal>
+    <h-file-import ref="HFileImport" @downloadExcel="downloadChange"/>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
-import {getAction, postAction} from '@/api/manage'
+import {downloadFile, getAction, postAction} from '@/api/manage'
 import productModal from './modules/productModal.vue'
 import HEditTree from '@/views/components/HEditTree.js'
 
@@ -118,6 +122,8 @@ export default {
         list: '/HfProductBaseBusiness/listPage',
         delete: '/HfProductBaseBusiness/logicRemoveById',
         tree: "/HfProductClassifyBusiness/listAll",
+        importExcelUrl: 'HfProductClassifyBusiness/importExcel',
+        export: '/HfProductClassifyBusiness/exportExcel',
       },
       detailData: {},
       loadData: (params) => {
@@ -332,7 +338,32 @@ export default {
     // 点击产品代号跳转详情
     handleDetailCode(record) {
       this.handleDetail(record)
-    }
+    },
+    // 导出
+    async handleExportXls(name, model) {
+      let data = {
+        ...this.queryParam,
+        ...model,
+        ids: this.selectedRowKeys.join(','),
+      }
+      if (!data.ids) delete data.ids;
+      let url = this.url.export
+      let params = data
+      let fileName = name + '.xls'
+      await downloadFile(url, fileName, params)
+    },
+    // 导入
+    handleImportExcel() {
+      let type = '产品管理'
+      let {importExcelUrl} = this.url
+      let record = {
+        importCode: 'HfResCustImport'
+      }
+      this.$refs.HFileImport.show(type, importExcelUrl, record)
+    },
+    downloadChange() {
+      this.handleExportXls('产品管理', {type: 'template'})
+    },
   }
 }
 </script>
