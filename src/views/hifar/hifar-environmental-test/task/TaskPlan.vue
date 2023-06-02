@@ -138,7 +138,7 @@
                   </a-tooltip>
                 </template>
 
-                <template v-if="record.status === 1 && record.forceEndStatus !== 10">
+                <template v-if="[1,20].includes(record.status) && record.forceEndStatus !== 10">
                   <a-divider type="vertical"/>
                   <a-tooltip title="终止">
                     <a-icon class="primary-text" type="pause" @click="$refs.taskForceEnd.show('forceEnd', record)"/>

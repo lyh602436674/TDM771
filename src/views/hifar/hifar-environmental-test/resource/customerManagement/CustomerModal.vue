@@ -152,7 +152,7 @@ export default {
           }
         },
         {
-          title: '所属部门',
+          title: '部门编码',
           key: 'department',
           formType: 'input',
         },
