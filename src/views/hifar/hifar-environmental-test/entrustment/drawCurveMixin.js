@@ -13,7 +13,8 @@ export default {
       loopNum: 1,
       initialTemTime: moment(0).format('x'),//温度初始时间
       initialHumTime: moment(0).format('x'),//湿度初始时间
-      initialTemperature: 25, // 初始温度
+      initialTemperature: 0, // 初始温度
+      initialTargetTemperature: 0, // 初始目标温度
       initialHumidity: 30, // 初始湿度
       entrustOrTaskFlag: false,// 绘制曲线数据的标记，false=> 在工艺规划页面绘制曲线，true=> 在试验任务中绘制曲线，因为两种绘制曲线的数据格式不一样
     }

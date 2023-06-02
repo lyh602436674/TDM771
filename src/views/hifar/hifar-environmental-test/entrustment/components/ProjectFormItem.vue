@@ -112,6 +112,10 @@ import {randomUUID} from "@/utils/util";
 const defaultParams = Object.freeze({
   paramId: randomUUID(),
   delFlag: 1,
+  curveType: 1,
+  conditionTypeDesc: undefined,
+  minValue: undefined,
+  strValue: '',
 })
 const defaultBeforeConditions = [
   {
@@ -429,6 +433,7 @@ export default {
       filterProjectByType: false,
       disabledIsShowUserInReport: null,
       disabledPowerUpTime: null,
+      temperatureResult: []
     }
   },
   computed: {
@@ -873,33 +878,46 @@ export default {
     },
     splitByCurveType() {
       let testConditionTab = this.$refs.testConditionTabItem || [];
-      let pointTableItem = [];
-      if (this.filterProjectByType) {
-        [].forEach.call(testConditionTab, (item, i) => {
-          pointTableItem.push(item.$refs['pointTable' + [this.index] + [i]].getData())
-        })
-        this.initialCurveData()
-      } else {
-        pointTableItem.push(this.$refs.testConditionTabItem.$refs['pointTable' + [this.index] + 0].getData())
-      }
-      console.log(pointTableItem,'pointTableItem')
+      let pointTableGather = [], pointTableItemStage = [], pointTableItemBefore = [], pointTableItemAfter = [];
+      [].forEach.call(testConditionTab, (item, i) => {
+        let getData = item.$refs['pointTable' + [this.index] + [i]].getData()
+        if (item.stage === 'before') {
+          pointTableItemBefore = getData
+        } else if (item.stage === 'after') {
+          pointTableItemAfter = getData
+        } else {
+          pointTableItemStage.push(getData)
+        }
+      })
+      this.initialCurveData(pointTableItemBefore)
+      pointTableGather = [
+        this.initBeforeDispose(pointTableItemBefore),
+        ...pointTableItemStage,
+        this.initAfterDispose(pointTableItemAfter)
+      ]
+      console.log(pointTableGather, 'pointTableGather')
       let drawTemperatureCurve = []
       let drawHumidityCurve = []
-      for (let i = 0; i < pointTableItem.length; i++) {
-        let item = pointTableItem[i]
+      // 这里目前只有一个循环阶段，可以将其他循环结合在一起使用，所以这里先用循环
+      for (let i = 0; i < pointTableGather.length; i++) {
+        let item = pointTableGather[i]
+        console.log(item, 'item')
         try {
-          this.loopNum = item.filter(v => v.paramCode === 'qh07')[0].conditionTypeDesc
+          this.loopNum = Number(item.filter(v => v.paramCode === 'qh07')[0].conditionTypeDesc)
         } catch {
           // return this.$message.warning(`循环阶段${i + 1}，请添加循环次数`)
           this.loopNum = 1
         }
-        this.isHighTemperature = testConditionTab[i].highLowTemperature
+        if (i > 0) {
+          console.log(pointTableGather[i - 1][0].minValue)
+          console.log(pointTableGather[i][0].minValue)
+        }
         drawTemperatureCurve = drawTemperatureCurve.concat(this.drawTemperatureCurve(item.filter(v => +v.curveType === 1)))
         drawHumidityCurve = drawHumidityCurve.concat(this.drawHumidityCurve(item.filter(v => +v.curveType === 2)))
       }
-
+      console.log(drawTemperatureCurve, 'drawTemperatureCurve')
       // 温度
-      this.temperatureResult = drawTemperatureCurve.map(item => item.result).flat()
+      this.temperatureResult = this.temperatureResult.concat(drawTemperatureCurve.map(item => item.result).flat())
       this.temperatureCurveFlag = !drawTemperatureCurve.map(item => item.flag).some(item => item === false)
       // 湿度
       this.humidityResult = drawHumidityCurve.map(item => item.result).flat()
@@ -912,12 +930,54 @@ export default {
         this.predictDuration = 0
       }
     },
+    // 处理前置条件数据
+    initBeforeDispose(data) {
+      let resetData = cloneDeep(data)
+      resetData.forEach(item => {
+        if (item.paramCode === 'beforeInitTem') {
+          item.paramCode = this.isHighTemperature === '1' ? 'qh02' : 'qh01';
+        }
+        if (item.paramCode === 'beforeTargetTem') {
+          item.paramCode = this.isHighTemperature === '1' ? 'qh01' : 'qh02';
+        }
+        if (item.paramCode === 'beforeVariationRateTem') {
+          item.paramCode = this.isHighTemperature === '1' ? 'qh05' : 'qh06';
+        }
+        if (item.paramCode === 'beforeKeepTime') {
+          item.paramCode = this.isHighTemperature === '1' ? 'qh03' : 'qh04';
+        }
+      })
+      return resetData
+    },
+    // 处理后置条件数据
+    initAfterDispose(data) {
+      let resetData = cloneDeep(data)
+      resetData.forEach(item => {
+        if (item.paramCode === 'afterLastTem') {
+          item.paramCode = this.isHighTemperature === '1' ? 'qh01' : 'qh02';
+        }
+        if (item.paramCode === 'afterVariationRateTem') {
+          item.paramCode = this.isHighTemperature === '1' ? 'qh05' : 'qh06';
+        }
+        if (item.paramCode === 'afterKeepTime') {
+          item.paramCode = this.isHighTemperature === '1' ? 'qh03' : 'qh04';
+        }
+      })
+      return resetData
+    },
     // 初始化数据
-    initialCurveData() {
+    initialCurveData(data) {
+      this.temperatureResult = []
+      this.humidityResult = []
+      this.loopNum = 1
       this.initialTemTime = moment(0).format('x')//温度湿度初始时间
       this.initialHumTime = moment(0).format('x')//温度湿度初始时间
-      this.initialHumidity = 30 // 初始湿度 beforeInitTem
-      this.initialTemperature = 25
+      this.initialHumidity = 30 // 初始湿度
+      let targetTem = data.filter(v => v.paramCode === 'beforeTargetTem')[0].minValue // 目标温度
+      let initTem = data.filter(v => v.paramCode === 'beforeInitTem')[0].minValue // 初始温度
+      this.initialTemperature = initTem
+      this.initialTargetTemperature = targetTem
+      this.isHighTemperature = targetTem > initTem ? '1' : '2'
     },
   }
 }
