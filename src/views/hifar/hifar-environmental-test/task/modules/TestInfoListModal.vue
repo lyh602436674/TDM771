@@ -294,7 +294,7 @@ export default {
           }
           this.refresh()
         } else {
-          this.$message.success('发布失败')
+          this.$message.warning('发布失败')
         }
       })
     },
