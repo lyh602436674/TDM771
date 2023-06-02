@@ -922,7 +922,7 @@ export default {
           this.isHighTemperature = nextValue <= preValue ? '1' : '2'
         }
         console.log(this.isHighTemperature, 'this.isHighTemperature')
-        drawTemperatureCurve = drawTemperatureCurve.concat(this.drawTemperatureCurve(item.filter(v => +v.curveType === 1)))
+        drawTemperatureCurve = drawTemperatureCurve.concat(this.drawTemperatureCurve(item.filter(v => +v.curveType === 1), i === 1))
         drawHumidityCurve = drawHumidityCurve.concat(this.drawHumidityCurve(item.filter(v => +v.curveType === 2)))
       }
       console.log(drawTemperatureCurve, 'drawTemperatureCurve')
@@ -932,13 +932,13 @@ export default {
       // 湿度
       this.humidityResult = drawHumidityCurve.map(item => item.result).flat()
       this.humidityCurveFlag = !drawHumidityCurve.map(item => item.flag).some(item => item === false)
-      // 预计时长
-      if (this.temperatureResult.length || this.humidityResult.length) {
-        this.predictDuration = (Math.max(this.temperatureResult.length ? this.temperatureResult[this.temperatureResult.length - 1].name : 0, this.humidityResult.length ? this.humidityResult[this.humidityResult.length - 1].name : 0) / 1000 / 3600).toFixed(1)
-        this.predictDuration = +this.predictDuration < 1 ? 1 : this.predictDuration
-      } else {
-        this.predictDuration = 0
-      }
+      // // 预计时长
+      // if (this.temperatureResult.length || this.humidityResult.length) {
+      //   this.predictDuration = (Math.max(this.temperatureResult.length ? this.temperatureResult[this.temperatureResult.length - 1].name : 0, this.humidityResult.length ? this.humidityResult[this.humidityResult.length - 1].name : 0) / 1000 / 3600).toFixed(1)
+      //   this.predictDuration = +this.predictDuration < 1 ? 1 : this.predictDuration
+      // } else {
+      //   this.predictDuration = 0
+      // }
     },
     // 处理前置条件数据
     initBeforeDispose(data) {

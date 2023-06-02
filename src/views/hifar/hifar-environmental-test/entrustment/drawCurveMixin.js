@@ -21,7 +21,8 @@ export default {
   },
   methods: {
     // 计算温度的曲线数据
-    drawTemperatureCurve(abilityInfo) {
+    drawTemperatureCurve(abilityInfo, isStage) {
+      if (isStage) this.loopNum += 1
       let flag = false
       //计算   满足要求
       let result = []
@@ -84,6 +85,10 @@ export default {
         result = []
       } else {
         flag = true
+      }
+      if (result.length && isStage) {
+        console.log(result,'result')
+        result = result.splice(0, result.length - 3)
       }
       return {result, flag}
     },
