@@ -127,7 +127,7 @@
                 <a-tooltip title="详情">
                   <a-icon class="primary-text" type="eye" @click="$refs.taskDetail.show(record)"/>
                 </a-tooltip>
-                <template v-if="record.status !== 20 && record.forceEndStatus !== 10">
+                <template v-if=" record.forceEndStatus !== 10">
                   <a-divider type="vertical"/>
                   <a-tooltip title="分配">
                     <a-icon
@@ -138,7 +138,7 @@
                   </a-tooltip>
                 </template>
 
-                <template v-if="[1,20].includes(record.status) && record.forceEndStatus !== 10">
+                <template v-if="[1].includes(record.status) && record.forceEndStatus !== 10">
                   <a-divider type="vertical"/>
                   <a-tooltip title="终止">
                     <a-icon class="primary-text" type="pause" @click="$refs.taskForceEnd.show('forceEnd', record)"/>

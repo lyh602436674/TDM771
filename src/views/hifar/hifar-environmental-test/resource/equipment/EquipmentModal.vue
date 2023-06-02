@@ -111,7 +111,9 @@ export default {
           change: val => {
             let formData = this.$refs.equipmentForm.$options.propsData.formData
             let equipTypeCode = formData.filter(v => v.key === 'equipTypeCode')[0]
+            let address = formData.filter(v => v.key === 'address')[0]
             equipTypeCode.validate.rules[0].required = val === '1'
+            address.validate.rules[0].required = val === '1'
             this.$refs.equipmentForm.form.setFieldsValue({equipTypeCode: '/', address: "7"})
           }
         },
@@ -189,7 +191,12 @@ export default {
           title: '设备型号',
           formType: 'input',
           span: 12,
-          key: 'equipModel'
+          key: 'equipModel',
+          validate: {
+            rules: [
+              {required: true, message: '请输入设备型号'}
+            ]
+          }
         },
         {
           title: '设备状态',
@@ -211,7 +218,12 @@ export default {
           title: '计量有效期',
           formType: 'datePick',
           key: 'checkValid',
-          span: 12
+          span: 12,
+          validate: {
+            rules: [
+              {required: true, message: '请选择计量有效期'}
+            ]
+          }
         },
         {
           title: '计量周期',
@@ -230,10 +242,19 @@ export default {
           title: '使用部门',
           key: 'userDeptId',
           span: 12,
+          validate: {
+            rules: [
+              {required: true, message: '请选择使用部门'}
+            ]
+          },
           component: (
             <h-depart-select
               placeholder="请选择使用部门"
-              v-decorator={['userDeptId', {initialValue: undefined}]}
+              v-decorator={['userDeptId', {
+                rules: [
+                  {required: true, message: '请选择使用部门'}
+                ]
+              }]}
               v-on:change={this.userDeptChange}
             />
           )
@@ -313,7 +334,6 @@ export default {
           formType: 'input',
           span: 12,
           type: 'number',
-          validate: {rules: [{required: true, message: '请输入排序(值越小越靠前)'}]}
         },
         {
           title: '',

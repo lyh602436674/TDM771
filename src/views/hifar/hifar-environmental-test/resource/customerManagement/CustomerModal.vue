@@ -39,7 +39,7 @@ const validatorDiscount = (rule, value, callback) => {
   const regMinMax = /^((\d|10)(\.\d{1,2})?)$/
   if (value && (!regMinMax.test(value) || !isNumber(+value) || value < 0 || value > 10)) {
     callback('折扣值只能在0到10范围内,并且保留两位小数')
-  }else{
+  } else {
     callback()
   }
 }
@@ -77,7 +77,7 @@ export default {
           key: 'custName',
           formType: 'input',
           validate: {
-            rules: [{ required: true, message: '请输入客户名称', trigger: 'blur' }],
+            rules: [{required: true, message: '请输入客户名称', trigger: 'blur'}],
           },
         },
         {
@@ -86,17 +86,28 @@ export default {
           formType: 'input',
         },
         {
+          title: '部门编码',
+          key: 'department',
+          formType: 'input',
+          validate: {
+            rules: [{required: true, message: '请输入部门编码', trigger: 'blur'}],
+          },
+        },
+        {
           title: '客户类型',
           key: 'custType',
           formType: 'select',
           options: CUST_TYPE_OPTIONS,
+          validate: {
+            rules: [{required: true, message: '请选择客户类型'}],
+          },
         },
         {
           title: '联系人',
           key: 'linkName',
           formType: 'input',
           validate: {
-            rules: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
+            rules: [{required: true, message: '请输入联系人', trigger: 'blur'}],
           },
         },
         {
@@ -148,13 +159,12 @@ export default {
           formType: 'input-number',
           style: {width: '100%'},
           validate: {
-            rules: [{required: false, message: "折扣值只能在0到10范围内,并且保留两位小数", validator: validatorDiscount},]
+            rules: [{
+              required: false,
+              message: "折扣值只能在0到10范围内,并且保留两位小数",
+              validator: validatorDiscount
+            },]
           }
-        },
-        {
-          title: '部门编码',
-          key: 'department',
-          formType: 'input',
         },
         {
           title: '备注',
