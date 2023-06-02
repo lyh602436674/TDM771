@@ -900,18 +900,28 @@ export default {
       let drawHumidityCurve = []
       // 这里目前只有一个循环阶段，可以将其他循环结合在一起使用，所以这里先用循环
       for (let i = 0; i < pointTableGather.length; i++) {
+
+        console.log(`第${i + 1} 阶段绘制开始`)
         let item = pointTableGather[i]
-        console.log(item, 'item')
         try {
           this.loopNum = Number(item.filter(v => v.paramCode === 'qh07')[0].conditionTypeDesc)
         } catch {
           // return this.$message.warning(`循环阶段${i + 1}，请添加循环次数`)
           this.loopNum = 1
         }
-        if (i > 0) {
-          console.log(pointTableGather[i - 1][0].minValue)
-          console.log(pointTableGather[i][0].minValue)
+        if (i === 1) {
+          let preValue = pointTableGather[i - 1][0].minValue
+          let nextValue = item[0].minValue
+          console.log(preValue, nextValue, 'preValue,nextValue')
+          this.isHighTemperature = nextValue >= preValue ? '1' : '2'
         }
+        if (i === 2) {
+          let preValue = pointTableGather[i - 1][pointTableGather[i - 1].length - 1].maxValue
+          let nextValue = item[0].maxValue
+          console.log(preValue, nextValue, 'preValue,nextValue')
+          this.isHighTemperature = nextValue <= preValue ? '1' : '2'
+        }
+        console.log(this.isHighTemperature, 'this.isHighTemperature')
         drawTemperatureCurve = drawTemperatureCurve.concat(this.drawTemperatureCurve(item.filter(v => +v.curveType === 1)))
         drawHumidityCurve = drawHumidityCurve.concat(this.drawHumidityCurve(item.filter(v => +v.curveType === 2)))
       }
