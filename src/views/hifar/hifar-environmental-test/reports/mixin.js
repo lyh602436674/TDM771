@@ -37,7 +37,7 @@ export default {
         case 2:
           return '生成中';
         case 3:
-          return '已生成';
+          return '草稿';
         case 10:
           return '待审批';
         case 20:
@@ -205,7 +205,7 @@ export default {
         case 2:
           return '生成中';
         case 3:
-          return '已生成';
+          return '草稿';
         case 10:
           return '已提交';
         case 20:

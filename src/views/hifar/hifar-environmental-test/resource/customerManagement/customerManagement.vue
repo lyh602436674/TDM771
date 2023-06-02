@@ -135,6 +135,11 @@ export default {
           options: CUST_TYPE_OPTIONS,
         },
         {
+          title: '部门编码',
+          key: 'c_department_7',
+          formType: 'input',
+        },
+        {
           title: '联系人',
           key: 'c_linkName_7',
           formType: 'input',
@@ -180,9 +185,14 @@ export default {
           dataIndex: 'custAddress',
         },
         {
-          title: '客户折扣 ',
+          title: '客户折扣',
           align: 'left',
           dataIndex: 'discount',
+        },
+        {
+          title: '部门编码',
+          align: 'left',
+          dataIndex: 'department',
         },
         {
           title: '联系人 ',

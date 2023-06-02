@@ -954,6 +954,11 @@ export default {
           title: '资产编号',
           formType: 'input',
           key: 'c_assetsCode_7'
+        },
+        {
+          title: '使用部门',
+          formType: 'input',
+          key: 'c_userDeptName_7'
         }
       ],
       toolSearchBar: [
@@ -999,6 +1004,7 @@ export default {
         list: '/HfResEquipBusiness/listPageForEntrust',
         queryParams: {
           c_equipUse_1: "2", // 只查询测试设备
+          type: "test", // 用来区分在什么地方查询
         }
       },
       productList: {
@@ -1157,6 +1163,13 @@ export default {
         {
           title: '设备用途',
           dataIndex: 'equipUse_dictText',
+          customRender: (t) => {
+            return t || '--'
+          }
+        },
+        {
+          title: '使用部门',
+          dataIndex: 'userDeptName',
           customRender: (t) => {
             return t || '--'
           }
@@ -1854,7 +1867,7 @@ export default {
           this.projectData = model.testTaskInfo
           // 项目类型 力学 气候用来判断安装控制方式和振动工装是否显示
           this.projectClassifyType = model.projectInfo[0].classifyType
-          this.equipData = model.testEquipInfo.length ? model.testEquipInfo : this.selectedTreeRows
+          this.equipData = model.testEquipInfo.length ? model.testEquipInfo : []
           this.toolsProductData = model.testToolsProductInfo
           model.realStartTime = model.realStartTime && model.realStartTime !== '0' ? moment(+model.realStartTime) : null
           model.realEndTime = model.realEndTime && model.realEndTime !== '0' ? moment(+model.realEndTime) : null

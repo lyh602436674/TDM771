@@ -88,6 +88,10 @@ export default {
       let errMap = null
       for (let i = 0; i < formInfoDataList.length; i++) {
         let that = this.$refs.projectFormItem[i]
+        if (!that.equipData.length && bool) {
+          this.$message.warning(`第${i + 1}个项目必须添加至少一个测试设备`)
+          return this.$emit('emptyData')
+        }
         let projectForm = that.$refs['projectInfoForm' + [i]]
         // 判断是否是 结构化条件 试验项目（根据项目类型判断）1：气候 2：力学 3：环境
         let filterProjectByType = this.filterUnitCode(formInfoDataList[i].classifyType)

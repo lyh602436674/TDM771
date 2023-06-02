@@ -165,7 +165,7 @@
                           @click="handlePush(record,'mes')"/>
                 </a-space>
               </template>
-              <span v-if="[1,2].includes(record.status)" v-has="'report:delete'">
+              <span v-if="[3].includes(record.status)" v-has="'report:delete'">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
                   <a-icon class="danger-text cursor-pointer" title="删除" type="delete"/>
                 </a-popconfirm>
@@ -539,6 +539,7 @@ export default {
       this.$refs.reportMakeTable.refresh(bool)
       this.loadReportNum()
       this.selectedRowKeys = []
+      this.selectedRows = []
     },
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
@@ -592,39 +593,39 @@ export default {
 
     // 批量删除
     batchDel() {
-      let _this = this
-      if (_this.selectedRowKeys.length) {
-        this.$refs.reportMakeTable.localLoading = true
-        this.$confirm({
-          title: '确认删除',
-          content: '删除后不可恢复，确认删除？',
-          onOk: function () {
-            let delInfo = _this.selectedRows.map(item => {
-              return {
-                id: item.id,
-                status: item.status,
-              }
-            })
-            postAction(_this.url.delete, {delInfo: delInfo}).then((res) => {
-              if (res.code === 200) {
-                _this.$message.success('删除成功')
-                _this.refresh()
-                _this.selectedRowKeys = []
-                _this.selectedRows = []
-              } else {
-                _this.$message.warning(res.msg)
-              }
-            }).finally(() => {
-              _this.$refs.reportMakeTable.localLoading = false
-            })
-          },
-          onCancel: function () {
-            _this.$refs.reportMakeTable.localLoading = false
-          }
-        })
-      } else {
-        this.openNotificationWithIcon('error', '删除提示', '请至少选择一项')
+      if (!this.selectedRowKeys.length) return this.$message.warning('请至少选择一条报告')
+      for (let i = 0; i < this.selectedRows.length; i++) {
+        let iten = this.selectedRows[i]
+        if (iten.status !== 3) {
+          return this.$message.warning('只能删除草稿状态的报告！')
+        }
       }
+      this.$confirm({
+        title: '确认删除',
+        content: '删除后不可恢复，确认删除？',
+        onOk: () => {
+          this.$refs.reportMakeTable.localLoading = true
+          let delInfo = this.selectedRows.map(item => {
+            return {
+              id: item.id,
+              status: item.status,
+            }
+          })
+          postAction(this.url.delete, {delInfo: delInfo}).then((res) => {
+            if (res.code === 200) {
+              this.$message.success('删除成功')
+              this.refresh()
+              this.selectedRowKeys = []
+              this.selectedRows = []
+            } else {
+              this.$message.warning(res.msg)
+            }
+          }).finally(() => {
+            this.$refs.reportMakeTable.localLoading = false
+          })
+        },
+      })
+
     },
     // 申请修改报告
     handleAmend(record) {
