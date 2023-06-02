@@ -379,7 +379,7 @@ export default {
     // 导出
     async handleExportXls(name, model) {
       let data = {
-        ...this.queryParam,
+        ...this.queryParams,
         ...model,
         ids: this.selectedRowKeys.join(','),
       }
