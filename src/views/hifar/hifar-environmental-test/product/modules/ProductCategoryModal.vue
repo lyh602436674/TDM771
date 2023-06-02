@@ -79,6 +79,11 @@ export default {
           },
         },
         {
+          title: '部门编码',
+          key: 'department',
+          formType: 'input',
+        },
+        {
           title: '备注',
           key: 'remarks',
           formType: 'textarea',

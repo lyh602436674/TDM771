@@ -112,8 +112,10 @@ export default {
             let formData = this.$refs.equipmentForm.$options.propsData.formData
             let equipTypeCode = formData.filter(v => v.key === 'equipTypeCode')[0]
             let address = formData.filter(v => v.key === 'address')[0]
+            let equipModel = formData.filter(v => v.key === 'equipModel')[0]
             equipTypeCode.validate.rules[0].required = val === '1'
             address.validate.rules[0].required = val === '1'
+            equipModel.validate.rules[0].required = val === '1'
             this.$refs.equipmentForm.form.setFieldsValue({equipTypeCode: '/', address: "7"})
           }
         },
