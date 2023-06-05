@@ -50,19 +50,19 @@
           style="display: flex; justify-content: center; align-items: center; height: 100%"
         >
           <a-empty description="请选择左方的分类或者项目">
-            <img slot="image" src="../../../../assets/no-data.png" />
+            <img slot="image" src="../../../../assets/no-data.png"/>
           </a-empty>
         </div>
         <template v-else>
           <!-- 这里展示对应的分类详情或项目详情组件 -->
           <!-- 分类信息 -->
-          <classify-info v-if="selectedRows[0] && selectedRows[0].type === 'classify'" ref="classifyInfo" />
+          <classify-info v-if="selectedRows[0] && selectedRows[0].type === 'classify'" ref="classifyInfo"/>
           <!-- 项目信息 -->
-          <unit-info v-if="selectedRows[0] && selectedRows[0].type === 'unit'" ref="unitInfo" />
+          <unit-info v-if="selectedRows[0] && selectedRows[0].type === 'unit'" ref="unitInfo"/>
         </template>
       </div>
     </r-l-layout>
-    <classify-and-unit-modal ref="classifyAndUnitModal" @ok="handleRloadTree" />
+    <classify-and-unit-modal ref="classifyAndUnitModal" @ok="handleRloadTree"/>
   </div>
 </template>
 
@@ -84,8 +84,8 @@ export default {
   provide() {
     return {
       groupCode: this.groupCode,
-      getContainer:()=>{
-        return ()=>this.$refs.projectManage
+      getContainer: () => {
+        return () => this.$refs.projectManage
       }
     }
   },
@@ -149,7 +149,7 @@ export default {
       let record = {
         groupCode: this.groupCode,
       }
-      this.$refs.classifyAndUnitModal.add(record,this.treeData)
+      this.$refs.classifyAndUnitModal.add(record, this.treeData)
     },
     handleModify() {
       if (!this.selectedRows.length) {
@@ -175,7 +175,7 @@ export default {
           } else {
             delUrl = this.url.classifyDelete
           }
-          postAction(delUrl, { id: selectedRow.id }).then((res) => {
+          postAction(delUrl, {id: selectedRow.id}).then((res) => {
             if (res.code === 200) {
               this.$message.success('删除成功')
               this.handleRloadTree()
@@ -205,6 +205,7 @@ export default {
 <style lang="less" scoped>
 .h-custom-layout {
   height: 100%;
+
   .actions-icon {
     cursor: pointer;
   }

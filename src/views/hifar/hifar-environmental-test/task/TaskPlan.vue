@@ -288,6 +288,11 @@ export default {
           minWidth: 120
         },
         {
+          title: '委托人',
+          dataIndex: 'initiator',
+          minWidth: 100
+        },
+        {
           title: '任务状态',
           dataIndex: 'status',
           scopedSlots: {

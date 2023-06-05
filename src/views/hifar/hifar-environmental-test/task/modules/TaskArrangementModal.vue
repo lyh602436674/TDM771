@@ -115,7 +115,7 @@ export default {
       }
       this.model = Object.assign({}, record, {
         predictUseTime: record.predictDuration || 1,
-        predictStartTime: moment().format('YYYY-MM-DD'),
+        predictStartTime: moment().format('YYYY-MM-DD HH:mm:ss'),
       })
       this.getTestCondition(selectedRows)
       this.visible = true

@@ -16,6 +16,7 @@
     :placeholder="placeholder || '请选择'"
     :value="selectedKeys"
     :treeData="treeData"
+    treeDefaultExpandAll
     :replaceFields="replaceFields"
     :filterTreeNode="filterTreeNode"
     @change="handleSelectChange"

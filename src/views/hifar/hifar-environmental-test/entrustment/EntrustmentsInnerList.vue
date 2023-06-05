@@ -407,12 +407,6 @@ export default {
           ...params,
           ...this.queryParams,
         }
-        // console.log(postActionDebounce(this.url.list, data, 500)(),'postActionDebounce(this.url.list, data, 500)')
-        // return postActionDebounce(this.url.list, data, 500)().then((res) => {
-        //   if (res.code === 200) {
-        //     return res.data
-        //   }
-        // })
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
             return res.data

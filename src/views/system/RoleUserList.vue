@@ -21,7 +21,8 @@
         />
         <!-- 操作按钮区域 -->
         <div slot="table-operator">
-          <a-button v-has="'role:add'" size="small" type="ghost-primary" icon="plus" @click="handleAdd">新建角色</a-button>
+          <a-button v-has="'role:add'" size="small" type="ghost-primary" icon="plus" @click="handleAdd">新建角色
+          </a-button>
           <!-- <a-upload
             name="file"
             :showUploadList="false"
@@ -32,7 +33,8 @@
           >
             <a-button size="small" type="ghost-success" icon="import">导入</a-button>
           </a-upload> -->
-          <a-button v-has="'role:derive'" size="small" type="ghost-warning" icon="export" @click="handleExportXls('角色管理')">
+          <a-button v-has="'role:derive'" size="small" type="ghost-warning" icon="export"
+                    @click="handleExportXls('角色管理')">
             导出
           </a-button>
         </div>
@@ -54,13 +56,13 @@
         >
           <span slot="action" slot-scope="text, record">
             <a @click="handleOpen(record)">用户</a>
-            <a-divider type="vertical" />
+            <a-divider type="vertical"/>
             <!-- 这个按钮暂时隐藏，如果用到该功能时再打开，切勿删除 :QianlongChen-->
             <!-- <a @click="handleDesign(record.id)">工单授权</a>
             <a-divider type="vertical" /> -->
 
             <a-dropdown>
-              <a class="ant-dropdown-link"> 更多 <a-icon type="down" /> </a>
+              <a class="ant-dropdown-link"> 更多 <a-icon type="down"/> </a>
               <a-menu slot="overlay">
                 <a-menu-item>
                   <a @click="handlePerssion(record.id)">授权</a>
@@ -87,7 +89,7 @@
     <a-col :md="rightColMd" :sm="24" v-if="this.rightcolval == 1" style="height: 100%">
       <h-card :bordered="false" :title="(selectionRows1.length && selectionRows1[0].roleName) + '用户'">
         <div slot="extra" style="text-align: right">
-          <a-icon type="close-circle" @click="hideUserList" />
+          <a-icon type="close-circle" @click="hideUserList"/>
         </div>
         <!-- 查询区域 -->
         <h-search
@@ -124,12 +126,12 @@
           <span slot="action" slot-scope="text, record">
             <a-tooltip title="用户详情">
               <a href="javascript:;" class="primary-text" @click="() => showRoleUserDetail(record)">
-                <h-icon type="icon-guidang" />
+                <h-icon type="icon-guidang"/>
               </a>
             </a-tooltip>
-            <a-divider type="vertical" />
+            <a-divider type="vertical"/>
             <a-popconfirm title="确定删除吗？" @confirm="() => handleDeleteRoleUser(record.id)">
-              <a href="javascript:;" class="danger-text"> <h-icon type="icon-shanchu" /> </a>
+              <a href="javascript:;" class="danger-text"> <h-icon type="icon-shanchu"/> </a>
             </a-popconfirm>
           </span>
         </h-table>
@@ -143,12 +145,12 @@
   </a-row>
 </template>
 <script>
-import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-import { downloadFile, postAction, getAction } from '@/api/manage'
+import {JeecgListMixin} from '@/mixins/JeecgListMixin'
+import {downloadFile, postAction, getAction} from '@/api/manage'
 import SelectUserModal from './modules/SelectUserModal'
 import RoleModal from './modules/RoleModal'
 import UserModal from './modules/UserModal'
-import { filterObj } from '@/utils/util'
+import {filterObj} from '@/utils/util'
 import UserRoleModal from './modules/UserRoleModal'
 import moment from 'moment'
 
@@ -238,9 +240,9 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          width:120,
+          width: 120,
           align: 'center',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
         },
       ],
       roleUserColumns: [
@@ -255,6 +257,12 @@ export default {
           align: 'center',
           width: 100,
           dataIndex: 'idName',
+        },
+        {
+          title: '部门',
+          align: 'center',
+          width: 100,
+          dataIndex: 'deptName',
         },
         {
           title: '电话',
@@ -275,7 +283,7 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: {customRender: 'action'},
           align: 'center',
           width: 80,
         },
@@ -378,7 +386,7 @@ export default {
         this.$message.error('请设置url.delRoleUser属性!')
         return
       }
-      postAction(this.url.delRoleUser, { roleId: this.currentRoleId, userIds: ids }).then((res) => {
+      postAction(this.url.delRoleUser, {roleId: this.currentRoleId, userIds: ids}).then((res) => {
         if (res.code === 200) {
           this.$message.success('删除成功')
           this.roleUserRefresh(true)
@@ -397,7 +405,8 @@ export default {
       })
     },
     // 删除操作后，需要对选中的用户selectedUserKeys 和 selectedUserRows 代码
-    resetSelectedUser(ids) {},
+    resetSelectedUser(ids) {
+    },
     handleSelectUser(data) {
       console.log('选中的用户', data)
       if (!data || data.length <= 0) return
@@ -463,7 +472,7 @@ export default {
     async handleExportXls(name) {
       let data = {
         ...this.queryParam,
-        ids:this.selectedRowKeys.join(',')
+        ids: this.selectedRowKeys.join(',')
       }
       let url = this.url.export
       let params = data

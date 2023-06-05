@@ -645,10 +645,6 @@ export default {
     handleEdit(record) {
       let fileUrl = record.filePath.split('?')[0]
       officeOnlineEdit(fileUrl)
-      // let fileUrlAuth = fileUrl.split('?')[1]
-      // fileUrl = fileUrl.split('?')[0]
-      // let token = this.$ls.get(ACCESS_TOKEN)
-      // WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
     },
     // 详情
     handleDetail(record) {

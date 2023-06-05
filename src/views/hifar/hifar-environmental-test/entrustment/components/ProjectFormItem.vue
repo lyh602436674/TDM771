@@ -351,14 +351,14 @@ export default {
       ],
       equipSearchData: [
         {
-          title: '设备编号',
-          formType: 'input',
-          key: 'c_equipCode_7'
-        },
-        {
           title: '设备名称 ',
           formType: 'input',
           key: 'c_equipName_7'
+        },
+        {
+          title: '设备编号',
+          formType: 'input',
+          key: 'c_equipCode_7'
         },
         {
           title: '设备型号',
