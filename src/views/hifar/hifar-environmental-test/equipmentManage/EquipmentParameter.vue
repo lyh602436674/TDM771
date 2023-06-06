@@ -1062,7 +1062,6 @@ export default {
       this.selectedTreeRows = selectedTreeRows
       // this.refresh(true)
       this.activeTab = 1
-      // this.show(1, this.id)
     },
     handleAddCondition(record) {
       if (record.dataType === 'number') {

@@ -289,7 +289,7 @@ export default {
         },
         {
           title: '委托人',
-          dataIndex: 'initiator',
+          dataIndex: 'initiatorName',
           minWidth: 100
         },
         {

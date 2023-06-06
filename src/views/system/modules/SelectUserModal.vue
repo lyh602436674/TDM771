@@ -132,12 +132,6 @@ export default {
             return record.telephone || '--'
           },
         },
-        {
-          title: '部门',
-          align: 'center',
-          width: 150,
-          dataIndex: 'orgCode',
-        },
       ],
       //数据集
       dataSource: [],
