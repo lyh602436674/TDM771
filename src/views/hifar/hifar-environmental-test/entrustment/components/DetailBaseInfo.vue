@@ -89,7 +89,7 @@
         }}
       </h-desc-item>
       <h-desc-item :span='3' label='测试软件/测试方法'>
-        <span slot='content' v-html="detailData.testMethod && detailData.testMethod.replace(/\n/g,'<br/>')"></span>
+        <span slot='content' v-html="spaceToBr(detailData.testMethod)"></span>
       </h-desc-item>
       <!--      <h-desc-item :span='3' label='委托单附件'>-->
       <!--        <div slot='content'>-->
@@ -106,7 +106,7 @@
       <!--        </div>-->
       <!--      </h-desc-item>-->
       <h-desc-item :span='3' label='备注'>
-        <span slot='content' v-html="detailData.remarks && detailData.remarks.replace(/\n/g,'<br/>')"></span>
+        <span slot='content' v-html="spaceToBr(detailData.remarks)"></span>
       </h-desc-item>
     </h-desc>
     <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
@@ -119,6 +119,7 @@ import moment from 'moment'
 import mixin from '@/views/hifar/mixin.js'
 import {downloadFile, getFileAccessHttpUrl} from '@/api/manage'
 import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
+import {spaceToBr} from "@/utils/util";
 
 export default {
   mixins: [mixin],
@@ -155,6 +156,7 @@ export default {
   data() {
     return {
       moment,
+      spaceToBr,
       detailData: {}
     }
   },

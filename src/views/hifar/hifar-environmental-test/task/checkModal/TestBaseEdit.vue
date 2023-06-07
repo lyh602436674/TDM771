@@ -213,18 +213,6 @@
                 bordered
                 size="small"
               >
-                <template #action="text, record,index">
-                  <a-popconfirm title="确定删除吗?" @confirm="() => personHandleDelete(index)">
-                    <a-icon
-                      class="primary-text"
-                      style="cursor: pointer"
-                      theme="twoTone"
-                      title="删除"
-                      two-tone-color="#ff4d4f"
-                      type="delete"
-                    />
-                  </a-popconfirm>
-                </template>
               </a-table>
             </div>
           </h-card>
@@ -1307,7 +1295,18 @@ export default {
           key: 'action',
           scopedSlots: {customRender: 'action'},
           width: 60,
-          align: 'center'
+          align: 'center',
+          customRender: (text, row, rowIndex) => {
+            return (<a-popconfirm title={"确定删除吗?"} onconfirm={() => this.personHandleDelete(rowIndex)}>
+              <a-icon
+                class={"danger-text"}
+                style={"cursor: pointer"}
+                title={"删除"}
+                two-tone-color={"#ff4d4f"}
+                type={"delete"}
+              />
+            </a-popconfirm>)
+          }
         }
       ],
       equipData: [],
@@ -1335,9 +1334,8 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: {customRender: 'action'},
           width: 60,
-          align: 'center'
+          align: 'center',
         }
       ],
       addSensorColumns: [
@@ -1928,6 +1926,7 @@ export default {
       this.toolsProductData.splice(index, 1)
     },
     personHandleDelete(index) {
+      console.log(index, this.personArr, 'oooooooooo')
       this.personArr.splice(index, 1)
     },
     selectPersonHandle(val) {
@@ -1941,6 +1940,7 @@ export default {
         }
       }) || []
       this.personArr = this.personArr.concat(uniqueArray(this.personArr, 'testUserId-testPostId', newPerson, 'testUserId-testPostId'))
+      console.log(this.personArr, 'this.personArr')
     },
     equipAdd() {
       this.$refs.equipHandleSelectModal.show(this.equipData)

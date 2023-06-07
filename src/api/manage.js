@@ -211,5 +211,5 @@ export function officeOnlineEdit(fileUrl) {
     IsSaveAsPDF: true
   }
   let url = 'HifarWebOffice://' + JSON.stringify(obj)
-  window.open(encodeURI(url), '_blank')
+  window.open(url, '_blank')
 }

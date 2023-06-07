@@ -121,6 +121,11 @@ export default {
       type: Boolean,
       default: false
     },
+    // 是否默认固定前列
+    notLeftFixed: {
+      type: Boolean,
+      default: false
+    },
   }),
   computed: {
     isTreeTable() {
@@ -385,24 +390,28 @@ export default {
       }
       // 这里默认增加序号列
       if (this.showSeq) {
+        let seqAttrs = {
+          type: 'seq',
+          width: 60,
+          align: 'center',
+          fixed: 'left',
+        }
+        if (this.notLeftFixed) delete seqAttrs.fixed
         columns.unshift(h('vxe-table-column', {
-          attrs: {
-            type: 'seq',
-            width: 60,
-            align: 'center',
-            fixed: 'left',
-          }
+          attrs: seqAttrs
         }))
       }
       // 处理列表是否设置了rowSelection
       if (!isEmpty(this.rowSelection) && isObject(this.rowSelection)) {
-        let selectOptions = Object.assign({
+        let selection = {
           width: 60,
           align: 'center',
           type: 'checkbox',
           fixed: 'left',
           visible: this.rowSelection.visible && true
-        }, this.rowSelection)
+        }
+        if (this.notLeftFixed) delete selection.fixed
+        let selectOptions = Object.assign(selection, this.rowSelection)
         columns.unshift(h('vxe-table-column', {
           attrs: selectOptions
         }))

@@ -106,7 +106,7 @@
             <template v-if="!isIntranet">
                <span v-if="[3,30,50,70,80].includes(record.status)">
                  <a-space>
-                  <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
+                  <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmitBefore(record)">
                     <h-icon
                       v-has="'report:submit'"
                       class="primary-text cursor-pointer"
@@ -488,7 +488,7 @@ export default {
       this.$refs.reportRejectAllInfo.show(this.selectedRowKeys)
     },
     handleUploadCallback(file, record, isUpload) {
-      postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, isUpload}).then(res => {
+      postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, status: 3, isUpload}).then(res => {
         if (res.code === 200) {
           this.$message.success(isUpload ? '上传成功' : '替换成功')
         } else {
@@ -651,13 +651,30 @@ export default {
       let type = 'detail'
       this.$refs.ReportDetailModal.show(record.id, type)
     },
-    // 提交
-    handleSubmit(record) {
-      postAction(this.url.submit, {
+    handleSubmitBefore(record) {
+      let data = {
         id: record.id,
         coverTemplateId: record.coverTemplateId,
-        reportCode: record.reportCode
-      }).then((res) => {
+        reportCode: record.reportCode,
+      }
+      this.$confirm({
+        title: '提示',
+        content: '是否盖章？',
+        okText: "是",
+        cancelText: "否",
+        onOk: () => {
+          data.signatureFlag = 1
+          this.handleSubmit(data)
+        },
+        onCancel: () => {
+          data.signatureFlag = 0
+          this.handleSubmit(data)
+        }
+      })
+    },
+    // 提交
+    handleSubmit(data) {
+      postAction(this.url.submit, data).then((res) => {
         if (res.code === 200) {
           this.$message.success('操作成功!')
           this.refresh(true)

@@ -15,10 +15,18 @@
     <h-desc-item label="是否加电">{{ model.isPowerUp === '1' ? '是' : '否' }}</h-desc-item>
     <h-desc-item label="报告中是否显示最终用户">{{ model.isShowUserInReport === '1' ? '是' : '否' }}</h-desc-item>
     <h-desc-item label="加电时间">{{ model.powerUpTime_dictText || '--' }}</h-desc-item>
-    <h-desc-item :span="3" label="试验判据">{{ model.testCriteria || '--' }}</h-desc-item>
-    <h-desc-item :span="3" label="合格判据">{{ model.conformityCriteria || '--' }}</h-desc-item>
-    <h-desc-item :span="3" label="试验依据">{{ model.testEvidence || '--' }}</h-desc-item>
-    <h-desc-item :span="3" label="试验条件">{{ model.testCondition || '--' }}</h-desc-item>
+    <h-desc-item :span="3" label="试验判据">
+      <span slot='content' v-html="spaceToBr(model.testCriteria)"></span>
+    </h-desc-item>
+    <h-desc-item :span="3" label="合格判据">
+      <span slot='content' v-html="spaceToBr(model.conformityCriteria)"></span>
+    </h-desc-item>
+    <h-desc-item :span="3" label="试验依据">
+      <span slot='content' v-html="spaceToBr(model.testEvidence)"></span>
+    </h-desc-item>
+    <h-desc-item :span="3" label="试验条件">
+      <span slot='content' v-html="spaceToBr(model.testCondition)"></span>
+    </h-desc-item>
     <h-desc-item :span='3' label='附件'>
       <div slot='content'>
         <template v-if='model.fileInfo && model.fileInfo.length'>
@@ -74,6 +82,7 @@ import moment from 'moment'
 import {downloadFile, getFileAccessHttpUrl} from "@api/manage";
 import TestConditionTemplate from "@views/hifar/hifar-environmental-test/components/TestConditionTemplate";
 import entrustmentMixins from "@views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins";
+import {spaceToBr} from "@/utils/util";
 
 export default {
   name: "ProjectDetailTemplate",
@@ -81,6 +90,7 @@ export default {
   mixins: [entrustmentMixins],
   data() {
     return {
+      spaceToBr,
       moment,
       equipColumns: [
         {

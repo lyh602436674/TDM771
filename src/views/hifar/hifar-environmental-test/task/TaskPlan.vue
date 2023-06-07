@@ -86,11 +86,19 @@
             <h-vex-table
               ref="taskPlanListTable"
               slot="content"
+              notLeftFixed
               :columns="columns"
               :data="loadData"
               :height="!collapse ? '100%' : '345'"
               :row-selection="{ selectedRowKeys, onChange: onSelect }"
+              @toggleRowExpand="handleToggleRowExpand"
+              showExpand
+              :rowKey="(record) => record.id"
+              :expand-config="{trigger:'cell'}"
             >
+              <span slot="expandContent" slot-scope="row,rowIndex">
+                <test-info-list-component @change="loadSubData(row)" :data-source="row.dataSource"></test-info-list-component>
+              </span>
               <template slot="status" slot-scope="text, record">
                 <template v-if="record.forceEndStatus === 10">
                   <a-badge :color="taskStatusMap[+text] ? taskStatusMap[+text].color : ''"
@@ -174,6 +182,7 @@ import WorkCenterDetailModal from '../components/WorkCenterDetailModal.vue'
 import TaskForceEndModal from './modules/TaskForceEndModal.vue'
 import {find} from 'lodash'
 import TerminationDetailModal from "@views/hifar/hifar-environmental-test/task/modules/TerminationDetailModal";
+import TestInfoListComponent from "@views/hifar/hifar-environmental-test/task/modules/TestInfoListComponent.vue";
 
 export default {
   provide() {
@@ -182,6 +191,7 @@ export default {
     }
   },
   components: {
+    TestInfoListComponent,
     TerminationDetailModal,
     HPie,
     TaskArrangement,
@@ -388,6 +398,7 @@ export default {
       url: {
         taskStatistics: '/HfEnvTaskBusiness/taskStatistics',
         list: '/HfEnvTaskBusiness/listPage',
+        testList: '/HfEnvTaskTestBusiness/listPageForTask',
         forceEnd: '/HfEnvTaskTestBusiness/forceEnd',
         testDetail: '/HfEnvTaskTestBusiness/queryById'
       },
@@ -421,13 +432,18 @@ export default {
       calendarDate: moment(),
       calendarMode: 'month',
       loading: false,
-      chartType: 'bar'
+      chartType: 'bar',
     }
   },
   created() {
     this.getTaskStatistics()
   },
   methods: {
+    handleToggleRowExpand({expanded, row}) {
+      if (expanded) {
+        this.loadSubData(row)
+      }
+    },
     getTaskStatistics() {
       if (this.loading) return
       this.loading = true
@@ -600,6 +616,19 @@ export default {
     refresh(bool = true) {
       this.$refs.taskPlanListTable.refresh(bool)
       this.getTaskStatistics()
+    },
+    loadSubData(row) {
+      let data = {
+        ...this.queryParams,
+        taskId: row.id,
+        pageSize: 999,
+        pageNo: 1
+      }
+      postAction(this.url.testList, data).then((res) => {
+        if (res.code === 200) {
+          this.$set(row, 'dataSource', res.data.data)
+        }
+      })
     },
     loadData(params) {
       this.selectedRowKeys = []
@@ -789,5 +818,8 @@ export default {
 }
 </style>
 <style scoped>
+/deep/ .vxe-table--render-default .vxe-body--expanded-cell {
+  padding: 15px;
+}
 
 </style>

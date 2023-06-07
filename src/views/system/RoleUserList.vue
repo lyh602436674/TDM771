@@ -229,13 +229,11 @@ export default {
           dataIndex: 'roleCode',
         },
         {
-          title: '创建时间',
-          dataIndex: 'createTime',
-          align: 'center',
-          sorter: true,
-          customRender: (text) => {
-            return moment(parseFloat(text)).format('YYYY-MM-DD')
-          },
+          title: '描述',
+          dataIndex: 'remarks',
+          customRender: (t) => {
+            return <a-tooltip title={t}>{t}</a-tooltip>
+          }
         },
         {
           title: '操作',

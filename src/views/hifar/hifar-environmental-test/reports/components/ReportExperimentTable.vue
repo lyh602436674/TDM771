@@ -468,7 +468,7 @@ export default {
 .ant-popover-inner {
   .ant-popover-inner-content {
     max-height: 650px !important;
-    overflow: scroll !important;
+    overflow: auto !important;
   }
 }
 </style>
