@@ -19,6 +19,7 @@
   >
     <template slot='footer'>
       <a-button type='ghost-danger' @click='handleCancel'> 关闭</a-button>
+      <a-button type='primary' @click='handleCancel'> 保存</a-button>
     </template>
     <a-spin :spinning='spinLoading'>
       <h-card v-if="type === 'before'" :showCollapse='false' style='min-height: 600px'>
@@ -367,7 +368,7 @@ export default {
       let bool = false
       for (let i = 0; i < isEditItem.length; i++) {
         isEditItem[i].isdel = this.buildWord ? '1' : "0";
-        let updateItem = await postAction(this.url.updateCheckItem, isEditItem[i])
+        let updateItem = await this.handleRequest(isEditItem[i])
         if (updateItem.code === 200) {
           bool = true
         } else {
@@ -377,6 +378,9 @@ export default {
         }
       }
       return bool
+    },
+    handleRequest(item) {
+      return postAction(this.url.updateCheckItem, item)
     },
     async handleCancel() {
       if (!(await this.handleCancelBefore())) return
@@ -407,6 +411,7 @@ export default {
         itemRes = '1'
       }
       this.$set(this[type][index], 'itemRes', itemRes)
+      this.handleRequest(item)
     },
     handleFillCheck(item) {
       let record = {

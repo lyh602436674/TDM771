@@ -14,7 +14,6 @@
     fullScreen
     :getContainer="getContainer"
     :visible="visible"
-    :footer="null"
     @cancel="handleCancel"
   >
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭 </a-button>

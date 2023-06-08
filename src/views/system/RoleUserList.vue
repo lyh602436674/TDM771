@@ -200,6 +200,11 @@ export default {
           key: 'c_userCode_7',
           formType: 'input',
         },
+        {
+          title: '用户部门',
+          key: 'c_deptName_7',
+          formType: 'input',
+        },
       ],
       isorter1: {
         column: 'createTime',

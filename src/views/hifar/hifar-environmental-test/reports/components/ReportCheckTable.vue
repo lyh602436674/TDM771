@@ -35,21 +35,10 @@
           @click="() => handleDetail(record)"
         />
         <template v-if="record.status === 10">
-          <router-link :to="'/TestCheckListByBefore?testId=' + record.testId" target="_blank">
-            <a-icon type="file-done" title="试前检查单" class="primary-text"></a-icon>
-          </router-link>
-          <a-icon type="download" class="primary-text" @click="handleDownload(record,'docx')"></a-icon>
-          <h-upload-file-b
-            v-model="reportFileList"
-            action="/MinioLocalBusiness/authUpload"
-            v-has="'report:edit'"
-            :customParams="{id:record.id}"
-            accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            isPublic
-            @beforeUpload="$refs.dataCheckTable.localLoading = true"
-            @change="file => handleUploadCallback(file,record)">
-            <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
-          </h-upload-file-b>
+          <!--          <router-link :to="'/TestCheckListByBefore?testId=' + record.testId" target="_blank">-->
+          <!--            <a-icon type="file-done" title="试前检查单" class="primary-text"></a-icon>-->
+          <!--          </router-link>-->
+          <a-icon type="edit" class="primary-text" @click="handleOnlineEdit(record)"></a-icon>
           <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckPass(record.id)">
             <h-icon v-has="'reportCheck:pass'" type="icon-wancheng1" title="通过" class="success-text"
                     style="cursor: pointer"/>
@@ -73,7 +62,7 @@
 
 <script>
 import moment from 'moment'
-import {downloadFile, getAction, postAction} from '@/api/manage'
+import {downloadFile, getAction, officeOnlineEdit, postAction} from '@/api/manage'
 import mixin from '../mixin'
 import ReportDetailModal from '../modules/ReportDetailModal'
 import ReportRejectPopover from "@views/hifar/hifar-environmental-test/reports/components/ReportRejectPopover";
@@ -274,6 +263,11 @@ export default {
     refresh(bool = true) {
       this.$refs.dataCheckTable.refresh(bool)
     },
+    handleOnlineEdit(record) {
+      let fileUrl = record.filePath.split('?')[0]
+      officeOnlineEdit(fileUrl)
+    },
+    // 替换
     handleUploadCallback(file, record, isUpload) {
       postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, status: 10, isUpload}).then(res => {
         if (res.code === 200) {

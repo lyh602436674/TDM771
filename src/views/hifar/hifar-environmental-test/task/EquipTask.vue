@@ -74,18 +74,13 @@ export default {
       },
       formData: [
         {
+          title: '内部名称',
+          key: 'c_innerName_7',
+          formType: 'input',
+        },
+        {
           title: '设备名称',
           key: 'c_equipName_7',
-          formType: 'input',
-        },
-        {
-          title: '设备编号',
-          key: 'c_equipCode_7',
-          formType: 'input',
-        },
-        {
-          title: '设备型号',
-          key: 'c_equipModel_7',
           formType: 'input',
         },
       ],
@@ -169,7 +164,7 @@ export default {
           name: 'equipName',
           width: 270,
           align: 'left',
-          label: '设备编号[设备型号]',
+          label: '内部名称[设备名称]',
           resize: true,
           tree: true,
           onrender: (item, node) => {
