@@ -249,7 +249,7 @@ export default {
     },
     handleOnlineEdit(record) {
       let fileUrl = record.filePath.split('?')[0]
-      officeOnlineEdit(fileUrl)
+      officeOnlineEdit(fileUrl, {IsSaveEnabled: false})
     },
     handleDetail(record) {
       let type = this.type
