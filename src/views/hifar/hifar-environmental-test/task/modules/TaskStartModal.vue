@@ -49,7 +49,8 @@ export default {
           key: 'optTime',
           validate: {rules: [{required: true, message: '请设置试验开始时间'}]},
           component: (
-            <h-time-select v-decorator={['optTime', {rules: [{required: true, message: '请设置试验开始时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'}
+                           v-decorator={['optTime', {rules: [{required: true, message: '请设置试验开始时间'}]}]}/>
           ),
         },
         {

@@ -33,7 +33,7 @@
           v-model="videoAttachIds"
           :customParams="{refType: 'test_video', refId: this.testId}"
           style="width: 100%"
-          @delete="this.handleDelete"
+          @delete="handleDelete"
         />
       </h-desc>
     </div>

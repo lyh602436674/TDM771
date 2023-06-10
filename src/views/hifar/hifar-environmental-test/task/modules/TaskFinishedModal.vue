@@ -164,7 +164,8 @@ export default {
           key: 'approachTime',
           component: (
             <h-time-select
-              disabled={true}
+              timeFormat={'HH:mm'}
+              disabled
               v-decorator={['approachTime']}
             />
           )
@@ -173,14 +174,14 @@ export default {
           title: '离场时间',
           key: 'departureTime',
           component: (
-            <h-time-select disabled v-decorator={['departureTime']}/>
+            <h-time-select timeFormat={'HH:mm'} disabled v-decorator={['departureTime']}/>
           )
         },
         {
           title: '开始时间',
           key: 'realStartTime',
           component: (
-            <h-time-select disabled v-decorator={['realStartTime']}/>
+            <h-time-select timeFormat={'HH:mm'} disabled v-decorator={['realStartTime']}/>
           )
         },
         {
@@ -189,6 +190,7 @@ export default {
           validate: {rules: [{required: true, message: '请选择结束时间'}, {validator: this.validateEndTime}]},
           component: (
             <h-time-select
+              timeFormat={'HH:mm'}
               v-decorator={
                 [
                   'realEndTime',

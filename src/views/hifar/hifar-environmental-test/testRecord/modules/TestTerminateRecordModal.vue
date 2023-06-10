@@ -72,7 +72,7 @@ export default {
           key: 'recordTime',
           validate: { rules: [{ required: false, message: '请选择记录时间' }] },
           component: (
-            <h-time-select v-decorator={['recordTime', { rules: [{ required: false, message: '请选择记录时间' }] }]} />
+            <h-time-select timeFormat={'HH:mm'} v-decorator={['recordTime', { rules: [{ required: false, message: '请选择记录时间' }] }]} />
           ),
         },
         {

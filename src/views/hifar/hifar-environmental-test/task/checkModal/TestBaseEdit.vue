@@ -1026,6 +1026,7 @@ export default {
           validate: {rules: [{required: false, validator: this.validateStartTime}]},
           component: (
             <h-time-select
+              timeFormat={'HH:mm'}
               v-decorator={['approachTime', {rules: [{required: false, message: '请选择入场时间'}]}]}
             />
           )
@@ -1035,7 +1036,7 @@ export default {
           key: 'departureTime',
           validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
-            <h-time-select v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'} v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
           )
         },
         {
@@ -1044,6 +1045,7 @@ export default {
           validate: {rules: [{required: false, validator: this.validateStartTime}]},
           component: (
             <h-time-select
+              timeFormat={'HH:mm'}
               v-decorator={['realStartTime', {rules: [{required: false, message: '请选择开始时间'}]}]}
             />
           )
@@ -1053,7 +1055,7 @@ export default {
           key: 'realEndTime',
           validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
-            <h-time-select v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'} v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
           )
         },
         {

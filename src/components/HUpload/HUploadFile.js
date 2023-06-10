@@ -286,13 +286,20 @@ export default {
     renderUploadAction(h) {
       let actions = []
       if (this.isEdit) {
+        if (this.fileList.length) {
+          actions.push(
+            <a-popconfirm title="确定删除吗?" onconfirm={() => this.handleBatchDelete()}>
+              <a-button size="small" type="danger" icon="delete">{'批量删除'}</a-button>
+            </a-popconfirm>
+          )
+        }
         if (this.multiple) {
           actions.push(
             <a-button size="small" type="ghost-primary" icon="plus"
                       onclick={this.clickUpload}>{this.fileList.length ? '继续上传' : '上传文件'}</a-button>
           )
         } else {
-          if (this.fileList.length === 0) {
+          if (this.fileList.length) {
             actions.push(
               <a-button size="small" type="ghost-primary" icon="plus"
                         onclick={this.clickUpload}>{'上传文件'}</a-button>
@@ -354,6 +361,11 @@ export default {
         if (this.isVarSeq) {
           columns.unshift(this.seqColumn[0])
         }
+        columns.unshift({
+          type: 'checkbox',
+          width: 50,
+          align: 'center',
+        })
         return h(
           'vxe-table',
           {
@@ -373,6 +385,10 @@ export default {
               'resizable': true,
               'show-overflow': 'tooltip',
               'show-header-overflow': 'tooltip',
+            },
+            on: {
+              'checkbox-all': this.checkboxChange,
+              'checkbox-change': this.checkboxChange
             },
             scopedSlots: {
               serial: (text, record) => {
@@ -482,6 +498,11 @@ export default {
     renderColumn(itemColumn) {
       let _h_ = this.$createElement
       let props = Object.assign({}, itemColumn)
+      if (itemColumn.type === 'checkbox') {
+        return _h_('vxe-table-column', {
+          props: props,
+        })
+      }
       if (itemColumn.scopedSlots) {
         // 判断是否是自定义slot
         return _h_('vxe-table-column', {

@@ -513,6 +513,8 @@ export default {
             custId: cust.id,
             initiator: initiator.id,
             phone: initiator.mobile,
+            linkName: cust.linkName,
+            linkMobile: cust.linkMobile,
           })
         }
       }).finally(() => {
