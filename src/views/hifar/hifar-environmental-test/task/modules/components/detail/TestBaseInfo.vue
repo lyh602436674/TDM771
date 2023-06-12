@@ -277,21 +277,21 @@ export default {
           title: '工装编号',
           dataIndex: 'toolsCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '工装名称',
           dataIndex: 'toolsName',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '工装规格',
           dataIndex: 'toolsSize',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -305,14 +305,14 @@ export default {
           title: '存放地点',
           dataIndex: 'location',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
           title: '责任部门',
           dataIndex: 'deptName',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -338,7 +338,7 @@ export default {
           dataIndex: 'equipName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -346,7 +346,7 @@ export default {
           dataIndex: 'equipIndex',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -354,7 +354,7 @@ export default {
           dataIndex: 'innerName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -481,42 +481,42 @@ export default {
           title: '委托单号',
           dataIndex: 'entrustCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           },
         },
         {
           title: '试验编号',
           dataIndex: 'testCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           },
         },
         {
           title: '委托单类型',
           dataIndex: 'entrustType',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           },
         },
         {
           title: '试验性质',
           dataIndex: 'testPropertyName',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           },
         },
         {
           title: '项目编码',
           dataIndex: 'unitCode',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           },
         },
         {
           title: '项目名称',
           dataIndex: 'unitName',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           },
         },
       ],

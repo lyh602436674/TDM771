@@ -211,6 +211,9 @@ export default {
           title: '试验设备',
           dataIndex: 'equipName',
           minWidth: 150,
+          customRender: (text, row) => {
+            return `${row.innerName + row.equipName}`
+          }
         },
         {
           title: '期望开始时间',

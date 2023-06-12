@@ -105,11 +105,6 @@ export default {
         reject: '/HfEnvEntrustBusiness/reject',
         externalManage: '/HfEnvEntrustBusiness/externalManage'
       },
-      numPages: 1, // pdf文件总页数
-      pdfUrl: null,
-      currentPage: 0,
-      pageCount: 0,
-      outsourcingUnit: '',
       viewDetailType: '',
       rejectRemarks: '',
       testCondition: 2,

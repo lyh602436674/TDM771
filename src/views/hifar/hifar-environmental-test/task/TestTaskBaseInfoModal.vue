@@ -21,7 +21,8 @@
     </div>
     <a-row :gutter="24" style="margin: 0;height: 100%">
       <a-col :xl="20" :lg="24" :md="24" :sm="24" :xs="24" style="height: 100%">
-        <test-base-detail ref="TestBaseDetail" :viewDetailType="viewDetailType" :testId="testId" :top='top' :showExceptionAndEnd="showExceptionAndEnd"/>
+        <test-base-detail ref="TestBaseDetail" :viewDetailType="viewDetailType" :testId="testId" :top='top'
+                          :showExceptionAndEnd="showExceptionAndEnd"/>
       </a-col>
       <a-col :xl="4" :lg="24" :md="24" :sm="24" :xs="24">
         <test-base-time-line ref="TestBaseTimeLine" style="margin-top: 46px" :testId="testId"></test-base-time-line>
@@ -73,7 +74,7 @@ export default {
     show(record, type, top, field) {
       this.visible = true
       this.viewDetailType = type
-      this.testId = field ? record[field] : record.id
+      this.testId = field ? record[field].split(',')[0] : record.id
       this.top = top
       this.testCode = record.testCode
     },

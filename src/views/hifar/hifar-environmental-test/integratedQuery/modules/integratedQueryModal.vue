@@ -18,7 +18,7 @@
             :key="index"
             :tab="item.entrustCode">
             <div id="basicInfo">
-              <detail-base-info showPreviewBtn :detailDataObj="item"></detail-base-info>
+              <detail-base-info showPreviewBtn show-flow-btn :detailDataObj="item"></detail-base-info>
             </div>
             <div id="piece">
               <piece-detail-template titlle="试件信息" :dataSource="item.pieceInfo"/>

@@ -51,6 +51,9 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :rowKey="(record) => record.id"
       >
+        <span slot="entrustCode" slot-scope="text, record">
+            <a @click="$refs.testTaskBaseInfoModal.show(record,'2','20px','testId')">{{ text }}</a>
+        </span>
         <span slot="status" slot-scope="text, record">
           <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
         </span>
@@ -179,6 +182,7 @@
     <report-detail-modal ref="ReportDetailModal"/>
     <report-download-record ref="reportDownloadRecord"/>
     <report-reject-all-info ref="reportRejectAllInfo"/>
+    <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
   </div>
 </template>
 
@@ -193,6 +197,7 @@ import {ACCESS_TOKEN} from '@/store/mutation-types'
 import {getAction} from '@api/manage';
 import ReportDownloadRecord from './components/ReportDownloadRecord';
 import ReportRejectAllInfo from "@views/hifar/hifar-environmental-test/reports/modules/ReportRejectAllInfo";
+import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal.vue";
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -203,6 +208,7 @@ export default {
     }
   },
   components: {
+    TestTaskBaseInfoModal,
     ReportRejectAllInfo,
     ReportMakeListsModal,
     ReportDetailModal,
@@ -349,9 +355,7 @@ export default {
           align: 'left',
           width: 165,
           dataIndex: 'entrustCode',
-          customRender: (text, record) => {
-            return text || '--'
-          }
+          scopedSlots: {customRender: 'entrustCode'},
         },
         {
           title: '委托单号',

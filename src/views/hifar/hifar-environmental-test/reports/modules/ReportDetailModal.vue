@@ -52,9 +52,9 @@
     </div>
     <h-card :bordered="false">
       <h-tabs fixed :activeKey="activeKey" :animated="true" @change="handleTabsChange">
-<!--        <a-tab-pane key="1" tab="基本信息">-->
-<!--          <report-detail :detailData="detailData"></report-detail>-->
-<!--        </a-tab-pane>-->
+        <!--        <a-tab-pane key="1" tab="基本信息">-->
+        <!--          <report-detail :detailData="detailData"></report-detail>-->
+        <!--        </a-tab-pane>-->
         <a-tab-pane key="2" tab="报告信息">
           <div v-if="pdfPath" :style="{width:'100%',height:'100%',display:'flex'}">
             <embed
@@ -120,10 +120,6 @@ export default {
         checkApprove: '/HfEnvReportApproveBusiness/approveById',
         amendById: '/HfEnvReportAmendBusiness/amendById',
       },
-      numPages: 1, // pdf文件总页数
-      pdfUrl: null,
-      currentPage: 0,
-      pageCount: 0,
     }
   },
   methods: {
@@ -141,6 +137,7 @@ export default {
     handleCancel() {
       this.visible = false
       this.drawerVisible = false
+      this.detailData = {}
       this.$emit('change', true)
     },
     handleTabsChange(v) {
