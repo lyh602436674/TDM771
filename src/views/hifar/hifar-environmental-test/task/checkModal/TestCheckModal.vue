@@ -435,6 +435,8 @@ export default {
           this.resetCheckedState()
           this.$refs.checkEnsureModal.handleCancel()
         }
+      }).finally(() => {
+        this.$refs.checkEnsureModal.submitLoading = false
       })
     },
     handleDelete(item, index, type) {
@@ -484,6 +486,8 @@ export default {
           this.resetCheckedState()
           this.$refs.checkEnsureModal.handleCancel()
         }
+      }).finally(() => {
+        this.$refs.checkEnsureModal.submitLoading = false
       })
     },
     checkItem() {

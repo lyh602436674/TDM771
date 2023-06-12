@@ -1036,7 +1036,8 @@ export default {
           key: 'departureTime',
           validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
-            <h-time-select timeFormat={'HH:mm'} v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'}
+                           v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
           )
         },
         {
@@ -1055,7 +1056,8 @@ export default {
           key: 'realEndTime',
           validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
-            <h-time-select timeFormat={'HH:mm'} v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'}
+                           v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
           )
         },
         {
@@ -2040,15 +2042,17 @@ export default {
       })
       Promise.all([carryOutProcess_form]).then((values) => {
         let record = values[0]
-        if (!this.installControlTable.length) {
+        if (!this.installControlTable.length && !this.isShow) {
           this.submitLoading = false
           return this.$message.warning('请添加安装控制方式')
         }
-        let msgList = this.validControlTable()
-        if (msgList.children.length) {
-          this.submitLoading = false
-          this.$message.warning(h => msgList)
-          return
+        if (!this.isShow) {
+          let msgList = this.validControlTable()
+          if (msgList.children.length) {
+            this.submitLoading = false
+            this.$message.warning(h => msgList)
+            return
+          }
         }
         let personPostCodeList = this.personArr.map(v => v.testPostCode)
         if (!personPostCodeList.includes('01')) {

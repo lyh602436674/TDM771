@@ -106,7 +106,7 @@
             <template v-if="!isIntranet">
                <span v-if="[3,30,50,70,80].includes(record.status)">
                  <a-space>
-                  <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmitBefore(record)">
+                  <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
                     <h-icon
                       v-has="'report:submit'"
                       class="primary-text cursor-pointer"
@@ -651,29 +651,13 @@ export default {
       let type = 'detail'
       this.$refs.ReportDetailModal.show(record.id, type)
     },
-    handleSubmitBefore(record) {
+    // 提交
+    handleSubmit(record) {
       let data = {
         id: record.id,
         coverTemplateId: record.coverTemplateId,
         reportCode: record.reportCode,
       }
-      this.$confirm({
-        title: '提示',
-        content: '是否盖章？',
-        okText: "是",
-        cancelText: "否",
-        onOk: () => {
-          data.signatureFlag = 1
-          this.handleSubmit(data)
-        },
-        onCancel: () => {
-          data.signatureFlag = 0
-          this.handleSubmit(data)
-        }
-      })
-    },
-    // 提交
-    handleSubmit(data) {
       postAction(this.url.submit, data).then((res) => {
         if (res.code === 200) {
           this.$message.success('操作成功!')

@@ -22,7 +22,7 @@
           :loading="submitLoading"
           v-has="pageOption.pass"
           type="primary"
-          @click="handleCheckPass(detailData.id,0)"> {{ "审核" + pageOption.typeText }}
+          @click="handleCheckPass(detailData.id,0)"> {{ pageOption.typeText + "同意" }}
         </a-button>
         <a-button v-has="pageOption.reject" type="ghost-primary" @click="handleCheck(detailData)">
           {{ pageOption.typeText + "驳回" }}
