@@ -14,7 +14,6 @@
     fullScreen
     :getContainer="getContainer"
     :visible="visible"
-    :footer="null"
     @cancel="handleCancel"
   >
     <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭 </a-button>
@@ -34,7 +33,7 @@
           v-model="videoAttachIds"
           :customParams="{refType: 'test_video', refId: this.testId}"
           style="width: 100%"
-          @delete="this.handleDelete"
+          @delete="handleDelete"
         />
       </h-desc>
     </div>

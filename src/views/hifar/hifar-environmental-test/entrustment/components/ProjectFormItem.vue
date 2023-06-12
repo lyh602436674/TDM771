@@ -224,7 +224,7 @@ export default {
         if (isObject(val) && Object.keys(val).length) {
           let obj = Object.assign({}, val, {
             unitId: val.unitId ? val.unitId : val.id,
-            testName: val.unitName,
+            testName: val.testName || val.unitName,
             isShowUserInReport: val.isShowUserInReport || '1',
             isPowerUp: val.isPowerUp || '1',
             attachIds: val.fileInfo && val.fileInfo.length && val.fileInfo.map(item => {
@@ -399,14 +399,14 @@ export default {
       ],
       equipSearchData: [
         {
-          title: '设备编号',
-          formType: 'input',
-          key: 'c_equipCode_7'
-        },
-        {
           title: '设备名称 ',
           formType: 'input',
           key: 'c_equipName_7'
+        },
+        {
+          title: '设备编号',
+          formType: 'input',
+          key: 'c_equipCode_7'
         },
         {
           title: '设备型号',

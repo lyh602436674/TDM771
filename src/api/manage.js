@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import {axios} from '@/utils/request'
 import {debounceAsync} from '@/utils/util'
+import {isObject} from 'lodash'
 
 const api = {
   user: '/mock/api/user',
@@ -203,13 +204,17 @@ export function getFileAccessHttpUrl(avatar, subStr) {
  * @description word在线编辑
  * @params fileUrl 文件路径 必须是处理好的文件路径 http://x.x.x.x:xxxx/xxx/xxx/xxx.docx
  * */
-export function officeOnlineEdit(fileUrl) {
+export function officeOnlineEdit(fileUrl, extendParams) {
   let obj = {
     AccessKey: 'minioadmin',
     SecretKey: 'minioadmin',
     ServerOfficeFileUrl: decodeURIComponent(fileUrl.replace(/\+/g, '%20')),
-    IsSaveAsPDF: true
+    IsSaveAsPDF: true, // 是否可同步保存pdf
+    IsSaveEnabled: true,// 保存按钮是否可点击
+  }
+  if (isObject(extendParams)) {
+    obj = Object.assign({}, obj, extendParams)
   }
   let url = 'HifarWebOffice://' + JSON.stringify(obj)
-  window.open(encodeURI(url), '_blank')
+  window.open(url, '_blank')
 }

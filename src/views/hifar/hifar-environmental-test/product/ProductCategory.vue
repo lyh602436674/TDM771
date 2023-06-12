@@ -125,7 +125,11 @@ export default {
           key: 'categoryName',
           formType: 'input'
         },
-
+        {
+          title: '部门编码',
+          key: 'department',
+          formType: 'input'
+        },
       ],
       // 表头
       columns: [
@@ -135,6 +139,11 @@ export default {
           dataIndex: 'categoryName',
           treeNode: true,
           scopedSlots: {customRender: 'categoryName'}
+        },
+        {
+          title: '部门编码',
+          align: 'left',
+          dataIndex: 'department',
         },
         {
           title: '创建人',

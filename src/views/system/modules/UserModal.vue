@@ -33,7 +33,7 @@
               {{ userInfo.deptName }}
             </span>
             <span v-if="item.key === 'testType'">
-              {{ (SYSTEM_CONSTANTS_PROJECT_CLASSIFY.filter(v => v.key === userInfo.testType)[0].title) || '--' }}
+              {{ getUserTestType }}
             </span>
             <span v-else-if="item.key === 'sex'">
               {{ userInfo.sex == 0 ? '保密' : userInfo.sex == 1 ? '男' : '女' }}
@@ -334,6 +334,13 @@ export default {
   computed: {
     uploadAction: function () {
       return this.url.fileUpload
+    },
+    getUserTestType() {
+      try {
+        return SYSTEM_CONSTANTS_PROJECT_CLASSIFY.filter(v => v.key === this.userInfo.testType)[0].title
+      } catch {
+        return '--'
+      }
     },
   },
   methods: {

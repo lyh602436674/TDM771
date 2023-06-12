@@ -10,6 +10,7 @@ import {randomUUID} from "@/utils/util"
 import {findIndex} from 'lodash'
 import SparkMD5 from "spark-md5"
 import {downloadFile, getFileAccessHttpUrl, postAction} from '@/api/manage'
+import {isArray, isEmpty, isFunction, isObject, isString} from "lodash";
 
 export default {
   props: {
@@ -17,6 +18,10 @@ export default {
       type: Object,
       default: () => {
       }
+    },
+    rowKey: {
+      type: [String, Function],
+      default: 'uuid'
     },
     secretLevel: {
       type: [Number, String],
@@ -37,7 +42,9 @@ export default {
       },
       extendRecords: {},
       // 图片水印内容
-      watermarkInput: ""
+      watermarkInput: "",
+      selectedRowKeys: [],
+      selectedRows: [],
     }
   },
   methods: {
@@ -429,6 +436,7 @@ export default {
      * @Author: 陈乾龙
      * @description:
      * @param {Object} file 文件
+     * @param {index} index 下标
      * @return {null}
      */
     handleDelete(file, index) {
@@ -437,6 +445,34 @@ export default {
       this.$emit('delete', file, this.fileList)
       this.$store.commit('SET_UPLOADING', false)
       // this.triggerChange()
+    },
+    handleBatchDelete() {
+      if (!this.selectedRows.length) return this.$message.warning('请选择需要删除的文件')
+      for (let i = 0; i < this.fileList.length; i++) {
+        for (let j = 0; j < this.selectedRows.length; j++) {
+          if (this.fileList[i].uuid === this.selectedRows[j].uuid) {
+            this.handleDelete(this.fileList[i], i)
+            i--
+            break
+          }
+        }
+      }
+      this.selectedRowKeys = []
+      this.selectedRows = []
+    },
+    checkboxChange({records}) {
+      let selectedRows = []
+      records.map(item => {
+        if (isString(this.rowKey)) {
+          selectedRows[item[this.rowKey]] = item
+        } else if (isFunction(this.rowKey)) {
+          selectedRows[this.rowKey(item)] = item
+        }
+      })
+
+      this.selectedRowKeys = Object.keys(selectedRows)
+      this.selectedRows = records
+      this.$emit('checkboxChange', this.selectedRowKeys, this.selectedRows)
     },
     // 渲染Input
     renderInput(config = {}) {

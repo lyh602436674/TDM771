@@ -112,6 +112,9 @@ export default {
     }
   },
   methods: {
+    forceUpdate(value) {
+      this.checked = value === 1
+    },
     onChangeHandle(val, event) {
       if (val) {
         this.checkVal = this.options[0] || 1

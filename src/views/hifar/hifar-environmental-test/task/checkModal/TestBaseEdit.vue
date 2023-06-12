@@ -68,7 +68,7 @@
           </h-card>
         </h-desc>
         <!-- 安装、控制方式 -->
-        <h-desc v-if="!isShow" id="installControl" class="mg-t-20" title="安装、控制方式">
+        <h-desc required v-if="!isShow" id="installControl" class="mg-t-20" title="安装、控制方式">
           <h-card :bordered="false" style="width: 100%">
             <template slot="table-operator">
               <a-button icon="plus" size="small" type="primary" @click="installControlAdd">
@@ -78,7 +78,7 @@
             <a-table
               :columns="installControlColumns"
               :dataSource="installControlTable"
-              :expandedRowKeys.sync="installControlExpandedRowKeys"
+              :expandedRowKeys="installControlExpandedRowKeys"
               @expandedRowsChange="installControlExpandedRowsChange"
               :pagination="false"
               bordered
@@ -87,6 +87,9 @@
               style="width: 100%;"
             >
               <div slot="expandedRowRender" slot-scope="record,index">
+                <h-switch :value="record.sensorDataRequired" checked-txt="必 填" unchecked-txt="非必填"
+                          :options="[1,2]"
+                          @change="sensorSwitchChange" defaultChecked></h-switch>
                 <a-table
                   :columns="sensorColumns"
                   :dataSource="record.testSensorInfo"
@@ -94,7 +97,7 @@
                   bordered
                   rowKey="id"
                   size="small"
-                  style="width: 100%;"
+                  style="width: 100%; margin-top: 5px"
                 >
                   <template #action="text, record,subIndex">
                     <a-popconfirm title="确定删除吗?" @confirm="() => testSensorHandleDelete(index,subIndex)">
@@ -213,18 +216,6 @@
                 bordered
                 size="small"
               >
-                <template #action="text, record,index">
-                  <a-popconfirm title="确定删除吗?" @confirm="() => personHandleDelete(index)">
-                    <a-icon
-                      class="primary-text"
-                      style="cursor: pointer"
-                      theme="twoTone"
-                      title="删除"
-                      two-tone-color="#ff4d4f"
-                      type="delete"
-                    />
-                  </a-popconfirm>
-                </template>
               </a-table>
             </div>
           </h-card>
@@ -391,6 +382,7 @@ export default {
   data() {
     return {
       moment,
+      testDirectionRequired: 1,
       productStatusOptions: [{key: '1', value: '1', label: '完好'}, {key: '2', value: '2', label: '损坏'}],
       siteRunningStatus: [
         {key: '1', value: '1', label: '正常'},
@@ -585,13 +577,21 @@ export default {
           }
         },
         {
-          title: '试验方向',
+          title: <div>
+            <span>{'试验方向'}</span>
+            <span style={{display: 'inline-block', marginLeft: '10px'}}>
+              <h-switch ref={'testDirectSwitch'} checked-txt={"必 填"} unchecked-txt={"非必填"}
+                        value={this.testDirectionRequired}
+                        onChange={this.testDirectionChange} defaultChecked></h-switch>
+            </span>
+          </div>,
           dataIndex: 'directionId',
           align: 'center',
           width: 250,
           customRender: (t, row, index) => {
             return this.$createElement('a-tree-select', {
               props: {
+                disabled: this.testDirectionRequired === 2,
                 showSearch: true,
                 placeholder: '请选择试验方向',
                 treeData: this.testDirectionTreeData,
@@ -1026,6 +1026,7 @@ export default {
           validate: {rules: [{required: false, validator: this.validateStartTime}]},
           component: (
             <h-time-select
+              timeFormat={'HH:mm'}
               v-decorator={['approachTime', {rules: [{required: false, message: '请选择入场时间'}]}]}
             />
           )
@@ -1035,7 +1036,8 @@ export default {
           key: 'departureTime',
           validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
-            <h-time-select v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'}
+                           v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
           )
         },
         {
@@ -1044,6 +1046,7 @@ export default {
           validate: {rules: [{required: false, validator: this.validateStartTime}]},
           component: (
             <h-time-select
+              timeFormat={'HH:mm'}
               v-decorator={['realStartTime', {rules: [{required: false, message: '请选择开始时间'}]}]}
             />
           )
@@ -1053,7 +1056,8 @@ export default {
           key: 'realEndTime',
           validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
-            <h-time-select v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'}
+                           v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
           )
         },
         {
@@ -1307,7 +1311,18 @@ export default {
           key: 'action',
           scopedSlots: {customRender: 'action'},
           width: 60,
-          align: 'center'
+          align: 'center',
+          customRender: (text, row, rowIndex) => {
+            return (<a-popconfirm title={"确定删除吗?"} onconfirm={() => this.personHandleDelete(rowIndex)}>
+              <a-icon
+                class={"danger-text"}
+                style={"cursor: pointer"}
+                title={"删除"}
+                two-tone-color={"#ff4d4f"}
+                type={"delete"}
+              />
+            </a-popconfirm>)
+          }
         }
       ],
       equipData: [],
@@ -1335,9 +1350,9 @@ export default {
         {
           title: '操作',
           dataIndex: 'action',
-          scopedSlots: {customRender: 'action'},
           width: 60,
-          align: 'center'
+          align: 'center',
+          scopedSlots: {customRender: 'action'},
         }
       ],
       addSensorColumns: [
@@ -1713,7 +1728,7 @@ export default {
         refId: this.testId,
         refType: 'test_picture'
       }
-    }
+    },
   },
   methods: {
     show(record) {
@@ -1726,6 +1741,12 @@ export default {
       })
       this.loadImgData()
       this.getTestDirectionTreeData()
+    },
+    testDirectionChange(checked) {
+      this.testDirectionRequired = checked
+    },
+    sensorSwitchChange(checked) {
+      this.sensorDataRequired = checked
     },
     // 获取试验方向数据
     getTestDirectionTreeData() {
@@ -1743,10 +1764,9 @@ export default {
     },
     // 安装控制方式新增行
     installControlAdd() {
-      this.installControlTable.push({
-        id: randomUUID(),
-        testSensorInfo: []
-      })
+      let id = randomUUID()
+      this.installControlTable.push({id, sensorDataRequired: 1, testSensorInfo: []})
+      this.installControlExpandedRowKeys.push(id)
     },
     // 巡检记录新增行
     siteInspectionAdd() {
@@ -1862,7 +1882,18 @@ export default {
           //     inspectionTime: this.momentFormatFun(item.inspectionTime, 'YYYY-MM-DD HH:mm:ss')
           //   }
           // })
-          this.installControlTable = model.insertMethodInfo// 安装、控制方式+传感器
+          // 安装、控制方式+传感器
+          this.installControlTable = model.insertMethodInfo.map(item => {
+            return {
+              ...item,
+              sensorDataRequired: item.testSensorInfo.length ? 1 : 2
+            }
+          })
+          this.testDirectionRequired = !model.insertMethodInfo.length || model.insertMethodInfo.some(item => item.directionId !== undefined && item.directionId !== null && item.directionId !== '') ? 1 : 2
+          this.$nextTick(() => {
+            this.$refs.testDirectSwitch.forceUpdate(this.testDirectionRequired)
+          })
+          this.installControlExpandedRowKeys = this.installControlTable.map(item => item.id)
           this.personArr = model.testPersonInfo
           this.projectData = model.testTaskInfo
           // 项目类型 力学 气候用来判断安装控制方式和振动工装是否显示
@@ -1896,6 +1927,7 @@ export default {
     },
     installControlHandleDelete(index) {
       this.installControlTable.splice(index, 1)
+      this.installControlExpandedRowKeys.splice(index, 1)
     },
     installControlExpandedRowsChange(expandedRowKeys) {
       this.installControlExpandedRowKeys = expandedRowKeys
@@ -1978,12 +2010,17 @@ export default {
       let div = []
       for (let i = 0; i < this.installControlTable.length; i++) {
         let item = this.installControlTable[i]
-        if (!item.testSensorInfo.length) {
-          div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式下请添加传感器`}</div>)
-        } else {
-          if (!(item.testSensorInfo.map(v => v.usePurposeCode).includes('2'))) {
-            // 判断安装控制方式下的传感器 规则：一个控制方式下必须有一个传感器，且传感器必须至少有一条是控制 1:测量 2:控制
-            div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式下缺少控制传感器`}</div>)
+        if (this.testDirectionRequired === 1 && !item.directionId) {
+          div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式请选择试验方向`}</div>)
+        }
+        if (item.sensorDataRequired === 1) {
+          if (!item.testSensorInfo.length) {
+            div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式下请添加传感器`}</div>)
+          } else {
+            if (!(item.testSensorInfo.map(v => v.usePurposeCode).includes('2'))) {
+              // 判断安装控制方式下的传感器 规则：一个控制方式下必须有一个传感器，且传感器必须至少有一条是控制 1:测量 2:控制
+              div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式下缺少控制传感器`}</div>)
+            }
           }
         }
       }
@@ -2005,11 +2042,17 @@ export default {
       })
       Promise.all([carryOutProcess_form]).then((values) => {
         let record = values[0]
-        let msgList = this.validControlTable()
-        if (msgList.children.length) {
+        if (!this.installControlTable.length && !this.isShow) {
           this.submitLoading = false
-          this.$message.warning(h => msgList)
-          return
+          return this.$message.warning('请添加安装控制方式')
+        }
+        if (!this.isShow) {
+          let msgList = this.validControlTable()
+          if (msgList.children.length) {
+            this.submitLoading = false
+            this.$message.warning(h => msgList)
+            return
+          }
         }
         let personPostCodeList = this.personArr.map(v => v.testPostCode)
         if (!personPostCodeList.includes('01')) {

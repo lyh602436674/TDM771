@@ -4,7 +4,7 @@
       centered
       cancelText="关闭"
       :title="title"
-      :width="1000"
+      :width="1200"
       :visible="visible"
       :bodyStyle="{
         padding: '5px',
@@ -16,17 +16,22 @@
       <h-card>
         <template slot="table-operator">
           <a-row :gutter="10">
-            <a-col :span="8">
+            <a-col :span="6">
               <h-input v-model="queryParam.c_userCode_7" size="small" type="" placeholder="请输入用户账号">
                 <span slot="addonBefore">用户账号</span>
               </h-input>
             </a-col>
-            <a-col :span="8">
+            <a-col :span="6">
               <h-input v-model="queryParam.c_idName_7" size="small" type="" placeholder="请输入用户姓名">
                 <span slot="addonBefore">用户姓名</span>
               </h-input>
             </a-col>
-            <a-col :span="8">
+            <a-col :span="6">
+              <h-input v-model="queryParam.c_deptName_7" size="small" type="" placeholder="请输入用户姓名">
+                <span slot="addonBefore">用户部门</span>
+              </h-input>
+            </a-col>
+            <a-col :span="6">
               <span style="float: left; overflow: hidden" class="table-page-search-submitButtons">
                 <a-button size="small" type="primary" icon="search" @click="searchQuery">查询</a-button>
                 <a-button size="small" icon="reload" style="margin-left: 8px" @click="searchReset">重置</a-button>
@@ -58,8 +63,9 @@
 </template>
 
 <script>
-import { filterObj } from '@/utils/util'
-import { getAction } from '@/api/manage'
+import {filterObj} from '@/utils/util'
+import {getAction} from '@/api/manage'
+
 export default {
   name: 'SelectUserModal',
   data() {
@@ -96,6 +102,12 @@ export default {
           dataIndex: 'idName',
         },
         {
+          title: '部门',
+          align: 'center',
+          width: 100,
+          dataIndex: 'deptName',
+        },
+        {
           title: '性别',
           align: 'center',
           width: 100,
@@ -119,12 +131,6 @@ export default {
           customRender: (text, record) => {
             return record.telephone || '--'
           },
-        },
-        {
-          title: '部门',
-          align: 'center',
-          width: 150,
-          dataIndex: 'orgCode',
         },
       ],
       //数据集
@@ -188,7 +194,7 @@ export default {
     },
     handleTableChange(pagination, filters, sorter) {
       //分页、排序、筛选变化时触发
-      console.log("分页、排序、筛选变化时触发",pagination,filters,sorter)
+      console.log("分页、排序、筛选变化时触发", pagination, filters, sorter)
       //TODO 筛选
       if (Object.keys(sorter).length > 0) {
         this.isorter.column = sorter.field

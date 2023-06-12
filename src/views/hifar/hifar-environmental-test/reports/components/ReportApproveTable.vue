@@ -26,7 +26,7 @@
       <span slot="status" slot-scope="text, record">
         <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
       </span>
-      <div slot="action" slot-scope="text, record">
+      <a-space size="middle" slot="action" slot-scope="text, record">
         <a-icon
           type="eye"
           title="详情"
@@ -34,13 +34,12 @@
           style="cursor: pointer"
           @click="() => handleDetail(record)"
         />
-        <span v-if="record.status === 20">
-          <a-divider style="color: #409eff" type="vertical"/>
+        <template v-if="record.status === 20">
+          <a-icon type="edit" class="primary-text" @click="handleOnlineEdit(record)"></a-icon>
           <a-popconfirm title="确定批准通过吗?" @confirm="() => handleCheckPass(record.id)">
             <h-icon v-has="'reportApprove:pass'" class="success-text" style="cursor: pointer" title="批准通过"
                     type="icon-wancheng1"/>
           </a-popconfirm>
-          <a-divider style="color: #409eff" type="vertical"/>
           <report-reject-popover style="display: inline-block" @reject="handleCheck(record.id)"
                                  @write="handleWrite(record.id)">
             <h-icon
@@ -51,8 +50,8 @@
               type="icon-chacha"
             />
           </report-reject-popover>
-        </span>
-      </div>
+        </template>
+      </a-space>
     </h-vex-table>
     <report-detail-modal ref="ReportDetailModal" :queryType="queryType" @change="refresh(true)"></report-detail-modal>
   </h-card>
@@ -60,7 +59,7 @@
 
 <script>
 import moment from 'moment'
-import {postAction} from '@/api/manage'
+import {officeOnlineEdit, postAction} from '@/api/manage'
 import mixin from '../mixin.js'
 import ReportDetailModal from '../modules/ReportDetailModal'
 import ReportRejectPopover from "@views/hifar/hifar-environmental-test/reports/components/ReportRejectPopover";
@@ -223,7 +222,7 @@ export default {
           title: '操作',
           dataIndex: 'action',
           fixed: 'right',
-          width: 100,
+          width: 130,
           align: 'center',
           scopedSlots: {customRender: 'action'},
         },
@@ -247,6 +246,10 @@ export default {
   methods: {
     refresh(bool = true) {
       this.$refs.dataCheckTable.refresh(bool)
+    },
+    handleOnlineEdit(record) {
+      let fileUrl = record.filePath.split('?')[0]
+      officeOnlineEdit(fileUrl, {IsSaveEnabled: false})
     },
     handleDetail(record) {
       let type = this.type

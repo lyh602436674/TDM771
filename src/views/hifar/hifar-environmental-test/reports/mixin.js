@@ -39,7 +39,7 @@ export default {
         case 3:
           return '草稿';
         case 10:
-          return '待审批';
+          return '待审核';
         case 20:
           return '待批准';
         case 30:

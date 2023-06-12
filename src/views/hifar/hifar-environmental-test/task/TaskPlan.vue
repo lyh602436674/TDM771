@@ -86,11 +86,19 @@
             <h-vex-table
               ref="taskPlanListTable"
               slot="content"
+              notLeftFixed
               :columns="columns"
               :data="loadData"
               :height="!collapse ? '100%' : '345'"
               :row-selection="{ selectedRowKeys, onChange: onSelect }"
+              @toggleRowExpand="handleToggleRowExpand"
+              showExpand
+              :rowKey="(record) => record.id"
+              :expand-config="{trigger:'cell'}"
             >
+              <span slot="expandContent" slot-scope="row,rowIndex">
+                <test-info-list-component @change="loadSubData(row)" :data-source="row.dataSource"></test-info-list-component>
+              </span>
               <template slot="status" slot-scope="text, record">
                 <template v-if="record.forceEndStatus === 10">
                   <a-badge :color="taskStatusMap[+text] ? taskStatusMap[+text].color : ''"
@@ -127,7 +135,7 @@
                 <a-tooltip title="详情">
                   <a-icon class="primary-text" type="eye" @click="$refs.taskDetail.show(record)"/>
                 </a-tooltip>
-                <template v-if="record.status !== 20 && record.forceEndStatus !== 10">
+                <template v-if=" record.forceEndStatus !== 10">
                   <a-divider type="vertical"/>
                   <a-tooltip title="分配">
                     <a-icon
@@ -138,7 +146,7 @@
                   </a-tooltip>
                 </template>
 
-                <template v-if="[1,20].includes(record.status) && record.forceEndStatus !== 10">
+                <template v-if="[1].includes(record.status) && record.forceEndStatus !== 10">
                   <a-divider type="vertical"/>
                   <a-tooltip title="终止">
                     <a-icon class="primary-text" type="pause" @click="$refs.taskForceEnd.show('forceEnd', record)"/>
@@ -174,6 +182,7 @@ import WorkCenterDetailModal from '../components/WorkCenterDetailModal.vue'
 import TaskForceEndModal from './modules/TaskForceEndModal.vue'
 import {find} from 'lodash'
 import TerminationDetailModal from "@views/hifar/hifar-environmental-test/task/modules/TerminationDetailModal";
+import TestInfoListComponent from "@views/hifar/hifar-environmental-test/task/modules/TestInfoListComponent.vue";
 
 export default {
   provide() {
@@ -182,6 +191,7 @@ export default {
     }
   },
   components: {
+    TestInfoListComponent,
     TerminationDetailModal,
     HPie,
     TaskArrangement,
@@ -288,6 +298,11 @@ export default {
           minWidth: 120
         },
         {
+          title: '委托人',
+          dataIndex: 'initiatorName',
+          minWidth: 100
+        },
+        {
           title: '任务状态',
           dataIndex: 'status',
           scopedSlots: {
@@ -383,6 +398,7 @@ export default {
       url: {
         taskStatistics: '/HfEnvTaskBusiness/taskStatistics',
         list: '/HfEnvTaskBusiness/listPage',
+        testList: '/HfEnvTaskTestBusiness/listPageForTask',
         forceEnd: '/HfEnvTaskTestBusiness/forceEnd',
         testDetail: '/HfEnvTaskTestBusiness/queryById'
       },
@@ -416,13 +432,18 @@ export default {
       calendarDate: moment(),
       calendarMode: 'month',
       loading: false,
-      chartType: 'bar'
+      chartType: 'bar',
     }
   },
   created() {
     this.getTaskStatistics()
   },
   methods: {
+    handleToggleRowExpand({expanded, row}) {
+      if (expanded) {
+        this.loadSubData(row)
+      }
+    },
     getTaskStatistics() {
       if (this.loading) return
       this.loading = true
@@ -595,6 +616,19 @@ export default {
     refresh(bool = true) {
       this.$refs.taskPlanListTable.refresh(bool)
       this.getTaskStatistics()
+    },
+    loadSubData(row) {
+      let data = {
+        ...this.queryParams,
+        taskId: row.id,
+        pageSize: 999,
+        pageNo: 1
+      }
+      postAction(this.url.testList, data).then((res) => {
+        if (res.code === 200) {
+          this.$set(row, 'dataSource', res.data.data)
+        }
+      })
     },
     loadData(params) {
       this.selectedRowKeys = []
@@ -784,5 +818,8 @@ export default {
 }
 </style>
 <style scoped>
+/deep/ .vxe-table--render-default .vxe-body--expanded-cell {
+  padding: 15px;
+}
 
 </style>

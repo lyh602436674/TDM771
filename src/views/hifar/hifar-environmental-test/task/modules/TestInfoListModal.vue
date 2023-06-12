@@ -71,6 +71,7 @@ export default {
   data() {
     return {
       visible: false,
+      refreshFlag: false,
       moment,
       title: '试验信息',
       url: {
@@ -267,7 +268,11 @@ export default {
     },
     handleCancel() {
       this.visible = false
-      this.$emit('change')
+      if (this.refreshFlag) {
+        // 如果操作过数据再刷新
+        this.$emit('change')
+      }
+      this.refreshFlag = false
     },
     refresh(bool = true) {
       this.$refs.testInfoListTable.refresh(bool)
@@ -276,6 +281,7 @@ export default {
       postAction(this.url.recover, {id: record.id}).then((res) => {
         if (res.code === 200) {
           this.$message.success('操作成功')
+          this.refreshFlag = true
           this.refresh()
         }
       })
@@ -292,6 +298,7 @@ export default {
           } else {
             this.$message.success('操作成功')
           }
+          this.refreshFlag = true
           this.refresh()
         } else {
           this.$message.warning('发布失败')
@@ -302,6 +309,7 @@ export default {
       postAction(this.url.delete, {id}).then((res) => {
         if (res.code == 200) {
           this.$message.success('操作成功')
+          this.refreshFlag = true
           this.refresh()
         } else {
           this.$message.success('删除失败')

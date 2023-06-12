@@ -89,7 +89,7 @@ export default {
       for (let i = 0; i < formInfoDataList.length; i++) {
         let that = this.$refs.projectFormItem[i]
         if (!that.equipData.length && bool) {
-          this.$message.warning(`第${i + 1}个项目必须添加至少一个测试设备`)
+          this.$message.warning(`第${i + 1}个试验项目(${formInfoDataList[i].unitName})必须添加至少一个测试设备`)
           return this.$emit('emptyData')
         }
         let projectForm = that.$refs['projectInfoForm' + [i]]
@@ -107,19 +107,22 @@ export default {
             let _item_ = item.$refs['pointTable' + [i] + [j]]
             let abilityInfo = _item_.getData()
             if (abilityInfo && isArray(abilityInfo) && abilityInfo.length) {
-              let validRes = this.validAbilityInfoItemValue(abilityInfo)
-              if (validRes.length && bool) {
-                this.$emit('emptyData')
-                return this.$message.warning(h => h('div', {}, validRes.map(_item_ =>
-                  <div>{'第' + (i + 1) + '个试验项目结构化条件的第' + _item_.index + '个' + _item_.name + '未填写条件'}</div>)))
-              } else {
-                tabItemTableAllData.push({
-                  title: tabPanelItem.title,
-                  type: tabPanelItem.type,
-                  highLowTemperature: tabPanelItem.highLowTemperature,
-                  abilityInfo,
-                })
+              if (bool) {
+                // 判断只要其中一个 conditionTypeDesc 是否有值，有返回true ，没有返回false
+                let validRes = abilityInfo.some(obj => obj.conditionTypeDesc !== undefined && obj.conditionTypeDesc !== null && obj.conditionTypeDesc !== '');
+                if (validRes) {
+                  this.validAbilityInfoItemValue(abilityInfo, 'delete')
+                } else {
+                  this.$emit('emptyData')
+                  return this.$message.warning(`第${i + 1}个试验项目(${formInfoDataList[i].unitName})的试验条件结构化的条件值未填写`)
+                }
               }
+              tabItemTableAllData.push({
+                title: tabPanelItem.title,
+                type: tabPanelItem.type,
+                highLowTemperature: tabPanelItem.highLowTemperature,
+                abilityInfo,
+              })
             } else {
               if (bool) {
                 this.$emit('emptyData')
@@ -128,26 +131,16 @@ export default {
             }
           }
         } else {
-          let abilityInfo = that.$refs.testConditionTabItem.$refs['pointTable' + [i] + 0].getData()
-          if (abilityInfo && isArray(abilityInfo) && abilityInfo.length) {
-            let validRes = this.validAbilityInfoItemValue(abilityInfo)
-            if (validRes.length && bool) {
-              this.$emit('emptyData')
-              return this.$message.warning(h => h('div', {}, validRes.map(_item_ =>
-                <div>{'第' + (i + 1) + '个试验项目结构化条件的第' + _item_.index + '个' + _item_.name + '未填写条件'}</div>)))
-            } else {
-              tabItemTableAllData.push({
-                title: '试验条件',
-                type: 'default',
-                abilityInfo
-              })
-            }
-          } else {
-            if (bool) {
-              this.$emit('emptyData')
-              return this.$message.warning(`第${i + 1}个试验项目(${formInfoDataList[i].unitName})的结构化条件未填写`)
-            }
+          let abilityInfo = []
+          try {
+            abilityInfo = that.$refs.testConditionTabItem.$refs['pointTable' + [i] + 0].getData()
+          } catch {
           }
+          tabItemTableAllData.push({
+            title: '试验条件',
+            type: 'default',
+            abilityInfo
+          })
         }
         if (bool) {
           projectForm.form.validateFieldsAndScroll((error, val) => {
@@ -204,13 +197,19 @@ export default {
         }
       }
     },
-    // 校验结构化条件每一项的值是否填写
-    validAbilityInfoItemValue(list, field = 'conditionTypeDesc') {
+    // 校验结构化条件每一项的值是否填写,如果没有填写那就删除该项
+    validAbilityInfoItemValue(list, type, field = 'conditionTypeDesc') {
       let result = []
       for (let i = 0; i < list.length; i++) {
         let item = list[i]
         if (item[field] === '' || item[field] === undefined || item[field] === null) {
-          result.push({name: item.paramName, index: i + 1})
+          if (type === 'delete') {
+            list.splice(i, 1)
+            i--
+          }
+          if (type === 'valid') {
+            result.push({name: item.paramName, index: i + 1})
+          }
         }
       }
       return result

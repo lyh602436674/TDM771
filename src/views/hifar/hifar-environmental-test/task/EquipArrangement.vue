@@ -420,6 +420,16 @@ export default {
           ],
         },
         {
+          title: '试验设备',
+          key: 'equipName',
+          formType: 'input',
+        },
+        {
+          title: '内部名称',
+          key: 'innerName',
+          formType: 'input',
+        },
+        {
           title: '任务编号',
           key: 'taskCode',
           formType: 'input',
@@ -584,6 +594,14 @@ export default {
           dataIndex: 'status',
           scopedSlots: {customRender: 'status'},
           width: 190,
+        },
+        {
+          title: '试验设备',
+          dataIndex: 'equipName',
+          width: 150,
+          customRender: (text, row) => {
+            return `${row.innerName + row.equipName}`
+          }
         },
         {
           title: '发起人',

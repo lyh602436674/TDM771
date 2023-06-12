@@ -488,7 +488,7 @@ export default {
       this.$refs.reportRejectAllInfo.show(this.selectedRowKeys)
     },
     handleUploadCallback(file, record, isUpload) {
-      postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, isUpload}).then(res => {
+      postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, status: 3, isUpload}).then(res => {
         if (res.code === 200) {
           this.$message.success(isUpload ? '上传成功' : '替换成功')
         } else {
@@ -645,10 +645,6 @@ export default {
     handleEdit(record) {
       let fileUrl = record.filePath.split('?')[0]
       officeOnlineEdit(fileUrl)
-      // let fileUrlAuth = fileUrl.split('?')[1]
-      // fileUrl = fileUrl.split('?')[0]
-      // let token = this.$ls.get(ACCESS_TOKEN)
-      // WebCtrl.ShowEditPage(fileUrl, token, baseUrl, fileUrlAuth, 'env')
     },
     // 详情
     handleDetail(record) {
@@ -657,11 +653,12 @@ export default {
     },
     // 提交
     handleSubmit(record) {
-      postAction(this.url.submit, {
+      let data = {
         id: record.id,
         coverTemplateId: record.coverTemplateId,
-        reportCode: record.reportCode
-      }).then((res) => {
+        reportCode: record.reportCode,
+      }
+      postAction(this.url.submit, data).then((res) => {
         if (res.code === 200) {
           this.$message.success('操作成功!')
           this.refresh(true)

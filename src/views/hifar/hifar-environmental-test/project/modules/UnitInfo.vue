@@ -775,8 +775,8 @@ export default {
       this.selectedRowKeys = []
       // 关闭所有弹窗
       this.$refs.hSelectModal.handleCancel()
-      this.activeKey = activeKey || 0
-      switch (activeKey) {
+      // this.activeKey = activeKey || 0
+      switch (this.activeKey) {
         case 0:
           this.getUnitInfo()
           break
@@ -1107,7 +1107,7 @@ export default {
       this.selectedRowKeys = []
     },
     handleTabChange(v) {
-      console.log(v)
+      this.activeKey = v
       this.show(v, this.id)
     },
     /**

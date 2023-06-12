@@ -43,6 +43,7 @@ export default {
       // console.log('------url------' + url)
       if (url !== null && url !== undefined) {
         this.url = url
+        console.log(this.$route.meta,'this.$route.meta')
         /*update_begin author:wuxianquan date:20190908 for:判断打开方式，新窗口打开时this.$route.meta.internalOrExternal==true */
         if (this.$route.meta.internalOrExternal != undefined && this.$route.meta.internalOrExternal == true) {
           this.closeCurrent()

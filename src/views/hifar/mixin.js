@@ -214,7 +214,7 @@ export default {
         case 1:
           return '委托创建'
         case 10:
-          return '调度审核'
+          return '审批'
         case 20:
           return '试品接收'
         case 30:

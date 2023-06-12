@@ -150,7 +150,7 @@ export default {
           key: 'recordTime',
           validate: {rules: [{required: true, message: '请选择记录时间'}]},
           component: (
-            <h-time-select v-decorator={['recordTime', {rules: [{required: true, message: '请选择记录时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'} v-decorator={['recordTime', {rules: [{required: true, message: '请选择记录时间'}]}]}/>
           ),
         },
         {
@@ -181,7 +181,7 @@ export default {
           hidden: this.model.dealStatus === 1,
           validate: {rules: [{required: this.model.dealStatus !== 1, message: '请选择处理时间'}]},
           component: (
-            <h-time-select v-decorator={['dealTime', {rules: [{required: false, message: '请选择处理时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'} v-decorator={['dealTime', {rules: [{required: false, message: '请选择处理时间'}]}]}/>
           ),
         },
         {

@@ -116,6 +116,7 @@ export default {
             validate: { rules: [{ required: false, message: '请选择记录时间' }] },
             component: (
               <h-time-select
+                timeFormat={'HH:mm'}
                 v-decorator={['recordTime', { rules: [{ required: false, message: '请选择记录时间' }] }]}
               />
             ),
@@ -162,7 +163,7 @@ export default {
             span: 1,
             validate: { rules: [{ required: false, message: '请选择处理时间' }] },
             component: (
-              <h-time-select v-decorator={['dealTime', { rules: [{ required: false, message: '请选择处理时间' }] }]} />
+              <h-time-select timeFormat={'HH:mm'} v-decorator={['dealTime', { rules: [{ required: false, message: '请选择处理时间' }] }]} />
             ),
           },
           {
@@ -272,6 +273,7 @@ export default {
             validate: { rules: [{ required: false, message: '请选择记录时间' }] },
             component: (
               <h-time-select
+                timeFormat={'HH:mm'}
                 v-decorator={['recordTime', { rules: [{ required: false, message: '请选择记录时间' }] }]}
               />
             ),
@@ -318,7 +320,7 @@ export default {
             span: 1,
             validate: { rules: [{ required: false, message: '请选择处理时间' }] },
             component: (
-              <h-time-select v-decorator={['dealTime', { rules: [{ required: false, message: '请选择处理时间' }] }]} />
+              <h-time-select timeFormat={'HH:mm'} v-decorator={['dealTime', { rules: [{ required: false, message: '请选择处理时间' }] }]} />
             ),
           },
           {

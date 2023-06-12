@@ -157,11 +157,11 @@ export default {
             {title: '停用', value: 2, key: 2}
           ],
         },
-        {
-          title: '所属部门',
-          key: 'department',
-          formType: 'input',
-        },
+        // {
+        //   title: '所属部门',
+        //   key: 'department',
+        //   formType: 'input',
+        // },
         {
           title: '备注',
           key: 'remarks',
