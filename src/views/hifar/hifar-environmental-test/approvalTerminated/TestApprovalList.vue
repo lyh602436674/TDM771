@@ -137,7 +137,16 @@ export default {
           key: 'custName',
           formType: 'input',
         },
-
+        {
+          title: '试验设备',
+          key: 'equipName',
+          formType: 'input',
+        },
+        {
+          title: '内部名称',
+          key: 'innerName',
+          formType: 'input',
+        },
         {
           title: '试验项目',
           key: 'unitName',
@@ -175,6 +184,14 @@ export default {
           title: '送试单位',
           dataIndex: 'custNames',
           minWidth: 150,
+        },
+        {
+          title: '试验设备',
+          dataIndex: 'equipName',
+          minWidth: 150,
+          customRender: (text, row) => {
+            return `${row.innerName + row.equipName}`
+          }
         },
         {
           title: '产品名称',
