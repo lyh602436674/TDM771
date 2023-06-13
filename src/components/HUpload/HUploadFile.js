@@ -299,7 +299,7 @@ export default {
                       onclick={this.clickUpload}>{this.fileList.length ? '继续上传' : '上传文件'}</a-button>
           )
         } else {
-          if (this.fileList.length) {
+          if (this.fileList.length === 0) {
             actions.push(
               <a-button size="small" type="ghost-primary" icon="plus"
                         onclick={this.clickUpload}>{'上传文件'}</a-button>
