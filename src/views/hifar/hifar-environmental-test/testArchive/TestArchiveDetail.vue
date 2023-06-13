@@ -221,7 +221,7 @@ export default {
           dataIndex: 'equipName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -229,7 +229,7 @@ export default {
           dataIndex: 'equipIndex',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -237,7 +237,7 @@ export default {
           dataIndex: 'innerName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {

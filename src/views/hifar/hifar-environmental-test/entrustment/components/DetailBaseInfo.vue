@@ -11,9 +11,13 @@
       <h-desc-item label='委托单号' style="display: block">
         <template slot="content">
           <div>{{ detailData.entrustNo || '--' }}</div>
-          <a-button v-if="showPreviewBtn && detailData.entrustNo" icon="eye" size="small" style="margin-left: 10px"
+          <a-button v-if="showPreviewBtn && detailData.entrustNo" icon="eye" size="small" style="margin: 10px 0 0 10px"
                     type="primary"
                     @click="entrustReview">委托单预览
+          </a-button>
+          <a-button v-if="showFlowBtn && detailData.entrustNo" icon="eye" size="small" style="margin: 10px 0 0 10px"
+                    type="primary"
+                    @click="handleEntrustFlow">流转信息
           </a-button>
         </template>
       </h-desc-item>
@@ -110,6 +114,7 @@
       </h-desc-item>
     </h-desc>
     <test-entrust-review-pdf ref="testEntrustReviewPdf"/>
+    <entrust-flow-info-modal ref="entrustFlowInfoModal" :entrust-id="detailData.id"></entrust-flow-info-modal>
   </div>
 
 </template>
@@ -120,6 +125,7 @@ import mixin from '@/views/hifar/mixin.js'
 import {downloadFile, getFileAccessHttpUrl} from '@/api/manage'
 import TestEntrustReviewPdf from "@views/hifar/hifar-environmental-test/task/modules/TestEntrustReviewPdf";
 import {spaceToBr} from "@/utils/util";
+import EntrustFlowInfoModal from "@views/hifar/hifar-environmental-test/entrustment/modules/EntrustFlowInfoModal.vue";
 
 export default {
   mixins: [mixin],
@@ -137,12 +143,16 @@ export default {
       type: Boolean,
       default: false
     },
+    showFlowBtn: {
+      type: Boolean,
+      default: false
+    },
     viewDetailType: {
       type: String,
       default: "1"
     }
   },
-  components: {TestEntrustReviewPdf},
+  components: {EntrustFlowInfoModal, TestEntrustReviewPdf},
   watch: {
     detailDataObj: {
       immediate: true,
@@ -167,6 +177,9 @@ export default {
     },
     entrustReview() {
       this.$refs.testEntrustReviewPdf.show(this.detailData.reportPath)
+    },
+    handleEntrustFlow() {
+      this.$refs.entrustFlowInfoModal.show()
     },
   }
 }

@@ -8,8 +8,8 @@
 -->
 <template>
   <h-modal
+    width="50%"
     inner
-    fullScreen
     :getContainer="getContainer"
     destroyOnClose
     :title="title"
@@ -17,7 +17,7 @@
     @cancel="handleCancel"
   >
     <h-card fixed>
-      <h-vex-table slot="content" :columns="columns" :data="loadData">
+      <h-vex-table slot="content" :columns="columns" height="500" :data="loadData">
         <div slot="optType" slot-scope="text">
           {{ text | filterOptType(text) }}
         </div>

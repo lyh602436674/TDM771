@@ -134,16 +134,16 @@
                   style="width: 100%"
                 >
                   <template #entrustNos="text, record">
-                    <a @click="$refs.testTaskBaseInfoModal.show(record,'1','20px')">{{ text }}</a>
+                    <a @click.stop="$refs.testTaskBaseInfoModal.show(record,'1','20px')">{{ text }}</a>
                   </template>
                   <template #entrustCodes="text, record">
-                    <a @click="$refs.testTaskBaseInfoModal.show(record,'2','20px')">{{ text }}</a>
+                    <a @click.stop="$refs.testTaskBaseInfoModal.show(record,'2','20px')">{{ text }}</a>
                   </template>
                   <template #testCode="text, record">
-                    <a @click="$refs.testTaskBaseInfoModal.show(record,'3','20px')">{{ text }}</a>
+                    <a @click.stop="$refs.testTaskBaseInfoModal.show(record,'3','20px')">{{ text }}</a>
                   </template>
                   <template #exceptionNum="text, record">
-                    <a @click="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
+                    <a @click.stop="$refs.abnormalDetailModal.show(record)">{{ text }}</a>
                   </template>
                   <template slot="status" slot-scope="text,record">
                     <template v-if="record.forceEndStatus === 10">
@@ -154,15 +154,15 @@
                     </template>
                     <a-icon v-if="record.forceEndStatus === 10 || text === 40" class="primary-text"
                             style="margin-left:5px" type="eye"
-                            @click="$refs.TerminationDetailModal.show(record,record.testNames)"/>
+                            @click.stop="$refs.TerminationDetailModal.show(record,record.testNames)"/>
                   </template>
                   <template #archiveRecord="text,record">
-                    <a-space style="cursor: pointer">
+                    <a-space @click.stop="" style="cursor: pointer">
                       <a-icon class="primary-text" title="查看" type="eye"
                               @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
                       <a-icon v-has="'archiveTem:edit'" class="primary-text" title="在线编辑" type="edit"
                               @click="webOfficeEdit(record.docxPathXh)"></a-icon>
-                      <a title="下载word" @click="handleDownloadDocx(record.docxPathXh)">
+                      <a title="下载word" @click.stop="handleDownloadDocx(record.docxPathXh)">
                         <a-icon class="primary-text" type="download"></a-icon>
                       </a>
                       <h-upload-file-b
@@ -179,12 +179,12 @@
                     </a-space>
                   </template>
                   <template #embodiment="text,record">
-                    <a-space style="cursor: pointer">
+                    <a-space @click.stop="" style="cursor: pointer">
                       <a-icon class="primary-text" title="查看" type="eye"
                               @click="handleReviewPdf('实施方案',record.pdfPathSs)"></a-icon>
                       <a-icon v-has="'embodimentTem:edit'" class="primary-text" title="在线编辑" type="edit"
                               @click="webOfficeEdit(record.docxPathSs)"></a-icon>
-                      <a title="下载word" @click="handleDownloadDocx(record.docxPathSs)">
+                      <a title="下载word" @click.stop="handleDownloadDocx(record.docxPathSs)">
                         <a-icon class="primary-text" type="download"></a-icon>
                       </a>
                       <h-upload-file-b
@@ -200,7 +200,7 @@
                       </h-upload-file-b>
                     </a-space>
                   </template>
-                  <a-space slot="actions" slot-scope="text, record">
+                  <a-space @click.stop="" slot="actions" slot-scope="text, record">
                     <template v-if="![40,50].includes(record.status)">
                       <!-- 开始 -->
                       <a-tooltip v-if="[1, 30, 40, 45, 50, 25].includes(+record.status)" title="开始">

@@ -78,10 +78,6 @@ export default {
         check: '/HfEnvReportExamineBusiness/examineById',
         checkApprove: '/HfEnvReportApproveBusiness/approveById',
       },
-      numPages: 1, // pdf文件总页数
-      pdfUrl: null,
-      currentPage: 0,
-      pageCount: 0,
     }
   },
   methods: {
@@ -96,32 +92,6 @@ export default {
       this.visible = false
       if (this.type == 'check' || this.type == 'approve') {
         this.$emit('change', true)
-      }
-    },
-    // pdf加载时
-    loadPdfHandler(e) {
-      this.currentPage = 1 // 加载的时候先加载第一页
-    },
-    pdfTask(src) {
-      var self = this
-      var loadingTask = pdf.createLoadingTask(src)
-      loadingTask.promise
-        .then((pdf) => {
-          console.log('pdf加载成功>>>>>>>>>>>>>>>>>>>>>>>>>', pdf)
-          self.pdfUrl = loadingTask
-          self.numPages = pdf.numPages
-        })
-        .catch((err) => {
-          console.error('pdf加载失败')
-        })
-    },
-    changePdfPage(val) {
-      // console.log(val)
-      if (val === 0 && this.currentPage > 1) {
-        this.currentPage--
-      }
-      if (val === 1 && this.currentPage < this.pageCount) {
-        this.currentPage++
       }
     },
     handleTabsChange(v) {

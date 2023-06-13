@@ -173,6 +173,13 @@ export default {
           scopedSlots: {customRender: 'pieceNo'},
         },
         {
+          title: '试验设备',
+          dataIndex: 'equipName',
+          customRender: (text, row) => {
+            return `${row.innerName + row.equipName}`
+          }
+        },
+        {
           title: '设备型号',
           align: 'left',
           dataIndex: 'equipModel',
@@ -183,7 +190,7 @@ export default {
         {
           title: '报告中是否显示最终用户',
           align: 'left',
-          dataIndex: 'equipModel',
+          dataIndex: 'isShowUserInReport',
           customRender: (text, record) => {
             return text === '1' ? '是' : '否'
           }

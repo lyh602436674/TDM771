@@ -38,7 +38,7 @@
       <template v-if="isBase">
         <!-- 基本信息 -->
         <div id="basicInfo" :style="{ marginTop: top ? top : '50px' }">
-          <detail-base-info showPreviewBtn :detailDataObj="entrustInfoItem"></detail-base-info>
+          <detail-base-info showPreviewBtn showFlowBtn :detailDataObj="entrustInfoItem"></detail-base-info>
         </div>
         <div id="piece">
           <!-- 试件信息 -->
@@ -357,7 +357,7 @@ export default {
           dataIndex: 'equipName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -365,7 +365,7 @@ export default {
           dataIndex: 'equipIndex',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -373,7 +373,7 @@ export default {
           dataIndex: 'innerName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -629,7 +629,7 @@ export default {
           dataIndex: 'toolsCode',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -637,7 +637,7 @@ export default {
           dataIndex: 'toolsName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -645,7 +645,7 @@ export default {
           dataIndex: 'toolsSize',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -661,7 +661,7 @@ export default {
           dataIndex: 'location',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {
@@ -669,7 +669,7 @@ export default {
           dataIndex: 'deptName',
           align: 'center',
           customRender: (t) => {
-            return t ? t : '--'
+            return t || '--'
           }
         },
         {

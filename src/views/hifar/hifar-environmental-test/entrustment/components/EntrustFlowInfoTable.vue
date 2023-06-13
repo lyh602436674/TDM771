@@ -15,7 +15,7 @@
       :columns="columns"
       :data="loadData"
       :rowKey="(record) => record.id"
-      :height="500"
+      :height="640"
     >
       <span slot="optType" slot-scope="text, record">
         {{ record.optType | entrustOptFilter }}

@@ -93,6 +93,16 @@ export default {
           formType: 'input',
         },
         {
+          title: '试验设备',
+          key: 'equipName',
+          formType: 'input',
+        },
+        {
+          title: '内部名称',
+          key: 'innerName',
+          formType: 'input',
+        },
+        {
           title: '实际开始时间',
           key: 'realStartTime',
           showTime: true,
@@ -169,6 +179,14 @@ export default {
           title: '试验项目',
           dataIndex: 'unitNames',
           minWidth: 100,
+        },
+        {
+          title: '试验设备',
+          dataIndex: 'equipName',
+          minWidth: 150,
+          customRender: (text, row) => {
+            return `${row.innerName + row.equipName}`
+          }
         },
         {
           title: '试验人员',
