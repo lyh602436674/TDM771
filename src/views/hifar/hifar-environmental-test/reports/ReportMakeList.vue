@@ -51,6 +51,9 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :rowKey="(record) => record.id"
       >
+        <span slot="reportCode" slot-scope="text, record">
+            <a @click="$refs.ReportMakeBaseModal.show(record)">{{ text }}</a>
+        </span>
         <span slot="entrustCode" slot-scope="text, record">
             <a @click="$refs.testTaskBaseInfoModal.show(record,'2','20px','testId')">{{ text }}</a>
         </span>
@@ -70,116 +73,27 @@
         </template>
         <div slot="action" slot-scope="text, record">
           <a-space>
-            <a-icon
-              class="primary-text cursor-pointer"
-              title="详情"
-              type="eye"
-              @click="() => handleDetail(record)"
-            />
-            <a-popconfirm v-if="record.status === 40" title="确定申请修改吗?" @confirm="() => handleAmend(record)">
-              <a-icon
-                class="primary-text cursor-pointer"
-                title="申请修改"
-                type="tool"
-              />
-            </a-popconfirm>
-            <span v-if="record.status === 1">
-              <a-space>
-                <!--                  <a-popconfirm-->
-                <!--                  title="确定生成报告吗?"-->
-                <!--                  @confirm="() => handleMakeReport(record)">-->
-                <!--                  <a-icon-->
-                <!--                    v-has="'report:make'"-->
-                <!--                    class="primary-text cursor-pointer"-->
-                <!--                    title="生成"-->
-                <!--                    type="check-square"/>-->
-                <!--                </a-popconfirm>-->
-                <h-upload-file-b
-                  v-model="reportFileList"
-                  :customParams="{id:record.id}"
-                  accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                  isPublic
-                  @beforeUpload="$refs.reportMakeTable.localLoading = true"
-                  @change="file => handleUploadCallback(file,record,true)"
-                >
-                  <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
-                </h-upload-file-b>
-              </a-space>
-            </span>
-            <template v-if="!isIntranet">
-               <span v-if="[3,30,50,70,80].includes(record.status)">
-                 <a-space>
-                  <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(record)">
-                    <h-icon
-                      v-has="'report:submit'"
-                      class="primary-text cursor-pointer"
-                      title="提交"
-                      type="icon-tijiao"/>
-                  </a-popconfirm>
-                   <template v-if="!([80].includes(record.status))">
-                    <!-- 修改审批被驳回后不能修改和替换-->
-                     <a-icon
-                       v-if="record.filePath"
-                       v-has="'report:edit'"
-                       class="primary-text cursor-pointer"
-                       type="edit"
-                       title="编辑"
-                       @click="handleEdit(record)"/>
-                     <h-upload-file-b
-                       v-model="reportFileList"
-                       action="/MinioLocalBusiness/authUpload"
-                       v-has="'report:edit'"
-                       :customParams="{id:record.id}"
-                       accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                       isPublic
-                       @beforeUpload="$refs.reportMakeTable.localLoading = true"
-                       @change="file => handleUploadCallback(file,record)">
-                         <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
-                     </h-upload-file-b>
-                   </template>
-                 </a-space>
-              </span>
-              <template v-if="record.status >= 3">
-                <span v-has="'report:download'">
-                  <a-space>
-                    <a-icon
-                      :type="record.docxLoading ? 'loading' : 'file-word'"
-                      class="primary-text cursor-pointer"
-                      title="下载word"
-                      @click="handleDownload(record, 'docx')"
-                    />
-                    <a-icon
-                      :type="record.pdfLoading ? 'loading' : 'file-pdf'"
-                      class="primary-text cursor-pointer"
-                      title="下载pdf"
-                      @click="handleDownload(record, 'pdf')"
-                    />
-                  </a-space>
-                </span>
-                <a-space>
-                  <a-icon :type="record.intranetLoading ? 'loading' :'cloud-sync'"
-                          class="primary-text cursor-pointer"
-                          title="推送至内网"
-                          v-has="'report:pushinner'"
-                          @click="handlePush(record,'intranet')"/>
-                  <a-icon :type="record.mesLoading ? 'loading' :'cloud-sync'" class="primary-text cursor-pointer"
-                          title="推送至MES"
-                          v-has="'report:pushmes'"
-                          @click="handlePush(record,'mes')"/>
-                </a-space>
-              </template>
-              <span v-if="[3].includes(record.status)" v-has="'report:delete'">
+            <a-icon :type="record.intranetLoading ? 'loading' :'cloud-sync'"
+                    class="primary-text cursor-pointer"
+                    title="推送至内网"
+                    v-has="'report:pushinner'"
+                    @click="handlePush(record,'intranet')"/>
+            <a-icon :type="record.mesLoading ? 'loading' :'cloud-sync'" class="primary-text cursor-pointer"
+                    title="推送至MES"
+                    v-has="'report:pushmes'"
+                    @click="handlePush(record,'mes')"/>
+            <span v-if="[3].includes(record.status)" v-has="'report:delete'">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id, record.status)">
                   <a-icon class="danger-text cursor-pointer" title="删除" type="delete"/>
                 </a-popconfirm>
               </span>
-            </template>
           </a-space>
         </div>
       </h-vex-table>
     </h-card>
     <ReportMakeListsModal ref="ReportMakeListsModal" @change="addReportchange"/>
     <report-detail-modal ref="ReportDetailModal"/>
+    <report-make-base-modal ref="ReportMakeBaseModal" @change="refresh(false)"></report-make-base-modal>
     <report-download-record ref="reportDownloadRecord"/>
     <report-reject-all-info ref="reportRejectAllInfo"/>
     <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
@@ -198,6 +112,7 @@ import {getAction} from '@api/manage';
 import ReportDownloadRecord from './components/ReportDownloadRecord';
 import ReportRejectAllInfo from "@views/hifar/hifar-environmental-test/reports/modules/ReportRejectAllInfo";
 import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal.vue";
+import ReportMakeBaseModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportMakeBaseModal.vue";
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -208,6 +123,7 @@ export default {
     }
   },
   components: {
+    ReportMakeBaseModal,
     TestTaskBaseInfoModal,
     ReportRejectAllInfo,
     ReportMakeListsModal,
@@ -240,6 +156,16 @@ export default {
       selectedRowKeys: [],
       selectedRows: [],
       searchBar: [
+        {
+          title: '试件代号',
+          formType: 'input',
+          key: 'c_productAlias_7',
+        },
+        {
+          title: '产品名称',
+          formType: 'input',
+          key: 'c_productName_7',
+        },
         {
           title: '报告编号',
           key: 'c_reportCode_7',
@@ -306,9 +232,7 @@ export default {
           align: 'left',
           dataIndex: 'reportCode',
           width: 140,
-          customRender: (t) => {
-            return t || '--'
-          }
+          scopedSlots: {customRender: 'reportCode'}
         },
         {
           title: '状态',
@@ -322,6 +246,18 @@ export default {
           align: 'left',
           width: 130,
           dataIndex: 'testCode'
+        },
+        {
+          title: '试件代号',
+          align: 'left',
+          width: 130,
+          dataIndex: 'productAlias'
+        },
+        {
+          title: '产品名称',
+          align: 'left',
+          width: 130,
+          dataIndex: 'productName'
         },
         {
           title: '送试单位',
@@ -418,7 +354,7 @@ export default {
           title: '操作',
           dataIndex: 'action',
           fixed: 'right',
-          width: 240,
+          width: 100,
           align: 'center',
           scopedSlots: {customRender: 'action'}
         }

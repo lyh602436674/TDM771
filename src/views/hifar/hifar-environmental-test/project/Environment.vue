@@ -138,7 +138,6 @@ export default {
           if (selectedRows[0].type === 'classify') {
             this.$refs.classifyInfo.getDetail(this.selectedKeys[0])
           } else {
-            // 这里展示项目的信息，传入0~5可以切换不同的tab
             this.$refs.unitInfo.show(0, this.selectedKeys[0])
           }
         }
