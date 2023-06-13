@@ -70,92 +70,81 @@
           <vxe-table-column title="操作" field="action">
             <template v-slot="{row}">
               <a-space>
-                <a-icon
-                  class="primary-text cursor-pointer"
+                <a-button
                   title="详情"
-                  type="eye"
-                  @click="() => handleDetail(row)"
-                />
+                  type="primary"
+                  @click="handleDetail(row)"
+                >详情
+                </a-button>
                 <a-popconfirm v-if="row.status === 40" title="确定申请修改吗?" @confirm="() => handleAmend(row)">
-                  <a-icon
-                    class="primary-text cursor-pointer"
+                  <a-button
                     title="申请修改"
-                    type="tool"
-                  />
+                    type="primary"
+                  >申请修改
+                  </a-button>
                 </a-popconfirm>
                 <span v-if="row.status === 1">
-              <a-space>
-                <!--                  <a-popconfirm-->
-                <!--                  title="确定生成报告吗?"-->
-                <!--                  @confirm="() => handleMakeReport(row)">-->
-                <!--                  <a-icon-->
-                <!--                    v-has="'report:make'"-->
-                <!--                    class="primary-text cursor-pointer"-->
-                <!--                    title="生成"-->
-                <!--                    type="check-square"/>-->
-                <!--                </a-popconfirm>-->
-                <h-upload-file-b
-                  v-model="reportFileList"
-                  :customParams="{id:row.id}"
-                  accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                  isPublic
-                  @beforeUpload="$refs.reportMakeTable.localLoading = true"
-                  @change="file => handleUploadCallback(file,row,true)"
-                >
-                  <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
-                </h-upload-file-b>
-              </a-space>
-            </span>
+                  <a-space>
+                    <h-upload-file-b
+                      v-model="reportFileList"
+                      :customParams="{id:row.id}"
+                      accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      isPublic
+                      @beforeUpload="$refs.reportMakeTable.localLoading = true"
+                      @change="file => handleUploadCallback(file,row,true)"
+                    >
+                      <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
+                    </h-upload-file-b>
+                  </a-space>
+                </span>
                 <template v-if="!isIntranet">
-               <span v-if="[3,30,50,70,80].includes(row.status)">
-                 <a-space>
-                  <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(row)">
-                    <h-icon
-                      v-has="'report:submit'"
-                      class="primary-text cursor-pointer"
-                      title="提交"
-                      type="icon-tijiao"/>
-                  </a-popconfirm>
-                   <template v-if="!([80].includes(row.status))">
-                    <!-- 修改审批被驳回后不能修改和替换-->
-                     <a-icon
-                       v-if="row.filePath"
-                       v-has="'report:edit'"
-                       class="primary-text cursor-pointer"
-                       type="edit"
-                       title="编辑"
-                       @click="handleEdit(row)"/>
-                     <h-upload-file-b
-                       v-model="reportFileList"
-                       action="/MinioLocalBusiness/authUpload"
-                       v-has="'report:edit'"
-                       :customParams="{id:row.id}"
-                       accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                       isPublic
-                       @beforeUpload="$refs.reportMakeTable.localLoading = true"
-                       @change="file => handleUploadCallback(file,row)">
-                         <a-icon class="primary-text cursor-pointer" title='替换' type='swap'/>
-                     </h-upload-file-b>
-                   </template>
-                 </a-space>
-              </span>
-                  <template v-if="row.status >= 3">
-                  <span v-has="'report:download'">
-                    <a-space>
-                      <a-icon
-                        :type="row.docxLoading ? 'loading' : 'file-word'"
-                        class="primary-text cursor-pointer"
-                        title="下载word"
-                        @click="handleDownload(row, 'docx')"
-                      />
-                      <a-icon
-                        :type="row.pdfLoading ? 'loading' : 'file-pdf'"
-                        class="primary-text cursor-pointer"
-                        title="下载pdf"
-                        @click="handleDownload(row, 'pdf')"
-                      />
-                    </a-space>
+                   <span v-if="[3,30,50,70,80].includes(row.status)">
+                     <a-space>
+                      <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(row)">
+                        <a-button
+                          v-has="'report:submit'"
+                          title="提交"
+                          type="primary">提交</a-button>
+                      </a-popconfirm>
+                       <template v-if="!([80].includes(row.status))">
+                        <!-- 修改审批被驳回后不能修改和替换-->
+                         <a-button
+                           v-if="row.filePath"
+                           v-has="'report:edit'"
+                           type="primary"
+                           title="编辑"
+                           @click="handleEdit(row)">编辑</a-button>
+                         <h-upload-file-b
+                           v-model="reportFileList"
+                           action="/MinioLocalBusiness/authUpload"
+                           v-has="'report:edit'"
+                           :customParams="{id:row.id}"
+                           accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                           isPublic
+                           @beforeUpload="$refs.reportMakeTable.localLoading = true"
+                           @change="file => handleUploadCallback(file,row)">
+                           <a-button title='替换' type='primary'>替换</a-button>
+                         </h-upload-file-b>
+                       </template>
+                     </a-space>
                   </span>
+                  <template v-if="row.status >= 3">
+                    <span v-has="'report:download'">
+                      <a-space>
+                        <a-button
+                          :loading="row.docxLoading"
+                          title="下载word"
+                          type="primary"
+                          @click="handleDownload(row, 'docx')"
+                        >下载word</a-button>
+                        <a-button
+                          :loading="row.pdfLoading"
+                          title="下载pdf"
+                          type="primary"
+                          @click="handleDownload(row, 'pdf')"
+                        >下载pdf</a-button>
+                      </a-space>
+                    </span>
                   </template>
                 </template>
               </a-space>
