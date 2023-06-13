@@ -89,7 +89,7 @@
               <div slot="expandedRowRender" slot-scope="record,index">
                 <h-switch :value="record.sensorDataRequired" checked-txt="必 填" unchecked-txt="非必填"
                           :options="[1,2]"
-                          @change="sensorSwitchChange" defaultChecked></h-switch>
+                          @change="checked => sensorSwitchChange(checked,record)" defaultChecked></h-switch>
                 <a-table
                   :columns="sensorColumns"
                   :dataSource="record.testSensorInfo"
@@ -1745,8 +1745,8 @@ export default {
     testDirectionChange(checked) {
       this.testDirectionRequired = checked
     },
-    sensorSwitchChange(checked) {
-      this.sensorDataRequired = checked
+    sensorSwitchChange(checked, row) {
+      row.sensorDataRequired = checked
     },
     // 获取试验方向数据
     getTestDirectionTreeData() {
@@ -2013,6 +2013,7 @@ export default {
         if (this.testDirectionRequired === 1 && !item.directionId) {
           div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式请选择试验方向`}</div>)
         }
+        console.log(item, 'iiiiiiittttt')
         if (item.sensorDataRequired === 1) {
           if (!item.testSensorInfo.length) {
             div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式下请添加传感器`}</div>)
