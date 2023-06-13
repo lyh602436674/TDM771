@@ -116,6 +116,16 @@ export default {
           formType: 'input',
         },
         {
+          title: '试验设备',
+          key: 'equipName',
+          formType: 'input',
+        },
+        {
+          title: '内部名称',
+          key: 'innerName',
+          formType: 'input',
+        },
+        {
           title: '试验项目',
           key: 'unitName',
           formType: 'input',

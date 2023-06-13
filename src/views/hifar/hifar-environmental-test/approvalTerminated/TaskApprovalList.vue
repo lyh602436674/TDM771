@@ -108,12 +108,12 @@ export default {
         },
         {
           title: '试验设备',
-          key: 'c_equipName_7',
+          key: 'equipName',
           formType: 'input',
         },
         {
           title: '内部名称',
-          key: 'c_innerName_7',
+          key: 'innerName',
           formType: 'input',
         },
       ],
