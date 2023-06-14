@@ -411,6 +411,12 @@ export default {
         itemRes = '1'
       }
       this.$set(this[type][index], 'itemRes', itemRes)
+      this.$set(this[type][index], 'fillUserName', '')
+      this.$set(this[type][index], 'fillUserId', '')
+      this.$set(this[type][index], 'fillTime', '')
+      this.$set(this[type][index], 'checkUserName', '')
+      this.$set(this[type][index], 'checkUserId', '')
+      this.$set(this[type][index], 'checkTime', '')
       this.handleRequest(item)
     },
     handleFillCheck(item) {
