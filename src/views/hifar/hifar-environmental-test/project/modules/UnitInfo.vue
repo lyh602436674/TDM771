@@ -773,13 +773,11 @@ export default {
       this.id = id
       // 这里清除选择中的选项
       this.selectedRowKeys = []
+      this.getUnitInfo()
       // 关闭所有弹窗
       this.$refs.hSelectModal.handleCancel()
       // this.activeKey = activeKey || 0
       switch (this.activeKey) {
-        case 0:
-          this.getUnitInfo()
-          break
         case 1:
           if (this.experimentReady) {
             this.$refs.experiment.refresh()
@@ -830,8 +828,6 @@ export default {
             this.$refs.processDesc.refresh()
           }
           break
-        default:
-          this.show(0, this.id)
       }
     },
     // 展示各类选项的添加弹窗

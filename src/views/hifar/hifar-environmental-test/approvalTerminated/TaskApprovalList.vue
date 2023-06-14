@@ -106,16 +106,6 @@ export default {
           key: 'c_unitName_7',
           formType: 'input'
         },
-        {
-          title: '试验设备',
-          key: 'equipName',
-          formType: 'input',
-        },
-        {
-          title: '内部名称',
-          key: 'innerName',
-          formType: 'input',
-        },
       ],
       selectedRowKeys: [],
       selectedRows: [],
@@ -153,14 +143,6 @@ export default {
           title: '试验项目',
           dataIndex: 'unitName',
           minWidth: 100
-        },
-        {
-          title: '试验设备',
-          dataIndex: 'equipName',
-          minWidth: 150,
-          customRender: (text, row) => {
-            return `${row.innerName + row.equipName}`
-          }
         },
         {
           title: '试验',
