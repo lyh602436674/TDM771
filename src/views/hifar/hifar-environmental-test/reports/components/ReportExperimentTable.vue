@@ -119,8 +119,13 @@ export default {
       // 搜索
       searchBar: [
         {
+          title: '产品代号',
+          key: 'productAlias',
+          formType: 'input'
+        },
+        {
           title: '产品名称',
-          key: 'c_productName_7',
+          key: 'productName',
           formType: 'input'
         },
         {
