@@ -196,6 +196,8 @@ export default {
           this.isIntranet = res.ext.isIntranet
           if (res.data.data && res.data.data.length) {
             this.initData(res.data.data[0])
+          } else {
+            this.$message.warning('报告已被删除，请刷新列表重试')
           }
         }
       })
@@ -203,17 +205,18 @@ export default {
     show(row) {
       this.reportCode = row.reportCode
       this.loadData()
-      this.visible = true
     },
     initData(data) {
       this.detailData = Object.assign({}, data)
       this.tableData = [this.detailData]
+      this.visible = true
     },
     handleCancel() {
       this.visible = false
       if (this.refreshFlag) {
         this.$emit('change')
       }
+      this.refreshFlag = false
     },
     handleUploadCallback(file, record, isUpload) {
       postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, status: 3, isUpload}).then(res => {
