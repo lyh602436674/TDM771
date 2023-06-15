@@ -189,6 +189,11 @@ export default {
           dictCode: 'hf_res_equip_type'
         },
         {
+          title: '使用部门',
+          formType: 'input',
+          key: 'c_userDeptName_7'
+        },
+        {
           title: '内部名称',
           formType: 'input',
           key: 'c_innerName_7'
@@ -209,7 +214,6 @@ export default {
         {
           title: '设备编号',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'equipCode',
           scopedSlots: {customRender: 'equipCode'}
@@ -217,7 +221,6 @@ export default {
         {
           title: '设备名称 ',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'equipName',
           customRender: (text, record) => {
@@ -227,14 +230,12 @@ export default {
         {
           title: '设备用途',
           align: 'left',
-          ellipsis: true,
           minWidth: 80,
           dataIndex: 'equipUse_dictText'
         },
         {
           title: '设备类型',
           align: 'left',
-          ellipsis: true,
           width: 100,
           dataIndex: 'equipTypeCode_dictText',
           customRender: (text, record) => {
@@ -242,16 +243,20 @@ export default {
           }
         },
         {
+          title: '使用部门',
+          align: 'left',
+          width: 100,
+          dataIndex: 'userDeptName',
+        },
+        {
           title: '计量编号',
           align: 'left',
-          ellipsis: true,
           width: 100,
           dataIndex: 'meteringNum',
         },
         {
           title: '计量有效期',
           align: 'left',
-          ellipsis: true,
           width: 180,
           dataIndex: 'checkValid',
           scopedSlots: {customRender: 'checkValid'}
@@ -259,7 +264,6 @@ export default {
         {
           title: '计量周期',
           align: 'left',
-          ellipsis: true,
           width: 100,
           dataIndex: 'checkPeriod',
           scopedSlots: {customRender: 'checkPeriod'}
@@ -267,7 +271,6 @@ export default {
         {
           title: '内部名称',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'innerName',
           customRender: (text, record) => {
@@ -277,7 +280,6 @@ export default {
         {
           title: '设备型号',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'equipModel',
           customRender: (text, record) => {
@@ -287,7 +289,6 @@ export default {
         {
           title: '资产编号',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'assetsCode',
           customRender: (text, record) => {
@@ -297,7 +298,6 @@ export default {
         {
           title: '规格',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'specification',
           customRender: (text, record) => {
@@ -307,7 +307,6 @@ export default {
         {
           title: '购买日期',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'buyTime',
           scopedSlots: {customRender: 'buyTime'}
@@ -315,7 +314,6 @@ export default {
         {
           title: '出厂编号',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'leaveCode',
           customRender: (text, record) => {
@@ -325,7 +323,6 @@ export default {
         {
           title: '生产厂家',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'factoryName',
           customRender: (text, record) => {
@@ -335,7 +332,6 @@ export default {
         {
           title: '责任人',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'managerName',
           customRender: (text, record) => {
@@ -345,7 +341,6 @@ export default {
         {
           title: '技术参数',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'technology',
           customRender: (text, record) => {
@@ -355,7 +350,6 @@ export default {
         {
           title: '状态',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'status_dictText'
         },
@@ -368,7 +362,6 @@ export default {
         {
           title: '备注',
           align: 'left',
-          ellipsis: true,
           width: 120,
           dataIndex: 'remarks',
           customRender: (text, record) => {

@@ -347,6 +347,13 @@ export default {
           customRender: (t) => {
             return t || '--'
           }
+        },
+        {
+          title: '使用部门',
+          dataIndex: 'userDeptName',
+          customRender: (t) => {
+            return t || '--'
+          }
         }
       ],
       equipSearchData: [
@@ -369,7 +376,12 @@ export default {
           title: '资产编号',
           formType: 'input',
           key: 'c_assetsCode_7'
-        }
+        },
+        {
+          title: '使用部门',
+          formType: 'input',
+          key: 'c_userDeptName_7'
+        },
       ],
       equipParams: {
         list: '/HfResEquipBusiness/listPageForEntrust',
