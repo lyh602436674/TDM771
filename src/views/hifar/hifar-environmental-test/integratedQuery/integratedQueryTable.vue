@@ -92,10 +92,8 @@ export default {
           key: 'c_status_1',
           formType: 'select',
           options: [
-            {title: '待生成', value: 1, key: 1},
-            {title: '生成中', value: 2, key: 2},
-            {title: '已生成', value: 3, key: 3},
-            {title: '已提交', value: 10, key: 10},
+            {title: '草稿', value: 3, key: 3},
+            {title: '待审核', value: 10, key: 10},
             {title: '审核通过', value: 20, key: 20},
             {title: '审核驳回', value: 30, key: 30},
             {title: '批准通过', value: 40, key: 40},

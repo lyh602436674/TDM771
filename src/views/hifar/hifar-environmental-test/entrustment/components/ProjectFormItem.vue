@@ -294,6 +294,7 @@ export default {
           }
         },
         {title: '设备型号', dataIndex: 'equipModel'},
+        {title: '使用部门', dataIndex: 'userDeptName'},
         {
           title: '操作',
           dataIndex: 'action',
@@ -499,7 +500,7 @@ export default {
             let formName = 'projectInfoForm' + this.index, isShowUserInReport
             if (formName) {
               isShowUserInReport = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'isShowUserInReport')[0]
-              if (opt.title === '无') {
+              if (opt.title === '无' || val === '10') {
                 this.$refs[formName].form.setFieldsValue({isShowUserInReport: '2'})
                 isShowUserInReport.disabled = true
               } else {

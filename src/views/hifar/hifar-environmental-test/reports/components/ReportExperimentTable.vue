@@ -273,6 +273,14 @@ export default {
           }
         },
         {
+          title: '备注信息',
+          align: 'left',
+          dataIndex: 'remarks',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
           title: '试验性质',
           align: 'center',
           width: 120,
