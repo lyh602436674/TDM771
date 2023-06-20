@@ -1,6 +1,6 @@
 <template>
   <div>
-    <report-base-info-modal :localLoading="localLoading" ref="reportBaseInfoModal" :detailData="detailData"
+    <report-base-info-modal :reportId="reportId" :localLoading="localLoading" ref="reportBaseInfoModal" :detailData="detailData"
                             @close="handleCancel">
       <a-space>
         <a-button icon="eye" @click="handleDetail(detailData)" type="primary">详情</a-button>
