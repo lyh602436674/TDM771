@@ -682,18 +682,19 @@ export default {
     // 选择项目弹框返回数据
     projectModalCallback(recordId, record) {
       let extendRecord = cloneDeep(record)
-      if (this.projectInfoData.length) {
-        for (let i = 0; i < extendRecord.length; i++) {
-          for (let j = 0; j < this.projectInfoData.length; j++) {
-            // 选择项目时项目id的字段是id，如果是从后端返回的就是unitId
-            if (extendRecord[i].id === this.projectInfoData[j].unitId) {
-              extendRecord.splice(i, 1)
-              i--
-              break
-            }
-          }
-        }
-      }
+      // 项目添加时去重，客户需求，可能会添加相同的项目，所以这里把去重代码去掉
+      // if (this.projectInfoData.length) {
+      //   for (let i = 0; i < extendRecord.length; i++) {
+      //     for (let j = 0; j < this.projectInfoData.length; j++) {
+      //       // 选择项目时项目id的字段是id，如果是从后端返回的就是unitId
+      //       if (extendRecord[i].id === this.projectInfoData[j].unitId) {
+      //         extendRecord.splice(i, 1)
+      //         i--
+      //         break
+      //       }
+      //     }
+      //   }
+      // }
       let selectedPiece = this.selectedPieceRows
       // let {projectResult} = this.$refs.ProjectForm.validateProjectForm(this.projectInfoData, false)
       // console.log(projectResult, 'projectResult')

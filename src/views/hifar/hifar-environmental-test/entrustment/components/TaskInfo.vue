@@ -143,7 +143,7 @@ export default {
         }
       })
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.taskInfoTable.refresh(bool)
     },
     handleGoDetail(record) {},

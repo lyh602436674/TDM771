@@ -22,10 +22,11 @@
       ref="reportFlowTable"
       :columns="columns"
       :data="loadData"
+      :height="tableHeight || '100%'"
       :rowKey="(record) => record.id"
     >
       <span slot="status" slot-scope="text, record">
-        <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportFlowStatusFilter" />
+        <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportFlowStatusFilter"/>
       </span>
       <span slot="optType" slot-scope="text, record">
         {{ record.optType | reportOptFilter }}
@@ -41,7 +42,7 @@ import mixin from '../mixin'
 
 export default {
   mixins: [mixin],
-  props: ['reportId'],
+  props: ['reportId','tableHeight'],
   components: {},
   data() {
     return {
@@ -130,7 +131,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.reportFlowTable.refresh(bool)
     },
   },

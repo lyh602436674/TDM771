@@ -284,7 +284,7 @@ export default {
     },
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.sensorManagementTable.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRow = []

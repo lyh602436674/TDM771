@@ -106,7 +106,7 @@ export default {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.unitSelectTable.refresh(bool)
     },
     loadData(params) {

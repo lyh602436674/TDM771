@@ -169,7 +169,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.shareFileTable.refresh(bool)
     },
     handleTabsChange(v) {

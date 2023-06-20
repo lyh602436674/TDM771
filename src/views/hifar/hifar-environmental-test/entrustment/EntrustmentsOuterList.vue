@@ -310,7 +310,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.entrustmentListTable.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRows = []

@@ -105,7 +105,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.flowProcessInstance.refresh(bool)
     },
     handleDetail(record) {

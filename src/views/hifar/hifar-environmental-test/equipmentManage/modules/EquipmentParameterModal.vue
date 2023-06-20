@@ -131,7 +131,7 @@ export default {
         this.refresh(true)
       })
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.equipmentParameterTable.refresh(bool)
     },
     onSelect(selectedRowKeys, selectedRows) {

@@ -34,23 +34,23 @@
         class="autoHeight"/>
     </template>
     <template v-else>
-      <hf-elevator-layer :layer-columns="layerColumns"></hf-elevator-layer>
-      <template v-if="isBase">
+      <hf-elevator-layer :layer-columns="layerColumns"/>
+      <template v-if="['1','2','3'].includes(viewDetailType)">
         <!-- 基本信息 -->
-        <div id="basicInfo" :style="{ marginTop: top ? top : '50px' }">
+        <div v-if="isBase" id="basicInfo" :style="{ marginTop: top ? top : '50px' }">
           <detail-base-info showPreviewBtn showFlowBtn :detailDataObj="entrustInfoItem"></detail-base-info>
         </div>
         <div id="piece">
           <!-- 试件信息 -->
           <test-piece-detail
-            v-if="viewDetailType === '2'"
+            v-if="['2','3'].includes(viewDetailType)"
             :dataSource="getPieceDataByEntrustId"
             class="mg-t-20"
             title="试件信息"/>
           <piece-detail-template titlle="试件信息" v-else :dataSource="getPieceDataByEntrustId"/>
         </div>
         <!-- 项目信息 -->
-        <div id="project">
+        <div id="project" v-if="isBase">
           <div v-for="(item,index) in getProjectItemByEntrustNo">
             <project-detail-template
               :key="index"
@@ -61,7 +61,7 @@
         </div>
       </template>
       <!-- 以委托单和运行单的维度查看时，之查看委托单信息，不包含试验相关信息 -->
-      <template v-else>
+      <template v-if="['3'].includes(viewDetailType)">
         <!-- 实施过程 -->
         <h-desc
           id="processForm"
@@ -894,9 +894,15 @@ export default {
           id: "testData"
         },
       ]
-      if (this.isBase) {
-        this.layerColumns = layerColumnsBase
-      } else {
+      if (['1', '2', '3'].includes(this.viewDetailType)) {
+        if (this.isBase) {
+          this.layerColumns = layerColumnsBase
+        } else if (['2', '3'].includes(this.viewDetailType)) {
+          this.layerColumns = layerColumnsTest
+          this.layerColumns.unshift(layerColumnsBase[1])
+        }
+      }
+      if (['3'].includes(this.viewDetailType)) {
         this.layerColumns = layerColumnsTest
       }
     },

@@ -152,7 +152,7 @@ export default {
     },
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       if (bool) {
         this.selectedRowKeys = []
       }

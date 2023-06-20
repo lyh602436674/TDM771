@@ -613,7 +613,7 @@ export default {
       this.loadData()
       this.refresh(bool)
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.taskPlanListTable.refresh(bool)
       this.getTaskStatistics()
     },

@@ -130,7 +130,7 @@ export default {
       this.visible = true
       this.selectedRowKeys = []
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.standardParameterTable.refresh(bool)
     },
     onSelect(selectedRowKeys, selectedRows) {

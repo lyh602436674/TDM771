@@ -144,7 +144,7 @@ export default {
         }
       })
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.testTaskInfoTable.refresh(bool)
     },
     handleGoDetail(record) {

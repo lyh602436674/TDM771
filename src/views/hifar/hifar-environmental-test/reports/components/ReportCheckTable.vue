@@ -23,40 +23,15 @@
       :data="loadData"
       :rowKey="(record) => record.id"
     >
+      <span slot="reportCode" slot-scope="text, record">
+            <a @click="$refs.ReportCheckBaseModal.show(record)">{{ text }}</a>
+      </span>
       <span slot="status" slot-scope="text, record">
         <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
       </span>
-      <a-space slot="action" size="middle" slot-scope="text, record">
-        <a-icon
-          type="eye"
-          title="详情"
-          class="primary-text"
-          style="cursor: pointer"
-          @click="() => handleDetail(record)"
-        />
-        <template v-if="record.status === 10">
-          <!--          <router-link :to="'/TestCheckListByBefore?testId=' + record.testId" target="_blank">-->
-          <!--            <a-icon type="file-done" title="试前检查单" class="primary-text"></a-icon>-->
-          <!--          </router-link>-->
-          <a-icon type="edit" class="primary-text" @click="handleOnlineEdit(record)"></a-icon>
-          <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckPass(record.id)">
-            <h-icon v-has="'reportCheck:pass'" type="icon-wancheng1" title="通过" class="success-text"
-                    style="cursor: pointer"/>
-          </a-popconfirm>
-          <report-reject-popover style="display: inline-block" @reject="handleCheck(record.id)"
-                                 @write="handleWrite(record.id)">
-            <h-icon
-              v-has="'reportCheck:reject'"
-              class="danger-text"
-              style="cursor: pointer"
-              title="驳回"
-              type="icon-chacha"
-            />
-          </report-reject-popover>
-        </template>
-      </a-space>
+
     </h-vex-table>
-    <report-detail-modal ref="ReportDetailModal" :queryType="queryType" @change="refresh(true)"></report-detail-modal>
+    <report-check-base-modal :queryType='queryType' ref="ReportCheckBaseModal" @change="refresh(false)"/>
   </h-card>
 </template>
 
@@ -64,15 +39,15 @@
 import moment from 'moment'
 import {downloadFile, getAction, officeOnlineEdit, postAction} from '@/api/manage'
 import mixin from '../mixin'
-import ReportDetailModal from '../modules/ReportDetailModal'
 import ReportRejectPopover from "@views/hifar/hifar-environmental-test/reports/components/ReportRejectPopover";
+import ReportCheckBaseModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportCheckBaseModal";
 
 export default {
   mixins: [mixin],
   props: ['queryType'],
   components: {
-    ReportDetailModal,
-    ReportRejectPopover
+    ReportRejectPopover,
+    ReportCheckBaseModal
   },
   watch: {
     queryType(val) {
@@ -88,8 +63,6 @@ export default {
       title: '',
       url: {
         list: '/HfEnvReportExamineBusiness/listPage',
-        check: '/HfEnvReportExamineBusiness/examineById',
-        download: '/HfEnvReportBusiness/download',
         autoFileUrls: '/HfEnvReportBusiness/authUploads',
       },
       unitId: '',
@@ -125,8 +98,22 @@ export default {
           formType: 'dict',
           dictCode: "env_test_quality"
         },
+        {
+          title: '生成时间',
+          key: 'createTime',
+          formType: 'dateRangePick',
+          showTime: true,
+          format: 'YYYY-MM-DD HH:mm',
+        },
       ],
       columns: [
+        {
+          title: '报告编号',
+          align: 'left',
+          dataIndex: 'reportCode',
+          width: 140,
+          scopedSlots: {customRender: 'reportCode'}
+        },
         {
           title: '运行单号',
           align: 'left',
@@ -226,14 +213,6 @@ export default {
           align: 'center',
           dataIndex: 'lastUser_dictText',
         },
-        {
-          title: '操作',
-          dataIndex: 'action',
-          fixed: 'right',
-          width: 180,
-          align: 'center',
-          scopedSlots: {customRender: 'action'},
-        },
       ],
       type: 'check',
       loadData: (params) => {
@@ -260,7 +239,7 @@ export default {
   },
 
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.dataCheckTable.refresh(bool)
     },
     handleOnlineEdit(record) {
@@ -278,55 +257,6 @@ export default {
       }).finally(() => {
         this.refresh()
         this.reportFileList = []
-      })
-    },
-    handleDownload(record, type) {
-      let obj = {
-        docx: {
-          loading: 'docxLoading',
-        },
-      }
-      this.$set(record, obj[type].loading, true)
-      getAction(this.url.download, {id: record.id, type}).then(res => {
-        if (res.code === 200) {
-          let filePath = res.data.url;
-          let fileName = res.data.fileName;
-          downloadFile(filePath, fileName)
-        } else {
-          this.$message.error('下载失败!')
-        }
-      }).finally(() => {
-        this.$set(record, obj[type].loading, false)
-      })
-    },
-    handleDetail(record) {
-      let type = this.type
-      let activeKey = '2'
-      this.$refs.ReportDetailModal.show(record.id, type, activeKey)
-    },
-    handleWrite(id) {
-      this.$refs.ReportDetailModal.show(id, 'check', '2', true)
-    },
-    handleCheck(id) {
-      this.$refs.dataCheckTable.localLoading = true
-      postAction(this.url.check, {id, examineFlag: 30}).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('驳回成功')
-          this.refresh(true)
-        }
-      }).finally(() => {
-        this.$refs.dataCheckTable.localLoading = false
-      })
-    },
-    handleCheckPass(id) {
-      this.$refs.dataCheckTable.localLoading = true
-      postAction(this.url.check, {id: id, examineFlag: 20}).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('审核成功')
-          this.refresh(true)
-        }
-      }).finally(() => {
-        this.$refs.dataCheckTable.localLoading = false
       })
     },
   },

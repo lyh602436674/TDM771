@@ -86,7 +86,7 @@
               </div>
               <a-popconfirm class='check-operate' title='确定删除吗?'
                             @confirm='handleDelete(item,index,"beforeCheckInfo")'>
-                <a style='color: #ff4d4f'>删除</a>
+                <a v-if="isDelete(item)" style='color: #ff4d4f'>删除</a>
               </a-popconfirm>
             </div>
           </template>
@@ -154,7 +154,7 @@
                 </template>
               </div>
               <a-popconfirm class='check-operate' title='确定删除吗?' @confirm='handleDelete(item,index,"inCheckInfo")'>
-                <a style='color: #ff4d4f'>删除</a>
+                <a v-if="isDelete(item)" style='color: #ff4d4f'>删除</a>
               </a-popconfirm>
             </div>
           </template>
@@ -224,7 +224,7 @@
               </div>
               <a-popconfirm class='check-operate' title='确定删除吗?'
                             @confirm='handleDelete(item,index,"afterCheckInfo")'>
-                <a style='color: #ff4d4f'>删除</a>
+                <a v-if="isDelete(item)" style='color: #ff4d4f'>删除</a>
               </a-popconfirm>
             </div>
           </template>
@@ -279,6 +279,9 @@ export default {
     }
   },
   methods: {
+    isDelete(item) {
+      return item.defaultConditionFlag === 0
+    },
     filterCheckedList(type) {
       return this[type].filter(item => item.checked === true)
     },
@@ -312,7 +315,8 @@ export default {
           fillTime: '0',
           checkUserName: '',
           checkUserId: '',
-          checkTime: '0'
+          checkTime: '0',
+          defaultConditionFlag: 0
         }
       })
       // 复制后自动把复制的数据保存了
@@ -339,6 +343,7 @@ export default {
       records.isEdit = true
       records.itemRes = ''
       records.checkFlag = 1
+      records.defaultConditionFlag = 0
       this[type].push(records)
     },
     show(record, title, type) {
@@ -446,6 +451,7 @@ export default {
       })
     },
     handleDelete(item, index, type) {
+      if (!this.isDelete(item)) return
       //  如果时手动新增的，那就前台删除
       if (item.isEdit && !item.isSave) {
         this[type].splice(index, 1)

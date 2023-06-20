@@ -311,7 +311,7 @@ export default {
     handleCancel() {
       this.visible = false
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.settlementPreviewTable.refresh(bool)
     },
     loadData(params) {

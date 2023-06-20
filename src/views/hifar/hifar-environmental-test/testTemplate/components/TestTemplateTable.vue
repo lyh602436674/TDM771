@@ -207,7 +207,7 @@ export default {
     },
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.TestTemplateTable.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRow = []

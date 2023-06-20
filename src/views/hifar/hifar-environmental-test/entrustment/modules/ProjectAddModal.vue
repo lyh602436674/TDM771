@@ -142,7 +142,7 @@ export default {
       this.selectedTreeKeys = item.id
       this.refresh()
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.projectTable.refresh(bool)
     },
     loadProjectList(params) {

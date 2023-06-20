@@ -148,7 +148,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.alarmInfoTable.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRows = []

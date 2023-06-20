@@ -113,6 +113,7 @@ export default {
           }
         },
         {title: '设备型号', dataIndex: 'equipModel'},
+        {title: '使用部门', dataIndex: 'userDeptName'},
       ],
     }
   },

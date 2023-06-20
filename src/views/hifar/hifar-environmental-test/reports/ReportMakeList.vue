@@ -93,7 +93,8 @@
     </h-card>
     <ReportMakeListsModal ref="ReportMakeListsModal" @change="addReportchange"/>
     <report-detail-modal ref="ReportDetailModal"/>
-    <report-make-base-modal ref="ReportMakeBaseModal" @change="refresh(false)"></report-make-base-modal>
+    <report-make-base-modal :isIntranet="isIntranet" ref="ReportMakeBaseModal"
+                            @change="refresh(false)"></report-make-base-modal>
     <report-download-record ref="reportDownloadRecord"/>
     <report-reject-all-info ref="reportRejectAllInfo"/>
     <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
@@ -106,7 +107,7 @@ import {createLink, downloadFile, officeOnlineEdit, postAction} from '@/api/mana
 import mixin from './mixin'
 import * as WebCtrl from '@/plugins/webOffice'
 import ReportMakeListsModal from './modules/ReportMakeListsModal.vue'
-import ReportDetailModal from './modules/ReportDetailModal'
+import ReportDetailModal from '@/views/hifar/hifar-environmental-test/reports/modules/ReportDetailModal'
 import {ACCESS_TOKEN} from '@/store/mutation-types'
 import {getAction} from '@api/manage';
 import ReportDownloadRecord from './components/ReportDownloadRecord';
@@ -191,11 +192,9 @@ export default {
           key: 'c_status_1',
           formType: 'select',
           options: [
-            {title: '待生成', value: 1, key: 1},
-            {title: '生成中', value: 2, key: 2},
-            {title: '已生成', value: 3, key: 3},
-            {title: '已提交', value: 10, key: 10},
-            {title: '审核通过', value: 20, key: 20},
+            {title: '草稿', value: 3, key: 3},
+            {title: '待审核', value: 10, key: 10},
+            {title: '待批准', value: 20, key: 20},
             {title: '审核驳回', value: 30, key: 30},
             {title: '批准通过', value: 40, key: 40},
             {title: '批准驳回', value: 50, key: 50},
@@ -219,12 +218,18 @@ export default {
           key: 'c_custLinkMobile_7',
           formType: 'input'
         },
-
         {
           title: '试验项目',
           key: 'c_testName_7',
           formType: 'input'
-        }
+        },
+        {
+          title: '生成时间',
+          key: 'createTime',
+          formType: 'dateRangePick',
+          showTime: true,
+          format: 'YYYY-MM-DD HH:mm',
+        },
       ],
       columns: [
         {
@@ -310,10 +315,19 @@ export default {
           scopedSlots: {customRender: 'transferStatus'}
         },
         {
-          title: '试验项目',
+          title: '试验名称',
           align: 'left',
           width: 120,
           dataIndex: 'testName',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '项目名称',
+          align: 'left',
+          width: 120,
+          dataIndex: 'unitName',
           customRender: (text, record) => {
             return text || '--'
           }
@@ -415,7 +429,7 @@ export default {
       postAction(this.url.turnover, {id: this.selectedRowKeys.toString(), transferStatus: "1"}).then(res => {
         if (res.code === 200) {
           this.$message.success('移交成功')
-          this.refresh()
+          this.refresh(false)
         } else {
           this.$message.warning('移交失败')
         }
@@ -475,7 +489,7 @@ export default {
         this.refresh()
       }
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.reportMakeTable.refresh(bool)
       this.loadReportNum()
       this.selectedRowKeys = []

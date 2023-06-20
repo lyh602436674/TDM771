@@ -342,6 +342,7 @@ export default {
           }
         },
         {title: '设备型号', dataIndex: 'equipModel'},
+        {title: '使用部门', dataIndex: 'userDeptName'},
         {
           title: '操作',
           dataIndex: 'action',
@@ -395,6 +396,13 @@ export default {
           customRender: (t) => {
             return t || '--'
           }
+        },
+        {
+          title: '使用部门',
+          dataIndex: 'userDeptName',
+          customRender: (t) => {
+            return t || '--'
+          }
         }
       ],
       equipSearchData: [
@@ -417,7 +425,12 @@ export default {
           title: '资产编号',
           formType: 'input',
           key: 'c_assetsCode_7'
-        }
+        },
+        {
+          title: '使用部门',
+          formType: 'input',
+          key: 'c_userDeptName_7'
+        },
       ],
       equipParams: {
         list: '/HfResEquipBusiness/listPageForEntrust',
@@ -536,7 +549,7 @@ export default {
             let formName = 'projectInfoForm' + this.index, isShowUserInReport
             if (formName) {
               isShowUserInReport = this.$refs[formName].$options.propsData.formData.filter(item => item.key === 'isShowUserInReport')[0]
-              if (opt.title === '无') {
+              if (opt.title === '无' || val === '10') {
                 this.$refs[formName].form.setFieldsValue({isShowUserInReport: '2'})
                 isShowUserInReport.disabled = true
               } else {

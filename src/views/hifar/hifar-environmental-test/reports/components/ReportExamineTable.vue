@@ -244,7 +244,7 @@ export default {
   },
 
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.dataCheckTable.refresh(bool)
     },
     handleDetail(record) {

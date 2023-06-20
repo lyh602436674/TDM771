@@ -97,6 +97,22 @@ export default {
           formType: 'input',
         },
         {
+          title: '状态',
+          key: 'c_status_1',
+          formType: 'select',
+          options: [
+            {title: '草稿', value: 3, key: 3},
+            {title: '待审核', value: 10, key: 10},
+            {title: '待批准', value: 20, key: 20},
+            {title: '审核驳回', value: 30, key: 30},
+            {title: '批准通过', value: 40, key: 40},
+            {title: '批准驳回', value: 50, key: 50},
+            {title: '修改审批', value: 60, key: 60},
+            {title: '修改审批通过', value: 70, key: 70},
+            {title: '修改审批驳回', value: 80, key: 80},
+          ]
+        },
+        {
           title: '委托单号',
           key: 'c_entrustNo_7',
           formType: 'input',
@@ -253,7 +269,7 @@ export default {
   },
 
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.dataCheckTable.refresh(bool)
     },
     handleDownload(record, type) {

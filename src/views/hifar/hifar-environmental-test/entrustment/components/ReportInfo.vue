@@ -362,7 +362,7 @@ export default {
         this.refresh()
       }
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.reportMakeTable.refresh(bool)
     },
     handleDelete(record) {

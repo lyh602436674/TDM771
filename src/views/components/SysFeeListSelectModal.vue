@@ -322,7 +322,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.feeTable.refresh(bool)
     },
     show(selectedRows = [], selectedKeys = []) {

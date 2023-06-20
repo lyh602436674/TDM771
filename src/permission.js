@@ -11,17 +11,17 @@ import router from './router'
 import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
-import { ACCESS_TOKEN, INDEX_MAIN_PAGE_PATH } from '@/store/mutation-types'
-import { generateIndexRouter } from "@/utils/util"
+import {ACCESS_TOKEN, INDEX_MAIN_PAGE_PATH} from '@/store/mutation-types'
+import {generateIndexRouter} from "@/utils/util"
 
-NProgress.configure({ showSpinner: false }) // NProgress Configuration
+NProgress.configure({showSpinner: false}) // NProgress Configuration
 
 /**
  * @Date: 2021-07-15 15:05:32
  * @Author: 陈乾龙
  * @description: 系统白名单
  */
-var whiteList = ['/user/login', '/user/register', '/user/register-result', '/user/alteration','/home/tdm/sso'] // no redirect whitelist
+var whiteList = ['/user/login', '/user/register', '/user/register-result', '/user/alteration', '/home/tdm/sso'] // no redirect whitelist
 
 
 router.beforeEach((to, from, next) => {
@@ -33,7 +33,7 @@ router.beforeEach((to, from, next) => {
   if (Vue.ls.get(ACCESS_TOKEN)) {
     /* has token */
     if (to.path === '/user/login') {
-      next({ path: INDEX_MAIN_PAGE_PATH })
+      next({path: INDEX_MAIN_PAGE_PATH})
       NProgress.done()
     } else {
       if (store.getters.permissionList.length === 0) {
@@ -47,24 +47,24 @@ router.beforeEach((to, from, next) => {
           let constRoutes = [];
           constRoutes = generateIndexRouter(menuData);
           // 添加主界面路由
-          store.dispatch('UpdateAppRouter', { constRoutes }).then(() => {
+          store.dispatch('UpdateAppRouter', {constRoutes}).then(() => {
             // 根据roles权限生成可访问的路由表
             // 动态添加可访问路由表
             router.addRoutes(store.getters.addRouters)
             const redirect = decodeURIComponent(from.query.redirect || to.path)
             if (to.path === redirect) {
               // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-              next({ ...to, replace: true })
+              next({...to, replace: true})
             } else {
               // 跳转到目的路由
-              next({ path: redirect })
+              next({path: redirect})
             }
           })
         })
           .catch((err) => {
-            console.log('重组路由的问题',err)
+            console.log('重组路由的问题', err)
             store.dispatch('Logout').then(() => {
-              next({ path: '/user/login', query: { redirect: to.fullPath } })
+              next({path: '/user/login', query: {redirect: to.fullPath}})
             })
           })
       } else {
@@ -76,7 +76,7 @@ router.beforeEach((to, from, next) => {
       // 在免登录白名单，直接进入
       next()
     } else {
-      next({ path: '/user/login', query: { redirect: to.fullPath } })
+      next({path: '/user/login', query: {redirect: to.fullPath}})
       NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
     }
   }

@@ -32,10 +32,6 @@ export default {
     reportStatusFilter(status) {
       let s = Number(status)
       switch (s) {
-        case 1:
-          return '待生成';
-        case 2:
-          return '生成中';
         case 3:
           return '草稿';
         case 10:
@@ -108,16 +104,12 @@ export default {
     reportFlowStatusFilter(status) {
       let s = Number(status)
       switch (s) {
-        case 1:
-          return '创建';
-        case 2:
-          return '生成中';
         case 3:
-          return '已生成';
+          return '草稿';
         case 10:
-          return '已提交';
+          return '待审批';
         case 20:
-          return '审核通过';
+          return '待批准';
         case 30:
           return '审核驳回';
         case 40:
@@ -144,7 +136,7 @@ export default {
         case 'save':
           return '保存';
         case 'submit':
-          return '提交';
+          return '草稿';
         case 'approvePass':
           return '批准通过';
         case 'approveReject':
@@ -200,16 +192,12 @@ export default {
     reportStatusFilterMethods(status) {
       let s = Number(status)
       switch (s) {
-        case 1:
-          return '待生成';
-        case 2:
-          return '生成中';
         case 3:
           return '草稿';
         case 10:
-          return '已提交';
+          return '待审核';
         case 20:
-          return '审核通过';
+          return '待批准';
         case 30:
           return '审核驳回';
         case 40:

@@ -157,7 +157,7 @@ export default {
         this.refresh(true)
       })
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.equipmentSensorTable.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRows = []

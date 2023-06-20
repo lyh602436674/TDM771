@@ -193,7 +193,7 @@ export default {
         return false
       }
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.reportMakeTable.refresh(bool)
     },
     onSelectChange(selectedRowKeys, selectedRow) {

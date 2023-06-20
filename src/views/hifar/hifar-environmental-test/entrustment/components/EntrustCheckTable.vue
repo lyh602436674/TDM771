@@ -278,7 +278,7 @@ export default {
   },
 
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$nextTick(() => {
         this.$refs.dataCheckTable.refresh(bool);
       })

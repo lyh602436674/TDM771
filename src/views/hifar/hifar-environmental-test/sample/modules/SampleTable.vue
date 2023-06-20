@@ -242,7 +242,7 @@ export default {
     this.loadTreeData()
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.selectedRowKeys = []
       this.selectedRow = []
       this.$refs.sampleListTable.refresh(bool)

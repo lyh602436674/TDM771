@@ -347,7 +347,7 @@ export default {
         }
       })
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.testApprovalTable.refresh(bool)
     },
   }

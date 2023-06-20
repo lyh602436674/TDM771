@@ -265,7 +265,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.inspectionRecordItemTable.refresh(bool)
     },
   }

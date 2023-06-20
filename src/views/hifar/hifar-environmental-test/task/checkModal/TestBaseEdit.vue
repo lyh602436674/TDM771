@@ -323,6 +323,7 @@
       :data-url="sensorList"
       title="添加传感器"
       type="sensor"
+      :checkMethod="({row})=> +row.checkValid > moment().valueOf()"
       :searchData="equipSearchData"
       @callback="sensorCallback"
     />
@@ -1373,9 +1374,12 @@ export default {
         {
           title: '计量有效期',
           dataIndex: 'checkValid',
-          customRender: (t, record) => {
-            return +record.checkValid && moment(+record.checkValid).format('YYYY-MM-DD') || '--'
-          }
+          scopedSlots: {
+            customRender: '_checkValid_',
+            template: (row) => `<span style="color: ${+row.checkValid > moment().valueOf() ? '' : 'red'}">
+              ${+row.checkValid && moment(+row.checkValid).format('YYYY-MM-DD') || '--'}
+            </span>`
+          },
         },
         {
           title: '设备型号',

@@ -1,169 +1,97 @@
 <template>
-  <h-modal
-    title="报告信息"
-    inner
-    fullScreen
-    destroyOnClose
-    :visible="visible"
-    :getContainer="getContainer"
-    @cancel="handleCancel">
-    <template slot="footer">
-      <a-button type="ghost-danger" @click="handleCancel"> 关闭</a-button>
-    </template>
-    <div class="reportMakeBase">
-      <h-card title="基本信息">
-        <h-desc :data="detailData" size="small" :column="3">
-          <h-desc-item label="报告编号">
-            {{ detailData.reportCode || '--' }}
-          </h-desc-item>
-          <h-desc-item label="产品编号">
-            {{ detailData.pieceNo || '--' }}
-          </h-desc-item>
-          <h-desc-item label="试验编号">
-            {{ detailData.testCode || '--' }}
-          </h-desc-item>
-          <h-desc-item label="送试单位">
-            {{ detailData.custName || '--' }}
-          </h-desc-item>
-          <h-desc-item label="联系人">
-            {{ detailData.custLinkName || '--' }}
-          </h-desc-item>
-          <h-desc-item label="联系方式">
-            {{ detailData.custLinkMobile || '--' }}
-          </h-desc-item>
-          <h-desc-item label="产品代号">
-            {{ detailData.productAlias || '--' }}
-          </h-desc-item>
-          <h-desc-item label="产品名称">
-            {{ detailData.productName || '--' }}
-          </h-desc-item>
-          <h-desc-item label="委托单号">
-            {{ detailData.entrustNo || '--' }}
-          </h-desc-item>
-          <h-desc-item label="运行单号">
-            {{ detailData.entrustCode || '--' }}
-          </h-desc-item>
-          <h-desc-item label="试验名称">
-            {{ detailData.testName || '--' }}
-          </h-desc-item>
-          <h-desc-item label="试验性质">
-            {{ detailData.testPropertyCode_dictText || '--' }}
-          </h-desc-item>
-          <h-desc-item label="是否显示最终用户">
-            {{ detailData.isShowUserInReport === '1' ? '是' : "否" }}
-          </h-desc-item>
-          <h-desc-item label="最终用户">
-            {{ detailData.lastUser_dictText || '--' }}
-          </h-desc-item>
-        </h-desc>
-      </h-card>
-      <h-card title="报告信息">
-        <vxe-table
-          border
-          resizable
-          round
-          show-all-overflow
-          :data="tableData"
-        >
-          <vxe-table-column type="seq" width="60" align="center"></vxe-table-column>
-          <vxe-table-column title="报告名称" field="fileName"></vxe-table-column>
-          <vxe-table-column title="操作" field="action">
-            <template v-slot="{row}">
+  <div>
+    <report-base-info-modal :reportId="reportId" :localLoading="localLoading" ref="reportBaseInfoModal" :detailData="detailData"
+                            @close="handleCancel">
+      <a-space>
+        <a-button
+          title="详情"
+          type="primary"
+          @click="handleDetail(detailData)"
+        >详情
+        </a-button>
+        <a-popconfirm v-if="detailData.status === 40" title="确定申请修改吗?" @confirm="() => handleAmend(detailData)">
+          <a-button
+            title="申请修改"
+            type="primary"
+          >申请修改
+          </a-button>
+        </a-popconfirm>
+        <span v-if="detailData.status === 1">
+          <a-space>
+            <h-upload-file-b
+              v-model="reportFileList"
+              :customParams="{id:detailData.id}"
+              accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              isPublic
+              @beforeUpload="localLoading = true"
+              @change="file => handleUploadCallback(file,detailData,true)"
+            >
+              <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
+            </h-upload-file-b>
+          </a-space>
+        </span>
+        <template v-if="!isIntranet">
+           <span v-if="[3,30,50,70,80].includes(detailData.status)">
+             <a-space>
+              <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(detailData)">
+                <a-button
+                  v-has="'report:submit'"
+                  title="提交"
+                  type="primary">提交</a-button>
+              </a-popconfirm>
+               <template v-if="!([80].includes(detailData.status))">
+                <!-- 修改审批被驳回后不能修改和替换-->
+                 <a-button
+                   v-if="detailData.filePath"
+                   v-has="'report:edit'"
+                   type="primary"
+                   title="编辑"
+                   @click="handleEdit(detailData)">编辑</a-button>
+                 <h-upload-file-b
+                   v-model="reportFileList"
+                   action="/MinioLocalBusiness/authUpload"
+                   v-has="'report:edit'"
+                   :customParams="{id:detailData.id}"
+                   accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                   isPublic
+                   @beforeUpload="localLoading = true"
+                   @change="file => handleUploadCallback(file,detailData)">
+                   <a-button title='替换' type='primary'>替换</a-button>
+                 </h-upload-file-b>
+               </template>
+             </a-space>
+          </span>
+          <template v-if="detailData.status >= 3">
+            <span v-has="'report:download'">
               <a-space>
                 <a-button
-                  title="详情"
+                  title="下载word"
                   type="primary"
-                  @click="handleDetail(row)"
-                >详情
-                </a-button>
-                <a-popconfirm v-if="row.status === 40" title="确定申请修改吗?" @confirm="() => handleAmend(row)">
-                  <a-button
-                    title="申请修改"
-                    type="primary"
-                  >申请修改
-                  </a-button>
-                </a-popconfirm>
-                <span v-if="row.status === 1">
-                  <a-space>
-                    <h-upload-file-b
-                      v-model="reportFileList"
-                      :customParams="{id:row.id}"
-                      accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                      isPublic
-                      @beforeUpload="$refs.reportMakeTable.localLoading = true"
-                      @change="file => handleUploadCallback(file,row,true)"
-                    >
-                      <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
-                    </h-upload-file-b>
-                  </a-space>
-                </span>
-                <template v-if="!isIntranet">
-                   <span v-if="[3,30,50,70,80].includes(row.status)">
-                     <a-space>
-                      <a-popconfirm title="确定提交吗?" @confirm="() => handleSubmit(row)">
-                        <a-button
-                          v-has="'report:submit'"
-                          title="提交"
-                          type="primary">提交</a-button>
-                      </a-popconfirm>
-                       <template v-if="!([80].includes(row.status))">
-                        <!-- 修改审批被驳回后不能修改和替换-->
-                         <a-button
-                           v-if="row.filePath"
-                           v-has="'report:edit'"
-                           type="primary"
-                           title="编辑"
-                           @click="handleEdit(row)">编辑</a-button>
-                         <h-upload-file-b
-                           v-model="reportFileList"
-                           action="/MinioLocalBusiness/authUpload"
-                           v-has="'report:edit'"
-                           :customParams="{id:row.id}"
-                           accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                           isPublic
-                           @beforeUpload="$refs.reportMakeTable.localLoading = true"
-                           @change="file => handleUploadCallback(file,row)">
-                           <a-button title='替换' type='primary'>替换</a-button>
-                         </h-upload-file-b>
-                       </template>
-                     </a-space>
-                  </span>
-                  <template v-if="row.status >= 3">
-                    <span v-has="'report:download'">
-                      <a-space>
-                        <a-button
-                          :loading="row.docxLoading"
-                          title="下载word"
-                          type="primary"
-                          @click="handleDownload(row, 'docx')"
-                        >下载word</a-button>
-                        <a-button
-                          :loading="row.pdfLoading"
-                          title="下载pdf"
-                          type="primary"
-                          @click="handleDownload(row, 'pdf')"
-                        >下载pdf</a-button>
-                      </a-space>
-                    </span>
-                  </template>
-                </template>
+                  @click="handleDownload(detailData, 'docx')"
+                >下载word</a-button>
+                <a-button
+                  title="下载pdf"
+                  type="primary"
+                  @click="handleDownload(detailData, 'pdf')"
+                >下载pdf</a-button>
               </a-space>
-            </template>
-          </vxe-table-column>
-        </vxe-table>
-      </h-card>
-    </div>
+            </span>
+          </template>
+        </template>
+      </a-space>
+    </report-base-info-modal>
     <report-detail-modal ref="ReportDetailModal"/>
-  </h-modal>
+  </div>
 </template>
 
 <script>
 import {downloadFile, getAction, officeOnlineEdit, postAction} from "@api/manage";
-import ReportDetailModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportDetailModal.vue";
+import ReportBaseInfoModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportBaseInfoModal.vue";
+import ReportDetailModal from '@/views/hifar/hifar-environmental-test/reports/modules/ReportDetailModal'
 
 export default {
   name: "ReportMakeBaseModal",
-  components: {ReportDetailModal},
+  components: {ReportDetailModal,  ReportBaseInfoModal},
   inject: {
     getContainer: {
       default: () => document.body
@@ -171,52 +99,37 @@ export default {
   },
   data() {
     return {
-      visible: false,
-      reportCode: "",
-      isIntranet: true,
+      reportId: "",
       detailData: {},
       tableData: [],
-      reportFileList: [],
+      localLoading: false,
       refreshFlag: false,
+      reportFileList: [],
       url: {
-        list: '/HfEnvReportBusiness/listPage',
         submit: '/HfEnvReportBusiness/submitById',
         autoFileUrls: '/HfEnvReportBusiness/authUploads',
         download: '/HfEnvReportBusiness/download',
+        amend: "/HfEnvReportAmendBusiness/amendReport",
+        detail: "/HfEnvReportBusiness/listDetailByReportId"
       },
     }
   },
+  props: {
+    isIntranet: {
+      type: Boolean,
+      default: true
+    }
+  },
   methods: {
-    loadData() {
-      postAction(this.url.list, {
-        c_reportCode_7: this.reportCode,
-        pageNo: 1, pageSize: 10
-      }).then((res) => {
+    // 申请修改报告
+    handleAmend(record) {
+      postAction(this.url.amend, {id: record.id}).then(res => {
         if (res.code === 200) {
-          this.isIntranet = res.ext.isIntranet
-          if (res.data.data && res.data.data.length) {
-            this.initData(res.data.data[0])
-          } else {
-            this.$message.warning('报告已被删除，请刷新列表重试')
-          }
+          this.$message.success('申请成功')
+          this.refreshFlag = true
+          this.loadData()
         }
       })
-    },
-    show(row) {
-      this.reportCode = row.reportCode
-      this.loadData()
-    },
-    initData(data) {
-      this.detailData = Object.assign({}, data)
-      this.tableData = [this.detailData]
-      this.visible = true
-    },
-    handleCancel() {
-      this.visible = false
-      if (this.refreshFlag) {
-        this.$emit('change')
-      }
-      this.refreshFlag = false
     },
     handleUploadCallback(file, record, isUpload) {
       postAction(this.url.autoFileUrls, {id: record.id, fileId: file[0].fileId, status: 3, isUpload}).then(res => {
@@ -277,15 +190,34 @@ export default {
         }
       })
     },
+    loadData() {
+      postAction(this.url.detail, {id: this.reportId,}).then((res) => {
+        if (res.code === 200) {
+          if (res.data.data && res.data.data.length) {
+            this.detailData = res.data.data[0]
+            this.localLoading = false
+          } else {
+            this.$message.warning('报告已被删除，请刷新列表重试')
+          }
+        }
+      })
+    },
+    show(row, field = 'id') {
+      this.localLoading = true
+      this.refreshFlag = false
+      this.reportId = row[field]
+      this.loadData()
+      this.$refs.reportBaseInfoModal.visible = true
+    },
+    handleCancel() {
+      if (this.refreshFlag) {
+        this.$emit('change')
+      }
+    },
   },
 }
 </script>
 
 <style lang="less" scoped>
-.reportMakeBase {
-  /deep/ .h-card-wrapper {
-    height: auto;
-  }
-}
 
 </style>

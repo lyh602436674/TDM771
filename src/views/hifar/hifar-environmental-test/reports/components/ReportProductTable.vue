@@ -138,7 +138,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.reportProductTable.refresh(bool)
     },
   },

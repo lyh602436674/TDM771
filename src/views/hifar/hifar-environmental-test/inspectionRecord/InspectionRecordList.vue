@@ -260,7 +260,7 @@ export default {
     handleDetail(record, activeKey) {
       this.$refs.inspectionRecordModal.show(record.id, activeKey)
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.pollingRecordTable.refresh(bool)
     },
   }

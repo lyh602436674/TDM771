@@ -142,7 +142,7 @@ export default {
       this.$refs.SampleCirculationTable.visible = true
     },
 
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.accessInfoTable.refresh(bool)
     },
   },

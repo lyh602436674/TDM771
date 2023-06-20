@@ -114,7 +114,7 @@ export default {
       this.id = id
       this.visible = true
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.flowProcessHistory.refresh(bool)
     },
     deleteBatch() {

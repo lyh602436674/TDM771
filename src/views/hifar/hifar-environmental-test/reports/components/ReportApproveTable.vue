@@ -23,37 +23,15 @@
       :data="loadData"
       :rowKey="(record) => record.id"
     >
+      <span slot="reportCode" slot-scope="text, record">
+            <a @click="$refs.ReportApproveBaseModal.show(record)">{{ text }}</a>
+      </span>
       <span slot="status" slot-scope="text, record">
         <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
       </span>
-      <a-space size="middle" slot="action" slot-scope="text, record">
-        <a-icon
-          type="eye"
-          title="详情"
-          class="primary-text"
-          style="cursor: pointer"
-          @click="() => handleDetail(record)"
-        />
-        <template v-if="record.status === 20">
-          <a-icon type="edit" class="primary-text" @click="handleOnlineEdit(record)"></a-icon>
-          <a-popconfirm title="确定批准通过吗?" @confirm="() => handleCheckPass(record.id)">
-            <h-icon v-has="'reportApprove:pass'" class="success-text" style="cursor: pointer" title="批准通过"
-                    type="icon-wancheng1"/>
-          </a-popconfirm>
-          <report-reject-popover style="display: inline-block" @reject="handleCheck(record.id)"
-                                 @write="handleWrite(record.id)">
-            <h-icon
-              v-has="'reportApprove:reject'"
-              class="danger-text"
-              style="cursor: pointer"
-              title="驳回"
-              type="icon-chacha"
-            />
-          </report-reject-popover>
-        </template>
-      </a-space>
     </h-vex-table>
-    <report-detail-modal ref="ReportDetailModal" :queryType="queryType" @change="refresh(true)"></report-detail-modal>
+    <report-approve-base-modal ref="ReportApproveBaseModal" :queryType="queryType"
+                               @change="refresh(false)"></report-approve-base-modal>
   </h-card>
 </template>
 
@@ -61,14 +39,14 @@
 import moment from 'moment'
 import {officeOnlineEdit, postAction} from '@/api/manage'
 import mixin from '../mixin.js'
-import ReportDetailModal from '../modules/ReportDetailModal'
 import ReportRejectPopover from "@views/hifar/hifar-environmental-test/reports/components/ReportRejectPopover";
+import ReportApproveBaseModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportApproveBaseModal.vue";
 
 export default {
   mixins: [mixin],
   props: ['queryType'],
   components: {
-    ReportDetailModal,
+    ReportApproveBaseModal,
     ReportRejectPopover
   },
   watch: {
@@ -130,8 +108,22 @@ export default {
           key: 'c_testName_7',
           formType: 'input',
         },
+        {
+          title: '生成时间',
+          key: 'createTime',
+          formType: 'dateRangePick',
+          showTime: true,
+          format: 'YYYY-MM-DD HH:mm',
+        },
       ],
       columns: [
+        {
+          title: '报告编号',
+          align: 'left',
+          dataIndex: 'reportCode',
+          width: 140,
+          scopedSlots: {customRender: 'reportCode'}
+        },
         {
           title: '报告编号',
           align: 'left',
@@ -218,14 +210,6 @@ export default {
             return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD') : '--'
           },
         },
-        {
-          title: '操作',
-          dataIndex: 'action',
-          fixed: 'right',
-          width: 130,
-          align: 'center',
-          scopedSlots: {customRender: 'action'},
-        },
       ],
       type: 'approve',
       loadData: (params) => {
@@ -244,42 +228,8 @@ export default {
   },
 
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.dataCheckTable.refresh(bool)
-    },
-    handleOnlineEdit(record) {
-      let fileUrl = record.filePath.split('?')[0]
-      officeOnlineEdit(fileUrl, {IsSaveEnabled: false})
-    },
-    handleDetail(record) {
-      let type = this.type
-      let activeKey = '2'
-      this.$refs.ReportDetailModal.show(record.id, type, activeKey)
-    },
-    handleWrite(id) {
-      this.$refs.ReportDetailModal.show(id, 'approve', '2', true)
-    },
-    handleCheck(id) {
-      this.$refs.dataCheckTable.localLoading = true
-      postAction(this.url.check, {id, examineFlag: 50}).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('驳回成功')
-          this.refresh(true)
-        }
-      }).finally(() => {
-        this.$refs.dataCheckTable.localLoading = false
-      })
-    },
-    handleCheckPass(id) {
-      this.$refs.dataCheckTable.localLoading = true
-      postAction(this.url.checkApprove, {id, examineFlag: 40}).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('批准成功')
-          this.refresh(true)
-        }
-      }).finally(() => {
-        this.$refs.dataCheckTable.localLoading = false
-      })
     },
   },
 }

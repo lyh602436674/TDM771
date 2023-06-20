@@ -242,7 +242,7 @@ export default {
     },
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.selectedRowKeys = []
       this.selectedRow = []
       this.$refs.dataCheckTable.refresh(bool)

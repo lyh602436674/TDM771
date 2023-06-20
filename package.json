@@ -6,6 +6,7 @@
         "pre": "cnpm install || yarn --registry https://registry.npm.taobao.org || npm install --registry https://registry.npm.taobao.org ",
         "serve": "yarn start || npm run start",
         "dev": "vue-cli-service serve --mode development",
+        "dev2": "vue-cli-service serve --mode development2",
         "test": "vue-cli-service serve --mode test",
         "env": "vue-cli-service serve --mode environmental",
         "merge": "node merge.js",
