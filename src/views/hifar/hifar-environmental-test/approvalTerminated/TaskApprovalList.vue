@@ -264,7 +264,7 @@ export default {
         }
       })
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.taskApprovalTable.refresh(bool)
     },
   }

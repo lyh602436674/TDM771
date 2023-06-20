@@ -98,6 +98,13 @@ export default {
           formType: 'dict',
           dictCode: "env_test_quality"
         },
+        {
+          title: '生成时间',
+          key: 'createTime',
+          formType: 'dateRangePick',
+          showTime: true,
+          format: 'YYYY-MM-DD HH:mm',
+        },
       ],
       columns: [
         {
@@ -232,7 +239,7 @@ export default {
   },
 
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.dataCheckTable.refresh(bool)
     },
     handleOnlineEdit(record) {

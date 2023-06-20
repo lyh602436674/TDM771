@@ -186,7 +186,7 @@ export default {
               value: 31
             },
             {
-              title: '待出报告',
+              title: '已完成',
               key: 40,
               value: 40
             },
@@ -194,9 +194,21 @@ export default {
               title: '已出报告',
               key: 50,
               value: 50
+            },
+            {
+              title: '已终止',
+              key: 80,
+              value: 80
             }
           ]
-        }
+        },
+        {
+          title: '创建时间',
+          key: 'entrustCreateTime',
+          formType: 'dateRangePick',
+          showTime: true,
+          format: 'YYYY-MM-DD HH:mm',
+        },
       ],
       columns: [
         {
@@ -416,7 +428,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.entrustmentListTable.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRows = []

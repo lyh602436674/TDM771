@@ -292,7 +292,7 @@ export default {
       return createTime > todayStart
     },
     // 更新
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.handover.refresh(bool)
       this.selectedRowKeys = []
     },

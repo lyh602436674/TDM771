@@ -273,7 +273,7 @@ export default {
     handleSearch() {
       this.refresh(true)
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.productSelectTable.refresh(bool)
     },
   },

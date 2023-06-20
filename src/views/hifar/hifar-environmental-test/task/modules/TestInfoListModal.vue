@@ -274,7 +274,7 @@ export default {
       }
       this.refreshFlag = false
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.testInfoListTable.refresh(bool)
     },
     handleBack(record) {

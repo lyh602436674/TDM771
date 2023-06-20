@@ -63,7 +63,7 @@
               {{ detailData.isPhotograph === 1 ? '是' : '否' }}
             </h-desc-item>
             <h-desc-item label="备注信息">
-<!--              委托单填写的备注-->
+              <!--              委托单填写的备注-->
               {{ detailData.remarks || '--' }}
             </h-desc-item>
           </h-desc>
@@ -85,6 +85,10 @@
             </vxe-table-column>
           </vxe-table>
         </h-card>
+        <h-card title="报告流转信息">
+          <report-flow-info-table ref="ReportFlowInfoTable" tableHeight="500"
+                                  :reportId="reportId"></report-flow-info-table>
+        </h-card>
       </a-spin>
     </div>
     <report-detail-modal ref="ReportDetailModal"/>
@@ -96,10 +100,11 @@
 import {postAction} from "@api/manage";
 import ReportDetailModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportDetailModal.vue";
 import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal.vue";
+import ReportFlowInfoTable from "@views/hifar/hifar-environmental-test/reports/components/ReportFlowInfoTable.vue";
 
 export default {
   name: "ReportBaseInfoModal",
-  components: {TestTaskBaseInfoModal, ReportDetailModal},
+  components: {TestTaskBaseInfoModal, ReportDetailModal, ReportFlowInfoTable},
   inject: {
     getContainer: {
       default: () => document.body
@@ -119,6 +124,10 @@ export default {
     localLoading: {
       type: Boolean,
       default: false
+    },
+    reportId: {
+      type: String,
+      default: ''
     }
   },
   computed: {

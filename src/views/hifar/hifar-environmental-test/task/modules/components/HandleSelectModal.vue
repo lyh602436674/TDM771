@@ -125,7 +125,7 @@ export default {
         this.ids = []
       }
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.vexTable.refresh(bool)
     },
     handleCancel() {

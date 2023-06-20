@@ -272,7 +272,7 @@ export default {
         }
       })
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.equipmentParameterTable.refresh(bool)
     },
     handleAdd() {

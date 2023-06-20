@@ -199,7 +199,7 @@ export default {
     handleSearch() {
       this.refresh(true)
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       if (this.activeKey == 1) {
         if (this.$refs.unitMethodsTable) {
           this.$refs.unitMethodsTable.refresh(bool)

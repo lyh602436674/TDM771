@@ -140,7 +140,7 @@ export default {
   },
 
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.reportMakeTable.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRow = []

@@ -306,7 +306,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.ProcessPlanningTable.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRows = []

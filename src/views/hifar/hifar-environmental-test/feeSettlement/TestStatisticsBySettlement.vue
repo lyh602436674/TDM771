@@ -139,7 +139,7 @@ export default {
     handleDetail(row) {
       this.$refs.settlementPreviewModal.show(row.id)
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.settlementTable.refresh(bool)
     },
   }

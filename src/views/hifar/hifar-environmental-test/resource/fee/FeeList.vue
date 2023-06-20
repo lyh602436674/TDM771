@@ -183,7 +183,7 @@ export default {
     },
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.custTable.refresh(bool)
       this.selectedRowKeys = []
     },

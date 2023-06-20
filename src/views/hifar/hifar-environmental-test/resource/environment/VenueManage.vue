@@ -174,7 +174,7 @@ export default {
     },
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.selectedRowKeys = []
       this.$refs.venueManageTable.refresh(bool)
     },

@@ -277,7 +277,7 @@ export default {
       this.selectedRowKeys = selectedRowKeys
       // this.selectedRows = selectedRows
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       // this.$refs.equipmentParameter.refresh(bool)
       this.$refs.equipmentParameterTable.refresh(bool)
     },

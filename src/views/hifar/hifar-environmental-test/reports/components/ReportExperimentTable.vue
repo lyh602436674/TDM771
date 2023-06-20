@@ -273,6 +273,14 @@ export default {
           }
         },
         {
+          title: '试验名称',
+          align: 'left',
+          dataIndex: 'testName',
+          customRender: (text, record) => {
+            return text || '--';
+          }
+        },
+        {
           title: '备注信息',
           align: 'left',
           dataIndex: 'remarks',
@@ -353,7 +361,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.reportProductTable.refresh(bool)
     },
     handlePopCancel(subRow) {

@@ -163,7 +163,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.capabilityParameterTable.refresh(bool)
       this.selectedRowKeys = []
     },

@@ -152,7 +152,7 @@ export default {
         this.refresh(true)
       })
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.sensorTable.refresh(bool)
     },
     handleSelectChange(selectedRowKeys, selectedRows) {

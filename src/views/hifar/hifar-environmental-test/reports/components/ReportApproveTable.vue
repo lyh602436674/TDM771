@@ -108,6 +108,13 @@ export default {
           key: 'c_testName_7',
           formType: 'input',
         },
+        {
+          title: '生成时间',
+          key: 'createTime',
+          formType: 'dateRangePick',
+          showTime: true,
+          format: 'YYYY-MM-DD HH:mm',
+        },
       ],
       columns: [
         {
@@ -221,7 +228,7 @@ export default {
   },
 
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.dataCheckTable.refresh(bool)
     },
   },

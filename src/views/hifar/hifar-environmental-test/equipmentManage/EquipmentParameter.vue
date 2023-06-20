@@ -988,7 +988,7 @@ export default {
         }
       })
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       // 这里清除选择中的选项
       this.selectedRowKeys = []
       // 关闭所有弹窗

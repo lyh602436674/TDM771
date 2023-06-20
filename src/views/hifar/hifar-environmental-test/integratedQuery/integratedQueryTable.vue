@@ -94,7 +94,7 @@ export default {
           options: [
             {title: '草稿', value: 3, key: 3},
             {title: '待审核', value: 10, key: 10},
-            {title: '审核通过', value: 20, key: 20},
+            {title: '待批准', value: 20, key: 20},
             {title: '审核驳回', value: 30, key: 30},
             {title: '批准通过', value: 40, key: 40},
             {title: '批准驳回', value: 50, key: 50},
@@ -283,7 +283,7 @@ export default {
     handleEntrustDetail(row, type) {
       this.$refs.integratedQueryModal.show(row.entrustIds, type)
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.table.refresh(bool)
     },
   },

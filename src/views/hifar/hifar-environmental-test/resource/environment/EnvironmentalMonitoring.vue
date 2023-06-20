@@ -286,7 +286,7 @@ export default {
     handleRefresh() {
       this.loadData()
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.EnvironmentalMonitoringTable.refresh(bool)
     },
     handleItem(record, index) {

@@ -146,7 +146,7 @@ export default {
       await downloadFile(this.url, filename, params)
     },
 
-    refresh(bool = true) {
+    refresh(bool = false) {
       if (this.overflowDay) return this.$message.warning('最多支持七天范围内查询');
       this.$refs.historyTemper.refresh(bool)
     },

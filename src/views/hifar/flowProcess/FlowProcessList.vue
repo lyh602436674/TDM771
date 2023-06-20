@@ -132,7 +132,7 @@ export default {
     }
   },
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.flowProcessTable.refresh(bool)
     },
     loadData(params) {

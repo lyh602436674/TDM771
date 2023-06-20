@@ -194,7 +194,7 @@ export default {
           options: [
             {title: '草稿', value: 3, key: 3},
             {title: '待审核', value: 10, key: 10},
-            {title: '审核通过', value: 20, key: 20},
+            {title: '待批准', value: 20, key: 20},
             {title: '审核驳回', value: 30, key: 30},
             {title: '批准通过', value: 40, key: 40},
             {title: '批准驳回', value: 50, key: 50},
@@ -218,12 +218,18 @@ export default {
           key: 'c_custLinkMobile_7',
           formType: 'input'
         },
-
         {
           title: '试验项目',
           key: 'c_testName_7',
           formType: 'input'
-        }
+        },
+        {
+          title: '生成时间',
+          key: 'createTime',
+          formType: 'dateRangePick',
+          showTime: true,
+          format: 'YYYY-MM-DD HH:mm',
+        },
       ],
       columns: [
         {
@@ -309,10 +315,19 @@ export default {
           scopedSlots: {customRender: 'transferStatus'}
         },
         {
-          title: '试验项目',
+          title: '试验名称',
           align: 'left',
           width: 120,
           dataIndex: 'testName',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '项目名称',
+          align: 'left',
+          width: 120,
+          dataIndex: 'unitName',
           customRender: (text, record) => {
             return text || '--'
           }
@@ -474,7 +489,7 @@ export default {
         this.refresh()
       }
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.reportMakeTable.refresh(bool)
       this.loadReportNum()
       this.selectedRowKeys = []

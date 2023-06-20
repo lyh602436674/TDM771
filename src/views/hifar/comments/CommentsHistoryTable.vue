@@ -192,7 +192,7 @@ export default {
   },
 
   methods: {
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.taskAssignTable.refresh(bool)
     },
     handleAssign(record) {

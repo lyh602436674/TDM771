@@ -424,7 +424,7 @@ export default {
       officeOnlineEdit(fileUrl.split('?')[1])
       // WebCtrl.ShowEditPage(fileUrl.split('?')[0], this.$ls.get(ACCESS_TOKEN), baseUrl, fileUrl.split('?')[1], 'env')
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$refs.testArchiveTable.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRows = []

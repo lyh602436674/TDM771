@@ -178,7 +178,7 @@ export default {
       this.$emit('selected', selectedRowKeys, selectedRow)
       this.$emit('change', selectedRowKeys, selectedRow)
     },
-    refresh(bool = true) {
+    refresh(bool = false) {
       this.$nextTick(() => {
         this.$refs.unitListTable.refresh(bool)
         this.selectedRowKeys = []
