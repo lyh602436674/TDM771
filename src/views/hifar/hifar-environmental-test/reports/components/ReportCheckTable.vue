@@ -115,103 +115,107 @@ export default {
           scopedSlots: {customRender: 'reportCode'}
         },
         {
-          title: '运行单号',
-          align: 'left',
-          dataIndex: 'entrustCode',
-          width: 160,
-          customRender: (text, record) => {
-            return text || '--'
-          },
-        },
-        {
           title: '状态',
           align: 'left',
           width: 120,
           dataIndex: 'status',
-          scopedSlots: {customRender: 'status'},
+          scopedSlots: {customRender: 'status'}
         },
         {
-          title: '产品代号',
+          title: '试验编号',
           align: 'left',
-          width: 120,
-          dataIndex: 'productAlias',
-          customRender: (text, record) => {
-            return text || '--'
-          },
+          width: 130,
+          dataIndex: 'testCode'
+        },
+        {
+          title: '试件代号',
+          align: 'left',
+          width: 130,
+          dataIndex: 'productAlias'
         },
         {
           title: '产品名称',
           align: 'left',
-          dataIndex: 'productName',
-          customRender: (text, record) => {
-            return text || '--'
-          },
+          width: 130,
+          dataIndex: 'productName'
         },
         {
-          title: '产品编号',
+          title: '送试单位',
           align: 'left',
-          width: 100,
-          dataIndex: 'pieceNo',
+          width: 190,
+          dataIndex: 'custName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
-          title: '产品数量',
+          title: '联系人',
           align: 'left',
           width: 80,
-          dataIndex: 'pieceCount',
+          dataIndex: 'custLinkName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
-          title: '试验项目',
+          title: '联系方式',
+          align: 'left',
+          width: 120,
+          dataIndex: 'custLinkMobile',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '运行单号',
+          align: 'left',
+          width: 165,
+          dataIndex: 'entrustCode',
+        },
+        {
+          title: '委托单号',
+          align: 'left',
+          width: 130,
+          dataIndex: 'entrustNo',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '试验名称',
           align: 'left',
           width: 120,
           dataIndex: 'testName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
-          title: '试验性质',
-          width: 100,
-          align: 'center',
-          dataIndex: 'testPropertyCode_dictText',
+          title: '项目名称',
+          align: 'left',
+          width: 120,
+          dataIndex: 'unitName',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '创建人',
+          align: 'left',
+          width: 120,
+          dataIndex: 'createUserName',
           customRender: (text, record) => {
             return text || '--'
           },
         },
         {
-          title: '是否加电',
-          align: 'center',
-          width: 80,
-          dataIndex: 'isPowerUp',
-          customRender: (text, record) => {
-            return text === '1' ? '是' : "否"
+          title: '创建时间',
+          align: 'left',
+          width: 150,
+          dataIndex: 'createTime',
+          customRender: (time, record) => {
+            return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD') : '--'
           },
-        },
-        {
-          title: '加电时间',
-          width: 100,
-          align: 'center',
-          dataIndex: 'powerUpTime_dictText',
-        },
-        {
-          title: '是否显示最终用户',
-          width: 140,
-          align: 'center',
-          dataIndex: 'isShowUserInReport',
-          customRender: (text) => {
-            return text === '1' ? '是' : "否"
-          }
-        },
-        {
-          title: '最终用户',
-          width: 100,
-          align: 'center',
-          dataIndex: 'lastUser_dictText',
         },
       ],
       type: 'check',

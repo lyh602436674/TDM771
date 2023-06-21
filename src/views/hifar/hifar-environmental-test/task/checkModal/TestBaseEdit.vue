@@ -1979,13 +1979,13 @@ export default {
       this.personArr = this.personArr.concat(uniqueArray(this.personArr, 'testUserId-testPostId', newPerson, 'testUserId-testPostId'))
     },
     equipAdd() {
-      this.$refs.equipHandleSelectModal.show(this.equipData)
+      this.$refs.equipHandleSelectModal.show(this.equipData, 'equipId')
     },
     equipHandleDelete(index) {
       this.equipData.splice(index, 1)
     },
     equipCallback(value) {
-      this.equipData = this.equipData.concat(value)
+      this.equipData = this.equipData.concat(value.map(item => ({...item, equipId: item.id})))
     },
     toolsProductCallback(value) {
       let setToolsIdValue = value.map(item => {

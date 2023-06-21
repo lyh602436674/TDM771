@@ -125,78 +125,94 @@ export default {
           scopedSlots: {customRender: 'reportCode'}
         },
         {
-          title: '报告编号',
-          align: 'left',
-          width: 140,
-          dataIndex: 'reportCode',
-          customRender: (t) => {
-            return t || '--'
-          }
-        },
-        {
           title: '状态',
           align: 'left',
           width: 120,
           dataIndex: 'status',
-          scopedSlots: {customRender: 'status'},
+          scopedSlots: {customRender: 'status'}
         },
         {
           title: '试验编号',
           align: 'left',
-          width: 140,
-          dataIndex: 'testCode',
+          width: 130,
+          dataIndex: 'testCode'
+        },
+        {
+          title: '试件代号',
+          align: 'left',
+          width: 130,
+          dataIndex: 'productAlias'
+        },
+        {
+          title: '产品名称',
+          align: 'left',
+          width: 130,
+          dataIndex: 'productName'
         },
         {
           title: '送试单位',
           align: 'left',
+          width: 190,
           dataIndex: 'custName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '联系人',
           align: 'left',
+          width: 80,
           dataIndex: 'custLinkName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '联系方式',
           align: 'left',
+          width: 120,
           dataIndex: 'custLinkMobile',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
           title: '运行单号',
           align: 'left',
+          width: 165,
           dataIndex: 'entrustCode',
-          customRender: (text, record) => {
-            return text || '--'
-          },
         },
         {
           title: '委托单号',
           align: 'left',
+          width: 130,
           dataIndex: 'entrustNo',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
         },
         {
-          title: '试验项目',
+          title: '试验名称',
           align: 'left',
+          width: 120,
           dataIndex: 'testName',
           customRender: (text, record) => {
             return text || '--'
-          },
+          }
+        },
+        {
+          title: '项目名称',
+          align: 'left',
+          width: 120,
+          dataIndex: 'unitName',
+          customRender: (text, record) => {
+            return text || '--'
+          }
         },
         {
           title: '创建人',
           align: 'left',
+          width: 120,
           dataIndex: 'createUserName',
           customRender: (text, record) => {
             return text || '--'
@@ -205,6 +221,7 @@ export default {
         {
           title: '创建时间',
           align: 'left',
+          width: 150,
           dataIndex: 'createTime',
           customRender: (time, record) => {
             return time && time != 0 ? moment(parseInt(time)).format('YYYY-MM-DD') : '--'

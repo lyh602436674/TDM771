@@ -1,6 +1,7 @@
 <template>
   <div>
-    <report-base-info-modal :reportId="reportId" :localLoading="localLoading" ref="reportBaseInfoModal" :detailData="detailData"
+    <report-base-info-modal :reportId="reportId" :localLoading="localLoading" ref="reportBaseInfoModal"
+                            :detailData="detailData"
                             @close="handleCancel">
       <a-space>
         <a-button
@@ -26,7 +27,7 @@
               @beforeUpload="localLoading = true"
               @change="file => handleUploadCallback(file,detailData,true)"
             >
-              <a-icon v-has="'report:upload'" class="primary-text cursor-pointer" title="上传" type="upload"/>
+              <a-button v-has="'report:upload'" type="primary" icon="upload">上传</a-button>
             </h-upload-file-b>
           </a-space>
         </span>
@@ -91,7 +92,7 @@ import ReportDetailModal from '@/views/hifar/hifar-environmental-test/reports/mo
 
 export default {
   name: "ReportMakeBaseModal",
-  components: {ReportDetailModal,  ReportBaseInfoModal},
+  components: {ReportDetailModal, ReportBaseInfoModal},
   inject: {
     getContainer: {
       default: () => document.body
