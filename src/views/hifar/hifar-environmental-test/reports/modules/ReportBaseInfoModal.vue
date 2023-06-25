@@ -22,7 +22,7 @@
             </h-desc-item>
             <h-desc-item label="试验编号">
               <template slot="content">
-                <a @click="$refs.testTaskBaseInfoModal.show(detailData,'3','20px','testId')">
+                <a @click="$refs.testBaseInfoForMultipleModal.show(detailData)">
                   {{ detailData.testCode || '--' }}</a>
               </template>
             </h-desc-item>
@@ -63,7 +63,7 @@
               {{ detailData.isPhotograph === 1 ? '是' : '否' }}
             </h-desc-item>
             <h-desc-item label="备注信息">
-              <!--              委托单填写的备注-->
+              <!-- 委托单填写的备注-->
               {{ detailData.remarks || '--' }}
             </h-desc-item>
           </h-desc>
@@ -92,7 +92,7 @@
       </a-spin>
     </div>
     <report-detail-modal ref="ReportDetailModal"/>
-    <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
+    <test-base-info-for-multiple-modal  ref="testBaseInfoForMultipleModal"/>
   </h-modal>
 </template>
 
@@ -101,10 +101,12 @@ import {postAction} from "@api/manage";
 import ReportDetailModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportDetailModal.vue";
 import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal.vue";
 import ReportFlowInfoTable from "@views/hifar/hifar-environmental-test/reports/components/ReportFlowInfoTable.vue";
+import TestBaseInfoForMultipleModal
+  from "@views/hifar/hifar-environmental-test/reports/modules/TestBaseInfoForMultipleModal.vue";
 
 export default {
   name: "ReportBaseInfoModal",
-  components: {TestTaskBaseInfoModal, ReportDetailModal, ReportFlowInfoTable},
+  components: {TestBaseInfoForMultipleModal, ReportDetailModal, ReportFlowInfoTable},
   inject: {
     getContainer: {
       default: () => document.body
@@ -114,6 +116,9 @@ export default {
     return {
       visible: false,
       isIntranet: true,
+      url: {
+        queryDetail: "/HfEnvTaskTestBusiness/queryListByIds"
+      }
     }
   },
   props: {

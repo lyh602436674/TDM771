@@ -1894,7 +1894,7 @@ export default {
             }
           })
           this.testDirectionRequired = !model.insertMethodInfo.length || model.insertMethodInfo.some(item => item.directionId !== undefined && item.directionId !== null && item.directionId !== '') ? 1 : 2
-          this.$nextTick(() => {
+          this.isShow && this.$nextTick(() => {
             this.$refs.testDirectSwitch.forceUpdate(this.testDirectionRequired)
           })
           this.installControlExpandedRowKeys = this.installControlTable.map(item => item.id)

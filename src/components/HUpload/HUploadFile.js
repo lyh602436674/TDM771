@@ -361,11 +361,13 @@ export default {
         if (this.isVarSeq) {
           columns.unshift(this.seqColumn[0])
         }
-        columns.unshift({
-          type: 'checkbox',
-          width: 50,
-          align: 'center',
-        })
+        if (this.isEdit) {
+          columns.unshift({
+            type: 'checkbox',
+            width: 50,
+            align: 'center',
+          })
+        }
         return h(
           'vxe-table',
           {

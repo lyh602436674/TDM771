@@ -343,7 +343,8 @@ export default {
         }
         return postAction(this.url.subList, data).then(res => {
           if (res.code === 200) {
-            this.tableHeight = res.data.length * 40 + 40
+            let length = res.data.length
+            this.tableHeight = length ? length * 40 + 40 : 100
             return res.data.map(item => {
               return {
                 ...item,
