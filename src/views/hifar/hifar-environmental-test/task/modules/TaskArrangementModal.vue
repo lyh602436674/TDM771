@@ -424,7 +424,6 @@ export default {
       gantt.ext.tooltips.tooltip.hide()
     },
     handleCancel() {
-      this.destroyTooltip()
       this.visible = false
       this.model = {}
       this.queryParams = {}
@@ -432,6 +431,7 @@ export default {
       this.queryTime = [moment().startOf('day'), moment().endOf('day')]
       this.equipList = []
       this.localTaskId = null
+      this.destroyTooltip()
       this.$emit("change")
     },
 

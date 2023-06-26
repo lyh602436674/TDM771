@@ -69,44 +69,70 @@ export default {
       unitId: '',
       searchBar: [
         {
+          title: '试件代号',
+          formType: 'input',
+          key: 'c_productAlias_7',
+        },
+        {
+          title: '产品名称',
+          formType: 'input',
+          key: 'c_productName_7',
+        },
+        {
           title: '报告编号',
           key: 'c_reportCode_7',
-          formType: 'input',
-        },
-        {
-          title: '委托单号',
-          key: 'c_entrustNo_7',
-          formType: 'input',
-        },
-        {
-          title: '运行单号',
-          key: 'c_entrustCode_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '试验编号',
           key: 'c_testCode_7',
-          formType: 'input',
+          formType: 'input'
+        },
+        {
+          title: '委托单号',
+          key: 'c_entrustNo_7',
+          formType: 'input'
+        },
+        {
+          title: '运行单号',
+          key: 'c_entrustCode_7',
+          formType: 'input'
+        },
+        {
+          title: '状态',
+          key: 'c_status_1',
+          formType: 'select',
+          options: [
+            {title: '草稿', value: 3, key: 3},
+            {title: '待审核', value: 10, key: 10},
+            {title: '待批准', value: 20, key: 20},
+            {title: '审核驳回', value: 30, key: 30},
+            {title: '批准通过', value: 40, key: 40},
+            {title: '批准驳回', value: 50, key: 50},
+            {title: '修改审批', value: 60, key: 60},
+            {title: '修改审批通过', value: 70, key: 70},
+            {title: '修改审批驳回', value: 80, key: 80},
+          ]
         },
         {
           title: '送试单位',
           key: 'c_custName_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '联系人',
           key: 'c_custLinkName_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '联系方式',
           key: 'c_custLinkMobile_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '试验项目',
           key: 'c_testName_7',
-          formType: 'input',
+          formType: 'input'
         },
         {
           title: '生成时间',
