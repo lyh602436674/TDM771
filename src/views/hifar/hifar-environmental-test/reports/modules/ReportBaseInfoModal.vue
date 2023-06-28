@@ -45,7 +45,10 @@
               {{ detailData.entrustNo || '--' }}
             </h-desc-item>
             <h-desc-item label="运行单号">
-              {{ detailData.entrustCode || '--' }}
+              <template slot="content">
+                <a @click="$refs.testTaskBaseInfoModal.show(detailData,'2','20px','testId')">
+                  {{ detailData.entrustCode || '--' }}</a>
+              </template>
             </h-desc-item>
             <h-desc-item label="试验名称">
               {{ detailData.testName || '--' }}
@@ -92,7 +95,8 @@
       </a-spin>
     </div>
     <report-detail-modal ref="ReportDetailModal"/>
-    <test-base-info-for-multiple-modal  ref="testBaseInfoForMultipleModal"/>
+    <test-base-info-for-multiple-modal ref="testBaseInfoForMultipleModal"/>
+    <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
   </h-modal>
 </template>
 
@@ -106,7 +110,7 @@ import TestBaseInfoForMultipleModal
 
 export default {
   name: "ReportBaseInfoModal",
-  components: {TestBaseInfoForMultipleModal, ReportDetailModal, ReportFlowInfoTable},
+  components: {TestBaseInfoForMultipleModal, ReportDetailModal, ReportFlowInfoTable, TestTaskBaseInfoModal},
   inject: {
     getContainer: {
       default: () => document.body

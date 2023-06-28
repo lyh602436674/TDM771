@@ -145,6 +145,7 @@ export default {
       })
     },
     handleDownload(record, type) {
+      if (!record.pdfPath) return this.$message.warning('pdf文件不存在')
       let obj = {
         docx: {
           loading: 'docxLoading',
@@ -169,12 +170,13 @@ export default {
     // 编辑
     handleEdit(record) {
       let fileUrl = record.filePath.split('?')[0]
-      officeOnlineEdit(fileUrl)
+      officeOnlineEdit(fileUrl, {IsSaveAsPDF: [40, 50, 80].includes(record.status)})
     },
     // 详情
     handleDetail(record) {
-      let type = 'detail'
-      this.$refs.ReportDetailModal.show(record.id, type)
+      let fileUrl = record.filePath.split('?')[0]
+      officeOnlineEdit(fileUrl, {IsSaveEnabled: false})
+      // this.$refs.ReportDetailModal.show(record.id, 'detail')
     },
     // 提交
     handleSubmit(record) {

@@ -20,9 +20,6 @@
         :rowKey="(record) => record.id"
       />
     </h-card>
-    <template slot='footer' class="drawer-bootom-button">
-      <a-button type="ghost-danger" style="margin-right: 8px" @click="handleCancel"> 关闭 </a-button>
-    </template >
   </h-modal>
 </template>
 

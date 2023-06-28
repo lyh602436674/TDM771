@@ -54,6 +54,7 @@ export default {
         productName,
         productAlias,
         testDirection,
+        watermarkInput: this.watermarkInput,
       }
       postAction(this.url.collectImage, params).then(res => {
         if (res.code === 200) {
@@ -117,14 +118,11 @@ export default {
         },
 
       }, [
-        h('div', {
+        this.uploadBtnPopover(h, h('div', {
           style: {
             width: "100%",
             height: "50%"
           },
-          on: {
-            click: this.autoCollectImage
-          }
         }, [
           h('a-icon', {
             props: {
@@ -142,7 +140,8 @@ export default {
               display: "block",
               textAlign: "center"
             }
-          }, "自动采集")]),
+          }, "自动采集")
+        ]), this.autoCollectImage),
         h('div', {
           style: {
             width: "100%",
@@ -193,7 +192,7 @@ export default {
             color: "#bfbfbf"
           }
         }, "点击上传图片")
-      ]))
+      ]), this.popoverSubmit)
       if (this.multiple) {
         if (this.fileList.length >= Math.abs(this.max)) {
           dom = null
@@ -214,7 +213,7 @@ export default {
     popoverSubmit() {
       this.clickUpload()
     },
-    uploadBtnPopover(h, slot) {
+    uploadBtnPopover(h, slot, callback) {
       // slot的父级标签必须能接受 mouseenter、mouseleave、focus、click 事件。
       return h('a-popover', {
           props: {
@@ -231,7 +230,7 @@ export default {
               <div style={{width: "100%", marginTop: "10px", display: "flex", justifyContent: "right"}}>
                 {/*<a-button onClick={this.popoverCancel}>{'取消'}</a-button>*/}
                 <a-button style={{marginLeft: "5px"}} type="primary"
-                          onClick={this.popoverSubmit}>{'确定'}</a-button>
+                          onClick={() => callback()}>{'确定'}</a-button>
               </div>
             ]
           )
@@ -269,12 +268,11 @@ export default {
                   icon: 'upload',
                   size: "small"
                 },
-              }, '点击上传'))
+              }, '点击上传'), this.popoverSubmit)
               : null,
-            this.isEdit ?
+            this.uploadBtnPopover(h, this.isEdit ?
               <a-button style={{marginLeft: '10px'}} icon={this.loading ? 'loading' : 'video-camera'} size="small"
-                        type={"ghost-primary"}
-                        onClick={this.autoCollectImage}>{'自动采集'}</a-button> : null,
+                        type={"ghost-primary"}>{'自动采集'}</a-button> : null, this.autoCollectImage),
             this.isEdit ?
               <a-button style={{marginLeft: '10px'}} icon={this.loading ? 'loading' : 'video-camera'} size="small"
                         type={"ghost-primary"}

@@ -209,7 +209,7 @@ export function officeOnlineEdit(fileUrl, extendParams) {
     AccessKey: 'minioadmin',
     SecretKey: 'minioadmin',
     ServerOfficeFileUrl: decodeURIComponent(fileUrl.replace(/\+/g, '%20')),
-    IsSaveAsPDF: true, // 是否可同步保存pdf
+    IsSaveAsPDF: false, // 是否可同步保存pdf
     IsSaveEnabled: true,// 保存按钮是否可点击
   }
   if (isObject(extendParams)) {

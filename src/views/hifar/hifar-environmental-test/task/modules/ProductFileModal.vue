@@ -107,7 +107,7 @@ export default {
       popoverVisible: false,
       url: {
         delete: '/MinioBusiness/logicRemoveById',
-        attachList: '/MinioBusiness/listByRefId',
+        attachList: '/MinioLocalBusiness/listByRefId',
         collectVideo: "/HfEnvPieceBusiness/recordVideo",
         collectImage: "/HfEnvPieceBusiness/takePhoto",
         updateIsInReport: "/HfEnvTaskTestBusiness/updateFileStatus",

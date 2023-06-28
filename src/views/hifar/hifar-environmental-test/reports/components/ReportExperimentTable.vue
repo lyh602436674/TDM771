@@ -9,6 +9,11 @@
       style='width: 100%'
       @change='refresh(true)'
     />
+    <div v-if="activeKey === '1'" slot="table-operator">
+      <a-button icon="stop" type="primary" @click="handleInvalid">
+        失效
+      </a-button>
+    </div>
     <h-vex-table
       ref='reportProductTable'
       slot='content'
@@ -95,7 +100,11 @@ export default {
     reportFlag: {
       type: Number,
       default: 50
-    }
+    },
+    activeKey: {
+      type: String,
+      default: '1'
+    },
   },
   data() {
     return {
@@ -114,7 +123,8 @@ export default {
       tableHeight: 40,
       url: {
         subList: '/HfEnvReportBusiness/listPageTest',
-        list: "/HfEnvReportBusiness/listPageEntrustByReportFlag"
+        list: "/HfEnvReportBusiness/listPageEntrustByReportFlag",
+        invalid: "/HfEnvTaskTestBusiness/modifyStatusById"
       },
       // 搜索
       searchBar: [
@@ -327,7 +337,7 @@ export default {
           ...this.queryParam,
           ...params,
           c_reportType_1: '1',
-          reportFlag: this.reportFlag, // 50 待出 60 已出
+          reportFlag: this.reportFlag, // 50 待出 60 已出 98失效
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
@@ -339,7 +349,7 @@ export default {
         let data = {
           entrustId: this.expandedRow.entrustId,
           entrustNo: this.expandedRow.entrustNo,
-          reportFlag: this.reportFlag, // 50 待出 60 已出
+          reportFlag: this.reportFlag, // 50 待出 60 已出 98失效
         }
         return postAction(this.url.subList, data).then(res => {
           if (res.code === 200) {
@@ -364,6 +374,19 @@ export default {
   methods: {
     refresh(bool = false) {
       this.$refs.reportProductTable.refresh(bool)
+    },
+    handleInvalid() {
+      if (!this.selectedSubRowKeys.length) {
+        return this.$message.warning('请至少选择一条试验任务')
+      }
+      postAction(this.url.invalid, {id: this.selectedSubRowKeys.toString(), status: 98}).then(res => {
+        if (res.code === 200) {
+          this.$refs.subTable.refresh(true)
+          this.$message.success('设置成功！')
+        } else {
+          this.$message.warning('设置失败')
+        }
+      })
     },
     handlePopCancel(subRow) {
       this.$set(subRow, 'popoverVisible', false)

@@ -1,27 +1,30 @@
 <template>
   <div>
-    <report-base-info-modal :reportId="reportId" :localLoading="localLoading" ref="reportBaseInfoModal" :detailData="detailData"
+    <report-base-info-modal :reportId="reportId" :localLoading="localLoading" ref="reportBaseInfoModal"
+                            :detailData="detailData"
                             @close="handleCancel">
       <a-space>
         <a-button icon="eye" @click="handleDetail(detailData)" type="primary">详情</a-button>
         <template v-if="detailData.status === 20">
-          <a-button type="primary" icon="edit" @click="handleOnlineEdit(detailData)">编辑</a-button>
+<!--          <a-button type="primary" icon="edit" @click="handleOnlineEdit(detailData)">编辑</a-button>-->
           <a-popconfirm title="确定批准通过吗?" @confirm="() => handleCheckPass(detailData.id)">
             <a-button v-has="'reportApprove:pass'" type="primary" icon="check">批准通过</a-button>
           </a-popconfirm>
-          <report-reject-popover style="display: inline-block" @reject="handleCheck(detailData.id)"
-                                 @write="handleWrite(detailData.id)">
+<!--          <report-reject-popover style="display: inline-block" @reject="handleCheck(detailData.id)"-->
+          <!--                                 @write="handleWrite(detailData.id)">-->
             <a-button
               v-has="'reportApprove:reject'"
               icon="close"
               type="primary"
+              @click="handleWrite(detailData.id)"
             >批准驳回
             </a-button>
-          </report-reject-popover>
+<!--          </report-reject-popover>-->
         </template>
       </a-space>
     </report-base-info-modal>
     <report-detail-modal :queryType="queryType" @change="detailChange" ref="ReportDetailModal"/>
+    <report-reject-info-modal ref="reportRejectInfoModal" @change="loadData"/>
   </div>
 </template>
 
@@ -30,10 +33,11 @@ import {downloadFile, getAction, officeOnlineEdit, postAction} from "@api/manage
 import ReportBaseInfoModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportBaseInfoModal.vue";
 import ReportDetailModal from '@/views/hifar/hifar-environmental-test/reports/modules/ReportDetailModal'
 import ReportRejectPopover from "@views/hifar/hifar-environmental-test/reports/components/ReportRejectPopover";
+import ReportRejectInfoModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportRejectInfoModal.vue";
 
 export default {
   name: "ReportApproveBaseModal",
-  components: {ReportDetailModal, ReportRejectPopover, ReportBaseInfoModal},
+  components: {ReportRejectInfoModal, ReportDetailModal, ReportRejectPopover, ReportBaseInfoModal},
   inject: {
     getContainer: {
       default: () => document.body
@@ -56,12 +60,14 @@ export default {
     }
   },
   methods: {
-    detailChange(){
+    detailChange() {
       this.refreshFlag = true
       this.handleCancel()
     },
     handleDetail(record) {
-      this.$refs.ReportDetailModal.show(record.id, 'approve', '2')
+      let fileUrl = record.filePath.split('?')[0]
+      officeOnlineEdit(fileUrl, {IsSaveEnabled: false})
+      // this.$refs.ReportDetailModal.show(record.id, 'approve', '2')
     },
     handleCheck(id) {
       this.localLoading = true
@@ -90,7 +96,7 @@ export default {
       })
     },
     handleWrite(id) {
-      this.$refs.ReportDetailModal.show(id, 'approve', '2', true)
+      this.$refs.reportRejectInfoModal.show(id, 'approve')
     },
     loadData() {
       postAction(this.url.detail, {id: this.reportId,}).then((res) => {
