@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import {dateTimeFormatByStamp} from "@/utils/util";
+
 export default {
   name: "TestSwitchRecording",
   props: {
@@ -74,7 +76,7 @@ export default {
           width: 220,
           customRender: (t, row) => {
             let {personName, personSignTime} = row
-            return personName && personSignTime ? personName + ' ' + this.momentFormatFun(personSignTime, 'YYYY-MM-DD HH:mm:ss') : ''
+            return personName && personSignTime ? personName + ' ' + dateTimeFormatByStamp(personSignTime, 'YYYY-MM-DD HH:mm:ss') : ''
           }
         },
       ],

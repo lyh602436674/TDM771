@@ -37,7 +37,8 @@ export default {
       deep: true,
       handler(val) {
         if (val && Object.keys(val).length) {
-          this.watermarkInput = val.productAlias + ' ' + val.pieceNo + ' ' + this.customParams.testDirection
+          // this.watermarkInput = val.productAlias + ' ' + val.pieceNo + ' ' + this.customParams.testDirection
+          this.watermarkInput = this.customParams.testDirection.split('-')[1]
         }
       }
     }

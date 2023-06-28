@@ -195,9 +195,9 @@ export default {
           }
         },
         {
-          title: '设备型号',
+          title: '试验条件',
           align: 'left',
-          dataIndex: 'equipModel',
+          dataIndex: 'testCondition',
           customRender: (text, record) => {
             return text || '--';
           }

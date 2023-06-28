@@ -19,7 +19,7 @@
   >
     <template slot='footer'>
       <a-button type='ghost-danger' @click='handleCancel'> 关闭</a-button>
-      <a-button type='primary' @click='handleCancel'> 保存</a-button>
+      <a-button type='primary' @click='handleSave'> 保存</a-button>
     </template>
     <a-spin :spinning='spinLoading'>
       <h-card v-if="type === 'before'" :showCollapse='false' style='min-height: 600px'>
@@ -248,12 +248,7 @@ export default {
       default: () => document.body
     }
   },
-  props: {
-    buildWord: {
-      type: Boolean,
-      default: false
-    }
-  },
+  props: {},
   components: {CheckEnsureModal},
   data() {
     return {
@@ -274,7 +269,9 @@ export default {
         fill: '/HfEnvTaskTestBusiness/saveTestCheckItem',
         check: '/HfEnvTaskTestBusiness/checkTestCheckItem',
         deleteCheckDoItem: '/HfEnvTaskTestBusiness/deleteCheckDoItem',
-        updateCheckItem: '/HfEnvTaskTestBusiness/updateCheckItem'
+        updateCheckItem: '/HfEnvTaskTestBusiness/updateCheckItem',
+        userCheck: "/HfEnvTaskTestBusiness/validateUserInfo",
+        save: "/HfEnvTaskTestBusiness/insertCheckItem",
       }
     }
   },
@@ -319,10 +316,6 @@ export default {
           defaultConditionFlag: 0
         }
       })
-      // 复制后自动把复制的数据保存了
-      for (let i = 0; i < extendCheckedList.length; i++) {
-        await postAction(this.url.updateCheckItem, extendCheckedList[i])
-      }
       this[type] = this[type].concat(extendCheckedList).map(item1 => {
         return {...item1, checked: false}
       })
@@ -357,38 +350,24 @@ export default {
         this.getCheckDetail()
       }
     },
-    async handleCancelBefore() {
+    handleSave() {
       let typeObj = {
         before: 'beforeCheckInfo',
         testMiddle: 'inCheckInfo',
         after: 'afterCheckInfo'
       }
-      let isEditItem = this[typeObj[this.type]].filter(item => item.isEdit === true)
-      let isUnfinished = isEditItem.some(item => !item.itemContent || !item.itemName || !item.itemRequire || !item.itemRes)
-      if (isEditItem.length === 0) return true
-      if (isUnfinished) {
-        this.$message.warning('还有未填写完成的检查项')
-        return false
-      }
-      let bool = false
-      for (let i = 0; i < isEditItem.length; i++) {
-        isEditItem[i].isdel = this.buildWord ? '1' : "0";
-        let updateItem = await this.handleRequest(isEditItem[i])
-        if (updateItem.code === 200) {
-          bool = true
+      this.spinLoading = true
+      postAction(this.url.save, {items: this[typeObj[this.type]], testId: this.testId}).then(res => {
+        if (res.code === 200) {
+          this.$message.success('保存成功')
         } else {
           this.$message.warning('保存出错')
-          bool = false
-          return
         }
-      }
-      return bool
+      }).finally(() => {
+        this.spinLoading = false
+      })
     },
-    handleRequest(item) {
-      return postAction(this.url.updateCheckItem, item)
-    },
-    async handleCancel() {
-      if (!(await this.handleCancelBefore())) return
+    handleCancel() {
       this.visible = false
       this.spinLoading = false
       this.beforeCheckInfo = []
@@ -422,159 +401,94 @@ export default {
       this.$set(this[type][index], 'checkUserName', '')
       this.$set(this[type][index], 'checkUserId', '')
       this.$set(this[type][index], 'checkTime', '')
-      this.handleRequest(item)
+    },
+    showCheckEnsureModal(callback) {
+      this.$refs.checkEnsureModal.show({}, value => {
+        postAction(this.url.userCheck, {userCode: value.userCode, password: value.password}).then(res => {
+          if (res.code === 200) {
+            callback(res)
+            this.$refs.checkEnsureModal.handleCancel()
+          }
+        }).finally(() => {
+          this.$refs.checkEnsureModal.submitLoading = false
+        })
+      })
     },
     handleFillCheck(item) {
-      let record = {
-        checkItemInfo: []
-      }
-      if (isArray(item)) {
-        record.checkItemInfo = item
-      } else if (isObject(item)) {
-        record.checkItemInfo.push({
-          id: item.id,
-          itemRes: item.itemRes
-        })
-      }
-      this.$refs.checkEnsureModal.show(record, this.handleFillSubmit)
-    },
-    handleFillSubmit(record) {
-      postAction(this.url.fill, {...record, isdel: this.buildWord ? '1' : "0"}).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('检查审核成功')
-          this.getCheckDetail()
-          this.resetCheckedState()
-          this.$refs.checkEnsureModal.handleCancel()
-        }
-      }).finally(() => {
-        this.$refs.checkEnsureModal.submitLoading = false
+      this.showCheckEnsureModal(res => {
+        this.setFillInfo(item, res)
       })
+    },
+    setFillInfo(item, res) {
+      item.fillUserName = res.data.idName
+      item.fillUserId = res.data.userId
+      item.fillTime = res.data.time
+    },
+    setCheckInfo(item, res) {
+      item.checkUserName = res.data.idName
+      item.checkUserId = res.data.userId
+      item.checkTime = res.data.time
     },
     handleDelete(item, index, type) {
-      if (!this.isDelete(item)) return
-      //  如果时手动新增的，那就前台删除
-      if (item.isEdit && !item.isSave) {
-        this[type].splice(index, 1)
-      } else if (item.isEdit && item.isSave) {
-        deleteItem.call(this)
-      } else {
-        deleteItem.call(this)
-      }
-
-      function deleteItem() {
-        postAction(this.url.deleteCheckDoItem, {
-          id: item.id,
-          testId: this.testId,
-          isdel: this.buildWord ? '1' : "0"
-        }).then(res => {
-          if (res.code === 200) {
-            this.$message.success('删除成功')
-            this.getCheckDetail()
-          } else {
-            this.$message.error('删除失败')
-          }
-        })
-      }
+      this[type].splice(index, 1)
     },
     handleFlagCheck(item) {
-      let record = {
-        checkItemInfo: []
-      }
-      if (isArray(item)) {
-        record.checkItemInfo = item
-      } else if (isObject(item)) {
-        if (+item.checkFlag === 2) return this.$message.warning('无需复核')
-        record.checkItemInfo.push({
-          id: item.id
-        })
-      }
-      this.$refs.checkEnsureModal.show(record, this.handleCheckSubmit)
-    },
-    handleCheckSubmit(record) {
-      postAction(this.url.check, {...record, isdel: this.buildWord ? '1' : "0"}).then((res) => {
-        if (res.code === 200) {
-          this.$message.success('检查复核成功')
-          this.getCheckDetail()
-          this.resetCheckedState()
-          this.$refs.checkEnsureModal.handleCancel()
-        }
-      }).finally(() => {
-        this.$refs.checkEnsureModal.submitLoading = false
+      if (+item.checkFlag === 2) return this.$message.warning('无需复核')
+      this.showCheckEnsureModal(res => {
+        this.setCheckInfo(item, res)
       })
-    },
-    checkItem() {
-      let items = [], arr = cloneDeep(arguments[0])
-      for (let i = 0; i < arr.length; i++) {
-        let {itemContent, itemName, itemRequire} = arr[i]
-        if (itemContent || itemName || itemRequire) {
-          let obj = {}
-          arguments[1].forEach(item => {
-            if (typeof item === 'string') {
-              obj[item] = arr[i][item] || ''
-            }
-          })
-          items.push(obj)
-        } else {
-          arr.splice(i, 1)
-          i--
-        }
-      }
-      return items
     },
     handleFillAll(type) {
       if (this[type].length === 0) {
         return this.$message.warning('请先新增检查项')
       }
       let checkedList = this.filterCheckedList(type)
-      if (checkedList.length) {
-        let items = this.checkItem(checkedList, ['id', 'itemRes'])
-        if (items.length > 0) {
-          this.handleFillCheck(items)
-        } else {
-          return this.$message.warning('请填写检查项')
-        }
-      } else {
-        this.$confirm({
-          title: '提示',
-          content: '确认全部一键审核吗？',
-          onOk: () => {
-            let items = this.checkItem(this[type], ['id', 'itemRes'])
-            if (items.length > 0) {
-              this.handleFillCheck(items)
+      this.$confirm({
+        title: '提示',
+        content: '确认全部一键审核吗？',
+        onOk: () => {
+          this.showCheckEnsureModal(res => {
+            if (checkedList.length) {
+              checkedList.forEach(item => {
+                this.setFillInfo(item, res)
+              })
+              this.resetCheckedState()
             } else {
-              return this.$message.warning('请填写检查项')
+              this[type].forEach(item => {
+                this.setFillInfo(item, res)
+              })
             }
-          }
-        })
-      }
+          })
+        }
+      })
     },
     handleCheckAll(type) {
       if (this[type].length === 0) {
         return this.$message.warning('请先新增检查项')
       }
-      if (this[type].map(item => +item.checkFlag === 2).filter(v => v === true).length === this[type].length) return this.$message.warning('无需复核')
       let checkedList = this.filterCheckedList(type)
-      if (checkedList.length) {
-        let items = this.checkItem(checkedList, ['id'])
-        if (items.length > 0) {
-          this.handleFlagCheck(items)
-        } else {
-          return this.$message.warning('请填写检查项')
-        }
-      } else {
-        this.$confirm({
-          title: '提示',
-          content: '确认全部一键复核吗？',
-          onOk: () => {
-            let items = this.checkItem(this[type].filter(v => v.checkFlag === 1), ['id'])
-            if (items.length) {
-              this.handleFlagCheck(items)
+      this.$confirm({
+        title: '提示',
+        content: '确认全部一键复核吗？',
+        onOk: () => {
+          this.showCheckEnsureModal(res => {
+            if (checkedList.length) {
+              checkedList.forEach(item => {
+                if (item.checkFlag !== 2) {
+                  this.setCheckInfo(item, res)
+                }
+              })
+              this.resetCheckedState()
             } else {
-              return this.$message.warning('请填写检查项')
+              this[type].forEach(item => {
+                if (item.checkFlag !== 2) {
+                  this.setCheckInfo(item, res)
+                }
+              })
             }
-          }
-        })
-      }
+          })
+        }
+      })
     },
     resetCheckedState() {
       this.indeterminate = false
