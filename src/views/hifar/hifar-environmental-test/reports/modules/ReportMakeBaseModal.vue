@@ -145,7 +145,7 @@ export default {
       })
     },
     handleDownload(record, type) {
-      if (!record.pdfPath) return this.$message.warning('pdf文件不存在')
+      if (!record.pdfPath && type === 'pdf') return this.$message.warning('pdf文件不存在')
       let obj = {
         docx: {
           loading: 'docxLoading',
