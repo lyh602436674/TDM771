@@ -24,6 +24,7 @@ export default {
       pageOption: {
         typeText: "批准",
         defaultStatus: '15',
+        typeNo: "2",
         pass: "entrustApprove:pass",
         reject: "entrustApprove:reject",
       }

@@ -23,7 +23,7 @@ export default {
     return {
       pageOption: {
         typeText: "审批",
-        typeNo: "1", // 判断是审批还是批准 1：审批 不传的话就是 批准
+        typeNo: "1", // 判断是审批还是批准 1：审批 2: 批准
         defaultStatus: '10,31',
         pass: "entrustCheck:pass",
         reject: "entrustCheck:reject",
