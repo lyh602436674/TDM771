@@ -360,6 +360,7 @@ export default {
       postAction(this.url.save, {items: this[typeObj[this.type]], testId: this.testId}).then(res => {
         if (res.code === 200) {
           this.$message.success('保存成功')
+          this.handleCancel()
         } else {
           this.$message.warning('保存出错')
         }
