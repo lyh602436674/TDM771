@@ -24,7 +24,9 @@
       :rowKey="(record) => record.id"
     >
       <span slot="reportCode" slot-scope="text, record">
-            <a @click="$refs.ReportApproveBaseModal.show(record)">{{ text }}</a>
+        <h-icon v-if="record.recordflag === 1" style="font-size: 20px" type="icon-jingbaobaojing2"></h-icon>
+            <a :style="{marginLeft: record.recordflag === 1 ? 0 : '20px'}"
+               @click="$refs.ReportApproveBaseModal.show(record)">{{ text }}</a>
       </span>
       <span slot="status" slot-scope="text, record">
         <a-badge :color="record.status | reportStatusColorFilter" :text="record.status | reportStatusFilter"/>
@@ -147,7 +149,7 @@ export default {
           title: '报告编号',
           align: 'left',
           dataIndex: 'reportCode',
-          width: 140,
+          width: 160,
           scopedSlots: {customRender: 'reportCode'}
         },
         {

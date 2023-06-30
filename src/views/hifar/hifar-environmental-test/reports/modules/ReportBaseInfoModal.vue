@@ -42,7 +42,10 @@
               {{ detailData.productName || '--' }}
             </h-desc-item>
             <h-desc-item label="委托单号">
-              {{ detailData.entrustNo || '--' }}
+              <template slot="content">
+                <a @click="$refs.testTaskBaseInfoModal.show(detailData,'1','20px','testId')">
+                  {{ detailData.entrustNo || '--' }}</a>
+              </template>
             </h-desc-item>
             <h-desc-item label="运行单号">
               <template slot="content">
