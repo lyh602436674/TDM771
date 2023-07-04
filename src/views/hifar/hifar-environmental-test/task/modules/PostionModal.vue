@@ -70,10 +70,6 @@ export default {
       type: String,
       default: 'checkbox'
     },
-    title: {
-      type: String,
-      default: ''
-    }
   },
   components: {
     HEditTree,
@@ -85,6 +81,8 @@ export default {
       visible: false,
       confirmLoading: false,
       loading: false,
+      title: '选择人员',
+      customParams: {},
       replaceFields: {
         children: 'children',
         title: 'postName',
@@ -114,8 +112,10 @@ export default {
     }
   },
   methods: {
-    show(record) {
+    show(record, title, customParams = {}) {
       this.visible = true
+      this.title = title
+      this.customParams = customParams
       this.getWorkCenterTree()
     },
     handleCancel() {
@@ -132,7 +132,8 @@ export default {
     },
     async getWorkCenterTree() {
       let params = {
-        ...this.treeSearchParams
+        ...this.treeSearchParams,
+        ...this.customParams
       }
       let res = await postAction(this.url.list, params)
       if (res.code === 200) {

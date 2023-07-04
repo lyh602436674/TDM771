@@ -3,7 +3,7 @@
  * @Date: 2023-04-04 18:15:11
  * @fileName: InspectionRecordList.vue
  * @FilePath: tdm771-client\src\views\hifar\hifar-environmental-test\inspectionRecord\InspectionRecordList.vue
- * @Description: 巡检记录
+ * @Description: 试验记录
 -->
 <template>
   <h-card fixed>

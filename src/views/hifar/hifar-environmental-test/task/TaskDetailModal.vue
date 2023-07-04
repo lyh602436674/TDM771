@@ -17,7 +17,7 @@
     @cancel="handleCancel"
   >
     <div class="footer" slot="footer">
-      <a-button @click="handleCancel" type="ghost-danger"> 关闭 </a-button>
+      <a-button @click="handleCancel" type="ghost-danger"> 关闭</a-button>
     </div>
     <div class="equip-task-detail-wrapper">
       <a-tabs v-model="activeTab" style="width: 100%" type="card" @change="handleTabsChange">
@@ -41,6 +41,7 @@
             :productTable="productTable"
             :installControlTable="installControlTable"
             :switchRecordingTable="switchRecordingTable"
+            :testRecordArr="testRecordArr"
             :personArr="personArr"
             :equipData="equipData"
             :toolsProductData="toolsProductData"
@@ -49,8 +50,8 @@
           <test-task-check v-if="activeTab === 2" ref="TestTaskCheck" :testId="testId"></test-task-check>
           <!--          <vibration-table v-if="activeTab === 3" ref="VibrationTable" :record="records"></vibration-table>-->
           <test-task-data v-if="activeTab === 4" ref="TestData" :testId="testId"></test-task-data>
-          <abnormal-record-table v-if="activeTab === 5" ref="AbnormalRecordTable" :records="records" />
-          <termination-record-table v-if="activeTab === 6" ref="TerminationRecordTable" :records="records" />
+          <abnormal-record-table v-if="activeTab === 5" ref="AbnormalRecordTable" :records="records"/>
+          <termination-record-table v-if="activeTab === 6" ref="TerminationRecordTable" :records="records"/>
         </div>
       </div>
     </div>
@@ -67,7 +68,7 @@ import TestTaskCheck from './modules/components/detail/TestTaskCheck'
 import VibrationTable from './modules/components/detail/VibrationTable'
 
 export default {
-  props:{
+  props: {
     entrustType: {
       type: String,
       default: '1',
@@ -118,6 +119,7 @@ export default {
       switchRecordingTable: [],
       personArr: [],
       pictureData: [],
+      testRecordArr: [],
     }
   },
   methods: {
@@ -189,6 +191,7 @@ export default {
             })
           })
           this.productTable = data.testPieceInfo
+          this.testRecordArr = data.testResultRecords
           this.personArr = personArr
           this.testTaskData = data.testTaskInfo
           this.projectData = data.projectInfo
@@ -221,6 +224,7 @@ export default {
     overflow: hidden;
     margin-top: 10px;
     padding: 10px;
+
     .detail-modal-content {
       height: 100%;
       width: 100%;
@@ -228,6 +232,7 @@ export default {
     }
   }
 }
+
 /deep/ .ant-modal-content {
   border-radius: 0;
 }

@@ -45,7 +45,7 @@
       <template #archiveRecord="text,record">
         <a-space style="cursor: pointer">
           <a-icon class="primary-text" title="查看" type="eye"
-                  @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
+                  @click="handleReviewPdf('试验记录',record.pdfPathXh)"/>
           <a title="下载word" @click="handleDownloadDocx(record.docxPathXh)">
             <a-icon class="primary-text" type="download"></a-icon>
           </a>
@@ -243,7 +243,7 @@ export default {
           scopedSlots: {customRender: 'exceptionNum'},
         },
         {
-          title: '巡检记录',
+          title: '试验记录',
           align: 'center',
           width: 80,
           dataIndex: 'archiveRecord',

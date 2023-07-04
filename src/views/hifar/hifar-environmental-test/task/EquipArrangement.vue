@@ -159,7 +159,7 @@
                   <template #archiveRecord="text,record">
                     <a-space @click.stop="" style="cursor: pointer">
                       <a-icon class="primary-text" title="查看" type="eye"
-                              @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
+                              @click="handleReviewPdf('试验记录',record.pdfPathXh)"/>
                       <a-icon v-has="'archiveTem:edit'" class="primary-text" title="在线编辑" type="edit"
                               @click="webOfficeEdit(record.docxPathXh)"></a-icon>
                       <a title="下载word" @click.stop="handleDownloadDocx(record.docxPathXh)">
@@ -485,7 +485,7 @@ export default {
               if (row.status === 1) return this.$message.warning('试验未开始')
               if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
               if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
-              this.$refs.testCheckModal.show(this.selectedRow[0], '试中', 'testMiddle')
+              this.$refs.testCheckModal.show(this.selectedRow[0], '试中', 'middle')
             }
           },
         },
@@ -664,7 +664,7 @@ export default {
           scopedSlots: {customRender: 'exceptionNum'},
         },
         {
-          title: '巡检记录',
+          title: '试验记录',
           align: 'center',
           width: 110,
           dataIndex: 'archiveRecord',

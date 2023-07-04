@@ -48,7 +48,7 @@
         <template #archiveRecord="text,record">
           <a-space style="cursor: pointer">
             <a-icon class="primary-text" title="查看" type="eye"
-                    @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
+                    @click="handleReviewPdf('试验记录',record.pdfPathXh)"/>
             <a-icon class="primary-text" title="在线编辑" type="edit"
                     @click="webOfficeEdit(record.docxPathXh)"/>
             <a title="下载word" @click="handleDownloadDocx(record.docxPathXh)">
@@ -174,7 +174,7 @@ export default {
             } else if (this.selectedRows.length > 1) {
               this.$message.error('只能选择一项')
             } else {
-              this.$refs.testCheckModal.show(this.selectedRows[0], '试中', 'testMiddle')
+              this.$refs.testCheckModal.show(this.selectedRows[0], '试中', 'middle')
             }
           },
         },
@@ -441,7 +441,7 @@ export default {
           scopedSlots: {customRender: 'exceptionNum'},
         },
         {
-          title: '巡检记录',
+          title: '试验记录',
           align: 'center',
           width: 110,
           dataIndex: 'archiveRecord',

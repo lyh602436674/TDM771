@@ -92,7 +92,7 @@
           </template>
         </div>
       </h-card>
-      <h-card v-if="type === 'testMiddle'" style='min-height: 600px'>
+      <h-card v-if="type === 'middle'" style='min-height: 600px'>
         <div slot='table-operator'>
           <a-button size='small' type='ghost-primary' @click="handleCopy('inCheckInfo')"> 复制</a-button>
           <a-button size='small' type='ghost-primary' @click="handleAdd('inCheckInfo')"> 新增</a-button>
@@ -353,11 +353,15 @@ export default {
     handleSave() {
       let typeObj = {
         before: 'beforeCheckInfo',
-        testMiddle: 'inCheckInfo',
+        middle: 'inCheckInfo',
         after: 'afterCheckInfo'
       }
       this.spinLoading = true
-      postAction(this.url.save, {items: this[typeObj[this.type]], testId: this.testId}).then(res => {
+      postAction(this.url.save, {
+        items: this[typeObj[this.type]],
+        checkStage: this.type,
+        testId: this.testId
+      }).then(res => {
         if (res.code === 200) {
           this.$message.success('保存成功')
           this.handleCancel()
@@ -496,7 +500,7 @@ export default {
       this.checkAll = false
       let typeObj = {
         before: 'beforeCheckInfo',
-        testMiddle: 'inCheckInfo',
+        middle: 'inCheckInfo',
         after: 'afterCheckInfo'
       }
       this[typeObj[this.type]].forEach(item => item.checked = false)

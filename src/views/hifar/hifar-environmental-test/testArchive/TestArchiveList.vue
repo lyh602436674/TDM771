@@ -53,7 +53,7 @@
               class="primary-text"
               title="查看"
               type="eye"
-              @click="handleReviewPdf('巡检记录',record.pdfPathXh)"/>
+              @click="handleReviewPdf('试验记录',record.pdfPathXh)"/>
             <a-icon
               class="primary-text"
               title="在线编辑"
@@ -364,7 +364,7 @@ export default {
           minWidth: 150
         },
         {
-          title: '巡检记录',
+          title: '试验记录',
           align: 'center',
           width: 100,
           dataIndex: 'archiveRecord',

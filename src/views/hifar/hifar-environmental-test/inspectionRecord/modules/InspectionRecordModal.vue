@@ -45,7 +45,7 @@ export default {
     return {
       moment,
       offset: [10, 1],
-      title: '巡检记录快照',
+      title: '试验记录快照',
       visible: false,
       queryParams: {},
       rowId: "",

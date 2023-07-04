@@ -437,12 +437,8 @@ export default {
       }
     },
     handleEdit(record) {
-      if (this.currentRoleId == '') {
-        this.$message.error('请选择一个角色!')
-      } else {
-        this.$refs.modalForm.edit(record)
-        this.$refs.modalForm.title = '编辑'
-      }
+      this.$refs.modalForm.edit(record)
+      this.$refs.modalForm.title = '编辑'
     },
     roleUserRefresh(type = false) {
       if (this.$refs.roleUserTable) this.$refs.roleUserTable.refresh(type)

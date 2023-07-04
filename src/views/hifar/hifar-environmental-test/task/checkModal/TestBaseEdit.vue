@@ -198,6 +198,28 @@
         <!--            </a-table>-->
         <!--          </h-card>-->
         <!--        </h-desc>-->
+        <!--  试验记录      -->
+        <h-desc id="testRecord" class="mg-t-20" title="试验记录">
+          <h-card :bordered="false" style="width: 100%">
+            <template slot="table-operator">
+              <a-button icon="plus" size="small" type="primary" @click="testRecordAdd">
+                添加
+              </a-button>
+            </template>
+            <div slot="content">
+              <a-table
+                ref="testRecordTable"
+                :columns="testRecordColumns"
+                :dataSource="testRecordArr"
+                :pagination="false"
+                rowKey="id"
+                bordered
+                size="small"
+              >
+              </a-table>
+            </div>
+          </h-card>
+        </h-desc>
         <!-- 参试人员 -->
         <h-desc required id="person" class="mg-t-20" title="参试人员">
           <h-card :bordered="false" style="width: 100%">
@@ -336,7 +358,7 @@
       :searchData="toolSearchBar"
       @callback="toolsProductCallback"
     />
-    <postion-modal ref="PostionModal" :title="'添加参试人员'" @change="selectPersonHandle"/>
+    <postion-modal ref="PostionModal" @change="selectPersonHandle"/>
     <check-ensure-modal ref="checkEnsureModal"></check-ensure-modal>
     <product-file-modal @close="getTestDetail(testId,true)" ref="productFileModal"></product-file-modal>
   </h-modal>
@@ -381,6 +403,48 @@ export default {
     CheckEnsureModal
   },
   data() {
+    const testDirectionSelectCom = (t, row, index, title) => {
+      return this.$createElement('a-tree-select', {
+        props: {
+          showSearch: true,
+          placeholder: '请选择' + title,
+          treeData: this.testDirectionTreeData,
+          allowClear: true,
+          multiple: true,
+          treeNodeFilterProp: 'title',
+          dropdownStyle: {
+            maxHeight: '300px'
+          },
+          value: row.testDirectionId ? row.testDirectionId.split(',') : []
+        },
+        style: {width: '100%'},
+        on: {
+          change: (v, option, extra) => {
+            if (extra.triggerNode && extra.triggerNode.isLeaf === false) {
+              let {preValue} = extra
+              let getId = extra.triggerNode.dataRef.children.map(_ => _.id)
+              let getName = extra.triggerNode.dataRef.children.map(_ => _.title)
+              let directionId = row.testDirectionId ? row.testDirectionId.split(',').concat(getId) : getId
+              let directionName = row.testDirection ? row.testDirection.split(',').concat(getName) : getName
+              if (preValue && preValue.length) {
+                for (let j = 0; j < preValue.length; j++) {
+                  if (v.includes(preValue[j].value)) {
+                    let index = directionId.indexOf(preValue[j].value)
+                    directionId.splice(index, 1)
+                    directionName.splice(index, 1)
+                  }
+                }
+              }
+              this.$set(row, 'testDirectionId', directionId.toString())
+              this.$set(row, 'testDirection', directionName.toString())
+            } else {
+              this.$set(row, 'testDirectionId', v.toString())
+              this.$set(row, 'testDirection', option.toString())
+            }
+          }
+        }
+      })
+    }
     return {
       moment,
       testDirectionRequired: 1,
@@ -707,47 +771,8 @@ export default {
           dataIndex: 'testDirectionId',
           align: 'center',
           width: 150,
-          customRender: (t, row, index) => {
-            return this.$createElement('a-tree-select', {
-              props: {
-                showSearch: true,
-                placeholder: '请选择试验方向',
-                treeData: this.testDirectionTreeData,
-                allowClear: true,
-                multiple: true,
-                treeNodeFilterProp: 'title',
-                dropdownStyle: {
-                  maxHeight: '300px'
-                },
-                value: row.testDirectionId ? row.testDirectionId.split(',') : []
-              },
-              style: {width: '100%'},
-              on: {
-                change: (v, option, extra) => {
-                  if (extra.triggerNode && extra.triggerNode.isLeaf === false) {
-                    let {preValue} = extra
-                    let getId = extra.triggerNode.dataRef.children.map(_ => _.id)
-                    let getName = extra.triggerNode.dataRef.children.map(_ => _.title)
-                    let directionId = row.testDirectionId ? row.testDirectionId.split(',').concat(getId) : getId
-                    let directionName = row.testDirection ? row.testDirection.split(',').concat(getName) : getName
-                    if (preValue && preValue.length) {
-                      for (let j = 0; j < preValue.length; j++) {
-                        if (v.includes(preValue[j].value)) {
-                          let index = directionId.indexOf(preValue[j].value)
-                          directionId.splice(index, 1)
-                          directionName.splice(index, 1)
-                        }
-                      }
-                    }
-                    this.$set(row, 'testDirectionId', directionId.toString())
-                    this.$set(row, 'testDirection', directionName.toString())
-                  } else {
-                    this.$set(row, 'testDirectionId', v.toString())
-                    this.$set(row, 'testDirection', option.toString())
-                  }
-                }
-              }
-            })
+          customRender: (text, row, index) => {
+            return testDirectionSelectCom(text, row, index, '试验方向')
           }
         },
         {
@@ -1293,6 +1318,129 @@ export default {
           align: 'center'
         }
       ],
+      testRecordArr: [],
+      testRecordColumns: [
+        {
+          title: '#',
+          dataIndex: '',
+          key: 'rowIndex',
+          width: 60,
+          align: 'center',
+          customRender: function (t, r, index) {
+            return index + 1
+          }
+        },
+        {
+          title: '试验项目',
+          dataIndex: 'testName',
+          width: 150,
+          customRender: (text, row, index) => {
+            return this.$createElement('a-input', {
+              props: {
+                value: row.testName,
+                placeholder: "请输入试验项目"
+              },
+              on: {
+                change: e => {
+                  this.$set(row, 'testName', e.target.value)
+                }
+              },
+            }, [])
+          }
+        },
+        {
+          title: "试件编号",
+          dataIndex: "pieceNo",
+          width: 200,
+          customRender: (text, row, index) => {
+            return this.$createElement('a-input', {
+              props: {
+                value: row.pieceNo,
+                readOnly: true,
+                placeholder: "请选择试件编号"
+              },
+              on: {
+                click: e => {
+                  this.selectedBeforeTestRecordRowIndex = index
+                  this.selectedBeforeProductModalType = 'testRecordArr'
+                  this.productList.queryParams.projectPieceInfo = []
+                  this.$refs.productHandleSelectModal.show()
+                }
+              },
+            }, [])
+          }
+        },
+        {
+          title: '方向',
+          dataIndex: 'directions',
+          align: 'center',
+          customRender: (text, row, index) => {
+            return testDirectionSelectCom(text, row, index, '方向')
+          }
+        },
+        {
+          title: '向次',
+          dataIndex: 'secondary',
+          align: 'center',
+          width: 150,
+          customRender: (t, row, index) => {
+            return this.$createElement('a-input', {
+              props: {
+                placeholder: '请输入向次',
+                allowClear: true,
+                value: row.secondary
+              },
+              style: {width: '100%'},
+              on: {
+                change: (e) => {
+                  row.secondary = e.target.value
+                }
+              }
+            })
+          }
+        },
+        {
+          title: "人员",
+          dataIndex: "userName",
+          width: 200,
+          customRender: (t, row, index) => {
+            return this.$createElement('a-input', {
+              props: {
+                placeholder: '请选择人员',
+                allowClear: true,
+                value: row.userName,
+                readOnly: true,
+              },
+              style: {width: '100%'},
+              on: {
+                click: (e) => {
+                  this.selectedBeforeUserModalType = 'testRecord'
+                  this.selectedBeforeTestRecordRowIndex = index
+                  this.$refs.PostionModal.show(this.personArr, '选择人员', {c_postCode_1: '01'})
+                }
+              }
+            })
+          }
+        },
+        {
+          title: '操作',
+          key: 'action',
+          scopedSlots: {customRender: 'action'},
+          width: 60,
+          align: 'center',
+          customRender: (t, row, rowIndex) => {
+            return (<a-popconfirm title={"确定删除吗?"} onconfirm={() => this.testRecordDelete(rowIndex)}>
+              <a-icon
+                class={"danger-text"}
+                style={"cursor: pointer"}
+                title={"删除"}
+                two-tone-color={"#ff4d4f"}
+                type={"delete"}
+              />
+            </a-popconfirm>)
+          }
+        }
+      ],
       personArr: [],
       personColumns: [
         {
@@ -1677,8 +1825,12 @@ export default {
         }
       ],
       selectedBeforeIndex: 0,
+      selectedBeforeTestRecordRowIndex: 0,
+      selectedBeforeProductModalType: '',
+      selectedBeforeUserModalType: '',
       testRecordInfo: {},
-      projectClassifyType: '1'
+      projectClassifyType: '1',
+      projectTestName: "", // 当前试验项目
     }
   },
   computed: {
@@ -1700,6 +1852,10 @@ export default {
         {
           title: '开关机记录',
           id: 'switchRecording'
+        },
+        {
+          title: "试验记录",
+          id: "testRecord"
         },
         // {
         //   title: '巡检记录',
@@ -1879,6 +2035,7 @@ export default {
               testEndTime: this.momentFormatFun(item.testEndTime, 'YYYY-MM-DD HH:mm:ss')
             }
           })
+          this.testRecordArr = model.testResultRecords
           // 巡检记录
           // this.siteInspectionTable = model.siteInspectionInfo.map(item => {
           //   return {
@@ -1902,6 +2059,7 @@ export default {
           this.projectData = model.testTaskInfo
           // 项目类型 力学 气候用来判断安装控制方式和振动工装是否显示
           this.projectClassifyType = model.projectInfo[0].classifyType
+          this.projectTestName = model.projectInfo[0].testName
           this.equipData = model.testEquipInfo.length ? model.testEquipInfo : []
           this.toolsProductData = model.testToolsProductInfo
           model.realStartTime = model.realStartTime && model.realStartTime !== '0' ? moment(+model.realStartTime) : null
@@ -1918,6 +2076,12 @@ export default {
         this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
       })
       this.$refs.productHandleSelectModal.show()
+    },
+    testRecordAdd() {
+      this.testRecordArr.push({
+        id: randomUUID(),
+        testName: this.projectTestName,
+      })
     },
     switchRecordingDelete(index) {
       this.switchRecordingTable.splice(index, 1)
@@ -1940,9 +2104,17 @@ export default {
       this.siteInspectionTable.splice(index, 1)
     },
     productCallback(value) {
-      this.productTable = this.productTable.concat(uniqueArray(this.productTable, 'pieceId', value, 'pieceId'))
+      if (this.selectedBeforeProductModalType === 'testRecordArr') {
+        let row = this.testRecordArr[this.selectedBeforeTestRecordRowIndex]
+        this.$set(row, 'pieceNo', value.map(v => v.pieceNo).toString())
+        row.pieceId = value.map(v => v.pieceId).toString()
+        row.productAlias = value.map(v => v.productAlias).toString()
+      } else if (this.selectedBeforeProductModalType === 'productTable') {
+        this.productTable = this.productTable.concat(uniqueArray(this.productTable, 'pieceId', value, 'pieceId'))
+      }
     },
     personAdd() {
+      this.selectedBeforeUserModalType = 'testPerson'
       this.$refs.PostionModal.show(this.personArr, '选择参试人员')
     },
     sensorAdd(record, index) {
@@ -1966,17 +2138,26 @@ export default {
     personHandleDelete(index) {
       this.personArr.splice(index, 1)
     },
+    testRecordDelete(index) {
+      this.testRecordArr.splice(index, 1)
+    },
     selectPersonHandle(val) {
-      let newPerson = val.length && val.map((item, index) => {
-        return {
-          testUserId: item.id,
-          testUserName: item.idName,
-          testPostId: item.postId,
-          testPostName: item.postName,
-          testPostCode: item.postCode
-        }
-      }) || []
-      this.personArr = this.personArr.concat(uniqueArray(this.personArr, 'testUserId-testPostId', newPerson, 'testUserId-testPostId'))
+      if (this.selectedBeforeUserModalType === 'testPerson') {
+        let newPerson = val.length && val.map((item, index) => {
+          return {
+            testUserId: item.id,
+            testUserName: item.idName,
+            testPostId: item.postId,
+            testPostName: item.postName,
+            testPostCode: item.postCode
+          }
+        }) || []
+        this.personArr = this.personArr.concat(uniqueArray(this.personArr, 'testUserId-testPostId', newPerson, 'testUserId-testPostId'))
+      } else if (this.selectedBeforeUserModalType === 'testRecord') {
+        let row = this.testRecordArr[this.selectedBeforeTestRecordRowIndex]
+        this.$set(row, 'userId', val.map(v => v.id).toString())
+        this.$set(row, 'userName', val.map(v => v.idName).toString())
+      }
     },
     equipAdd() {
       this.$refs.equipHandleSelectModal.show(this.equipData, 'equipId')
@@ -2084,6 +2265,7 @@ export default {
           selfInspection: record.selfInspection, // 自检
           mutualInspection: record.mutualInspection, // 互检
           personArr: this.personArr, // 参试人员集合
+          testResultRecords: this.testRecordArr,// 试验记录
           testEquipArr: this.equipData, // 测试设备集合
           pieceArr: this.productTable.map(item => {
             return {

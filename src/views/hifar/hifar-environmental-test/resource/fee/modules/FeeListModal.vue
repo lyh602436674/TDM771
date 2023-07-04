@@ -465,7 +465,6 @@ export default {
       const $table = this.$refs.priceDataTable
       const errMap = await $table.validate().catch((errMap) => errMap)
       let priceData = this.priceDataExtend
-      console.log(priceData, 'priceData')
       let url = null
       priceData = this.formatPriceData(priceData)
       if (values.id) {
@@ -484,11 +483,14 @@ export default {
         }).finally(() => {
           this.confirmLoading = false
         })
+      } else {
+        this.confirmLoading = false
       }
     },
     handleCancel() {
       this.visible = false
       this.onceFlag = true
+      this.confirmLoading = true
       this.model = {}
       this.rowId = ''
       this.queryParams = {}

@@ -69,6 +69,10 @@
       >
       </a-table>
     </h-card>
+    <!-- 试验记录 -->
+    <h-card id="testRecord" class="mg-t-20" title='试验记录'>
+      <test-test-record :test-record-arr="testRecordArr"/>
+    </h-card>
     <h-card title="参试人员" style="height: auto" :showCollapse="true">
       <div slot="content">
         <a-table
@@ -107,6 +111,7 @@ import ProjectDetailTemplate from "@views/hifar/hifar-environmental-test/entrust
 import PieceDetailTemplate from "@views/hifar/hifar-environmental-test/entrustment/components/PieceDetailTemplate";
 import {dateTimeFormatByStamp} from '@/utils/util'
 import TestPieceDetail from "@views/hifar/hifar-environmental-test/task/components/TestPieceDetail";
+import TestTestRecord from "@views/hifar/hifar-environmental-test/task/components/TestTestRecord.vue";
 
 export default {
   props: {
@@ -160,8 +165,12 @@ export default {
       type: [Array],
       default: () => [],
     },
+    testRecordArr: {
+      type: [Array],
+      default: () => [],
+    },
   },
-  components: {ProjectDetailTemplate, PieceDetailTemplate, TestPieceDetail},
+  components: {TestTestRecord, ProjectDetailTemplate, PieceDetailTemplate, TestPieceDetail},
   data() {
     return {
       dateTimeFormatByStamp,
@@ -531,8 +540,8 @@ export default {
             return index + 1
           },
         },
-        { title: '参试人员岗位', dataIndex: 'testPostName' },
-        { title: '参试人员姓名', dataIndex: 'testUserName' },
+        {title: '参试人员岗位', dataIndex: 'testPostName'},
+        {title: '参试人员姓名', dataIndex: 'testUserName'},
       ],
       testEquipColumns: [
         {

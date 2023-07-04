@@ -76,6 +76,10 @@
         <h-desc id="switchRecording" class="mg-t-20" title='试验设备开关机记录'>
           <test-switch-recording :switchRecordingTable="switchRecordingTable"/>
         </h-desc>
+        <!-- 试验记录 -->
+        <h-desc id="testRecord" class="mg-t-20" title='试验记录'>
+          <test-test-record :test-record-arr="testRecordArr"/>
+        </h-desc>
         <!-- 巡检记录 -->
         <!--      <h-desc id="siteInspection" class="mg-t-20" title='巡检记录'>-->
         <!--        <h-card :bordered='false' style='width: 100%'>-->
@@ -166,9 +170,11 @@ import TestTestEquip from "@views/hifar/hifar-environmental-test/task/components
 import TestSwitchRecording from "@views/hifar/hifar-environmental-test/task/components/TestSwitchRecording.vue";
 import TestToolsProduct from "@views/hifar/hifar-environmental-test/task/components/TestToolsProduct.vue";
 import TestCheck from "@views/hifar/hifar-environmental-test/task/components/TestCheck.vue";
+import TestTestRecord from "@views/hifar/hifar-environmental-test/task/components/TestTestRecord.vue";
 
 export default {
   components: {
+    TestTestRecord,
     TestCheck,
     TestToolsProduct,
     TestSwitchRecording,
@@ -230,6 +236,7 @@ export default {
       testEquipInfo: [],
       installControlTable: [],
       switchRecordingTable: [],
+      testRecordArr: [],
       siteInspectionColumns: [
         {
           title: '#',
@@ -420,6 +427,10 @@ export default {
         //   id: "siteInspection"
         // },
         {
+          title: "试验记录",
+          id: "testRecord"
+        },
+        {
           title: "振动工装",
           id: "toolsProduct",
           hidden: !this.isShow
@@ -486,6 +497,8 @@ export default {
           this.entrustInfoItem = entrustInfoArr[0]
           // 巡检记录
           // this.siteInspectionInfo = data.siteInspectionInfo
+          // 试验记录
+          this.testRecordArr = data.testResultRecords
           // 设备开关机记录
           this.switchRecordingTable = data.switchOnOffInfo
           // 安装、控制方式 + 传感器
