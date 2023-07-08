@@ -23,7 +23,7 @@
       <h-search
         slot="search-form"
         v-model="queryParams"
-        :data="columns"
+        :data="searchData"
         :showToggleButton="false"
         size="small"
         @change="handleSearch"
@@ -71,23 +71,35 @@ export default {
       visible: false,
       loading: false,
       queryParams: {},
-      columns: [
+      searchData: [
         {
           title: '参数编号',
-          dataIndex: 'paramCode',
           key: 'c_paramCode_7',
           formType: 'input',
         },
         {
           title: '参数名称',
-          dataIndex: 'paramName',
           key: 'c_paramName_7',
           formType: 'input',
         },
+      ],
+      columns: [
+        {
+          title: '参数编号',
+          dataIndex: 'paramCode',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
+        {
+          title: '参数名称',
+          dataIndex: 'paramName',
+          customRender: (text, record) => {
+            return text || '--'
+          }
+        },
         {
           title: '参数类型',
-          key: 'c_paramType_7',
-          formType: 'dict',
           dataIndex: 'paramType_dictText',
           customRender: (text, record) => {
             return text || '--'
@@ -96,8 +108,6 @@ export default {
         {
           title: '数据类型',
           dataIndex: 'dataType',
-          key: 'c_dataType_7',
-          formType: 'input',
           customRender: (text) => {
             switch (text) {
               case 'string':
@@ -119,8 +129,9 @@ export default {
         {
           title: '单位名称',
           dataIndex: 'unitName',
-          key: 'c_unitName_7',
-          formType: 'input',
+          customRender: (text, record) => {
+            return text || '--'
+          }
         },
       ],
       url: {

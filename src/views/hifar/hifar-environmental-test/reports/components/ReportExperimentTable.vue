@@ -74,7 +74,7 @@
           <div slot="expandContent" slot-scope="subRow,subRowIndex" style="width: max-content;margin-left: 150px">
             <a-checkbox-group :value="subRow.checkboxValue" @change="checked => handleCheckboxChange(checked,subRow)">
               <a-checkbox
-                v-for="item in checkboxOptions"
+                v-for="item in checkboxOptions(subRow.curveReportFlag)"
                 :key="item.value"
                 :data-title="item.title"
                 :value="item.value"
@@ -112,13 +112,6 @@ export default {
       selectedRowKeys: [],
       selectedSubRowKeys: [],
       selectedSubRow: [],
-      checkboxOptions: [
-        {title: "试验准备状态检查单", value: "1"},
-        {title: "试验照片", value: "2"},
-        {title: "试验曲线", value: "3"},
-        {title: "试验图谱", value: "4"},
-        {title: "试验条件附件", value: "5"},
-      ],
       queryParam: {},
       tableHeight: 40,
       url: {
@@ -224,6 +217,15 @@ export default {
           dataIndex: 'unitName',
           customRender: (text, record) => {
             return text || '--';
+          }
+        },
+        {
+          title: "曲线是否进报告",
+          align: "center",
+          width: 120,
+          dataIndex: "curveReportFlag",
+          customRender: (text, record) => {
+            return +text === 1 ? '是' : '否'
           }
         },
         {
@@ -362,7 +364,11 @@ export default {
                 pieceNoExtend: item.pieceNo,
                 pieceResult: item.relation ? item.relation.map(v => v.pieceId) : [],
                 relationResult: item.relation || [],
-                checkboxValue: ['1', '2', '3', '4', '5'],
+                checkboxValue: (() => {
+                  let data = ['1', '2', '3', '4', '5']
+                  if (+item.curveReportFlag === 0) data.splice(2, 1)
+                  return data
+                })(),
               }
             })
           }
@@ -374,6 +380,17 @@ export default {
   methods: {
     refresh(bool = false) {
       this.$refs.reportProductTable.refresh(bool)
+    },
+    checkboxOptions(curveReportFlag) {
+      let data = [
+        {title: "试验准备状态检查单", value: "1"},
+        {title: "试验照片", value: "2"},
+        {title: "试验曲线", value: "3"},
+        {title: "试验图谱", value: "4"},
+        {title: "试验条件附件", value: "5"},
+      ]
+      if (+curveReportFlag === 0 || !+curveReportFlag) data.splice(2, 1)
+      return data
     },
     handleInvalid() {
       if (!this.selectedSubRowKeys.length) {

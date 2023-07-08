@@ -530,7 +530,7 @@ export default {
         secretLevelCode: 1,
         isBuildingReport: 1,
         isPhotograph: 2,
-        radioButton: 1,
+        curveReportFlag: 1,
       }
       this.tableData = []
       this.projectInfoData = []

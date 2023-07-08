@@ -15,6 +15,9 @@
     <h-desc-item label="是否加电">{{ model.isPowerUp === '1' ? '是' : '否' }}</h-desc-item>
     <h-desc-item label="报告中是否显示最终用户">{{ model.isShowUserInReport === '1' ? '是' : '否' }}</h-desc-item>
     <h-desc-item label="加电时间">{{ model.powerUpTime_dictText || '--' }}</h-desc-item>
+    <h-desc-item label='曲线是否进报告'>
+      {{ model.curveReportFlag === 1 ? '是' : '否' }}
+    </h-desc-item>
     <h-desc-item :span="3" label="试验判据">
       <span slot='content' v-html="spaceToBr(model.testCriteria)"></span>
     </h-desc-item>

@@ -47,6 +47,7 @@
         ref="reportMakeTable"
         slot="content"
         :columns="columns"
+        historySelect
         :data="loadData"
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :rowKey="(record) => record.id"
@@ -69,7 +70,16 @@
         </template>
         <template slot="transferStatus" slot-scope="text,record">
           <a-tag v-if="text === 0" color="#f50">待移交</a-tag>
-          <a-tag v-if="text === 1" color="#87d068">已移交</a-tag>
+          <a-popover title="移交记录">
+            <template slot="content">
+              <h-desc :column="1" size="small">
+                <h-desc-item label="发起人">{{ record.promoter }}</h-desc-item>
+                <h-desc-item label="移交人">{{ record.transferUser }}</h-desc-item>
+                <h-desc-item label="移交时间">{{ record.transferTime }}</h-desc-item>
+              </h-desc>
+            </template>
+            <a-tag v-if="text === 1" color="#87d068">已移交</a-tag>
+          </a-popover>
         </template>
         <div slot="action" slot-scope="text, record">
           <a-space>
@@ -98,6 +108,7 @@
     <report-download-record ref="reportDownloadRecord"/>
     <report-reject-all-info ref="reportRejectAllInfo"/>
     <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
+    <check-ensure-modal ref='checkEnsureModal'/>
   </div>
 </template>
 
@@ -114,6 +125,7 @@ import ReportDownloadRecord from './components/ReportDownloadRecord';
 import ReportRejectAllInfo from "@views/hifar/hifar-environmental-test/reports/modules/ReportRejectAllInfo";
 import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal.vue";
 import ReportMakeBaseModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportMakeBaseModal.vue";
+import CheckEnsureModal from "@views/hifar/hifar-environmental-test/task/modules/components/CheckEnsureModal.vue";
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -124,6 +136,7 @@ export default {
     }
   },
   components: {
+    CheckEnsureModal,
     ReportMakeBaseModal,
     TestTaskBaseInfoModal,
     ReportRejectAllInfo,
@@ -152,6 +165,7 @@ export default {
         amend: "/HfEnvReportAmendBusiness/amendReport",
         turnover: "/HfEnvReportBusiness/modifyReportStatus",
         downLoadBatchById: "/HfEnvReportReceiveBusiness/downLoadBatchById",
+        userCheck: "/HfEnvTaskTestBusiness/validateUserInfo",
       },
       reportNum: 0,
       selectedRowKeys: [],
@@ -426,13 +440,27 @@ export default {
     handleTurnover() {
       if (!this.selectedRowKeys.length) return this.$message.warning('请选择需要移交的报告')
       if (Array.from(new Set(this.selectedRows.map(item => item.status))).toString() !== '40') return this.$message.warning('请选择批准通过的报告进行移交')
-      postAction(this.url.turnover, {id: this.selectedRowKeys.toString(), transferStatus: "1"}).then(res => {
-        if (res.code === 200) {
-          this.$message.success('移交成功')
-          this.refresh(false)
-        } else {
-          this.$message.warning('移交失败')
-        }
+      this.$refs.checkEnsureModal.show({}, value => {
+        postAction(this.url.userCheck, {userCode: value.userCode, password: value.password}).then(result => {
+          if (result.code === 200) {
+            postAction(this.url.turnover, {
+              id: this.selectedRowKeys.toString(),
+              transferStatus: "1",
+              userId: result.id
+            }).then(res => {
+              if (res.code === 200) {
+                this.$message.success('移交成功')
+                this.$refs.checkEnsureModal.handleCancel()
+                this.refresh(false)
+              } else {
+                this.$message.warning('移交失败')
+              }
+            })
+
+          }
+        }).finally(() => {
+          this.$refs.checkEnsureModal.submitLoading = false
+        })
       })
     },
     handleIdea() {

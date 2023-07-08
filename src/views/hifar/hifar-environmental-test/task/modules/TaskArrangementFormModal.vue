@@ -47,17 +47,17 @@ export default {
   computed: {
     formData() {
       return (() => {
-        const speedFields = [];
-        for (let i = 1; i <= 12; i++) {
-          const field = {
-            title: `加速度${i}`,
-            key: `speed${i}`,
-            formType: 'input',
-            hidden: !this.model[`speed${i}`],
-            readOnly: true
-          };
-          speedFields.push(field);
-        }
+        // const speedFields = [];
+        // for (let i = 1; i <= 12; i++) {
+        //   const field = {
+        //     title: `加速度${i}`,
+        //     key: `speed${i}`,
+        //     formType: 'input',
+        //     hidden: !this.model[`speed${i}`],
+        //     readOnly: true
+        //   };
+        //   speedFields.push(field);
+        // }
         return [
           {
             key: 'taskId',
@@ -180,35 +180,35 @@ export default {
               />
             ),
           },
-          {
-            title: '设备速率',
-            key: 'testRate',
-            formType: 'input',
-            hidden: !this.model.testRate,
-            readOnly: true,
-          },
-          {
-            title: '温度范围',
-            key: 'temperatureRange',
-            formType: 'input',
-            hidden: !this.model.temperatureRange,
-            readOnly: true,
-          },
-          {
-            title: '湿度范围',
-            key: 'humidityRange',
-            formType: 'input',
-            hidden: !this.model.humidityRange,
-            readOnly: true,
-          },
-          {
-            title: '压力范围',
-            key: 'pressureRange',
-            formType: 'input',
-            hidden: !this.model.pressureRange,
-            readOnly: true,
-          },
-          ...speedFields,
+          // {
+          //   title: '设备速率',
+          //   key: 'testRate',
+          //   formType: 'input',
+          //   hidden: !this.model.testRate,
+          //   readOnly: true,
+          // },
+          // {
+          //   title: '温度范围',
+          //   key: 'temperatureRange',
+          //   formType: 'input',
+          //   hidden: !this.model.temperatureRange,
+          //   readOnly: true,
+          // },
+          // {
+          //   title: '湿度范围',
+          //   key: 'humidityRange',
+          //   formType: 'input',
+          //   hidden: !this.model.humidityRange,
+          //   readOnly: true,
+          // },
+          // {
+          //   title: '压力范围',
+          //   key: 'pressureRange',
+          //   formType: 'input',
+          //   hidden: !this.model.pressureRange,
+          //   readOnly: true,
+          // },
+          // ...speedFields,
           {
             title: '备注',
             key: 'remarks',

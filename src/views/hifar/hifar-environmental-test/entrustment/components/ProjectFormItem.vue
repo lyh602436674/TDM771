@@ -165,6 +165,7 @@ export default {
             testName: val.testName || val.unitName,
             isShowUserInReport: val.isShowUserInReport || '1',
             isPowerUp: val.isPowerUp || '1',
+            curveReportFlag: (val.curveReportFlag || +val.curveReportFlag === 0) ? val.curveReportFlag : 1,
             attachIds: val.fileInfo && val.fileInfo.length && val.fileInfo.map(item => {
               return {
                 fileId: item.id,
@@ -561,6 +562,17 @@ export default {
           validate: {
             rules: [{required: true, message: '请选择加电时间'}]
           },
+        },
+        {
+          title: '曲线是否进报告',
+          key: 'curveReportFlag',
+          formType: 'radio',
+          radioType: 'radioButton',
+          defaultValue: 1,
+          options: [
+            {title: '是', value: 1, key: 1},
+            {title: '否', value: 0, key: 0}
+          ],
         },
         {
           title: '试验判据',
