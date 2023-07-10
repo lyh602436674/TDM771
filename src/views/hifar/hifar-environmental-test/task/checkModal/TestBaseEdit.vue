@@ -2098,7 +2098,7 @@ export default {
               testEndTime: this.momentFormatFun(item.testEndTime, 'YYYY-MM-DD HH:mm:ss')
             }
           })
-          this.testRecordArr = model.testResultRecords
+          this.testRecordArr = model.testResultRecords || []
           // 巡检记录
           // this.siteInspectionTable = model.siteInspectionInfo.map(item => {
           //   return {
@@ -2114,7 +2114,7 @@ export default {
             }
           })
           this.testDirectionRequired = !model.insertMethodInfo.length || model.insertMethodInfo.some(item => item.directionId !== undefined && item.directionId !== null && item.directionId !== '') ? 1 : 2
-          this.isShow && this.$nextTick(() => {
+          !this.isShow && this.$nextTick(() => {
             this.$refs.testDirectSwitch.forceUpdate(this.testDirectionRequired)
           })
           this.installControlExpandedRowKeys = this.installControlTable.map(item => item.id)
@@ -2135,12 +2135,14 @@ export default {
     },
     productAdd() {
       this.productList.queryParams.projectPieceInfo = []
+      this.selectedBeforeProductModalType = 'productTable'
       this.productTable.forEach((item) => {
         this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
       })
       this.$refs.productHandleSelectModal.show()
     },
     testRecordAdd() {
+      console.log(this.testRecordArr, 'this.testRecordArr')
       this.testRecordArr.push({
         id: randomUUID(),
         testName: this.projectTestName,
