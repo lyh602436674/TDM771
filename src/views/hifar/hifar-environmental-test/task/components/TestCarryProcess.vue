@@ -24,6 +24,7 @@
         dateTimeFormatByStamp(detailData.realEndTime)
       }}
     </h-desc-item>
+    <h-desc-item label="时长">{{ detailData.realUseTime}}</h-desc-item>
     <h-desc-item label="温度(°C)">{{ detailData.temperature || '--' }}</h-desc-item>
     <h-desc-item label="湿度(RH)">{{ detailData.humidity || '--' }}</h-desc-item>
     <h-desc-item label="自检">{{ detailData.selfInspection || '--' }}</h-desc-item>

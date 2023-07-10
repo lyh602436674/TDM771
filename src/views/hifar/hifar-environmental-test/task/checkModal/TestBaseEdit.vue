@@ -1049,21 +1049,24 @@ export default {
         {
           title: '入场时间',
           key: 'approachTime',
-          validate: {rules: [{required: false, validator: this.validateStartTime}]},
           component: (
             <h-time-select
               timeFormat={'HH:mm'}
-              v-decorator={['approachTime', {rules: [{required: false, message: '请选择入场时间'}]}]}
+              v-decorator={['approachTime', {rules: [{required: false, validator: this.validateApproachTime}]}]}
             />
           )
         },
         {
           title: '离场时间',
           key: 'departureTime',
-          validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
             <h-time-select timeFormat={'HH:mm'}
-                           v-decorator={['departureTime', {rules: [{required: false, message: '请选择离场时间'}]}]}/>
+                           v-decorator={['departureTime', {
+                             rules: [{
+                               required: false,
+                               validator: this.validateDepartureTime
+                             }]
+                           }]}/>
           )
         },
         {
@@ -1073,7 +1076,10 @@ export default {
           component: (
             <h-time-select
               timeFormat={'HH:mm'}
-              v-decorator={['realStartTime', {rules: [{required: false, message: '请选择开始时间'}]}]}
+              onChange={(val) => {
+                this.calcTime()
+              }}
+              v-decorator={['realStartTime', {rules: [{required: false, validator: this.validateStartTime}]}]}
             />
           )
         },
@@ -1082,9 +1088,17 @@ export default {
           key: 'realEndTime',
           validate: {rules: [{required: false, validator: this.validateEndTime}]},
           component: (
-            <h-time-select timeFormat={'HH:mm'}
-                           v-decorator={['realEndTime', {rules: [{required: false, message: '请选择结束时间'}]}]}/>
+            <h-time-select timeFormat={'HH:mm'} onChange={(val) => {
+              this.calcTime()
+            }} v-decorator={['realEndTime', {rules: [{required: false, validator: this.validateEndTime}]}]}/>
           )
+        },
+        {
+          title: '时长',
+          key: 'realUseTime',
+          formType: 'input',
+          readOnly: true,
+          placeholder: '自动计算'
         },
         {
           title: '温度(°C)',
@@ -1902,6 +1916,25 @@ export default {
       this.loadImgData()
       this.getTestDirectionTreeData()
     },
+    calcTime() {
+      setTimeout(() => {
+        let form = this.$refs.carryOutProcessForm.form
+        let timeMap = form.getFieldsValue(['realStartTime', 'realEndTime'])
+        let startTime = timeMap.realStartTime ? moment(timeMap.realStartTime).format('x') : 0
+        let endTime = timeMap.realEndTime ? moment(timeMap.realEndTime).format('x') : 0
+        // if (startTime && endTime && +endTime <= +startTime) {
+        //   this.$message.warning('结束时间不能早于开始时间')
+        // }
+        let realUseTime = this.getTimeDiff(startTime, endTime)
+        form.setFieldsValue({realUseTime})
+      })
+    },
+    getTimeDiff(startTime, endTime) {
+      if (!startTime || !endTime || +endTime <= +startTime) {
+        return 0
+      }
+      return ((+endTime - +startTime) / (3600 * 1000)).toFixed(1)
+    },
     testDirectionChange(checked) {
       this.testDirectionRequired = checked
     },
@@ -1981,7 +2014,7 @@ export default {
     },
     validateStartTime(rule, value, cb) {
       let endTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['realEndTime'])
-      let valEnd = endTime.endTime
+      let valEnd = endTime.realEndTime
       let val = value ? moment(value).valueOf() : ''
       valEnd = valEnd ? moment(valEnd).valueOf() : ''
       if (!val) {
@@ -1996,7 +2029,7 @@ export default {
     },
     validateEndTime(rule, value, cb) {
       let startTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['realStartTime'])
-      let valStart = startTime.startTime
+      let valStart = startTime.realStartTime
       let val = value ? moment(value).valueOf() : ''
       valStart = valStart ? moment(valStart).valueOf() : ''
       if (!val) {
@@ -2004,6 +2037,36 @@ export default {
       } else {
         if (valStart && val < valStart) {
           cb('结束时间不能小于开始时间')
+        } else {
+          cb()
+        }
+      }
+    },
+    validateApproachTime(rule, value, cb) {
+      let endTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['departureTime'])
+      let valEnd = endTime.departureTime
+      let val = value ? moment(value).valueOf() : ''
+      valEnd = valEnd ? moment(valEnd).valueOf() : ''
+      if (!val) {
+        cb()
+      } else {
+        if (valEnd && val > valEnd) {
+          cb('入场时间不能大于离场时间')
+        } else {
+          cb()
+        }
+      }
+    },
+    validateDepartureTime(rule, value, cb) {
+      let startTime = this.$refs.carryOutProcessForm.form.getFieldsValue(['approachTime'])
+      let valStart = startTime.approachTime
+      let val = value ? moment(value).valueOf() : ''
+      valStart = valStart ? moment(valStart).valueOf() : ''
+      if (!val) {
+        cb()
+      } else {
+        if (valStart && val < valStart) {
+          cb('离场时间不能小于入场时间')
         } else {
           cb()
         }
@@ -2035,7 +2098,7 @@ export default {
               testEndTime: this.momentFormatFun(item.testEndTime, 'YYYY-MM-DD HH:mm:ss')
             }
           })
-          this.testRecordArr = model.testResultRecords
+          this.testRecordArr = model.testResultRecords || []
           // 巡检记录
           // this.siteInspectionTable = model.siteInspectionInfo.map(item => {
           //   return {
@@ -2051,7 +2114,7 @@ export default {
             }
           })
           this.testDirectionRequired = !model.insertMethodInfo.length || model.insertMethodInfo.some(item => item.directionId !== undefined && item.directionId !== null && item.directionId !== '') ? 1 : 2
-          this.isShow && this.$nextTick(() => {
+          !this.isShow && this.$nextTick(() => {
             this.$refs.testDirectSwitch.forceUpdate(this.testDirectionRequired)
           })
           this.installControlExpandedRowKeys = this.installControlTable.map(item => item.id)
@@ -2072,12 +2135,14 @@ export default {
     },
     productAdd() {
       this.productList.queryParams.projectPieceInfo = []
+      this.selectedBeforeProductModalType = 'productTable'
       this.productTable.forEach((item) => {
         this.productList.queryParams.projectPieceInfo.push({projectId: item.projectId, pieceId: item.pieceId})
       })
       this.$refs.productHandleSelectModal.show()
     },
     testRecordAdd() {
+      console.log(this.testRecordArr, 'this.testRecordArr')
       this.testRecordArr.push({
         id: randomUUID(),
         testName: this.projectTestName,
@@ -2198,7 +2263,6 @@ export default {
         if (this.testDirectionRequired === 1 && !item.directionId) {
           div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式请选择试验方向`}</div>)
         }
-        console.log(item, 'iiiiiiittttt')
         if (item.sensorDataRequired === 1) {
           if (!item.testSensorInfo.length) {
             div.push(<div style={{textAlign: 'left'}}>{`第${i + 1}个安装、控制方式下请添加传感器`}</div>)
@@ -2260,6 +2324,7 @@ export default {
           realEndTime: record.realEndTime ? record.realEndTime.valueOf() : '',
           departureTime: record.departureTime ? record.departureTime.valueOf() : '',
           remarks: record.remarks, // 备注
+          realUseTime: record.realUseTime, // 时长
           temperature: record.temperature, // 温度(°C)
           humidity: record.humidity, // 湿度(RH)
           selfInspection: record.selfInspection, // 自检
