@@ -446,7 +446,7 @@ export default {
             postAction(this.url.turnover, {
               id: this.selectedRowKeys.toString(),
               transferStatus: "1",
-              userId: result.id
+              promoter: result.data.idName
             }).then(res => {
               if (res.code === 200) {
                 this.$message.success('移交成功')

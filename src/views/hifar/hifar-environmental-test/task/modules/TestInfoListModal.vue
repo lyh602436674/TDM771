@@ -312,7 +312,7 @@ export default {
           this.refreshFlag = true
           this.refresh()
         } else {
-          this.$message.success('删除失败')
+          this.$message.warning('删除失败')
         }
       })
     }

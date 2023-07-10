@@ -123,7 +123,7 @@ export default {
           this.$message.success('操作成功')
           this.refresh()
         } else {
-          this.$message.success('删除失败')
+          this.$message.warning('删除失败')
         }
       })
     }
