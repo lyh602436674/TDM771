@@ -28,6 +28,19 @@ export function login(parameter) {
   })
 }
 
+/**
+ * 指纹登录
+ * @param parameter
+ * @returns {AxiosPromise}
+ */
+export function fingerprintLogin(parameter) {
+  return axios({
+    url: '/BaseUserBusiness/fingerprintLogin',
+    method: 'POST',
+    data: parameter
+  })
+}
+
 export function login2(parameter) {
   return axios({
     url: '/BaseUserBusiness/ssoLoginBase',
@@ -35,7 +48,6 @@ export function login2(parameter) {
     data: parameter
   })
 }
-
 
 export function phoneLogin(parameter) {
   return axios({
@@ -69,7 +81,7 @@ export function logout(logoutToken) {
     method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8',
-      'token':  logoutToken
+      'token': logoutToken
     }
   })
 }
@@ -80,7 +92,7 @@ export function logout(logoutToken) {
  * @param thirdType
  * @returns {*}
  */
-export function thirdLogin(token,thirdType) {
+export function thirdLogin(token, thirdType) {
   return axios({
     url: `/sys/thirdLogin/getLoginUser/${token}/${thirdType}`,
     method: 'get',

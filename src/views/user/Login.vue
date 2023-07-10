@@ -26,10 +26,13 @@
       <img class="dot" src="~@/assets/login_image/login_dot_1.png" alt="" />
       <div ref="loginForm" class="login_form">
         <div class="loginTab">
-          <div v-for="(item,index) in tabsData" :key="index" :class="['tab-item',activeKey === index ? 'active':'']"
-               :style="{width: (100 / tabsData.length) + '%'}"
-               @click="loginTabChange(item,index)">
-            <h-icon :type="item.icon" style="font-size:20px"/>
+          <div
+            v-for="(item,index) in tabsData"
+            :key="index"
+            :class="['tab-item',activeKey === index ? 'active':'']"
+            :style="{width: (100 / tabsData.length) + '%'}"
+            @click="loginTabChange(item,index)">
+            <h-icon :type="item.icon" style="font-size:20px" />
             {{ item.title }}
           </div>
         </div>
@@ -77,7 +80,7 @@
             </a-form>
           </div>
           <div v-if="activeKey === 1" class="fingerprint">
-            <img src="~@/assets/zhiwen.jpg" @click="fingerprintLogin">
+            <img src="~@/assets/zhiwen.jpg">
             <input ref="fingerInput" v-model="fingerprintValue" type="hidden" @change="handleCapture">
           </div>
         </div>
@@ -88,12 +91,13 @@
 </template>
 
 <script>
-import {getAction} from "@api/manage";
-import {mapActions, mapState} from 'vuex'
+import { getAction } from '@api/manage'
+import { mapActions, mapState } from 'vuex'
 import Vue from 'vue'
-import {ACCESS_TOKEN} from '@/store/mutation-types'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 import ThirdLogin from './third/ThirdLogin'
 import LoginSelectTenant from './LoginSelectTenant'
+import { FingerpinttMixin } from '@/mixins/FingerprintMixin'
 import 'particles.js'
 
 let password = null
@@ -107,15 +111,16 @@ const particlesJSON = require('./particles.json')
 export default {
   components: {
     LoginSelectTenant,
-    ThirdLogin,
+    ThirdLogin
   },
+  mixins: [FingerpinttMixin],
   data() {
     return {
       tabsData: [
-        {title: "账号密码登录", icon: "icon-zhanghaoquanxianguanli"},
-        {title: "指纹登录", icon: "icon-zhiwen", type: "fingerprint"},
+        { title: '账号密码登录', icon: 'icon-zhanghaoquanxianguanli' },
+        { title: '指纹登录', icon: 'icon-zhiwen', type: 'fingerprint' }
       ],
-      fingerprintValue: "",
+      fingerprintValue: '',
       activeKey: 0,
       loginBtn: false,
       // login type: 0 email, 1 username, 2 telephone
@@ -124,21 +129,21 @@ export default {
       form: this.$form.createForm(this),
       encryptedString: {
         key: '',
-        iv: '',
+        iv: ''
       },
       state: {
         time: 60,
-        smsSendBtn: false,
+        smsSendBtn: false
       },
       validatorRules: {
         username: {
           rules: [{ required: true, message: '请输入用户名!' }, { validator: this.handleUsernameOrEmail }],
-          initialValue: account,
+          initialValue: account
         },
         password: { rules: [{ required: true, message: '请输入密码!', validator: 'click' }], initialValue: password },
         mobile: { rules: [{ validator: this.validateMobile }] },
         captcha: { rule: [{ required: true, message: '请输入验证码!' }] },
-        inputCode: { rules: [{ required: true, message: '请输入验证码!' }] },
+        inputCode: { rules: [{ required: true, message: '请输入验证码!' }] }
       },
       verifiedCode: '',
       inputCodeContent: '',
@@ -147,7 +152,7 @@ export default {
       currdatetime: '',
       randCodeImage: '',
       requestCodeSuccess: false,
-      resetPwdTimer: '',
+      resetPwdTimer: ''
     }
   },
   computed: {
@@ -175,8 +180,8 @@ export default {
       },
       logoinCompanyLink: (state) => {
         return state.app.logoinCompanyLink
-      },
-    }),
+      }
+    })
   },
   created() {
     this.currdatetime = new Date().getTime()
@@ -187,7 +192,7 @@ export default {
     particlesJS('particles-js', particlesJSON)
   },
   methods: {
-    ...mapActions(['Login', 'Logout', 'PhoneLogin']),
+    ...mapActions(['Login', 'Logout', 'PhoneLogin', 'fingerprintLogin']),
     // handler
     handleUsernameOrEmail(rule, value, callback) {
       const regex = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
@@ -199,26 +204,11 @@ export default {
       callback()
     },
     handleCapture(e) {
-      console.log(e, 'ee')
-    },
-    fingerprintLogin() {
-      // 获取系统信息
-      getAction('http://127.0.0.1:22001/zkbioonline/info').then(res => {
-        console.log(res)
-      })
-      // 开始采集
-      // type 1表示采集登记指纹(采集同一手指3次指纹),不是1则表示采集比对指纹
-      getAction('http://127.0.0.1:22001/zkbioonline/fingerprint/beginCapture?type=1').then(res => {
-        console.log(res)
-      })
-      // 取消采集
-      getAction('http://127.0.0.1:22001/zkbioonline/fingerprint/cancelCapture').then(res => {
-        console.log(res)
-      })
-      // 获取图像
-      getAction('http://127.0.0.1:22001/zkbioonline/fingerprint/getImage').then(res => {
-        console.log(res)
-      })
+      console.log('指纹采集')
+      this.init()
+      this.timer = setInterval(() => {
+        this.getTemplate()
+      }, 10)
     },
     loginTabChange(item, index) {
       this.activeKey = index
@@ -227,12 +217,14 @@ export default {
         this.$nextTick(() => {
           this.handleCapture()
         })
+      } else {
+        this.timer = null
       }
     },
     handleSubmit() {
       let loginParams = {}
       this.loginBtn = true
-      this.form.validateFields(['username', 'password'], {force: true}, async (err, values) => {
+      this.form.validateFields(['username', 'password'], { force: true }, async (err, values) => {
         if (!err) {
           loginParams.userCode = values.username
           loginParams.pwd = values.password
@@ -258,7 +250,7 @@ export default {
         this.stepCaptchaVisible = false
       })
     },
-    //登录成功路由跳转
+    // 登录成功路由跳转
     loginSuccess() {
       this.$router.push({ path: '/' }).catch(() => {
         console.log('登录跳转首页出错,这个错误从哪里来的')
@@ -268,10 +260,10 @@ export default {
       //   description: `${timeFix()}，欢迎回来`,
       // })
 
-      //5秒后执行用户密码到期提醒功能
+      // 5秒后执行用户密码到期提醒功能
       setTimeout(this.resetPasswordTooltip, 5000)
     },
-    //开启密码策略后,若密码快到期时提醒用户
+    // 开启密码策略后,若密码快到期时提醒用户
     resetPasswordTooltip() {
       // getAction('/sys/getPwdToolTip').then((res) => {
       //   if (res.success) {
@@ -289,14 +281,14 @@ export default {
       this.$notification['error']({
         message: '登录失败',
         description: err,
-        duration: 4,
+        duration: 4
       })
     },
     requestFailed(err) {
       this.$notification['error']({
         message: '登录失败',
         description: ((err.response || {}).data || {}).message || err.message || '请求出现错误，请稍后再试',
-        duration: 4,
+        duration: 4
       })
       this.loginBtn = false
     },
@@ -314,12 +306,30 @@ export default {
       this.$nextTick(() => {
         if (this.$route.params.username) {
           this.form.setFieldsValue({
-            username: this.$route.params.username,
+            username: this.$route.params.username
           })
         }
       })
     },
+    async fingerprint(val) {
+      let response = await this.fingerprintLogin(val).finally(() => {
+        this.loginBtn = false
+      })
+      if (response.code === 200) {
+        this.timer = null
+        this.$refs.loginSelect.show(response.data)
+      } else {
+        this.requestFailed(response)
+      }
+    }
   },
+  watch: {
+    data(val) {
+      if (val != null) {
+        this.fingerprint(val)
+      }
+    }
+  }
 }
 </script>
 
@@ -479,7 +489,6 @@ export default {
       color: #fff;
       background-color: #0E6EE5;
     }
-
 
   }
 }

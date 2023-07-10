@@ -1,14 +1,14 @@
 import Vue from 'vue'
-import { login, login2, logout, phoneLogin, thirdLogin } from "@/api/login"
-import { USER_ID, ACCESS_TOKEN, USER_NAME, USER_INFO, USER_AUTH, UI_CACHE_DB_DICT_DATA, TENANT_ID, CACHE_INCLUDED_ROUTES } from "@/store/mutation-types"
-import { welcome } from "@/utils/util"
+import { login, login2, logout, phoneLogin, thirdLogin, fingerprintLogin } from '@/api/login'
+import { USER_ID, ACCESS_TOKEN, USER_NAME, USER_INFO, USER_AUTH, UI_CACHE_DB_DICT_DATA, TENANT_ID, CACHE_INCLUDED_ROUTES } from '@/store/mutation-types'
+import { welcome } from '@/utils/util'
 import { queryPermissionsByUser } from '@/api/api'
 import { getAction } from '@/api/manage'
 import { rebuildRouter } from '@/utils/hasPermission'
 
 const user = {
   state: {
-    id:'',
+    id: '',
     token: '',
     username: '',
     realname: '',
@@ -39,15 +39,15 @@ const user = {
     },
     SET_TENANT: (state, id) => {
       state.tenantid = id
-    },
+    }
   },
 
   actions: {
     // CAS验证登录
     ValidateLogin({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
-        getAction("/sys/cas/client/validateLogin", userInfo).then(response => {
-          console.log("----cas 登录--------", response);
+        getAction('/sys/cas/client/validateLogin', userInfo).then(response => {
+          console.log('----cas 登录--------', response);
           if (response.success) {
             const result = response.result
             const userInfo = result.userInfo
@@ -72,7 +72,39 @@ const user = {
     Login({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(response => {
-          console.log("User Login:", response)
+          console.log('User Login:', response)
+          if (response.code == 200) {
+            const result = response.data
+            const userInfo = result.userInfo
+            Vue.ls.set(ACCESS_TOKEN, result.token, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_NAME, userInfo.idName, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_INFO, userInfo, 7 * 24 * 60 * 60 * 1000)
+            Vue.ls.set(USER_ID, userInfo.id, 7 * 24 * 60 * 60 * 1000)
+            // Vue.ls.set(UI_CACHE_DB_DICT_DATA, result.sysAllDictItems, 7 * 24 * 60 * 60 * 1000)
+            console.log('登录的用户信息', userInfo)
+            commit('SET_TOKEN', result.token)
+            commit('SET_INFO', userInfo)
+            commit('SET_NAME', { username: userInfo.idName, realname: userInfo.idName, welcome: welcome() })
+            commit('SET_AVATAR', userInfo.headUrl || '')
+            resolve(response)
+          } else {
+            resolve(response)
+          }
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+    /**
+     * 指纹登录
+     * @param commit
+     * @param userInfo
+     * @returns {Promise<unknown>}
+     */
+    fingerprintLogin({ commit }, fingerprintData) {
+      return new Promise((resolve, reject) => {
+        fingerprintLogin({ fingerprintData }).then(response => {
+          console.log('User Login:', response)
           if (response.code == 200) {
             const result = response.data
             const userInfo = result.userInfo
@@ -98,7 +130,7 @@ const user = {
     Login2({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         login2(userInfo).then(response => {
-          console.log("User Login:", response)
+          console.log('User Login:', response)
           if (response.code == 200) {
             const result = response.data
             const userInfo = result.userInfo
@@ -121,7 +153,7 @@ const user = {
         })
       })
     },
-    //手机号登录
+    // 手机号登录
     PhoneLogin({ commit }, userInfo) {
       return new Promise((resolve, reject) => {
         phoneLogin(userInfo).then(response => {
@@ -158,7 +190,7 @@ const user = {
               return {
                 action: auth.menuCode,
                 describe: auth.menuName,
-                type: "1"
+                type: '1'
               }
             })
           } else {
@@ -230,7 +262,6 @@ const user = {
       Vue.ls.set(TENANT_ID, id, 7 * 24 * 60 * 60 * 1000)
       commit('SET_TENANT', id)
     }
-
 
   }
 }
