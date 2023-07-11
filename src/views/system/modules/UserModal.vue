@@ -61,7 +61,7 @@
       </a-popconfirm>
       <a-button type="primary" :loading="confirmLoading" @click="handleClickSubmit">提交</a-button>
     </div>
-    <fingerprint-entry-modal ref="fingerprintEntryModal"></fingerprint-entry-modal>
+    <fingerprint-entry-modal ref="fingerprintEntryModal" @change="setFingerprintEntryModal"></fingerprint-entry-modal>
   </a-drawer>
 </template>
 
@@ -70,7 +70,8 @@ import {isArray, reduceRight} from 'lodash'
 import {addUser, duplicateCheck, editUser} from '@/api/api'
 import moment from 'moment'
 import {SYSTEM_CONSTANTS_PROJECT_CLASSIFY} from '@/views/hifar/constants.js'
-import FingerprintEntryModal from "@views/system/modules/FingerprintEntryModal.vue";
+import FingerprintEntryModal from '@views/system/modules/FingerprintEntryModal.vue'
+import pick from 'lodash.pick'
 
 const userTypeListMap = [
   {
@@ -211,16 +212,21 @@ export default {
           },
           {
             title: '指纹',
-            key: 'fingerprintData',
+            key: 'fingerprintDataLink',
             component: (
-              <a style={{lineHeight: "34px"}} onClick={this.handleFingerprintClick}>录入指纹</a>
+              <a style={{ lineHeight: '34px' }} onClick={this.handleFingerprintClick}>录入指纹</a>
             )
+          },
+          {
+            key: 'fingerprintData',
+            formType: 'input',
+            hidden: true
           },
           {
             title: '身份证号',
             key: 'idCard',
             formType: 'input',
-            placeholder: '请输入身份证号',
+            placeholder: '请输入身份证号'
             // validate: {
             //   rules: [
             //     {
@@ -379,6 +385,12 @@ export default {
       this.$nextTick(() => {
         this.visible = true
       })
+    },
+    setFingerprintEntryModal(val) {
+      console.log('fingerprintDataVal', val)
+      this.userInfo.fingerprintData = val
+      this.$refs.userForm.form.setFieldsValue({ fingerprintData: val })
+
     },
     show(record) {
       this.disableSubmit = true

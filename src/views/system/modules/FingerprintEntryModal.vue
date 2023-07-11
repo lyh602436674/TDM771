@@ -17,31 +17,62 @@
 </template>
 
 <script>
+import { postAction } from '@api/manage'
+import { FingerpinttMixin } from '@/mixins/FingerprintMixin'
+
 export default {
-  name: "FingerprintEntryModal",
+  name: 'FingerprintEntryModal',
+  mixins: [FingerpinttMixin],
   inject: {
     getContainer: {
       default: () => {
         return document.body
-      },
-    },
+      }
+    }
   },
   data() {
     return {
       visible: false,
       confirmLoading: false,
-      srcBase64: ""
+      url: {
+        save: 'BaseUserBusiness/collectionFingerprint'
+      }
     }
+  },
+  mounted() {
   },
   methods: {
     show() {
-      this.visible = true;
+      this.visible = true
+      this.init()
+
+      this.timer = setInterval(() => {
+        this.getTemplate()
+      }, 10)
     },
     handleOk() {
+      console.log('data', this.data)
+      if (this.data == null) {
+        this.$message.info('请采集指纹!')
+        return
+      }
+      this.$emit('change', this.data)
+      this.handleCancel();
+   /*   postAction(this.url.save, { userId: '', data: this.data }).then(res => {
+        if (res.code === 200) {
+          this.handleCancel();
+        } else {
+          this.$message.error('保存失败!')
+        }
+      }) */
     },
     handleCancel() {
       this.visible = false
-    },
+      this.relink()
+      this.timer = null
+      this.data = null;
+      this.srcBase64 = null;
+    }
   }
 }
 </script>
