@@ -33,7 +33,7 @@
           v-model="videoAttachIds"
           :customParams="{refType: 'test_video', refId: this.testId}"
           style="width: 100%"
-          @delete="handleDelete"
+          @delete="handleDeleteByVideo"
         />
       </h-desc>
     </div>
@@ -133,6 +133,12 @@ export default {
       postAction(this.url.delete, {id: file.fileId}).then(() => {
         this.$message.success('删除成功')
         this.attachIds = fileList
+      })
+    },
+    handleDeleteByVideo(file, fileList) {
+      postAction(this.url.delete, {id: file.fileId}).then(() => {
+        this.$message.success('删除成功')
+        this.videoAttachIds = fileList
       })
     },
     handleFilesChange(fileList) {
