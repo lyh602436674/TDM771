@@ -219,6 +219,7 @@ export default {
           },
           {
             key: 'fingerprintData',
+            formType: 'input',
             hidden: true
           },
           {
