@@ -9,23 +9,27 @@
 <template>
   <div ref="pageWrapper" class="h-custom-layout" style="height: 100%; position: relative">
     <h-card>
-      <template slot="title"> 设备信息 </template>
+      <template slot="title"> 设备信息</template>
       <h-tabs fixed :activeKey="activeKey" :animated="true" @change="handleTabsChange">
         <a-tab-pane key="1">
           <a-badge :count="0" slot="tab" :offset="offset">全部</a-badge>
-          <equipment-table ref="EquipmentTable" expiryTime="all" @change="loadNumChange"></equipment-table>
+          <equipment-table :equipUse="equipUse" ref="EquipmentTable" expiryTime="all"
+                           @change="loadNumChange"></equipment-table>
         </a-tab-pane>
         <a-tab-pane key="2">
           <a-badge :count="statisticData.timeout" slot="tab" :offset="offset">已过期</a-badge>
-          <equipment-table ref="EquipmentTable_" expiryTime="timeout" @change="loadNumChange"></equipment-table>
+          <equipment-table ref="EquipmentTable_" :equipUse="equipUse" expiryTime="timeout"
+                           @change="loadNumChange"></equipment-table>
         </a-tab-pane>
         <a-tab-pane key="3">
           <a-badge :count="statisticData.week" slot="tab" :offset="offset">7天内到期</a-badge>
-          <equipment-table ref="EquipmentTable7" expiryTime="week" @change="loadNumChange"></equipment-table>
+          <equipment-table ref="EquipmentTable7" :equipUse="equipUse" expiryTime="week"
+                           @change="loadNumChange"></equipment-table>
         </a-tab-pane>
         <a-tab-pane key="4">
           <a-badge :count="statisticData.month" slot="tab" :offset="offset">30天内到期</a-badge>
-          <equipment-table ref="EquipmentTable30" expiryTime="month" @change="loadNumChange"></equipment-table>
+          <equipment-table ref="EquipmentTable30" :equipUse="equipUse" expiryTime="month"
+                           @change="loadNumChange"></equipment-table>
         </a-tab-pane>
       </h-tabs>
     </h-card>
@@ -44,6 +48,11 @@ export default {
 
   components: {
     EquipmentTable,
+  },
+  props: {
+    equipUse: {
+      type: String,
+    }
   },
 
   data() {

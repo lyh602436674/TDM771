@@ -147,6 +147,9 @@ export default {
     expiryTime: {
       type: String,
       default: ''
+    },
+    equipUse: {
+      type: String,
     }
   },
   mixins: [mixin],
@@ -175,12 +178,6 @@ export default {
           title: '设备名称 ',
           formType: 'input',
           key: 'c_equipName_7'
-        },
-        {
-          title: '设备用途',
-          key: 'c_equipUse_1',
-          formType: 'dict',
-          dictCode: 'hf_res_equip_use'
         },
         {
           title: '设备类型',
@@ -381,7 +378,8 @@ export default {
         let data = {
           ...this.queryParam,
           ...params,
-          searchType: this.expiryTime
+          searchType: this.expiryTime,
+          c_equipUse_1: this.equipUse,
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
@@ -459,7 +457,9 @@ export default {
       this.$refs.equipmentModal.show(record, '编辑')
     },
     handleAdd() {
-      let record = {}
+      let record = {
+        equipUse: this.equipUse
+      }
       this.$refs.equipmentModal.show(record, '新增')
     },
     // 详情
@@ -481,6 +481,7 @@ export default {
       let data = {
         ...this.queryParam,
         ...model,
+        equipUse: this.equipUse,
         ids: this.selectedRowKeys.join(',')
       }
       let url = this.url.export

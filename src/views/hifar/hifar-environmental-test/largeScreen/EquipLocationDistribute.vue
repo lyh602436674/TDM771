@@ -72,7 +72,8 @@
                 @mousedown="(e) => equipItemDrag(e, item, _index, index)"
                 @mouseenter="(e) => equipItemEnter(e, item, _index, index)"
                 @mouseout="(e) => equipItemOut(e)"
-              ></div>
+              >{{ item.largeScreenName }}
+              </div>
             </template>
           </div>
         </h-carousel>
@@ -389,11 +390,16 @@ export default {
 
       .equipStatus-item {
         position: absolute;
-        width: 0.156rem /* 60/384 */;
-        height: 0.156rem /* 60/384 */;
+        width: 0.2rem;
+        height: 0.2rem;
         border-radius: 50%;
         background-size: 100% 100%;
         cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 0.09rem;
       }
     }
   }

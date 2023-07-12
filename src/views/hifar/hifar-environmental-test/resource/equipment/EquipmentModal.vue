@@ -105,18 +105,12 @@ export default {
           size: 'small',
           span: 12,
           dictCode: 'hf_res_equip_use',
+          disabled: true,
           validate: {
             rules: [{required: true, message: '请选择设备用途'}]
           },
           change: val => {
-            let formData = this.$refs.equipmentForm.$options.propsData.formData
-            let equipTypeCode = formData.filter(v => v.key === 'equipTypeCode')[0]
-            let address = formData.filter(v => v.key === 'address')[0]
-            let equipModel = formData.filter(v => v.key === 'equipModel')[0]
-            equipTypeCode.validate.rules[0].required = val === '1'
-            address.validate.rules[0].required = val === '1'
-            equipModel.validate.rules[0].required = val === '1'
-            this.$refs.equipmentForm.form.setFieldsValue({equipTypeCode: '/', address: "7"})
+            this.changeEquipUse(val)
           }
         },
         {
@@ -338,6 +332,12 @@ export default {
           type: 'number',
         },
         {
+          title: '大屏显示名称',
+          key: 'largeScreenName',
+          formType: 'input',
+          span: 12,
+        },
+        {
           title: '',
           key: 'userDeptName',
           formType: 'input',
@@ -427,6 +427,31 @@ export default {
       obj.checkValid = obj.checkValid && obj.checkValid != 0 && obj.checkValid > 0 ? moment(parseInt(obj.checkValid)) : ''
       obj.managerId = obj.managerId && obj.managerId != 0 ? obj.managerId : undefined
       this.equipentInfo = obj
+      if (this.title === '新增') {
+        this.changeEquipUse(obj.equipUse)
+      }
+      this.filterFields()
+    },
+    filterFields() {
+      this.$nextTick(() => {
+        let formData = this.$refs.equipmentForm.$options.propsData.formData
+        let largeScreenName = formData.filter(v => v.key === 'largeScreenName')[0]
+        largeScreenName.hidden = this.equipentInfo.equipUse == '2'
+      })
+    },
+    changeEquipUse(val) {
+      this.$nextTick(() => {
+        let formData = this.$refs.equipmentForm.$options.propsData.formData
+        let equipTypeCode = formData.filter(v => v.key === 'equipTypeCode')[0]
+        let address = formData.filter(v => v.key === 'address')[0]
+        let equipModel = formData.filter(v => v.key === 'equipModel')[0]
+        equipTypeCode.validate.rules[0].required = val === '1'
+        address.validate.rules[0].required = val === '1'
+        equipModel.validate.rules[0].required = val === '1'
+        if (val === '2') {
+          this.$refs.equipmentForm.form.setFieldsValue({equipTypeCode: '/', address: "7"})
+        }
+      })
     },
     handleCancel(e) {
       this.visible = false
