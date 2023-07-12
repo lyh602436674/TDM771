@@ -9,6 +9,7 @@
   <h-card :bordered="true" fixed class="testStatistics" style="height: 100%">
     <h-search
       slot="search-form"
+      ref="searchForm"
       v-model="queryParams"
       :data="searchData"
       :showToggleButton="true"
@@ -47,14 +48,14 @@
       </template>
       <span slot="actions" slot-scope="text, record">
         <a-popconfirm v-if="record.isSettled === '0'" title="确定进行结算吗?"
-                      @confirm="() => handleSettlement(record.id)">
+                      @confirm="() => handleSettlement(record.id,record.custTypes)">
           <a>结算</a>
         </a-popconfirm>
       </span>
     </h-vex-table>
     <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
     <abnormal-detail-modal ref="abnormalDetailModal" isReadOnly/>
-    <settlement-preview-modal ref="settlementPreviewModal" isEdit @change="refresh"/>
+    <settlement-preview-modal :queryParams="queryParams" ref="settlementPreviewModal" isEdit @change="refresh"/>
   </h-card>
 </template>
 
@@ -65,6 +66,7 @@ import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/Te
 import AbnormalDetailModal from "@views/hifar/hifar-environmental-test/task/modules/AbnormalDetailModal";
 import SettlementPreviewModal from "@views/hifar/hifar-environmental-test/feeSettlement/modules/SettlementPreviewModal";
 import {dateTimeFormatByStamp} from '@/utils/util'
+import {CUST_TYPE_OPTIONS} from "@views/hifar/constants";
 
 export default {
   name: "TestStatisticsByCompleted",
@@ -78,9 +80,11 @@ export default {
       queryParams: {},
       searchData: [
         {
-          title: '送试单位',
-          key: 'custName',
-          formType: 'input',
+          title: "送试单位",
+          key: "custName",
+          formType: 'select',
+          options: [],
+          showSearch: true
         },
         {
           title: '试验编号',
@@ -103,16 +107,31 @@ export default {
           formType: 'input',
         },
         {
-          title: '实际开始时间',
-          key: 'realStartTime',
-          showTime: true,
-          formType: 'dateRangePick',
-        },
-        {
           title: '实际结束时间',
           key: 'realEndTime',
           showTime: true,
           formType: 'dateRangePick',
+        },
+        {
+          title: '委托日期',
+          key: 'entrustTime',
+          showTime: true,
+          formType: 'dateRangePick',
+        },
+        {
+          title: '是否结算',
+          key: 'isSettled',
+          formType: 'select',
+          options: [
+            {title: "已结算", value: "1", key: "1"},
+            {title: "未结算", value: "0", key: "0"},
+          ]
+        },
+        {
+          title: '客户类型',
+          key: 'custType',
+          formType: 'select',
+          options: CUST_TYPE_OPTIONS
         },
       ],
       selectedRowKeys: [],
@@ -235,6 +254,12 @@ export default {
           minWidth: 150,
         },
         {
+          title: '委托日期',
+          dataIndex: 'entrustTimes',
+          customRender: time => dateTimeFormatByStamp(time, 'YYYY-MM-DD'),
+          minWidth: 150,
+        },
+        {
           title: '实际用时(h)',
           dataIndex: 'realUseTime',
           minWidth: 100,
@@ -283,14 +308,28 @@ export default {
       },
       url: {
         list: '/HfEnvTaskTestBusiness/listPageForEquip',
+        custList: "/HfResCustBusiness/listCustNameDistinct"
       },
     }
   },
+  created() {
+    postAction(this.url.custList).then(res => {
+      if (res.code === 200) {
+        let custName = this.searchData.filter(v => v.key === 'custName')[0]
+        custName.options = res.data.map(v => {
+          return {
+            title: v.custName,
+            key: v.custName,
+            value: v.custName,
+          }
+        })
+      }
+    })
+  },
   methods: {
-    handleSettlement(id) {
-      if (!this.selectedRowKeys.length && !id) return this.$message.warning('请至少选择一条试验')
+    handleSettlement(id, custType) {
       if (this.selectedRows.map(item => item.isSettled).includes('1')) return this.$message.warning('已选数据中包含已结算')
-      this.$refs.settlementPreviewModal.show(id || this.selectedRowKeys.toString())
+      this.$refs.settlementPreviewModal.show(id || this.selectedRowKeys.toString(), custType || this.selectedRows[0].custTypes)
     },
     onSelect(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys

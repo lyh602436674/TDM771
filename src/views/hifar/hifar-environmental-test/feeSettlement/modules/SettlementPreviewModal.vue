@@ -59,6 +59,10 @@ export default {
     isEdit: {
       type: Boolean,
       default: false
+    },
+    queryParams: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -292,13 +296,13 @@ export default {
     handleExportXls(name) {
       let fileName = name + '.xls'
       let url = this.url.queryById
-      let params = {id: this.rowId, type: 'export'}
+      let params = {id: this.rowId, ...this.queryParams, type: 'export'}
       downloadFile(url, fileName, params)
     },
     handleSubmit() {
       if (this.submitLoading) return
       this.submitLoading = true
-      postAction(this.url.settle, {testIds: this.rowId.toString()}).then(res => {
+      postAction(this.url.settle, {...this.queryParams, testIds: this.rowId.toString()}).then(res => {
         if (res.code === 200) {
           this.$message.success('结算成功')
           this.handleCancel()
@@ -318,8 +322,9 @@ export default {
       if (this.isEdit) {
         // 结算时预览
         let data = {
-          ...params,
           testIds: this.rowId.toString(),
+          ...this.queryParams,
+          ...params,
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {

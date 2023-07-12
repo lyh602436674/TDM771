@@ -198,7 +198,10 @@ export default {
               size: this.size,
               placeholder: `请选择${item.addonBefore || item.title}`,
               options: item.options,
-              value: this.queryParams[item.key]
+              value: this.queryParams[item.key],
+              allowClear: item.allowClear || true,
+              showSearch: item.showSearch || false,
+              filterOption: this.filterOption,
             },
             on: {
               change: (v, vNode) => {
@@ -352,6 +355,11 @@ export default {
           {this.renderFormItem(h, this.activeItem)}
         </a-col>
       ]
+    },
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      );
     },
     handleSearchTypeChange(v) {
       this.activeItem = find(this.data, item => item.key === v)
