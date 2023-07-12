@@ -16,7 +16,7 @@
     <h-vex-table
       v-else
       ref="TestConditionTable"
-      :columns="columns"
+      :columns="columns2"
       :data="localDataSource"
       size="mini"
       :height="300"
@@ -72,6 +72,15 @@ export default {
     }
   },
   computed: {
+    columns2() {
+      return this.columns.map(item => {
+        let fields = ['paramCode', 'paramType_dictText', 'curveType']
+        return {
+          ...item,
+          hidden: fields.includes(item.dataIndex) && this.stage !== 'stage'
+        }
+      })
+    },
     localDataSource() {
       if (+this.classifyType === 2) {
         let {columns, res} = this.transposeData(this.dataSource)
@@ -94,6 +103,10 @@ export default {
     },
     classifyType: {
       type: [String, Number],
+      default: ''
+    },
+    stage: {
+      type: String,
       default: ''
     }
   },

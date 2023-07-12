@@ -23,14 +23,16 @@
         <template v-if="filterUnitCode(model.classifyType)">
           <a-tabs id="drag-tab" v-model="tabsActiveKey" @change="handleTabChange" type="card">
             <template v-for="(item,itemIndex) in model.abilityRequire">
-              <a-tab-pane :key="itemIndex" :closable="item.closable"
+              <a-tab-pane :key="itemIndex"
                           :tab="item.title" forceRender>
                 <test-condition-tab-item :key="itemIndex + '-only'" ref="testConditionTabItem"
                                          :itemAbilityInfo="item.abilityInfo"
+                                         :highLowTemperature="item.highLowTemperature"
                                          :itemIndex="itemIndex"
                                          :projectIndex="index"
                                          :currentProject="model"
                                          :stage="item.type"
+                                         @temperatureChange="(val) => temperatureChange(val,item)"
                                          @add="handleAdd"
                                          @delete="handleDelete"/>
               </a-tab-pane>
@@ -111,7 +113,7 @@ import {randomUUID} from "@/utils/util";
 
 const defaultParams = Object.freeze({
   paramId: randomUUID(),
-  delFlag: 1,
+  delFlag: 0,
   curveType: 1,
   conditionTypeDesc: undefined,
   minValue: undefined,
@@ -134,10 +136,10 @@ const defaultBeforeConditions = [
   },
   {
     ...defaultParams,
-    paramName: "温变速率",
+    paramName: "温变时间",
     dataType: "number",
-    paramCode: "beforeVariationRateTem",
-    unitName: "℃/min"
+    paramCode: "beforeVariationTimeTem",
+    unitName: "min"
   },
   {
     ...defaultParams,
@@ -158,10 +160,10 @@ const defaultAfterConditions = [
   },
   {
     ...defaultParams,
-    paramName: "温变速率",
+    paramName: "温变时间",
     dataType: "number",
     paramCode: "afterVariationRateTem",
-    unitName: "℃/min",
+    unitName: "min",
   },
   {
     ...defaultParams,
@@ -250,7 +252,7 @@ export default {
             obj.abilityRequire = obj.abilityRequire.map((item, index) => {
               return {
                 ...item,
-                closable: index !== 0 && index !== obj.abilityRequire.length - 1,
+                highLowTemperature: item.highLowTemperature || "1",
                 abilityInfo: item.abilityInfo && item.abilityInfo.map(a => {
                   return {
                     paramType_dictText: a.paramType_dictText,
@@ -264,12 +266,12 @@ export default {
             if (filterProjectByType) {
               obj.abilityRequire = [
                 {
-                  title: "前置处理", type: "before", closable: false, abilityInfo: defaultBeforeConditions
+                  title: "前置处理", type: "before", abilityInfo: defaultBeforeConditions
                 },
                 {
                   title: "循环阶段",
                   type: "stage",
-                  closable: false,
+                  highLowTemperature: "1",
                   abilityInfo: obj.abilityInfo && obj.abilityInfo.map(a => {
                     return {
                       paramId: a.abilityParamId,
@@ -281,7 +283,7 @@ export default {
                   }) || []
                 },
                 {
-                  title: "后置处理", type: "after", closable: false, abilityInfo: defaultAfterConditions
+                  title: "后置处理", type: "after", abilityInfo: defaultAfterConditions
                 },
               ]
             } else {
@@ -683,11 +685,6 @@ export default {
             item.classList.add('disabledDrag')
           }
         })
-        if (this.model.abilityRequire.length) {
-          this.model.abilityRequire.map((item, index) => {
-            item.closable = index !== 0 && index !== 1 && index !== this.model.abilityRequire.length - 1
-          })
-        }
         // this.$forceUpdate()
         this.$nextTick(() => {
           sortable.create(dragTab, {
@@ -722,9 +719,6 @@ export default {
       let {abilityRequire} = this.model
       const currentTabItem = abilityRequire.splice(oldIndex, 1)[0]
       abilityRequire.splice(newIndex, 0, currentTabItem)
-      abilityRequire.map((item, index) => {
-        item.closable = index !== 0 && index !== abilityRequire.length - 1
-      })
       setTimeout(() => {
         this.tabsActiveKey = newIndex
       }, 0)
@@ -877,6 +871,9 @@ export default {
       this.model.abilityRequire[itemIndex].abilityInfo = pointInfoAllData
       this.$refs.PointList.showSelectModal(this.model.abilityRequire[itemIndex])
     },
+    temperatureChange(val, item) {
+      this.$set(item, 'highLowTemperature', val)
+    },
     handleDelete(row, rowIndex, projectIndex, itemIndex) {
       this.model.abilityRequire[itemIndex].abilityInfo.splice(rowIndex, 1)
     },
@@ -891,60 +888,29 @@ export default {
     },
     splitByCurveType() {
       let testConditionTab = this.$refs.testConditionTabItem || [];
-      let pointTableGather = [], pointTableItemStage = [], pointTableItemBefore = [], pointTableItemAfter = [];
+      let pointTableGather = [];
       [].forEach.call(testConditionTab, (item, i) => {
         let getData = item.$refs['pointTable' + [this.index] + [i]].getData()
-        if (item.stage === 'before') {
-          pointTableItemBefore = getData
-        } else if (item.stage === 'after') {
-          pointTableItemAfter = getData
-        } else {
-          pointTableItemStage.push(getData)
-        }
+        pointTableGather.push(getData)
       })
-      this.initialCurveData(pointTableItemBefore)
-      pointTableGather = [
-        this.initBeforeDispose(pointTableItemBefore),
-        ...pointTableItemStage,
-        this.initAfterDispose(pointTableItemAfter)
-      ]
-      console.log(pointTableGather, 'pointTableGather')
-      let drawTemperatureCurve = []
-      let drawHumidityCurve = []
+      this.initialCurveData()
       // 这里目前只有一个循环阶段，可以将其他循环结合在一起使用，所以这里先用循环
       for (let i = 0; i < pointTableGather.length; i++) {
-
         console.log(`第${i + 1} 阶段绘制开始`)
         let item = pointTableGather[i]
-        try {
-          this.loopNum = Number(item.filter(v => v.paramCode === 'qh07')[0].conditionTypeDesc)
-        } catch {
-          // return this.$message.warning(`循环阶段${i + 1}，请添加循环次数`)
-          this.loopNum = 1
+        if (i === 0) {
+          // 前置处理
+          this.drawCurveByBefore(item)
+        } else if (i === pointTableGather.length - 1) {
+          // 后置处理
+          this.drawCurveByAfter(item)
+        } else {
+          this.drawCurveByStage(item, testConditionTab[i].highLowTemperatureExtend)
         }
-        if (i === 1) {
-          let preValue = pointTableGather[i - 1][0].minValue
-          let nextValue = item[0].minValue
-          console.log(preValue, nextValue, 'preValue,nextValue')
-          this.isHighTemperature = nextValue >= preValue ? '1' : '2'
-        }
-        if (i === 2) {
-          let preValue = pointTableGather[i - 1][pointTableGather[i - 1].length - 1].maxValue
-          let nextValue = item[0].maxValue
-          console.log(preValue, nextValue, 'preValue,nextValue')
-          this.isHighTemperature = nextValue <= preValue ? '1' : '2'
-        }
-        console.log(this.isHighTemperature, 'this.isHighTemperature')
-        drawTemperatureCurve = drawTemperatureCurve.concat(this.drawTemperatureCurve(item.filter(v => +v.curveType === 1), i === 1))
-        drawHumidityCurve = drawHumidityCurve.concat(this.drawHumidityCurve(item.filter(v => +v.curveType === 2)))
+        console.log(item, 'item')
       }
-      console.log(drawTemperatureCurve, 'drawTemperatureCurve')
-      // 温度
-      this.temperatureResult = this.temperatureResult.concat(drawTemperatureCurve.map(item => item.result).flat())
-      this.temperatureCurveFlag = !drawTemperatureCurve.map(item => item.flag).some(item => item === false)
-      // 湿度
-      this.humidityResult = drawHumidityCurve.map(item => item.result).flat()
-      this.humidityCurveFlag = !drawHumidityCurve.map(item => item.flag).some(item => item === false)
+      this.temperatureResult = this.drawResult
+      console.log(this.drawResult, 'this.drawResult')
       // // 预计时长
       // if (this.temperatureResult.length || this.humidityResult.length) {
       //   this.predictDuration = (Math.max(this.temperatureResult.length ? this.temperatureResult[this.temperatureResult.length - 1].name : 0, this.humidityResult.length ? this.humidityResult[this.humidityResult.length - 1].name : 0) / 1000 / 3600).toFixed(1)
@@ -953,54 +919,15 @@ export default {
       //   this.predictDuration = 0
       // }
     },
-    // 处理前置条件数据
-    initBeforeDispose(data) {
-      let resetData = cloneDeep(data)
-      resetData.forEach(item => {
-        if (item.paramCode === 'beforeInitTem') {
-          item.paramCode = this.isHighTemperature === '1' ? 'qh02' : 'qh01';
-        }
-        if (item.paramCode === 'beforeTargetTem') {
-          item.paramCode = this.isHighTemperature === '1' ? 'qh01' : 'qh02';
-        }
-        if (item.paramCode === 'beforeVariationRateTem') {
-          item.paramCode = this.isHighTemperature === '1' ? 'qh05' : 'qh06';
-        }
-        if (item.paramCode === 'beforeKeepTime') {
-          item.paramCode = this.isHighTemperature === '1' ? 'qh03' : 'qh04';
-        }
-      })
-      return resetData
-    },
-    // 处理后置条件数据
-    initAfterDispose(data) {
-      let resetData = cloneDeep(data)
-      resetData.forEach(item => {
-        if (item.paramCode === 'afterLastTem') {
-          item.paramCode = this.isHighTemperature === '1' ? 'qh01' : 'qh02';
-        }
-        if (item.paramCode === 'afterVariationRateTem') {
-          item.paramCode = this.isHighTemperature === '1' ? 'qh05' : 'qh06';
-        }
-        if (item.paramCode === 'afterKeepTime') {
-          item.paramCode = this.isHighTemperature === '1' ? 'qh03' : 'qh04';
-        }
-      })
-      return resetData
-    },
     // 初始化数据
-    initialCurveData(data) {
+    initialCurveData() {
       this.temperatureResult = []
       this.humidityResult = []
+      this.drawResult = []
       this.loopNum = 1
-      this.initialTemTime = moment(0).format('x')//温度湿度初始时间
+      this.initialTemTime = Number(moment(0).format('x'))//温度湿度初始时间
       this.initialHumTime = moment(0).format('x')//温度湿度初始时间
       this.initialHumidity = 30 // 初始湿度
-      let targetTem = data.filter(v => v.paramCode === 'beforeTargetTem')[0].minValue // 目标温度
-      let initTem = data.filter(v => v.paramCode === 'beforeInitTem')[0].minValue // 初始温度
-      this.initialTemperature = initTem
-      this.initialTargetTemperature = targetTem
-      this.isHighTemperature = targetTem > initTem ? '1' : '2'
     },
   }
 }
