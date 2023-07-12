@@ -329,7 +329,7 @@ export default {
   methods: {
     handleSettlement(id, custType) {
       if (this.selectedRows.map(item => item.isSettled).includes('1')) return this.$message.warning('已选数据中包含已结算')
-      this.$refs.settlementPreviewModal.show(id || this.selectedRowKeys.toString(), custType || this.selectedRows[0].custTypes)
+      this.$refs.settlementPreviewModal.show(id || this.selectedRowKeys.toString())
     },
     onSelect(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
