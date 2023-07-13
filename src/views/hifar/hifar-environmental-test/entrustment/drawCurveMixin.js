@@ -63,48 +63,47 @@ export default {
       let qh01 = this.getValueByField(abilityInfo, 'qh01')
       //最低温度
       let qh02 = this.getValueByField(abilityInfo, 'qh02')
-      console.log(qh02, 'qh02')
       //高温保持
       let qh03 = this.getValueByField(abilityInfo, 'qh03')
       //低温保持
       let qh04 = this.getValueByField(abilityInfo, 'qh04')
       //升温时间
-      let qh051 = this.getValueByField(abilityInfo, 'qh051')
+      let qh14 = this.getValueByField(abilityInfo, 'qh14')
       //降温时间
-      let qh052 = this.getValueByField(abilityInfo, 'qh052')
+      let qh15 = this.getValueByField(abilityInfo, 'qh15')
       //循环次数
       let qh07 = this.getValueByField(abilityInfo, 'qh07') || 1
-      let flag = !!(((qh01 || qh01 === 0) && qh051) || ((qh02 || qh02 === 0) && qh052))
+      let flag = !!(((qh01 || qh01 === 0) && qh14) || ((qh02 || qh02 === 0) && qh15))
       if (!flag) return
       // highTemImpact, lowTemImpact 这里判断仅仅只有高温或者低温，先这样判断，还没更好的办法
-      let highTemImpact = !!(((qh01 || qh01 === 0) && qh051) && !((qh02 || qh02 === 0) && qh052))
-      let lowTemImpact = !!(!((qh01 || qh01 === 0) && qh051) && ((qh02 || qh02 === 0) && qh052))
+      let highTemImpact = !!(((qh01 || qh01 === 0) && qh14) && !((qh02 || qh02 === 0) && qh15))
+      let lowTemImpact = !!(!((qh01 || qh01 === 0) && qh14) && ((qh02 || qh02 === 0) && qh15))
       if (highTemImpact) {
-        this.highTempAddData(qh01, qh03, qh051)(field, isHighTemperature)
+        this.highTempAddData(qh01, qh03, qh14)(field, isHighTemperature)
         return
       }
       if (lowTemImpact) {
-        this.lowTempAddData(qh02, qh04, qh052)(field, isHighTemperature)
+        this.lowTempAddData(qh02, qh04, qh15)(field, isHighTemperature)
         return
       }
       for (let i = 0; i < qh07; i++) {
         if (isHighTemperature === '1') {
-          this.highTempAddData(qh01, qh03, qh051)(field, isHighTemperature)
-          this.lowTempAddData(qh02, qh04, qh052)(field, isHighTemperature)
+          this.highTempAddData(qh01, qh03, qh14)(field, isHighTemperature)
+          this.lowTempAddData(qh02, qh04, qh15)(field, isHighTemperature)
         }
         if (isHighTemperature === '2') {
-          this.lowTempAddData(qh02, qh04, qh052)(field, isHighTemperature)
-          this.highTempAddData(qh01, qh03, qh051)(field, isHighTemperature)
+          this.lowTempAddData(qh02, qh04, qh15)(field, isHighTemperature)
+          this.highTempAddData(qh01, qh03, qh14)(field, isHighTemperature)
         }
       }
       // 这里需要在循环阶段最后补一条线
       if (isHighTemperature === '1' && this.initHighLowTemperature) {
-        this.calcAddTime(qh051)
+        this.calcAddTime(qh14)
         this.resultAddData(qh01, field)
         this.initialTemperature = qh01
       }
       if (isHighTemperature === '2' && !this.initHighLowTemperature) {
-        this.calcAddTime(qh052)
+        this.calcAddTime(qh15)
         this.resultAddData(qh02, field)
         this.initialTemperature = qh02
       }
@@ -128,9 +127,9 @@ export default {
         this.resultAddData(targetTem, field)
       }
     },
-    highTempAddData(qh01, qh03, qh051) {
+    highTempAddData(qh01, qh03, qh14) {
       return (field, isHighTemperature) => {
-        if (isHighTemperature === '2' || !this.initHighLowTemperature) this.calcAddTime(qh051)
+        if (isHighTemperature === '2' || !this.initHighLowTemperature) this.calcAddTime(qh14)
         this.resultAddData(qh01, field)
         this.initialTemperature = qh01
         if (qh03 > 0) {
@@ -139,9 +138,9 @@ export default {
         }
       }
     },
-    lowTempAddData(qh02, qh04, qh052) {
+    lowTempAddData(qh02, qh04, qh15) {
       return (field, isHighTemperature) => {
-        if (this.initHighLowTemperature || isHighTemperature === '1') this.calcAddTime(qh052)
+        if (this.initHighLowTemperature || isHighTemperature === '1') this.calcAddTime(qh15)
         this.resultAddData(qh02, field)
         this.initialTemperature = qh02
         if (qh04 > 0) {
@@ -198,15 +197,9 @@ export default {
       let qh06Index = abilityInfo.findIndex(i => i.paramCode === 'qh06')
       // let qh06 = qh06Index >= 0 && abilityInfo[qh06Index].minValue
 
-      //升温时间
-      let qh051Index = abilityInfo.findIndex(i => i.paramCode === 'qh051')
-      let qh051 = qh051Index >= 0 && abilityInfo[qh051Index].minValue
-      //降温时间
-      let qh052Index = abilityInfo.findIndex(i => i.paramCode === 'qh052')
-      let qh052 = qh052Index >= 0 && abilityInfo[qh052Index].minValue
       //循环次数
-      // let qh07Index = abilityInfo.findIndex(i => i.paramCode === 'qh07')
-      // let qh07 = qh07Index >= 0 && abilityInfo[qh07Index].minValue
+      let qh07Index = abilityInfo.findIndex(i => i.paramCode === 'qh07')
+      let qh07 = qh07Index >= 0 && abilityInfo[qh07Index].minValue
 
       /**
        * 必须：0， 1/2
@@ -215,7 +208,7 @@ export default {
        * 1,2都存在，先1后2
        */
 
-      flag = ((qh01 || qh01 === 0) || (qh02 || qh02 === 0)) && (((qh01 || qh01 === 0) && qh051) || ((qh02 || qh02 === 0) && qh052))
+      flag = ((qh01 || qh01 === 0) || (qh02 || qh02 === 0)) && (((qh01 || qh01 === 0) && qh14) || ((qh02 || qh02 === 0) && qh15))
       if (flag) {
         // let qh00Val = moment(0).format('x')
         let qh00Val = this.initialTemTime
@@ -229,7 +222,7 @@ export default {
         }
         // let loopNum = qh07 ? parseInt(abilityInfo[qh07Index].minValue) : 1
         for (let i = 1; i <= this.loopNum; i++) {
-          let loopResult = this.loopTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh02Index, qh03Index, qh04Index, qh051Index, qh052Index, qh01, qh02, qh051, qh052)
+          let loopResult = this.loopTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh02Index, qh03Index, qh04Index, qh141Index, qh15Index, qh01, qh02, qh14, qh15)
           nodeTime = loopResult.nodeTime
           nodeVal = loopResult.nodeVal
           result = result.concat(loopResult.result)
@@ -244,29 +237,29 @@ export default {
       }
       return {result, flag}
     },
-    loopTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh02Index, qh03Index, qh04Index, qh051Index, qh052Index, qh01, qh02, qh051, qh052) {
+    loopTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh02Index, qh03Index, qh04Index, qh141Index, qh15Index, qh01, qh02, qh14, qh15) {
       let result = []
       if (this.isHighTemperature === '1') {
-        if ((qh01 || qh01 === 0) && qh051) {
-          let highResult = this.highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh051Index)
+        if ((qh01 || qh01 === 0) && qh14) {
+          let highResult = this.highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh141Index)
           result = result.concat(highResult.result)
           nodeTime = highResult.nodeTime
           nodeVal = highResult.nodeVal
-          if ((qh02 || qh02 === 0) && qh052) {
-            let lowTreatment = this.lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh052Index)
+          if ((qh02 || qh02 === 0) && qh15) {
+            let lowTreatment = this.lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh15Index)
             result = result.concat(lowTreatment.result)
             nodeTime = lowTreatment.nodeTime
             nodeVal = lowTreatment.nodeVal
           }
         }
       } else if (this.isHighTemperature === '2') {
-        if ((qh02 || qh02 === 0) && qh052) {
-          let lowTreatment = this.lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh052Index)
+        if ((qh02 || qh02 === 0) && qh15) {
+          let lowTreatment = this.lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh15Index)
           result = result.concat(lowTreatment.result)
           nodeTime = lowTreatment.nodeTime
           nodeVal = lowTreatment.nodeVal
-          if ((qh01 || qh01 === 0) && qh051) {
-            let highResult = this.highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh051Index)
+          if ((qh01 || qh01 === 0) && qh14) {
+            let highResult = this.highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh141Index)
             result = result.concat(highResult.result)
             nodeTime = highResult.nodeTime
             nodeVal = highResult.nodeVal
@@ -279,10 +272,10 @@ export default {
         result: result, nodeTime: nodeTime, nodeVal: nodeVal
       }
     },
-    highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh051Index) {
+    highTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh01Index, qh03Index, qh141Index) {
       let result = []
       let qh01Val = Number(abilityInfo[qh01Index].minValue) // 最高温度
-      let qh051Val = Number(abilityInfo[qh051Index].minValue) // 升温时间
+      let qh051Val = Number(abilityInfo[qh141Index].minValue) // 升温时间
       // let addMin = Math.abs(((qh01Val - nodeVal) / qh051Val) * 60)
       let highTime = moment(nodeTime).add(Number(qh051Val) * 60, 's').format('x')
       nodeTime = parseInt(highTime)
@@ -306,10 +299,10 @@ export default {
         result: result, nodeTime: nodeTime, nodeVal: nodeVal
       }
     },
-    lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh052Index) {
+    lowTreatmentTemperature(abilityInfo, nodeTime, nodeVal, qh02Index, qh04Index, qh15Index) {
       let result = []
       let qh02Val = Number(abilityInfo[qh02Index].minValue) // 最低温度
-      let qh052Val = Number(abilityInfo[qh052Index].minValue) // 降温时间
+      let qh052Val = Number(abilityInfo[qh15Index].minValue) // 降温时间
       // let addMin = Math.abs(((nodeVal - qh02Val) / qh052Val) * 60)
       let lowTime = moment(nodeTime).add(Number(qh052Val) * 60, 's').format('x')
       nodeTime = parseInt(lowTime)
