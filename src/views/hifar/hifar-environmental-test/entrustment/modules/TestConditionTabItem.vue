@@ -2,11 +2,12 @@
   <div style="height: 100%">
     <div
       style="display: flex;width: 100%;margin-bottom: 5px;align-items: center;justify-content: space-between">
-      <a-button size="small"
+      <a-button size="small" v-if="isStage || !filterProjectByType"
                 type="primary" @click="handleAdd"> 新增
       </a-button>
-      <h-select v-if="filterProjectByType" v-model="highLowTemperatureExtend" :options="selectOptionItem"
-                style="width: 200px;" @change="(val) => $emit('temperatureChange', val)">
+      <h-select v-if="filterProjectByType && isStage" v-model="highLowTemperatureExtend"
+                :options="selectOptionItem"
+                style="width: 200px;" @change="temperatureChange">
         <span slot="addonBefore">初始类型</span>
       </h-select>
     </div>
@@ -15,11 +16,7 @@
       :class="'pointTable' + projectIndex + itemIndex"
       :auto-resize="true"
       :data="itemAbilityInfo"
-      :edit-config="{
-                trigger: 'click',
-                mode: 'cell',
-                activeMethod: ()=>{return true}
-              }"
+      :edit-config="{ trigger: 'click', mode: 'cell',  activeMethod: () =>  true }"
       border
       height="300"
       highlight-hover-row
@@ -28,15 +25,15 @@
       size="mini"
     >
       <vxe-table-column type="seq" width="40" align="center"></vxe-table-column>
-      <vxe-table-column field="paramCode" title="参数编号"></vxe-table-column>
+      <vxe-table-column v-if="isStage" field="paramCode" title="参数编号"></vxe-table-column>
       <vxe-table-column field="paramName" title="试验条件"></vxe-table-column>
-      <vxe-table-column field="paramType_dictText" title="参数类型"></vxe-table-column>
+      <vxe-table-column v-if="isStage" field="paramType_dictText" title="参数类型"></vxe-table-column>
       <vxe-table-column field="unitName" title="单位">
         <template #default="{ row }">
           {{ row.unitName || '--' }}
         </template>
       </vxe-table-column>
-      <vxe-table-column field="curveType" title="曲线类型">
+      <vxe-table-column v-if="isStage" field="curveType" title="曲线类型">
         <template #default="{ row }">
           {{ row.curveType === '1' ? '温度/℃' : row.curveType === '2' ? '湿度/RH' : '--' }}
         </template>
@@ -54,10 +51,7 @@
           <template v-if="row.dataType === 'select'">
             <a-select v-model="row.conditionTypeDesc" @change="inputChangeOfSelect(row)"
                       :getPopupContainer="getSelectContainer(rowIndex)" size="small" style="width: 100%">
-              <a-select-option v-for="item in selectOptionItem" :key="item.key" :value="item.key">{{
-                  item.title
-                }}
-              </a-select-option>
+
             </a-select>
           </template>
         </template>
@@ -66,7 +60,7 @@
           <span v-else>{{ row.conditionTypeDesc }}</span>
         </template>
       </vxe-table-column>
-      <vxe-table-column align="center" title="操作" width="100">
+      <vxe-table-column v-if="isStage" align="center" title="操作" width="100">
         <template #default="{ row,rowIndex }">
           <a-popconfirm :class="[getDelFlag(row) ? '' : 'nonePointerEvents']" title="确定删除吗?"
                         @confirm="() => removeEvent(row,rowIndex)">
@@ -103,19 +97,26 @@ export default {
       type: [Array, Object],
       default: () => []
     },
-    highLowTemperature: {
-      type: [String, Number],
-      default: "1"
-    },
     currentProject: {
       type: Object,
       default: () => {
       }
     },
+    highLowTemperature: {
+      type: [Number, String],
+      default: '1'
+    },
+    stage: {
+      type: String,
+      default: ''
+    },
   },
   computed: {
     filterProjectByType() {
       return this.filterUnitCode(this.currentProject.classifyType)
+    },
+    isStage() {
+      return ['stage'].includes(this.stage)
     },
   },
   watch: {
@@ -144,6 +145,9 @@ export default {
       }
       return true
     },
+    temperatureChange(val) {
+      this.$emit('temperatureChange', val)
+    },
     getSelectOption(row) {
       return this.selectOptionItem[+row.conditionTypeDesc - 1].title;
     },
@@ -158,7 +162,7 @@ export default {
       row.strValue = row.conditionTypeDesc
     },
     inputChangeOfNumber(row) {
-      row.minValue = row.conditionTypeDesc
+      row.minValue = Number(row.conditionTypeDesc)
     },
     inputChangeOfSelect(row) {
       row.minValue = row.conditionTypeDesc

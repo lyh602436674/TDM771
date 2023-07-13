@@ -58,8 +58,8 @@
         <a-tabs v-else :default-active-key="0" style="width: 100%">
           <template v-for="(proItem,itemIndex) in model.abilityRequire">
             <a-tab-pane :key="itemIndex"
-                        :tab="proItem.type === 'stage' ? proItem.title + (itemIndex + 1) : proItem.title">
-              <test-condition-template :classifyType="model.classifyType" :data-source="proItem.abilityInfo || []"/>
+                        :tab="proItem.title">
+              <test-condition-template :stage="proItem.type" :classifyType="model.classifyType" :data-source="proItem.abilityInfo || []"/>
             </a-tab-pane>
           </template>
         </a-tabs>

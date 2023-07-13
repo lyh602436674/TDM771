@@ -279,6 +279,7 @@ export default {
             this.entrustType = val
             this.$refs.PhemismCustomSelect.entrustType = val
             this.tableData = []
+            this.selectedPieceRows = []
           }
         },
         {

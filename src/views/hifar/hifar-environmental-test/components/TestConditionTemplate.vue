@@ -16,7 +16,7 @@
     <h-vex-table
       v-else
       ref="TestConditionTable"
-      :columns="columns"
+      :columns="columns2"
       :data="localDataSource"
       size="mini"
       :height="300"
@@ -63,10 +63,7 @@ export default {
         title: '条件',
         dataIndex: 'conditionTypeDesc',
         customRender: (text, record) => {
-          if (record.paramName === '初始类型') {
-            return text === '1' ? '先高温' : text === '2' ? '先低温' : '--'
-          }
-          return text
+          return text || ''
         }
       },
     ]
@@ -75,6 +72,15 @@ export default {
     }
   },
   computed: {
+    columns2() {
+      return this.columns.map(item => {
+        let fields = ['paramCode', 'paramType_dictText', 'curveType']
+        return {
+          ...item,
+          hidden: fields.includes(item.dataIndex) && this.stage !== 'stage'
+        }
+      })
+    },
     localDataSource() {
       if (+this.classifyType === 2) {
         let {columns, res} = this.transposeData(this.dataSource)
@@ -97,6 +103,10 @@ export default {
     },
     classifyType: {
       type: [String, Number],
+      default: ''
+    },
+    stage: {
+      type: String,
       default: ''
     }
   },

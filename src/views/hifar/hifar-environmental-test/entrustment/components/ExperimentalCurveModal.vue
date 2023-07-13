@@ -33,7 +33,7 @@ export default {
   data() {
     return {
       visible: false,
-      title: "预览",
+      title: "曲线预览",
     }
   },
   methods: {
