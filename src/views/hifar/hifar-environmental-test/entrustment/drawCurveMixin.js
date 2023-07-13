@@ -26,11 +26,15 @@ export default {
       initialTemperature: 0, // 初始温度
       initialHumidity: 30, // 初始湿度
       entrustOrTaskFlag: false,// 绘制曲线数据的标记，false=> 在工艺规划页面绘制曲线，true=> 在试验任务中绘制曲线，因为两种绘制曲线的数据格式不一样
-      drawResult: []
+      temperatureResult: {},
+      // 用来判断前置处理是先降温还是先升温，此处听一首许嵩的《降温》
+      initHighLowTemperature: true,
     }
   },
   methods: {
     drawCurveByBefore(abilityInfo) {
+      let field = 'temperatureResult_before'
+      this.temperatureResult[field] = []
       // 目标温度
       let targetTem = this.getValueByField(abilityInfo, 'beforeTargetTem')
       // 初始温度
@@ -40,16 +44,21 @@ export default {
       // 保持时间
       let keepTime = this.getValueByField(abilityInfo, 'beforeKeepTime')
       this.initialTemperature = initTem
-      this.resultAddData(this.initialTemperature)
-      this.calcAddTime(variationTimeTem)
-      this.resultAddData(targetTem)
-      if (keepTime > 0) {
-        this.calcAddTime(keepTime)
-        this.resultAddData(targetTem)
+      this.initHighLowTemperature = targetTem >= initTem
+      if ((initTem || initTem === 0) && (targetTem || targetTem === 0) && variationTimeTem > 0) {
+        this.resultAddData(this.initialTemperature, field)
+        this.calcAddTime(variationTimeTem)
+        this.resultAddData(targetTem, field)
+        if (keepTime > 0) {
+          this.calcAddTime(keepTime)
+          this.resultAddData(targetTem, field)
+        }
+        this.initialTemperature = targetTem
       }
-      this.initialTemperature = targetTem
     },
     drawCurveByStage(abilityInfo, isHighTemperature) {
+      let field = 'temperatureResult_stage'
+      this.temperatureResult[field] = []
       //最高温度
       let qh01 = this.getValueByField(abilityInfo, 'qh01')
       //最低温度
@@ -64,29 +73,33 @@ export default {
       let qh052 = this.getValueByField(abilityInfo, 'qh052')
       //循环次数
       let qh07 = this.getValueByField(abilityInfo, 'qh07')
+      let flag = ((qh01 || qh01 === 0) || (qh02 || qh02 === 0)) && (((qh01 || qh01 === 0) && qh051) || ((qh02 || qh02 === 0) && qh052))
+      if (!flag) return
       for (let i = 0; i < qh07; i++) {
         if (isHighTemperature === '1') {
-          this.highTempAddData(qh01, qh03, qh051)
-          this.lowTempAddData(qh02, qh04, qh052)
+          this.highTempAddData(qh01, qh03, qh051)(field, isHighTemperature)
+          this.lowTempAddData(qh02, qh04, qh052)(field, isHighTemperature)
         }
         if (isHighTemperature === '2') {
-          this.lowTempAddData(qh02, qh04, qh052)
-          this.highTempAddData(qh01, qh03, qh051)
+          this.lowTempAddData(qh02, qh04, qh052)(field, isHighTemperature)
+          this.highTempAddData(qh01, qh03, qh051)(field, isHighTemperature)
         }
       }
-      // 这里需要在循环阶段补一条线
-      if (isHighTemperature === '1') {
+      // 这里需要在循环阶段最后补一条线
+      if (isHighTemperature === '1' && this.initHighLowTemperature) {
         this.calcAddTime(qh051)
-        this.resultAddData(qh01)
+        this.resultAddData(qh01, field)
         this.initialTemperature = qh01
       }
-      if (isHighTemperature === '2') {
+      if (isHighTemperature === '2' && !this.initHighLowTemperature) {
         this.calcAddTime(qh052)
-        this.resultAddData(qh02)
+        this.resultAddData(qh02, field)
         this.initialTemperature = qh02
       }
     },
     drawCurveByAfter(abilityInfo) {
+      let field = 'temperatureResult_after'
+      this.temperatureResult[field] = []
       // 回归温度
       let targetTem = this.getValueByField(abilityInfo, 'afterLastTem')
       // 温变时间
@@ -97,40 +110,44 @@ export default {
       if ((targetTem || targetTem === 0) && variationTimeTem) {
         if (keepTime > 0) {
           this.calcAddTime(keepTime)
-          this.resultAddData(this.initialTemperature)
+          this.resultAddData(this.initialTemperature, field)
         }
         this.calcAddTime(variationTimeTem)
-        this.resultAddData(targetTem)
+        this.resultAddData(targetTem, field)
       }
     },
     highTempAddData(qh01, qh03, qh051) {
-      this.calcAddTime(qh051)
-      this.resultAddData(qh01)
-      this.initialTemperature = qh01
-      if (qh03 > 0) {
-        this.calcAddTime(qh03)
-        this.resultAddData(qh01)
+      return (field, isHighTemperature) => {
+        if (isHighTemperature === '2' || !this.initHighLowTemperature) this.calcAddTime(qh051)
+        this.resultAddData(qh01, field)
+        this.initialTemperature = qh01
+        if (qh03 > 0) {
+          this.calcAddTime(qh03)
+          this.resultAddData(qh01, field)
+        }
       }
     },
     lowTempAddData(qh02, qh04, qh052) {
-      this.calcAddTime(qh052)
-      this.resultAddData(qh02)
-      this.initialTemperature = qh02
-      if (qh04 > 0) {
-        this.calcAddTime(qh04)
-        this.resultAddData(qh02)
+      return (field, isHighTemperature) => {
+        if (this.initHighLowTemperature || isHighTemperature === '1') this.calcAddTime(qh052)
+        this.resultAddData(qh02, field)
+        this.initialTemperature = qh02
+        if (qh04 > 0) {
+          this.calcAddTime(qh04)
+          this.resultAddData(qh02, field)
+        }
       }
     },
     getValueByField(dataSource, field, variable = 'minValue') {
       return dataSource.filter(v => v.paramCode === field)[0][variable]
     },
-    resultAddData(nodeVal) {
+    resultAddData(nodeVal, field) {
       let nodeTime = Number(this.initialTemTime)
       nodeVal = Number(nodeVal)
       if (this.entrustOrTaskFlag) {
-        this.drawResult.push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
+        this.temperatureResult[field].push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
       } else {
-        this.drawResult.push({name: nodeTime, value: [nodeTime, nodeVal]})
+        this.temperatureResult[field].push({name: nodeTime, value: [nodeTime, nodeVal]})
       }
     },
     calcAddTime(value) {

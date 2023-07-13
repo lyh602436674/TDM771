@@ -747,9 +747,8 @@ export default {
       if (+this.model.classifyType === 1) {
         this.splitByCurveType()
         let {temperatureResult, humidityResult} = this
-        let obj = {temperatureResult, humidityResult}
         setTimeout(() => {
-          this.$refs.ExperimentalCurveModal.open(obj)
+          this.$refs.ExperimentalCurveModal.open(temperatureResult)
         }, 0)
       } else {
         let pointTableItem = this.$refs.testConditionTabItem.$refs['pointTable' + [this.index] + 0].getData()
@@ -824,14 +823,14 @@ export default {
               data: this.temperatureResult || [],
               label: seriesLabel
             },
-            {
-              name: '湿度/RH',
-              type: 'line',
-              hoverAnimation: false,
-              symbolSize: 4,
-              data: this.humidityResult || [],
-              label: seriesLabel
-            },
+            // {
+            //   name: '湿度/RH',
+            //   type: 'line',
+            //   hoverAnimation: false,
+            //   symbolSize: 4,
+            //   data: this.humidityResult || [],
+            //   label: seriesLabel
+            // },
           ]
         }
         chart.setOption(option)
@@ -905,12 +904,11 @@ export default {
           // 后置处理
           this.drawCurveByAfter(item)
         } else {
+          // 循环阶段
           this.drawCurveByStage(item, testConditionTab[i].highLowTemperatureExtend)
         }
         console.log(item, 'item')
       }
-      this.temperatureResult = this.drawResult
-      console.log(this.drawResult, 'this.drawResult')
       // // 预计时长
       // if (this.temperatureResult.length || this.humidityResult.length) {
       //   this.predictDuration = (Math.max(this.temperatureResult.length ? this.temperatureResult[this.temperatureResult.length - 1].name : 0, this.humidityResult.length ? this.humidityResult[this.humidityResult.length - 1].name : 0) / 1000 / 3600).toFixed(1)
@@ -921,9 +919,8 @@ export default {
     },
     // 初始化数据
     initialCurveData() {
-      this.temperatureResult = []
+      this.temperatureResult = {}
       this.humidityResult = []
-      this.drawResult = []
       this.loopNum = 1
       this.initialTemTime = Number(moment(0).format('x'))//温度湿度初始时间
       this.initialHumTime = moment(0).format('x')//温度湿度初始时间
