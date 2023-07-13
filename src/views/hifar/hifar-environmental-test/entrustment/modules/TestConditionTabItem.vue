@@ -60,7 +60,7 @@
           <span v-else>{{ row.conditionTypeDesc }}</span>
         </template>
       </vxe-table-column>
-      <vxe-table-column align="center" title="操作" width="100">
+      <vxe-table-column v-if="isStage" align="center" title="操作" width="100">
         <template #default="{ row,rowIndex }">
           <a-popconfirm :class="[getDelFlag(row) ? '' : 'nonePointerEvents']" title="确定删除吗?"
                         @confirm="() => removeEvent(row,rowIndex)">

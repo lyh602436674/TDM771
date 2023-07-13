@@ -44,9 +44,9 @@ export default {
       // 保持时间
       let keepTime = this.getValueByField(abilityInfo, 'beforeKeepTime')
       this.initialTemperature = initTem
+      this.resultAddData(this.initialTemperature, field)
       this.initHighLowTemperature = targetTem >= initTem
       if ((initTem || initTem === 0) && (targetTem || targetTem === 0) && variationTimeTem > 0) {
-        this.resultAddData(this.initialTemperature, field)
         this.calcAddTime(variationTimeTem)
         this.resultAddData(targetTem, field)
         if (keepTime > 0) {
@@ -63,6 +63,7 @@ export default {
       let qh01 = this.getValueByField(abilityInfo, 'qh01')
       //最低温度
       let qh02 = this.getValueByField(abilityInfo, 'qh02')
+      console.log(qh02, 'qh02')
       //高温保持
       let qh03 = this.getValueByField(abilityInfo, 'qh03')
       //低温保持
@@ -72,9 +73,20 @@ export default {
       //降温时间
       let qh052 = this.getValueByField(abilityInfo, 'qh052')
       //循环次数
-      let qh07 = this.getValueByField(abilityInfo, 'qh07')
-      let flag = ((qh01 || qh01 === 0) || (qh02 || qh02 === 0)) && (((qh01 || qh01 === 0) && qh051) || ((qh02 || qh02 === 0) && qh052))
+      let qh07 = this.getValueByField(abilityInfo, 'qh07') || 1
+      let flag = !!(((qh01 || qh01 === 0) && qh051) || ((qh02 || qh02 === 0) && qh052))
       if (!flag) return
+      // highTemImpact, lowTemImpact 这里判断仅仅只有高温或者低温，先这样判断，还没更好的办法
+      let highTemImpact = !!(((qh01 || qh01 === 0) && qh051) && !((qh02 || qh02 === 0) && qh052))
+      let lowTemImpact = !!(!((qh01 || qh01 === 0) && qh051) && ((qh02 || qh02 === 0) && qh052))
+      if (highTemImpact) {
+        this.highTempAddData(qh01, qh03, qh051)(field, isHighTemperature)
+        return
+      }
+      if (lowTemImpact) {
+        this.lowTempAddData(qh02, qh04, qh052)(field, isHighTemperature)
+        return
+      }
       for (let i = 0; i < qh07; i++) {
         if (isHighTemperature === '1') {
           this.highTempAddData(qh01, qh03, qh051)(field, isHighTemperature)
@@ -139,11 +151,16 @@ export default {
       }
     },
     getValueByField(dataSource, field, variable = 'minValue') {
-      return dataSource.filter(v => v.paramCode === field)[0][variable]
+      try {
+        return dataSource.filter(v => v.paramCode === field)[0][variable]
+      } catch {
+        return undefined
+      }
     },
     resultAddData(nodeVal, field) {
       let nodeTime = Number(this.initialTemTime)
       nodeVal = Number(nodeVal)
+      console.log(nodeVal, 'nodeVal')
       if (this.entrustOrTaskFlag) {
         this.temperatureResult[field].push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
       } else {

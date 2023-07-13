@@ -9,9 +9,10 @@
 const seriesLabel = {
   show: true,
   fontWeight: "bold",
+  rotate: 45, // 标签旋转。从 -90 度到 90 度。正值是逆时针。
+  distance: 10, // 距离图形元素的距离。
   formatter: (params) => {
-    let a = params.seriesName === '温度'
-    return (a ? params.value[1] + '℃' : params.value[1] + 'RH%') + '\n' + momentFormat(params.value[0])
+    return params.value[1] + '℃' + '\n' + momentFormat(params.value[0])
   }
 }
 const momentFormat = function (value) {
@@ -49,6 +50,9 @@ export default {
       let before = temperatureResult_before
       let stage = [temperatureResult_before[temperatureResult_before.length - 1]].concat(temperatureResult_stage)
       let after = [temperatureResult_stage[temperatureResult_stage.length - 1]].concat(temperatureResult_after)
+      console.log(temperatureResult_before, '1')
+      console.log(temperatureResult_stage, '2')
+      console.log(temperatureResult_after, '3')
       let chart = this.$echarts.init(document.getElementById('Charts'));
       let option = {
         title: [],//
