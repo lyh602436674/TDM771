@@ -32,7 +32,7 @@ export default {
         case 'approved':
           return '复核通过';
         case 'approvedNotPass':
-          return '批准驳回';
+          return '复核驳回';
       }
     },
     //委托单状态
@@ -42,15 +42,15 @@ export default {
         case 1:
           return '草稿';
         case 10:
-          return '待审批';
+          return '待审核';
         case 15:
-          return '待批准';
+          return '待复核';
         case 20:
           return '复核通过';
         case 30:
-          return '复核驳回';
+          return '审核驳回';
         case 31:
-          return '批准驳回';
+          return '复核驳回';
         case 40:
           return '已完成';
         case 50:

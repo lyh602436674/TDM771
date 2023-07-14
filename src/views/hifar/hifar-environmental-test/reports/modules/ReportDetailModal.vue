@@ -34,7 +34,7 @@
             </a-popconfirm>
             <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
                                    @write="drawerVisible = true">
-              <a-button type="ghost-primary"> 批准驳回</a-button>
+              <a-button type="ghost-primary"> 复核驳回</a-button>
             </report-reject-popover>
           </template>
           <template v-if="type === 'examine'">
@@ -43,7 +43,7 @@
             </a-popconfirm>
             <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
                                    @write="drawerVisible = true">
-              <a-button type="ghost-primary"> 复核驳回</a-button>
+              <a-button type="ghost-primary"> 审核驳回</a-button>
             </report-reject-popover>
           </template>
         </template>

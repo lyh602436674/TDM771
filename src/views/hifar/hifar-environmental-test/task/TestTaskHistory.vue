@@ -179,23 +179,6 @@ export default {
           },
         },
         {
-          title: '试后检查',
-          key: '2',
-          size: 'small',
-          type: 'primary',
-          has: 'testHistory:afterTest',
-          icon: 'icon-shiyanhouguanli',
-          click: (item, index) => {
-            if (!this.selectedRows.length) {
-              this.$message.error('请至少选择一项')
-            } else if (this.selectedRows.length > 1) {
-              this.$message.error('只能选择一项')
-            } else {
-              this.$refs.testCheckModal.show(this.selectedRows[0], '试后', 'after')
-            }
-          },
-        },
-        {
           title: '试验结果',
           key: '3',
           size: 'small',
@@ -227,6 +210,23 @@ export default {
               this.$message.error('只能选择一项')
             } else {
               this.$refs.testDataAddModal.show(this.selectedRows[0])
+            }
+          },
+        },
+        {
+          title: '试后检查',
+          key: '2',
+          size: 'small',
+          type: 'primary',
+          has: 'testHistory:afterTest',
+          icon: 'icon-shiyanhouguanli',
+          click: (item, index) => {
+            if (!this.selectedRows.length) {
+              this.$message.error('请至少选择一项')
+            } else if (this.selectedRows.length > 1) {
+              this.$message.error('只能选择一项')
+            } else {
+              this.$refs.testCheckModal.show(this.selectedRows[0], '试后', 'after')
             }
           },
         },

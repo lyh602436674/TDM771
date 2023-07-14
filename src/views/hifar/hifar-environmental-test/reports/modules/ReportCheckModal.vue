@@ -129,7 +129,7 @@ export default {
       } else if (this.type == 'approve' && this.title == '复核通过') {
         params.examineFlag = 40
         url = this.url.checkApprove
-      } else if (this.type == 'approve' && this.title == '批准驳回') {
+      } else if (this.type == 'approve' && this.title == '复核驳回') {
         params.examineFlag = 50
         url = this.url.checkApprove
       }

@@ -17,7 +17,7 @@
               icon="close"
               type="primary"
               @click="handleWrite(detailData.id)"
-            >批准驳回
+            >复核驳回
             </a-button>
 <!--          </report-reject-popover>-->
         </template>

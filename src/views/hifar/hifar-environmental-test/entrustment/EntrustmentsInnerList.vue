@@ -161,12 +161,12 @@ export default {
               value: 1
             },
             {
-              title: '待审批',
+              title: '待审核',
               key: 10,
               value: 10
             },
             {
-              title: '待批准',
+              title: '待复核',
               key: 15,
               value: 15
             },
@@ -176,12 +176,12 @@ export default {
               value: 20
             },
             {
-              title: '复核驳回',
+              title: '审核驳回',
               key: 30,
               value: 30
             },
             {
-              title: '批准驳回',
+              title: '复核驳回',
               key: 31,
               value: 31
             },

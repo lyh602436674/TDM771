@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       pageOption: {
-        typeText: "批准",
+        typeText: "复核",
         defaultStatus: '15',
         typeNo: "2",
         pass: "entrustApprove:pass",

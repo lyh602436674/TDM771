@@ -12,7 +12,7 @@
     <a-row slot="extra" class="status-list">
       <a-col :xs="12" :sm="12">
         <div class="text">状态</div>
-        <div class="heading">待审批</div>
+        <div class="heading">待审核</div>
       </a-col>
       <a-col :xs="12" :sm="12">
         <div class="text">订单金额</div>

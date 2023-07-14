@@ -490,25 +490,6 @@ export default {
           },
         },
         {
-          title: '试后检查',
-          key: '2',
-          size: 'small',
-          type: 'default',
-          has: 'ArrangeMent:afterTest',
-          icon: 'icon-shiyanhouguanli',
-          click: (item, index) => {
-            if (!this.selectedRow.length) {
-              this.$message.error('请至少选择一项')
-            } else {
-              let row = this.selectedRow[0]
-              if (row.status === 1) return this.$message.warning('试验未开始')
-              if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
-              if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
-              this.$refs.testCheckModal.show(this.selectedRow[0], '试后', 'after')
-            }
-          },
-        },
-        {
           title: '试验结果',
           key: '3',
           size: 'small',
@@ -542,6 +523,25 @@ export default {
               if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
               if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
               this.$refs.testDataAddModal.show(this.selectedRow[0])
+            }
+          },
+        },
+        {
+          title: '试后检查',
+          key: '2',
+          size: 'small',
+          type: 'default',
+          has: 'ArrangeMent:afterTest',
+          icon: 'icon-shiyanhouguanli',
+          click: (item, index) => {
+            if (!this.selectedRow.length) {
+              this.$message.error('请至少选择一项')
+            } else {
+              let row = this.selectedRow[0]
+              if (row.status === 1) return this.$message.warning('试验未开始')
+              if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
+              if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
+              this.$refs.testCheckModal.show(this.selectedRow[0], '试后', 'after')
             }
           },
         },
