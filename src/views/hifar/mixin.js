@@ -166,9 +166,9 @@ export default {
         case 15:
           return '待批准';
         case 20:
-          return '批准通过'
+          return '复核通过'
         case 30:
-          return '审批驳回'
+          return '复核驳回'
         case 31:
           return '批准驳回';
         case 40:

@@ -41,7 +41,7 @@ export default {
         case 30:
           return '审核驳回';
         case 40:
-          return '批准通过';
+          return '复核通过';
         case 50:
           return '批准驳回';
         case 60:
@@ -49,7 +49,7 @@ export default {
         case 70:
           return '修改审批通过';
         case 80:
-          return '修改审批驳回';
+          return '修改复核驳回';
         case 99:
           return '已删除';
       }
@@ -113,7 +113,7 @@ export default {
         case 30:
           return '审核驳回';
         case 40:
-          return '批准通过';
+          return '复核通过';
         case 50:
           return '批准驳回';
         case 60:
@@ -121,7 +121,7 @@ export default {
         case 70:
           return '修改审批通过';
         case 80:
-          return '修改审批驳回';
+          return '修改复核驳回';
         case 99:
           return '已删除';
       }
@@ -138,7 +138,7 @@ export default {
         case 'submit':
           return '草稿';
         case 'approvePass':
-          return '批准通过';
+          return '复核通过';
         case 'approveReject':
           return '批准驳回';
         case 'examinePass':
@@ -152,7 +152,7 @@ export default {
         case 'amendPass':
           return '修改审批通过';
         case 'amendReject':
-          return '修改审批驳回';
+          return '修改复核驳回';
       }
     }
   },
@@ -201,7 +201,7 @@ export default {
         case 30:
           return '审核驳回';
         case 40:
-          return '批准通过';
+          return '复核通过';
         case 50:
           return '批准驳回';
         case 99:

@@ -92,7 +92,7 @@
     <test-task-base-info-modal ref="TaskDetailModal" showExceptionAndEnd/>
     <task-abnormal-modal ref="taskAbnormalModal" @change="refreshEquipTaskList"></task-abnormal-modal>
     <test-data-add-modal ref="testDataAddModal" @change="refreshEquipTaskList"></test-data-add-modal>
-    <test-check-modal ref="testCheckModal" />
+    <test-check-modal ref="testCheckModal"/>
     <test-base-edit ref="TestBaseEdit" :records="records" :selectedTreeRows="selectedRows"
                     @change="refreshEquipTaskList"/>
     <test-entrust-review-pdf ref="reviewPdf" :title="reviewPdfTitle"/>
@@ -149,7 +149,7 @@ export default {
           key: '0',
           size: 'small',
           type: 'primary',
-          has: 'ArrangeMent:boforTest',
+          has: 'testHistory:boforTest',
           icon: 'icon-jianchaqianzhunbei',
           click: (item, index) => {
             if (!this.selectedRows.length) {
@@ -166,7 +166,7 @@ export default {
           key: '1',
           size: 'small',
           type: 'primary',
-          has: 'ArrangeMent:intest',
+          has: 'testHistory:intest',
           icon: 'icon-jianchazhong',
           click: (item, index) => {
             if (!this.selectedRows.length) {
@@ -183,7 +183,7 @@ export default {
           key: '2',
           size: 'small',
           type: 'primary',
-          has: 'ArrangeMent:afterTest',
+          has: 'testHistory:afterTest',
           icon: 'icon-shiyanhouguanli',
           click: (item, index) => {
             if (!this.selectedRows.length) {
@@ -199,7 +199,7 @@ export default {
           title: '试验结果',
           key: '3',
           size: 'small',
-          has: 'ArrangeMent:edit',
+          has: 'testHistory:edit',
           icon: 'icon-tianxie',
           type: 'primary',
           click: (item, index) => {
@@ -217,7 +217,7 @@ export default {
           title: '试验数据',
           key: '4',
           size: 'small',
-          has: 'ArrangeMent:dataTest',
+          has: 'testHistory:dataTest',
           icon: 'icon-shiyanshuju',
           type: 'primary',
           click: (item, index) => {
@@ -234,7 +234,7 @@ export default {
           title: '异常记录',
           key: '5',
           size: 'small',
-          has: 'ArrangeMent:errRecord',
+          has: 'testHistory:errRecord',
           icon: 'icon-gantanhao',
           type: 'primary',
           click: (item, index) => {

@@ -12,11 +12,11 @@
       <template slot="title"> 报告批准 </template>
       <h-tabs fixed :activeKey="activeKey" :animated="true" @change="handleTabsChange">
         <a-tab-pane key="1">
-          <a-badge :count="0" slot="tab" :offset="offset">待批准</a-badge>
+          <a-badge :count="0" slot="tab" :offset="offset">待复核</a-badge>
           <report-approve-table ref="ReportApproveTable" :queryType='activeKey'></report-approve-table>
         </a-tab-pane>
         <a-tab-pane key="2">
-          <a-badge :count="0" slot="tab" :offset="offset">已批准</a-badge>
+          <a-badge :count="0" slot="tab" :offset="offset">已复核</a-badge>
           <report-approve-table ref="ReportApprovedTable" :queryType='activeKey'></report-approve-table>
         </a-tab-pane>
       </h-tabs>

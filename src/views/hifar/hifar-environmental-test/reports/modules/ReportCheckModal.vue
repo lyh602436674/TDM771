@@ -87,7 +87,7 @@ export default {
       this.visible = true
       this.title = title
       this.type = type
-      if (title == '审核通过' || title == '批准通过') {
+      if (title == '审核通过' || title == '复核通过') {
         this.formData = this.formDataBackUp[1]
       }else{
         this.formData = this.formDataBackUp[0]
@@ -126,7 +126,7 @@ export default {
       } else if (this.type == 'check' && this.title == '审核驳回') {
         params.examineFlag = 30
         url = this.url.check
-      } else if (this.type == 'approve' && this.title == '批准通过') {
+      } else if (this.type == 'approve' && this.title == '复核通过') {
         params.examineFlag = 40
         url = this.url.checkApprove
       } else if (this.type == 'approve' && this.title == '批准驳回') {

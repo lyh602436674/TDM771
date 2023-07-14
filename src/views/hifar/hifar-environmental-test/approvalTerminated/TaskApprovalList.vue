@@ -50,7 +50,7 @@
             <h-icon
               class="danger-text"
               style="cursor: pointer;margin-left: 20px"
-              title="审批驳回"
+              title="复核驳回"
               type="icon-chacha"
             />
            </a-popconfirm>

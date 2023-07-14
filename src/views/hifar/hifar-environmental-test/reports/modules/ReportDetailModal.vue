@@ -30,7 +30,7 @@
           </template>
           <template v-if="type === 'approve'">
             <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckApprovePass(detailData.id, 40)">
-              <a-button type="primary"> 批准通过</a-button>
+              <a-button type="primary"> 复核通过</a-button>
             </a-popconfirm>
             <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
                                    @write="drawerVisible = true">
@@ -43,7 +43,7 @@
             </a-popconfirm>
             <report-reject-popover :showWrite="!drawerVisible" @reject="handleCheck(detailData)"
                                    @write="drawerVisible = true">
-              <a-button type="ghost-primary"> 审批驳回</a-button>
+              <a-button type="ghost-primary"> 复核驳回</a-button>
             </report-reject-popover>
           </template>
         </template>

@@ -7,8 +7,8 @@
         <a-button icon="eye" @click="handleDetail(detailData)" type="primary">详情</a-button>
         <template v-if="detailData.status === 20">
 <!--          <a-button type="primary" icon="edit" @click="handleOnlineEdit(detailData)">编辑</a-button>-->
-          <a-popconfirm title="确定批准通过吗?" @confirm="() => handleCheckPass(detailData.id)">
-            <a-button v-has="'reportApprove:pass'" type="primary" icon="check">批准通过</a-button>
+          <a-popconfirm title="确定复核通过吗?" @confirm="() => handleCheckPass(detailData.id)">
+            <a-button v-has="'reportApprove:pass'" type="primary" icon="check">复核通过</a-button>
           </a-popconfirm>
 <!--          <report-reject-popover style="display: inline-block" @reject="handleCheck(detailData.id)"-->
           <!--                                 @write="handleWrite(detailData.id)">-->

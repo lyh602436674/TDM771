@@ -171,12 +171,12 @@ export default {
               value: 15
             },
             {
-              title: '批准通过',
+              title: '复核通过',
               key: 20,
               value: 20
             },
             {
-              title: '审批驳回',
+              title: '复核驳回',
               key: 30,
               value: 30
             },
@@ -334,7 +334,7 @@ export default {
           }
         },
         {
-          title: '审批人',
+          title: '审核人',
           align: 'center',
           width: 80,
           dataIndex: 'approveName',
@@ -343,7 +343,7 @@ export default {
           }
         },
         {
-          title: '审批时间',
+          title: '审核时间',
           align: 'center',
           width: 140,
           dataIndex: 'approveTime',
@@ -352,7 +352,7 @@ export default {
           }
         },
         {
-          title: '批准人',
+          title: '复核人',
           align: 'center',
           width: 80,
           dataIndex: 'ratifyName',
@@ -361,7 +361,7 @@ export default {
           }
         },
         {
-          title: '批准时间',
+          title: '复核时间',
           align: 'center',
           width: 140,
           dataIndex: 'ratifyTime',

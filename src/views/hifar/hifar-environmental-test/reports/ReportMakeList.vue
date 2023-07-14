@@ -210,11 +210,11 @@ export default {
             {title: '待审核', value: 10, key: 10},
             {title: '待批准', value: 20, key: 20},
             {title: '审核驳回', value: 30, key: 30},
-            {title: '批准通过', value: 40, key: 40},
+            {title: '复核通过', value: 40, key: 40},
             {title: '批准驳回', value: 50, key: 50},
             {title: '修改审批', value: 60, key: 60},
             {title: '修改审批通过', value: 70, key: 70},
-            {title: '修改审批驳回', value: 80, key: 80},
+            {title: '修改复核驳回', value: 80, key: 80},
           ]
         },
         {
@@ -439,7 +439,7 @@ export default {
     },
     handleTurnover() {
       if (!this.selectedRowKeys.length) return this.$message.warning('请选择需要移交的报告')
-      if (Array.from(new Set(this.selectedRows.map(item => item.status))).toString() !== '40') return this.$message.warning('请选择批准通过的报告进行移交')
+      if (Array.from(new Set(this.selectedRows.map(item => item.status))).toString() !== '40') return this.$message.warning('请选择复核通过的报告进行移交')
       this.$refs.checkEnsureModal.show({}, value => {
         postAction(this.url.userCheck, {userCode: value.userCode, password: value.password}).then(result => {
           if (result.code === 200) {
