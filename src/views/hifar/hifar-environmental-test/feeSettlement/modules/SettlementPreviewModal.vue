@@ -63,6 +63,10 @@ export default {
     queryParams: {
       type: Object,
       default: () => ({})
+    },
+    activeKey: {
+      type: String,
+      default: "1"
     }
   },
   data() {
@@ -284,7 +288,8 @@ export default {
       url: {
         list: '/HfSettlementBusiness/previewSettleRes',
         settle: "/HfSettlementBusiness/add",
-        queryById: "HfSettlementBusiness/queryById"
+        queryById: "/HfSettlementBusiness/queryById",
+        queryById1: "/HfSettlementBusiness/exportByTestId",
       },
     }
   },
@@ -295,14 +300,20 @@ export default {
     },
     handleExportXls(name) {
       let fileName = name + '.xls'
-      let url = this.url.queryById
-      let params = {id: this.rowId, ...this.queryParams, type: 'export'}
+      let url = this.activeKey === '1' ? this.url.queryById1 : this.url.queryById
+      let params = {id: this.rowId, queryCondition: {...this.queryParams}, type: 'export'}
       downloadFile(url, fileName, params)
     },
     handleSubmit() {
       if (this.submitLoading) return
       this.submitLoading = true
-      postAction(this.url.settle, {...this.queryParams, testIds: this.rowId.toString()}).then(res => {
+      postAction(this.url.settle,
+        {
+          queryCondition: {
+            ...this.queryParams
+          },
+          testIds: this.rowId.toString()
+        }).then(res => {
         if (res.code === 200) {
           this.$message.success('结算成功')
           this.handleCancel()
@@ -323,12 +334,16 @@ export default {
         // 结算时预览
         let data = {
           testIds: this.rowId.toString(),
-          ...this.queryParams,
+          queryCondition: {
+            ...this.queryParams,
+          },
           ...params,
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
             return res.data
+          } else {
+            this.$message.warning(res.msg)
           }
         })
       } else {
@@ -337,6 +352,8 @@ export default {
           if (res.code === 200) {
             this.model = res.data
             return res.data.item
+          } else {
+            this.$message.warning(res.msg)
           }
         })
       }

@@ -28,7 +28,7 @@
         <a-icon class="primary-text" type="eye" @click="handleDetail(record)"></a-icon>
       </span>
     </h-vex-table>
-    <settlement-preview-modal ref="settlementPreviewModal"></settlement-preview-modal>
+    <settlement-preview-modal activeKey="2" ref="settlementPreviewModal"></settlement-preview-modal>
   </h-card>
 </template>
 

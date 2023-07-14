@@ -232,8 +232,13 @@ export default {
     .titleText {
       color: red;
       font-weight: bold;
-      font-size: 20px;
+      font-size: 30px;
       font-family: cursive;
+      // 火焰字
+      // text-shadow: 0 0 4px white,
+      //  2px -5px 4px #ff3,
+      //  -2px -15px 11px #f80,
+      //  2px -25px 18px #f20;
     }
   }
 

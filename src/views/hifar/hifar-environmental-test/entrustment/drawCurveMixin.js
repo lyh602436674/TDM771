@@ -6,16 +6,6 @@
 
 import moment from "moment";
 
-const momentFormat = function (value) {
-  let hours = Math.floor(value / 1000 / 60 / 60)
-  hours = hours < 10 ? '0' + hours : hours
-  let minutes = Math.floor(value / 1000 / 60) % 60
-  minutes = minutes < 10 ? '0' + minutes : minutes
-  let seconds = Math.floor((value / 1000) % 60)
-  seconds = seconds < 10 ? '0' + seconds : seconds
-  return `${hours}:${minutes}:${seconds}`
-}
-
 export default {
   data() {
     return {
@@ -88,12 +78,12 @@ export default {
       }
       for (let i = 0; i < qh07; i++) {
         if (isHighTemperature === '1') {
-          this.highTempAddData(qh01, qh03, qh14)(field, isHighTemperature)
-          this.lowTempAddData(qh02, qh04, qh15)(field, isHighTemperature)
+          this.highTempAddData(qh01, qh03, qh14)(field, isHighTemperature, i)
+          this.lowTempAddData(qh02, qh04, qh15)(field, isHighTemperature, i)
         }
         if (isHighTemperature === '2') {
-          this.lowTempAddData(qh02, qh04, qh15)(field, isHighTemperature)
-          this.highTempAddData(qh01, qh03, qh14)(field, isHighTemperature)
+          this.lowTempAddData(qh02, qh04, qh15)(field, isHighTemperature, i)
+          this.highTempAddData(qh01, qh03, qh14)(field, isHighTemperature, i)
         }
       }
       // 这里需要在循环阶段最后补一条线
@@ -128,8 +118,8 @@ export default {
       }
     },
     highTempAddData(qh01, qh03, qh14) {
-      return (field, isHighTemperature) => {
-        if (isHighTemperature === '2' || !this.initHighLowTemperature) this.calcAddTime(qh14)
+      return (field, isHighTemperature, index) => {
+        if (isHighTemperature === '2' || !this.initHighLowTemperature || index !== 0) this.calcAddTime(qh14)
         this.resultAddData(qh01, field)
         this.initialTemperature = qh01
         if (qh03 > 0) {
@@ -139,8 +129,8 @@ export default {
       }
     },
     lowTempAddData(qh02, qh04, qh15) {
-      return (field, isHighTemperature) => {
-        if (this.initHighLowTemperature || isHighTemperature === '1') this.calcAddTime(qh15)
+      return (field, isHighTemperature, index) => {
+        if (this.initHighLowTemperature || isHighTemperature === '1' || index !== 0) this.calcAddTime(qh15)
         this.resultAddData(qh02, field)
         this.initialTemperature = qh02
         if (qh04 > 0) {
@@ -159,7 +149,6 @@ export default {
     resultAddData(nodeVal, field) {
       let nodeTime = Number(this.initialTemTime)
       nodeVal = Number(nodeVal)
-      console.log(nodeVal, 'nodeVal')
       if (this.entrustOrTaskFlag) {
         this.temperatureResult[field].push(['Temperature_SV', nodeVal, moment(nodeTime).format('YYYY-MM-DD HH:mm:ss')])
       } else {
@@ -169,6 +158,7 @@ export default {
     calcAddTime(value) {
       this.initialTemTime = Number(moment(this.initialTemTime).add(Number(value) * 60, 's').format('x'))
     },
+    // 下面的代码是历史版本，没用
     // 计算温度的曲线数据
     drawTemperatureCurve(abilityInfo) {
       let flag = false

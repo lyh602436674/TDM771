@@ -48,14 +48,14 @@
       </template>
       <span slot="actions" slot-scope="text, record">
         <a-popconfirm v-if="record.isSettled === '0'" title="确定进行结算吗?"
-                      @confirm="() => handleSettlement(record.id,record.custTypes)">
+                      @confirm="() => handleSettlement(record.id)">
           <a>结算</a>
         </a-popconfirm>
       </span>
     </h-vex-table>
     <test-task-base-info-modal ref="testTaskBaseInfoModal"/>
     <abnormal-detail-modal ref="abnormalDetailModal" isReadOnly/>
-    <settlement-preview-modal :queryParams="queryParams" ref="settlementPreviewModal" isEdit @change="refresh"/>
+    <settlement-preview-modal activeKey="1" :queryParams="queryParams" ref="settlementPreviewModal" isEdit @change="refresh"/>
   </h-card>
 </template>
 
@@ -327,9 +327,21 @@ export default {
     })
   },
   methods: {
-    handleSettlement(id, custType) {
+    handleSettlement(id) {
       if (this.selectedRows.map(item => item.isSettled).includes('1')) return this.$message.warning('已选数据中包含已结算')
-      this.$refs.settlementPreviewModal.show(id || this.selectedRowKeys.toString())
+      let data = {
+        testIds: id || this.selectedRowKeys.toString(),
+        queryCondition: {
+          ...this.queryParams,
+        },
+      }
+      postAction('/HfSettlementBusiness/previewSettleRes', data).then((res) => {
+        if (res.code === 200) {
+          this.$refs.settlementPreviewModal.show(id || this.selectedRowKeys.toString())
+        } else {
+          this.$message.warning(res.msg)
+        }
+      })
     },
     onSelect(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys

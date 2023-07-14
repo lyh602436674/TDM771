@@ -37,7 +37,7 @@
     <!-- update-end author:sunjianlei date:20191220 for: 解决全局样式冲突的问题 -->
     <!-- update_end  author:zhaoxin date:20191129 for: 做头部菜单栏导航 -->
     <span class="action iconfont">
-      <a-tooltip title="任务看板">
+      <a-tooltip title="设备/任务看板">
         <a class="logout_title" href="HifarBoard://123">
           <h-icon type="icon-yewukanban"/>
         </a>

@@ -162,7 +162,7 @@ export default {
       row.strValue = row.conditionTypeDesc
     },
     inputChangeOfNumber(row) {
-      row.minValue = Number(row.conditionTypeDesc)
+      row.minValue = row.conditionTypeDesc
     },
     inputChangeOfSelect(row) {
       row.minValue = row.conditionTypeDesc

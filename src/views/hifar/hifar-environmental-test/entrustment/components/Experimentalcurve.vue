@@ -50,9 +50,6 @@ export default {
       let before = temperatureResult_before
       let stage = [temperatureResult_before[temperatureResult_before.length - 1]].concat(temperatureResult_stage)
       let after = [temperatureResult_stage[temperatureResult_stage.length - 1]].concat(temperatureResult_after)
-      console.log(temperatureResult_before, '1')
-      console.log(temperatureResult_stage, '2')
-      console.log(temperatureResult_after, '3')
       let chart = this.$echarts.init(document.getElementById('Charts'));
       let option = {
         title: [],//
