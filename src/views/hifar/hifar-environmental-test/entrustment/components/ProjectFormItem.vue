@@ -174,6 +174,13 @@ const defaultAfterConditions = [
     paramCode: "afterKeepTime",
     unitName: "min"
   },
+  {
+    ...defaultParams,
+    paramName: "常温保持",
+    dataType: "number",
+    paramCode: "afterLastKeepTime",
+    unitName: "min"
+  },
 ]
 const seriesLabel = {
   show: true,
@@ -788,9 +795,9 @@ export default {
         temperatureResult_stage,
         temperatureResult_after
       } = cloneDeep(this.temperatureResult)
-      let before = temperatureResult_before
-      let stage = [temperatureResult_before[temperatureResult_before.length - 1]].concat(temperatureResult_stage)
-      let after = [temperatureResult_stage[temperatureResult_stage.length - 1]].concat(temperatureResult_after)
+      let before = temperatureResult_before || []
+      let stage = before.length ? [before[before.length - 1]].concat(temperatureResult_stage) : (temperatureResult_stage || [])
+      let after = stage.length ? [stage[stage.length - 1]].concat(temperatureResult_after) : (temperatureResult_after || [])
       let chart = this.$echarts.init(document.getElementById('echarts-result'));
       let option = {
         title: [],//

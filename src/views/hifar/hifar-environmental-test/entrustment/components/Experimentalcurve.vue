@@ -47,9 +47,9 @@ export default {
     },
     darChart(record) {
       let {temperatureResult_before, temperatureResult_stage, temperatureResult_after} = cloneDeep(record)
-      let before = temperatureResult_before
-      let stage = [temperatureResult_before[temperatureResult_before.length - 1]].concat(temperatureResult_stage)
-      let after = [temperatureResult_stage[temperatureResult_stage.length - 1]].concat(temperatureResult_after)
+      let before = temperatureResult_before || []
+      let stage = before.length ? [before[before.length - 1]].concat(temperatureResult_stage) : (temperatureResult_stage || [])
+      let after = stage.length ? [stage[stage.length - 1]].concat(temperatureResult_after) : (temperatureResult_after || [])
       let chart = this.$echarts.init(document.getElementById('Charts'));
       let option = {
         title: [],//

@@ -107,6 +107,8 @@ export default {
       let variationTimeTem = this.getValueByField(abilityInfo, 'afterVariationRateTem')
       // 保持时间
       let keepTime = this.getValueByField(abilityInfo, 'afterKeepTime')
+      // 常温保持
+      let lastKeepTime = this.getValueByField(abilityInfo, 'afterLastKeepTime')
       // 回归温度有且等于0时且温变时间有的情况下
       if ((targetTem || targetTem === 0) && variationTimeTem) {
         if (keepTime > 0) {
@@ -115,6 +117,10 @@ export default {
         }
         this.calcAddTime(variationTimeTem)
         this.resultAddData(targetTem, field)
+        if (lastKeepTime > 0) {
+          this.calcAddTime(lastKeepTime)
+          this.resultAddData(targetTem, field)
+        }
       }
     },
     highTempAddData(qh01, qh03, qh14) {

@@ -130,7 +130,7 @@
                   :rowSelection="{
                       type: 'radio',
                       onSelect: Select,
-                      visible: false,
+                      width: 40
                     }"
                   style="width: 100%"
                 >

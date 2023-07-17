@@ -35,6 +35,7 @@
 import ProjectFormItem from '@views/hifar/hifar-environmental-test/entrustment/components/ProjectFormItem'
 import entrustmentMixins from "@views/hifar/hifar-environmental-test/entrustment/components/entrustmentMixins";
 import {isArray} from "lodash"
+import {getAction} from "@api/manage";
 
 export default {
   mixins: [entrustmentMixins],
@@ -64,9 +65,21 @@ export default {
       }
     }
   },
+  created() {
+    // 从配置参数中查询气候试验的试验条件结构化是否必填 1 必填 0 非必填
+    getAction('/SysSwitchBusiness/queryByItemKeyPrefix', {itemKey: 'validTestConditionRequired'}).then((result) => {
+      if (result.code === 200) {
+        result.data.map((item) => {
+          if (item.itemKey === 'validTestConditionRequired') {
+            this.validTestConditionRequired = item.itemValue
+          }
+        })
+      }
+    })
+  },
   data() {
     return {
-      form: null,
+      validTestConditionRequired: '0',
       messageError: '',
       projectModel: {
         needProcess: 1
@@ -106,8 +119,9 @@ export default {
             let item = testConditionTabItem[j]
             let _item_ = item.$refs['pointTable' + [i] + [j]]
             let abilityInfo = _item_.getData()
+            // validTestConditionRequired
             if (abilityInfo && isArray(abilityInfo) && abilityInfo.length) {
-              if (bool) {
+              if (bool && this.validTestConditionRequired === '1') {
                 // 判断只要其中一个 conditionTypeDesc 是否有值，有返回true ，没有返回false
                 let validRes = abilityInfo.some(obj => obj.conditionTypeDesc !== undefined && obj.conditionTypeDesc !== null && obj.conditionTypeDesc !== '');
                 if (validRes) {
@@ -124,7 +138,7 @@ export default {
                 abilityInfo,
               })
             } else {
-              if (bool) {
+              if (bool && this.validTestConditionRequired === '1') {
                 this.$emit('emptyData')
                 return this.$message.warning(`第${i + 1}个试验项目(${formInfoDataList[i].unitName})的结构化条件未填写`)
               }
