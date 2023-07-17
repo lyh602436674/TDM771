@@ -17,26 +17,29 @@
       @change="refresh"
     />
     <div slot="table-operator" style="border-top: 5px">
-      <a-button v-has="'device:add'" icon="plus" size="small" type="ghost-primary" @click="handleAdd">新增</a-button>
+      <a-button v-has="pageOptions.vHas.add" icon="plus" size="small" type="ghost-primary" @click="handleAdd">新增
+      </a-button>
       <a-button
         icon="edit"
         size="small"
+        v-has="pageOptions.vHas.matchAmend"
         type="ghost-primary"
         @click="handleImportEditExcel">
         批量修改
       </a-button>
       <a-button
-        v-has="'device:privice'"
+        v-has="pageOptions.vHas.privice"
         icon="export"
         size="small"
         type="ghost-warning"
         @click="handleExportXls('设备信息')">
         导出
       </a-button>
-      <a-button v-has="'device:import'" icon="import" size="small" type="ghost-success" @click="handleImportExcel">
+      <a-button v-has="pageOptions.vHas.import" icon="import" size="small" type="ghost-success"
+                @click="handleImportExcel">
         导入
       </a-button>
-      <a-button v-has="'device:delete'" icon="delete" size="small" type="danger" @click="batchDel">
+      <a-button v-has="pageOptions.vHas.delete" icon="delete" size="small" type="danger" @click="batchDel">
         批量删除
       </a-button>
     </div>
@@ -97,6 +100,7 @@
           style="cursor: pointer"
           title="编辑"
           type="edit"
+          v-has="pageOptions.vHas.add"
           @click="handleEdit(record)"
         />
         <a-icon
@@ -116,7 +120,7 @@
         />
         <a-popconfirm title="确定删除吗?" @confirm="handleDelete(record.id)">
           <a-icon
-            v-has="'device:delete'"
+            v-has="pageOptions.vHas.delete"
             class="primary-text"
             style="cursor: pointer"
             theme="twoTone"
@@ -148,8 +152,8 @@ export default {
       type: String,
       default: ''
     },
-    equipUse: {
-      type: String,
+    pageOptions: {
+      type: Object,
     }
   },
   mixins: [mixin],
@@ -379,7 +383,7 @@ export default {
           ...this.queryParam,
           ...params,
           searchType: this.expiryTime,
-          c_equipUse_1: this.equipUse,
+          c_equipUse_1: this.pageOptions.equipUse,
         }
         return postAction(this.url.list, data).then((res) => {
           if (res.code === 200) {
@@ -458,7 +462,7 @@ export default {
     },
     handleAdd() {
       let record = {
-        equipUse: this.equipUse
+        equipUse: this.pageOptions.equipUse
       }
       this.$refs.equipmentModal.show(record, '新增')
     },
@@ -481,7 +485,7 @@ export default {
       let data = {
         ...this.queryParam,
         ...model,
-        equipUse: this.equipUse,
+        equipUse: this.pageOptions.equipUse,
         ids: this.selectedRowKeys.join(',')
       }
       let url = this.url.export

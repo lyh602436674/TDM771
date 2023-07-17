@@ -473,6 +473,9 @@ export default {
                             onclick={() => this.handleDownload(record.url, record.name, record.fileId)}/>
                   )
                 }
+                if (this.isImageFile(record.name)) {
+
+                }
                 return this.h('a-space', {
                   size: 'small'
                 }, btns)
@@ -482,6 +485,10 @@ export default {
           this.renderColumns(columns)
         )
       }
+    },
+    isImageFile(filename) {
+      let ext = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+      return (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif');
     },
     percentFormat(file) {
       if (file.status == 'exception') {

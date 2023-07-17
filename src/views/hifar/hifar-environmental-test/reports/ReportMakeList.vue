@@ -83,12 +83,12 @@
         </template>
         <div slot="action" slot-scope="text, record">
           <a-space>
-            <a-icon :type="record.intranetLoading ? 'loading' :'cloud-sync'"
+            <a-icon :type="record.intranetLoading ? 'loading' : 'global'"
                     class="primary-text cursor-pointer"
                     title="推送至内网"
                     v-has="'report:pushinner'"
                     @click="handlePush(record,'intranet')"/>
-            <a-icon :type="record.mesLoading ? 'loading' :'cloud-sync'" class="primary-text cursor-pointer"
+            <a-icon :type="record.mesLoading ? 'loading' :'cloud-upload'" class="primary-text cursor-pointer"
                     title="推送至MES"
                     v-has="'report:pushmes'"
                     @click="handlePush(record,'mes')"/>
@@ -165,7 +165,7 @@ export default {
         amend: "/HfEnvReportAmendBusiness/amendReport",
         turnover: "/HfEnvReportBusiness/modifyReportStatus",
         downLoadBatchById: "/HfEnvReportReceiveBusiness/downLoadBatchById",
-        userCheck: "/HfEnvTaskTestBusiness/validateUserInfo",
+        userCheck: "/HfEnvTaskTestBusiness/validateUserIn34fo",
       },
       reportNum: 0,
       selectedRowKeys: [],

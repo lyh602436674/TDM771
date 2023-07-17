@@ -9,17 +9,17 @@
   <div>
     <h-desc :data="detailData" labelWidth='160px' size='small' title='基本信息'>
       <h-desc-item label='委托单号' style="display: block">
-        <template slot="content">
+        <div slot="content" style="display: flex; flex-direction: column;">
           <div>{{ detailData.entrustNo || '--' }}</div>
-          <a-button v-if="showPreviewBtn && detailData.entrustNo" icon="eye" size="small" style="margin: 10px 0 0 10px"
+          <a-button v-if="showPreviewBtn && detailData.entrustNo" icon="eye" size="small" style="margin: 6px 0 0 0"
                     type="primary"
                     @click="entrustReview">委托单预览
           </a-button>
-          <a-button v-if="showFlowBtn && detailData.entrustNo" icon="eye" size="small" style="margin: 10px 0 0 10px"
+          <a-button v-if="showFlowBtn && detailData.entrustNo" icon="eye" size="small" style="margin: 6px 0 0 0"
                     type="primary"
                     @click="handleEntrustFlow">流转信息
           </a-button>
-        </template>
+        </div>
       </h-desc-item>
       <h-desc-item v-if="viewDetailType === '2'" label='运行单号'>
         {{ detailData.entrustCode || '--' }}

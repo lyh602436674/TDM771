@@ -52,6 +52,7 @@ export default {
         tree: "/HfProductClassifyBusiness/listAll"
       },
       model: {},
+      isValidProductAlias: false, // 是否校验产品代号只能输入六位数字的校验，在参数配置中根据validProductAlias参数键查看
       treeData: []
     }
   },
@@ -175,8 +176,21 @@ export default {
     show(record, title) {
       this.visible = true
       this.title = title
+      this.getConfigByProductAlias()
       this.getTreeData()
       this.editor(record)
+    },
+    // validProductAlias
+    getConfigByProductAlias() {
+      getAction('/SysSwitchBusiness/queryByItemKeyPrefix', {itemKey: 'validProductAlias'}).then((result) => {
+        if (result.code === 200) {
+          result.data.map((item) => {
+            if (item.itemKey === 'validProductAlias') {
+              this.isValidProductAlias = item.itemValue
+            }
+          })
+        }
+      })
     },
     recursive(arr) {
       return arr.map(item => {
@@ -233,10 +247,10 @@ export default {
       if (!value) {
         callback('请输入产品代号')
       } else {
-        if (new RegExp(/^\S+$/).test(value)) {
+        if (new RegExp(this.isValidProductAlias === '1' ? /^\d{6}$/ : /^\S+$/).test(value)) {
           callback()
         } else {
-          callback('请输入正确格式的产品代号')
+          callback(`请输入正确格式的产品代号,${this.isValidProductAlias === '1' ? '只能输入六位数字' : '不能出现空格'}`)
         }
       }
     },

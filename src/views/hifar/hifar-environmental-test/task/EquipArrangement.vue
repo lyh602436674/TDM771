@@ -125,6 +125,7 @@
                   ref="equipTaskList"
                   slot="content"
                   :columns="taskColumns"
+                  :row-class-name="tableClassRowName"
                   :data="loadData"
                   :rowSelection="{
                       type: 'radio',
@@ -439,10 +440,19 @@ export default {
           key: 'custName',
           formType: 'input',
         },
-
         {
           title: '试验项目',
           key: 'unitName',
+          formType: 'input',
+        },
+        {
+          title: '发起人',
+          key: 'initiatorNames',
+          formType: 'input',
+        },
+        {
+          title: '试验人员',
+          key: 'chargeUserName',
           formType: 'input',
         },
       ],
@@ -901,10 +911,20 @@ export default {
         this.refreshEquipTaskList()
       })
     },
+    tableClassRowName({row}) {
+      // 预计结束时间晚于当前时间将当前行标红
+      if (+row.taskEndTime < moment().format('x')) {
+        return 'table-row-overdue'
+      }
+    },
   },
 }
 </script>
 <style lang="less" scoped>
+/deep/ .table-row-overdue {
+  background-color: #ffdada !important;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }

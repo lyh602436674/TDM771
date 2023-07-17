@@ -338,6 +338,12 @@ export default {
           formType: 'dateRangePick',
         },
         {
+          title: '实际结束时间',
+          key: 'realEndTime',
+          showTime: true,
+          formType: 'dateRangePick',
+        },
+        {
           title: '报告编号',
           key: 'reportCodes',
           formType: 'input',

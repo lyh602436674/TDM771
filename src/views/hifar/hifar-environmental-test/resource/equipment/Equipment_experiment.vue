@@ -1,5 +1,5 @@
 <template>
-  <equipment-list equipUse="1"/>
+  <equipment-list :pageOptions="pageOptions"/>
 </template>
 
 <script>
@@ -7,7 +7,21 @@ import EquipmentList from "@views/hifar/hifar-environmental-test/resource/equipm
 
 export default {
   name: "Equipment_experiment",
-  components: {EquipmentList}
+  components: {EquipmentList},
+  data() {
+    return {
+      pageOptions: {
+        vHas: {
+          matchAmend: "experiment:matchAmend",
+          privice: "experiment:privice",
+          import: "experiment:import",
+          delete: "experiment:delete",
+          add: "experiment:add",
+        },
+        equipUse: "1"
+      }
+    }
+  },
 }
 </script>
 

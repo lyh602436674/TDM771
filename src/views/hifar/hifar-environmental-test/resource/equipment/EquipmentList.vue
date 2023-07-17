@@ -13,22 +13,22 @@
       <h-tabs fixed :activeKey="activeKey" :animated="true" @change="handleTabsChange">
         <a-tab-pane key="1">
           <a-badge :count="0" slot="tab" :offset="offset">全部</a-badge>
-          <equipment-table :equipUse="equipUse" ref="EquipmentTable" expiryTime="all"
+          <equipment-table :pageOptions="pageOptions" ref="EquipmentTable" expiryTime="all"
                            @change="loadNumChange"></equipment-table>
         </a-tab-pane>
         <a-tab-pane key="2">
           <a-badge :count="statisticData.timeout" slot="tab" :offset="offset">已过期</a-badge>
-          <equipment-table ref="EquipmentTable_" :equipUse="equipUse" expiryTime="timeout"
+          <equipment-table ref="EquipmentTable_" :pageOptions="pageOptions" expiryTime="timeout"
                            @change="loadNumChange"></equipment-table>
         </a-tab-pane>
         <a-tab-pane key="3">
           <a-badge :count="statisticData.week" slot="tab" :offset="offset">7天内到期</a-badge>
-          <equipment-table ref="EquipmentTable7" :equipUse="equipUse" expiryTime="week"
+          <equipment-table ref="EquipmentTable7" :pageOptions="pageOptions" expiryTime="week"
                            @change="loadNumChange"></equipment-table>
         </a-tab-pane>
         <a-tab-pane key="4">
           <a-badge :count="statisticData.month" slot="tab" :offset="offset">30天内到期</a-badge>
-          <equipment-table ref="EquipmentTable30" :equipUse="equipUse" expiryTime="month"
+          <equipment-table ref="EquipmentTable30" :pageOptions="pageOptions" expiryTime="month"
                            @change="loadNumChange"></equipment-table>
         </a-tab-pane>
       </h-tabs>
@@ -50,8 +50,9 @@ export default {
     EquipmentTable,
   },
   props: {
-    equipUse: {
-      type: String,
+    pageOptions: {
+      type: Object,
+      default: () => ({})
     }
   },
 

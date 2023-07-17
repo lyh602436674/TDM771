@@ -1101,7 +1101,7 @@ export default {
           placeholder: '自动计算'
         },
         {
-          title: '温度(°C)',
+          title: '试验室温度(°C)',
           key: 'temperature',
           formType: 'input-number',
           style: {
@@ -1109,7 +1109,7 @@ export default {
           }
         },
         {
-          title: '湿度(RH)',
+          title: '试验室湿度(RH)',
           key: 'humidity',
           formType: 'input-number',
           style: {
