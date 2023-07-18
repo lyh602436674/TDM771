@@ -5,7 +5,7 @@
                             @close="handleCancel">
       <a-space>
         <a-button icon="eye" @click="handleDetail(detailData)" type="primary">详情</a-button>
-        <template v-if="detailData.status === 10">
+        <template v-if="[10,50].includes(detailData.status)">
           <a-button type="primary" icon="edit" @click="handleOnlineEdit(detailData)">编辑</a-button>
           <a-popconfirm title="确定审核通过吗?" @confirm="() => handleCheckPass(detailData.id)">
             <a-button v-has="'reportCheck:pass'" type="primary" icon="check">审核通过</a-button>

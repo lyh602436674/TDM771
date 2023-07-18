@@ -41,7 +41,8 @@ export default {
       type: "",
       url: {
         check: '/HfEnvReportExamineBusiness/examineById',
-      }
+      },
+      valueRadio: "1"
     }
   },
   methods: {
@@ -52,14 +53,54 @@ export default {
     },
     handleCancel() {
       this.visible = false;
+      this.valueRadio = '1'
+    },
+    renderRadioGroup(h) {
+      return h('div', {
+        style: {
+          marginTop: "20px"
+        }
+      }, [
+        h('a-radio-group', {
+          props: {
+            value: this.valueRadio,
+          },
+          on: {
+            change: this.handleRadioChange,
+          }
+        }, [
+          h('a-radio-button', {props: {key: "1", value: "1",}}, ['报告生成']),
+          h('a-radio-button', {props: {key: "2", value: "2"}}, ['报告审核']),
+        ])
+      ])
+    },
+    handleRadioChange(e) {
+      this.valueRadio = e.target.value
     },
     handleSubmit() {
+      if (this.type === 'approve') {
+        this.$confirm({
+          title: '请选择驳回节点',
+          content: h => {
+            return this.renderRadioGroup(h)
+          },
+          onOk: () => {
+            this.handleSubmitRequest()
+          },
+        })
+      } else {
+        this.valueRadio = undefined
+        this.handleSubmitRequest()
+      }
+    },
+    handleSubmitRequest() {
       let params = {
         id: this.reportId,
         examineFlag: this.type === 'check' ? 30 : this.type === 'approve' ? 50 : this.type === 'examine' ? 80 : null,
         // rejectType 驳回节点 1 报告生成 2 报告审核 3 报告批准 4 修改审批
         rejectType: this.type === 'check' ? '2' : this.type === 'approve' ? '3' : this.type === 'examine' ? '4' : null,
-        reportRejectList: this.$refs.reportRejectInfoTable.getTableData()
+        reportRejectList: this.$refs.reportRejectInfoTable.getTableData(),
+        rejectionLevel: this.valueRadio
       }
       postAction(this.url.check, params).then((res) => {
         if (res.code === 200) {

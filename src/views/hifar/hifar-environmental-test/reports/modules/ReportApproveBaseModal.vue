@@ -10,21 +10,21 @@
           <a-popconfirm title="确定批准通过吗?" @confirm="() => handleCheckPass(detailData.id)">
             <a-button v-has="'reportApprove:pass'" type="primary" icon="check">批准通过</a-button>
           </a-popconfirm>
-<!--          <report-reject-popover style="display: inline-block" @reject="handleCheck(detailData.id)"-->
+          <!--          <report-reject-popover style="display: inline-block" @reject="handleCheck(detailData.id)"-->
           <!--                                 @write="handleWrite(detailData.id)">-->
-            <a-button
-              v-has="'reportApprove:reject'"
-              icon="close"
-              type="primary"
-              @click="handleWrite(detailData.id)"
-            >批准驳回
-            </a-button>
-<!--          </report-reject-popover>-->
+          <a-button
+            v-has="'reportApprove:reject'"
+            icon="close"
+            type="primary"
+            @click="handleWrite(detailData.id)"
+          >批准驳回
+          </a-button>
+          <!--          </report-reject-popover>-->
         </template>
       </a-space>
     </report-base-info-modal>
     <report-detail-modal :queryType="queryType" @change="detailChange" ref="ReportDetailModal"/>
-    <report-reject-info-modal ref="reportRejectInfoModal" @change="loadData"/>
+    <report-reject-info-modal ref="reportRejectInfoModal" @change="rejectChange"/>
   </div>
 </template>
 
@@ -97,6 +97,10 @@ export default {
     },
     handleWrite(id) {
       this.$refs.reportRejectInfoModal.show(id, 'approve')
+    },
+    rejectChange() {
+      this.refreshFlag = true
+      this.loadData()
     },
     loadData() {
       postAction(this.url.detail, {id: this.reportId,}).then((res) => {

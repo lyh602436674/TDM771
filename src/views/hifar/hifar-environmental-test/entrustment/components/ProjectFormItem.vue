@@ -236,7 +236,6 @@ export default {
         if (isObject(val) && Object.keys(val).length) {
           let obj = Object.assign({}, val, {
             unitId: val.unitId ? val.unitId : val.id,
-            testName: val.testName || val.unitName,
             isShowUserInReport: val.isShowUserInReport || '1',
             isPowerUp: val.isPowerUp || '1',
             curveReportFlag: (val.curveReportFlag || +val.curveReportFlag === 0) ? val.curveReportFlag : 1,

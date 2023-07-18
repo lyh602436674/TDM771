@@ -75,7 +75,7 @@
               <h-desc :column="1" size="small">
                 <h-desc-item label="发起人">{{ record.promoter }}</h-desc-item>
                 <h-desc-item label="移交人">{{ record.transferUser }}</h-desc-item>
-                <h-desc-item label="移交时间">{{ record.transferTime }}</h-desc-item>
+                <h-desc-item label="移交时间">{{ dateTimeFormatByStamp(record.transferTime) }}</h-desc-item>
               </h-desc>
             </template>
             <a-tag v-if="text === 1" color="#87d068">已移交</a-tag>
@@ -126,6 +126,7 @@ import ReportRejectAllInfo from "@views/hifar/hifar-environmental-test/reports/m
 import TestTaskBaseInfoModal from "@views/hifar/hifar-environmental-test/task/TestTaskBaseInfoModal.vue";
 import ReportMakeBaseModal from "@views/hifar/hifar-environmental-test/reports/modules/ReportMakeBaseModal.vue";
 import CheckEnsureModal from "@views/hifar/hifar-environmental-test/task/modules/components/CheckEnsureModal.vue";
+import {dateTimeFormatByStamp} from "@/utils/util";
 
 let baseUrl = process.env.VUE_APP_API_BASE_URL
 export default {
@@ -146,6 +147,7 @@ export default {
   },
   data() {
     return {
+      dateTimeFormatByStamp,
       moment,
       queryParams: {},
       loading: false,
@@ -165,7 +167,7 @@ export default {
         amend: "/HfEnvReportAmendBusiness/amendReport",
         turnover: "/HfEnvReportBusiness/modifyReportStatus",
         downLoadBatchById: "/HfEnvReportReceiveBusiness/downLoadBatchById",
-        userCheck: "/HfEnvTaskTestBusiness/validateUserIn34fo",
+        userCheck: "/HfEnvTaskTestBusiness/validateUserInfo",
       },
       reportNum: 0,
       selectedRowKeys: [],
@@ -446,7 +448,7 @@ export default {
             postAction(this.url.turnover, {
               id: this.selectedRowKeys.toString(),
               transferStatus: "1",
-              promoter: result.data.idName
+              transferUser: result.data.idName
             }).then(res => {
               if (res.code === 200) {
                 this.$message.success('移交成功')

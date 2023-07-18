@@ -24,8 +24,8 @@
       :rowKey="(record) => record.id"
     >
       <span slot="reportCode" slot-scope="text, record">
-         <a-icon v-if="record.recordflag === 1" style="font-size: 14px;color: red" type="issues-close"></a-icon>
-            <a :style="{marginLeft: record.recordflag === 1 ? 0 : '20px'}"
+           <a-icon v-if="record.recordflag === 1" style="font-size: 16px; color: #e74949" type="issues-close"></a-icon>
+            <a :style="{marginLeft: record.recordflag === 1 ? '4px' : '20px'}"
                @click="$refs.ReportApproveBaseModal.show(record)">{{ text }}</a>
       </span>
       <span slot="status" slot-scope="text, record">

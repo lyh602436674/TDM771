@@ -16,7 +16,7 @@
     :visible="visible"
     @cancel="handleCancel"
   >
-    <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭 </a-button>
+    <a-button slot="footer" type="ghost-danger" @click="handleCancel"> 关闭</a-button>
     <div style="height: 100%; overflow: auto; padding: 0 20px">
       <h-desc title="振动图谱" :bordered="false">
         <h-upload-file
@@ -75,6 +75,7 @@ export default {
     },
     handleCancel() {
       this.visible = false
+      this.$emit('change')
     },
     loadData() {
       this.loadAttachData()
@@ -82,7 +83,7 @@ export default {
     },
     // 振动图谱
     loadAttachData() {
-      postAction(this.url.testAttachList, { refType: 'test_attach', refId: this.testId }).then((res) => {
+      postAction(this.url.testAttachList, {refType: 'test_attach', refId: this.testId}).then((res) => {
         if (res.code === 200) {
           const {data} = res
           this.attachIds = data && data.length && data.map((item) => {
@@ -107,7 +108,7 @@ export default {
     },
     // 视频
     loadVideoData() {
-      postAction(this.url.attachList, { refType: 'test_video', refId: this.testId }).then((res) => {
+      postAction(this.url.attachList, {refType: 'test_video', refId: this.testId}).then((res) => {
         if (res.code === 200) {
           const {data} = res
           this.videoAttachIds = data && data.length && data.map((item) => {
