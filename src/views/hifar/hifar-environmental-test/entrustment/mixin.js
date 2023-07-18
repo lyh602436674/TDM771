@@ -24,13 +24,13 @@ export default {
                 case 10:
                     return '待审核';
                 case 20:
-                    return '待复核';
+                    return '待批准';
                 case 30:
                     return '审核驳回';
                 case 40:
-                    return '复核通过';
+                    return '批准通过';
                 case 50:
-                    return '复核驳回';
+                    return '批准驳回';
                 case 99:
                     return '已删除';
             }
@@ -69,13 +69,13 @@ export default {
                 case 10:
                     return '待审核';
                 case 20:
-                    return '待复核';
+                    return '待批准';
                 case 30:
                     return '审核驳回';
                 case 40:
-                    return '复核通过';
+                    return '批准通过';
                 case 50:
-                    return '复核驳回';
+                    return '批准驳回';
                 case 60:
                     return '已发放';
                 case 99:

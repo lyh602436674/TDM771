@@ -37,13 +37,13 @@ export default {
         case 10:
           return '待审核';
         case 20:
-          return '待复核';
+          return '待批准';
         case 30:
           return '审核驳回';
         case 40:
-          return '复核通过';
+          return '批准通过';
         case 50:
-          return '复核驳回';
+          return '批准驳回';
         case 60:
           return '修改审批';
         case 70:
@@ -109,13 +109,13 @@ export default {
         case 10:
           return '待审核';
         case 20:
-          return '待复核';
+          return '待批准';
         case 30:
           return '审核驳回';
         case 40:
-          return '复核通过';
+          return '批准通过';
         case 50:
-          return '复核驳回';
+          return '批准驳回';
         case 60:
           return '修改审批';
         case 70:
@@ -138,9 +138,9 @@ export default {
         case 'submit':
           return '草稿';
         case 'approvePass':
-          return '复核通过';
+          return '批准通过';
         case 'approveReject':
-          return '复核驳回';
+          return '批准驳回';
         case 'examinePass':
           return '审核通过';
         case 'examineNotPass':
@@ -197,13 +197,13 @@ export default {
         case 10:
           return '待审核';
         case 20:
-          return '待复核';
+          return '待批准';
         case 30:
           return '审核驳回';
         case 40:
-          return '复核通过';
+          return '批准通过';
         case 50:
-          return '复核驳回';
+          return '批准驳回';
         case 99:
           return '已删除';
       }
