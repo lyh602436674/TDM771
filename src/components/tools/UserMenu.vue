@@ -81,10 +81,10 @@
           <a-icon type="cluster" />
           <span>切换部门</span>
         </a-menu-item> -->
-        <a-menu-item key="6" @click="clearCache">
-          <a-icon type="sync" />
-          <span>清理缓存</span>
-        </a-menu-item>
+<!--        <a-menu-item key="6" @click="clearCache">-->
+<!--          <a-icon type="sync" />-->
+<!--          <span>清理缓存</span>-->
+<!--        </a-menu-item>-->
         <a-menu-item key="7" @click="handleLogout">
           <a-icon type="logout" class="danger-text" />
           <span class="danger-text">退出登录</span>

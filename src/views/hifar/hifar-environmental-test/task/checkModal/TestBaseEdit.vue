@@ -2358,7 +2358,8 @@ export default {
           //   }
           // }),
           // 安装、控制方式 + 传感器
-          insertMethodArr: this.installControlTable
+          insertMethodArr: this.installControlTable,
+          testResult: 1,
         }
         postAction(this.url.save, params).then((res) => {
           if (res.code === 200) {

@@ -62,11 +62,13 @@
                 <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-res check-list-item-center'>
-                <div v-if='!item.isEdit || item.isCheckRes'
-                     @click="() => handleCheckRes(item, index, 'beforeCheckInfo')">
-                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
-                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
-                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
+                <div v-if='!item.isEdit || item.isCheckRes'>
+                 <span v-if="['1','2','3'].includes(item.itemRes)"
+                       @click="handleCheckRes(item, index, 'beforeCheckInfo')">
+                    <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+                    <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+                    <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
+                  </span>
                   <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
                 <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'></a-textarea>
@@ -132,10 +134,13 @@
                 <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-res check-list-item-center'>
-                <div v-if='!item.isEdit || item.isCheckRes' @click="() => handleCheckRes(item, index, 'inCheckInfo')">
-                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
-                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
-                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
+                <div v-if='!item.isEdit || item.isCheckRes'>
+                  <span v-if="['1','2','3'].includes(item.itemRes)"
+                        @click="handleCheckRes(item, index, 'inCheckInfo')">
+                    <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+                    <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+                    <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
+                  </span>
                   <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
                 <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'></a-textarea>
@@ -200,11 +205,13 @@
                 <a-textarea v-else v-model='item.itemRequire' :auto-size='{minRows:2}'></a-textarea>
               </div>
               <div class='check-res check-list-item-center'>
-                <div v-if='!item.isEdit || item.isCheckRes'
-                     @click="() => handleCheckRes(item, index, 'afterCheckInfo')">
-                  <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
-                  <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
-                  <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
+                <div v-if='!item.isEdit || item.isCheckRes'>
+                  <span v-if="['1','2','3'].includes(item.itemRes)"
+                        @click="handleCheckRes(item, index, 'afterCheckInfo')">
+                    <h-icon v-if="item.itemRes === '1'" class='success-text' type='icon-wancheng1'/>
+                    <h-icon v-else-if="item.itemRes === '2'" class='danger-text' type='icon-chacha'/>
+                    <h-icon v-else-if="item.itemRes === '3'" class='danger-text' type='icon-xieti'/>
+                  </span>
                   <span v-else style='display:inline-block;width:100%;text-align: left;' v-text='item.itemRes'></span>
                 </div>
                 <a-textarea v-else v-model='item.itemRes' :auto-size='{minRows:2}'></a-textarea>
@@ -272,6 +279,11 @@ export default {
         updateCheckItem: '/HfEnvTaskTestBusiness/updateCheckItem',
         userCheck: "/HfEnvTaskTestBusiness/validateUserInfo",
         save: "/HfEnvTaskTestBusiness/insertCheckItem",
+      },
+      typeObj: {
+        before: 'beforeCheckInfo',
+        middle: 'inCheckInfo',
+        after: 'afterCheckInfo'
       }
     }
   },
@@ -351,26 +363,36 @@ export default {
       }
     },
     handleSave() {
-      let typeObj = {
-        before: 'beforeCheckInfo',
-        middle: 'inCheckInfo',
-        after: 'afterCheckInfo'
-      }
       this.spinLoading = true
-      postAction(this.url.save, {
-        items: this[typeObj[this.type]],
+      let requiredFlag = this.checkFieldsByFill()
+      let params = {
+        items: this[this.typeObj[this.type]],
         checkStage: this.type,
-        testId: this.testId
-      }).then(res => {
+        testId: this.testId,
+      }
+      if (this.type === 'before') {
+        params.beforeCheckFlag = requiredFlag ? 1 : 0
+      }
+      if (this.type === 'middle') {
+        params.inCheckFlag = requiredFlag ? 1 : 0
+      }
+      if (this.type === 'after') {
+        params.afterCheckFlag = requiredFlag ? 1 : 0
+      }
+      postAction(this.url.save, params).then(res => {
         if (res.code === 200) {
           this.$message.success('保存成功')
           this.handleCancel()
+          this.$emit('change')
         } else {
           this.$message.warning('保存出错')
         }
       }).finally(() => {
         this.spinLoading = false
       })
+    },
+    checkFieldsByFill() {
+      return this[this.typeObj[this.type]].every(obj => obj.fillUserName && obj.fillUserId && obj.fillTime);
     },
     handleCancel() {
       this.visible = false
@@ -498,12 +520,7 @@ export default {
     resetCheckedState() {
       this.indeterminate = false
       this.checkAll = false
-      let typeObj = {
-        before: 'beforeCheckInfo',
-        middle: 'inCheckInfo',
-        after: 'afterCheckInfo'
-      }
-      this[typeObj[this.type]].forEach(item => item.checked = false)
+      this[this.typeObj[this.type]].forEach(item => item.checked = false)
     },
     formatTime(time) {
       return (time && +time) ? moment(+time).format('YYYY-MM-DD HH:mm:ss') : ''

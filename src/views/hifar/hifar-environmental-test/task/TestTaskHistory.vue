@@ -17,6 +17,7 @@
           :size="item.size"
           :type="item.type"
           :v-has="item.has"
+          :style="item.style"
           @click="() => item.click(item, index)"
         >
           <a-icon v-if="item.icon.indexOf('icon-') === -1" :type="item.icon"/>
@@ -148,7 +149,7 @@ export default {
           title: '试前检查',
           key: '0',
           size: 'small',
-          type: 'primary',
+          type: 'default',
           has: 'testHistory:boforTest',
           icon: 'icon-jianchaqianzhunbei',
           click: (item, index) => {
@@ -165,7 +166,7 @@ export default {
           title: '试中检查',
           key: '1',
           size: 'small',
-          type: 'primary',
+          type: 'default',
           has: 'testHistory:intest',
           icon: 'icon-jianchazhong',
           click: (item, index) => {
@@ -184,7 +185,7 @@ export default {
           size: 'small',
           has: 'testHistory:edit',
           icon: 'icon-tianxie',
-          type: 'primary',
+          type: 'default',
           click: (item, index) => {
             if (this.selectedRows.length === 0) {
               this.$message.error('请至少选择一项')
@@ -202,7 +203,7 @@ export default {
           size: 'small',
           has: 'testHistory:dataTest',
           icon: 'icon-shiyanshuju',
-          type: 'primary',
+          type: 'default',
           click: (item, index) => {
             if (!this.selectedRows.length) {
               this.$message.error('请至少选择一项')
@@ -217,7 +218,7 @@ export default {
           title: '试后检查',
           key: '2',
           size: 'small',
-          type: 'primary',
+          type: 'default',
           has: 'testHistory:afterTest',
           icon: 'icon-shiyanhouguanli',
           click: (item, index) => {
@@ -236,7 +237,7 @@ export default {
           size: 'small',
           has: 'testHistory:errRecord',
           icon: 'icon-gantanhao',
-          type: 'primary',
+          type: 'default',
           click: (item, index) => {
             if (!this.selectedRows.length) {
               this.$message.error('请至少选择一项')
@@ -569,7 +570,7 @@ export default {
     refresh(bool = false) {
       this.$refs.taskHistoryTable.refresh(bool)
     },
-    refreshEquipTaskList(bool = true) {
+    refreshEquipTaskList(bool = false) {
       this.refresh(bool)
       this.selectedRowKeys = []
       this.selectedRows = []
@@ -591,7 +592,56 @@ export default {
     onSelect(selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
       this.selectedRows = selectedRows
-    }
+      this.updateButtonState()
+    },
+    updateButtonState() {
+      if (!this.selectedRows.length) {
+        this.operatorButtons.forEach((item, index) => {
+          item.type = 'default';
+          item.style = {};
+        })
+        return
+      }
+      let style = {
+        backgroundColor: "green",
+        borderColor: "green",
+      }
+      this.operatorButtons.forEach((item, index) => {
+        item.type = 'primary';
+        item.style = {};
+        switch (item.key) {
+          case '0':
+            if (this.selectedRows[0].beforeCheckFlag === 1) {
+              item.style = style;
+            }
+            break;
+
+          case '1':
+            if (this.selectedRows[0].inCheckFlag === 1) {
+              item.style = style;
+            }
+            break;
+
+          case '2':
+            if (this.selectedRows[0].afterCheckFlag === 1) {
+              item.style = style;
+            }
+            break;
+
+          case '3':
+            if (this.selectedRows[0].testResult === 1) {
+              item.style = style;
+            }
+            break;
+
+          case '4':
+            if (this.selectedRows[0].testData === 1) {
+              item.style = style;
+            }
+            break;
+        }
+      });
+    },
   },
 }
 </script>

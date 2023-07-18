@@ -278,6 +278,9 @@ export default {
             })
             this.$refs[this.tableId].setCheckboxRow(selectionRows, true)
           }
+          this.$nextTick(() => {
+            this.$emit('loadDataSuccess', dataSource)
+          })
         })
       }
     },
@@ -692,7 +695,16 @@ export default {
       } else {
         this.$refs[this.tableId].setRadioRow(selectedRows[0])
       }
-    }
+    },
+    setRadioRow(row) {
+      this.$refs[this.tableId].setRadioRow(row)
+    },
+    getRadioRecord(isFull) {
+      return this.$refs[this.tableId].getRadioRecord(isFull)
+    },
+    currentChange(params) {
+      this.$emit('currentChange', params)
+    },
   },
   render() {
     let vxeTableProps = {
@@ -765,6 +777,7 @@ export default {
         }
 
         events['radio-change'] = this.radioChange
+        events['current-change'] = this.currentChange
       }
     }
 

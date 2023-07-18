@@ -44,8 +44,8 @@
               : '--'
           }}
         </h-desc-item>
-        <h-desc-item label="温度(°C)">{{ model.temperature || '--' }}</h-desc-item>
-        <h-desc-item label="湿度(RH)">{{ model.humidity || '--' }}</h-desc-item>
+        <h-desc-item label="试验室温度(°C)">{{ model.temperature || '--' }}</h-desc-item>
+        <h-desc-item label="试验室湿度(RH)">{{ model.humidity || '--' }}</h-desc-item>
         <h-desc-item label="自检">{{ model.selfInspection || '--' }}</h-desc-item>
         <h-desc-item label="互检">{{ model.mutualInspection || '--' }}</h-desc-item>
         <h-desc-item :span="3" label="参试人员">

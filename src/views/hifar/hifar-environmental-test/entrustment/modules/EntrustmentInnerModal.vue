@@ -423,6 +423,12 @@ export default {
           }
         },
         {
+          title: '发起人姓名',
+          key: 'initiatorName',
+          formType: 'input',
+          hidden: true,
+        },
+        {
           title: '发起人电话',
           key: 'phone',
           formType: 'input',
@@ -562,7 +568,7 @@ export default {
       this.$refs.entrustFlowInfoModal.show()
     },
     initiatorChange(value, option) {
-      this.$refs.entrustFrom.form.setFieldsValue({phone: option.mobile})
+      this.$refs.entrustFrom.form.setFieldsValue({phone: option.mobile, initiatorName: option.idName})
     },
     buildLayer(column) {
       let defaultLayer = [

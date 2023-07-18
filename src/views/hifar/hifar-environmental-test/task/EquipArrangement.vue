@@ -114,6 +114,7 @@
                     :size="item.size"
                     :type="item.type"
                     :v-has="item.has"
+                    :style="item.style"
                     @click="() => item.click(item, index)"
                   >
                     <a-icon v-if="item.icon.indexOf('icon-') === -1" :type="item.icon"></a-icon>
@@ -123,14 +124,16 @@
                 </a-space>
                 <h-vex-table
                   ref="equipTaskList"
+                  class="equipTaskList"
                   slot="content"
                   :columns="taskColumns"
                   :row-class-name="tableClassRowName"
                   :data="loadData"
+                  @loadDataSuccess="loadDataSuccess"
                   :rowSelection="{
                       type: 'radio',
                       onSelect: Select,
-                      width: 40
+                      visible: false
                     }"
                   style="width: 100%"
                 >
@@ -492,6 +495,7 @@ export default {
               this.$message.error('请至少选择一项')
             } else {
               let row = this.selectedRow[0]
+              if (row.beforeCheckFlag !== 1) return this.$message.warning('试前检查未完成')
               if (row.status === 1) return this.$message.warning('试验未开始')
               if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
               if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
@@ -511,6 +515,7 @@ export default {
               this.$message.error('请至少选择一项')
             } else {
               let row = this.selectedRow[0]
+              if (row.inCheckFlag !== 1) return this.$message.warning('试中检查未完成')
               if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
               if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
               this.records = row
@@ -530,6 +535,7 @@ export default {
               this.$message.error('请至少选择一项')
             } else {
               let row = this.selectedRow[0]
+              if (row.testResult !== 1) return this.$message.warning('试验结果未填写完成')
               if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
               if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
               this.$refs.testDataAddModal.show(this.selectedRow[0])
@@ -548,6 +554,7 @@ export default {
               this.$message.error('请至少选择一项')
             } else {
               let row = this.selectedRow[0]
+              if (row.testData !== 1) return this.$message.warning('试验数据未填写完成')
               if (row.status === 1) return this.$message.warning('试验未开始')
               if (row.status === 40) return this.$message.warning('试验已终止，不能再次填写')
               if (row.status === 50) return this.$message.warning('试验已完成，不能再次填写')
@@ -768,6 +775,7 @@ export default {
       this.$refs.taskStartModal.show(type, record)
     },
     handleFinish(record) {
+      if (record.afterCheckFlag !== 1) return this.$message.warning('试后检查未完成，不能完成')
       if (record.status === 1) return this.$message.warning('试验未开始，不能完成')
       if (record.status === 30) return this.$message.warning('试验暂停中，不能完成')
       if (record.status === 45) return this.$message.warning('试验异常中，请先解决异常')
@@ -802,18 +810,61 @@ export default {
     handleEnlargement(record, extendRecord) {
       this.$refs.EquipBasicLineModal.open(record, extendRecord)
     },
+    loadDataSuccess(dataSource) {
+      this.selectedRow = this.selectedKey.length ? [dataSource.find(row => row.id === this.selectedKey[0])] : []
+      if (this.selectedRow && this.selectedRow.length) this.updateButtonState()
+    },
     Select(selectedKey, selectedRow) {
       this.selectedKey = selectedKey
       this.selectedRow = selectedRow
-      this.buttons.map((item, index) => {
-        item.type = 'primary'
-      })
+      this.updateButtonState()
       // 点击列表自动定位设备
       if (!this.selectedKeys.length) {
         this.selectedKeys = [selectedRow[0].equipId]
         this.getEquipDetail()
         this.$refs.equipTaskList.refresh()
       }
+    },
+    updateButtonState() {
+      let style = {
+        backgroundColor: "green",
+        borderColor: "green",
+      }
+      this.buttons.forEach((item, index) => {
+        item.type = 'primary';
+        item.style = {};
+        switch (item.key) {
+          case '0':
+            if (this.selectedRow[0].beforeCheckFlag === 1) {
+              item.style = style;
+            }
+            break;
+
+          case '1':
+            if (this.selectedRow[0].inCheckFlag === 1) {
+              item.style = style;
+            }
+            break;
+
+          case '2':
+            if (this.selectedRow[0].afterCheckFlag === 1) {
+              item.style = style;
+            }
+            break;
+
+          case '3':
+            if (this.selectedRow[0].testResult === 1) {
+              item.style = style;
+            }
+            break;
+
+          case '4':
+            if (this.selectedRow[0].testData === 1) {
+              item.style = style;
+            }
+            break;
+        }
+      });
     },
     loadLeftTreeBySearch(e) {
       let value = isObject(e) ? e.target.value : e
@@ -849,6 +900,7 @@ export default {
       this.selectedRow = []
       this.buttons.map((item) => {
         item.type = 'default'
+        item.style = {}
       })
     },
     handleActions(type, record) {
@@ -875,7 +927,7 @@ export default {
         }
       })
     },
-    refreshEquipTaskList(bool = true) {
+    refreshEquipTaskList(bool = false) {
       if (this.$refs.equipTaskList) {
         this.$refs.equipTaskList.refresh(bool)
         this.loadLeftTree();
@@ -925,6 +977,12 @@ export default {
   background-color: #ffdada !important;
 }
 
+.equipTaskList {
+  /deep/ .vxe-table--render-default .vxe-body--row.row--radio {
+    background-color: #fff3e0 !important;
+  }
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -941,6 +999,7 @@ export default {
 /deep/ .ant-tabs-content {
   height: 80%;
 }
+
 </style>
 
 <style lang="less">
